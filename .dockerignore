@@ -1,0 +1,16 @@
+node_modules
+backend/node_modules
+frontend/node_modules
+backend/dist
+frontend/.next
+coverage
+playwright-report
+test-results
+.git
+.env
+.env.*
+!.env.example
+!.env.production.example
+backups
+nginx/certs
+nginx/logs
