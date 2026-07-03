@@ -97,8 +97,7 @@ services:
       - ./scripts/backup-db.sh:/backup-db.sh:ro
     networks:
       - agri_internal
-    entrypoint: ["/bin/sh", "-c"]
-    command: "while true; do /backup-db.sh; sleep 86400; done"
+    entrypoint: ["/bin/sh", "-c", "while true; do /backup-db.sh; sleep 86400; done"]
 
 volumes:
   postgres_data:
