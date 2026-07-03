@@ -1,0 +1,29 @@
+{
+  "name": "agri-passport",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Agri Passport SaaS web mobile-first platform",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "npm run dev --workspace backend",
+    "dev:frontend": "npm run dev --workspace frontend",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend",
+    "lint": "npm run lint --workspace backend && npm run lint --workspace frontend",
+    "test": "npm run test --workspace backend && npm run test --workspace frontend",
+    "test:e2e": "npm run test:e2e --workspace backend && npm run test:e2e --workspace frontend",
+    "prisma:generate": "npm run prisma:generate --workspace backend"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "overrides": {
+    "multer": "^2.2.0",
+    "postcss": "^8.5.16"
+  }
+}

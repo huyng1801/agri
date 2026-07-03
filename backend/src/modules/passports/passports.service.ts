@@ -1,0 +1,162 @@
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { PassportStatus, Prisma } from '@prisma/client';
+import { nanoid } from 'nanoid';
+import QRCode from 'qrcode';
+import { CreatePassportDto, UpdatePassportDto } from '../../common/dto';
+import { AuthUser } from '../../common/types';
+import { paginated, parsePagination } from '../../common/utils/pagination';
+import { isSuperAdmin, requireTenant, tenantWhere } from '../../common/utils/tenant';
+import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PrismaService } from '../prisma/prisma.service';
+
+@Injectable()
+export class PassportsService {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly audit: AuditLogsService
+  ) {}
+
+  async list(user: AuthUser, query: Record<string, unknown>) {
+    const { page, limit, skip, take } = parsePagination(query);
+    const where: Prisma.TraceabilityPassportWhereInput = {
+      ...tenantWhere(user, query.cooperativeId ? String(query.cooperativeId) : undefined)
+    };
+    if (query.productId) where.productId = String(query.productId);
+    if (query.status) where.status = String(query.status) as PassportStatus;
+    const [data, total] = await Promise.all([
+      this.prisma.traceabilityPassport.findMany({
+        where,
+        include: { product: true, cooperative: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take
+      }),
+      this.prisma.traceabilityPassport.count({ where })
+    ]);
+    return paginated(data, total, page, limit);
+  }
+
+  async get(user: AuthUser, id: string) {
+    const passport = await this.prisma.traceabilityPassport.findUnique({
+      where: { id },
+      include: { product: true, cooperative: true }
+    });
+    if (!passport) throw new NotFoundException('Không tìm thấy QR Passport');
+    if (!isSuperAdmin(user) && passport.cooperativeId !== user.cooperativeId) {
+      throw new ForbiddenException('Không có quyền xem passport HTX khác');
+    }
+    return passport;
+  }
+
+  async create(user: AuthUser, dto: CreatePassportDto) {
+    const product = await this.prisma.product.findUnique({ where: { id: dto.productId } });
+    if (!product) throw new NotFoundException('Không tìm thấy sản phẩm');
+    const cooperativeId = requireTenant(user, dto.cooperativeId ?? product.cooperativeId);
+    if (product.cooperativeId !== cooperativeId) throw new BadRequestException('Sản phẩm không thuộc HTX');
+
+    const code = `AP-${nanoid(10).toUpperCase()}`;
+    const publicSlug = `${product.slug}-${code.toLowerCase()}`;
+    const url = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/public/passport/${code}`;
+    const qrDataUrl = await QRCode.toDataURL(url, {
+      errorCorrectionLevel: 'M',
+      margin: 1,
+      width: 512
+    });
+    const now = new Date();
+    const status = dto.status ?? 'PUBLISHED';
+    const created = await this.prisma.traceabilityPassport.create({
+      data: {
+        cooperativeId,
+        productId: dto.productId,
+        passportCode: code,
+        publicSlug,
+        qrDataUrl,
+        status,
+        publishedAt: status === 'PUBLISHED' ? now : null,
+        expiredAt: dto.expiredAt
+      },
+      include: { product: true, cooperative: true }
+    });
+    await this.audit.record({
+      user,
+      action: 'passports.create',
+      entity: 'TraceabilityPassport',
+      entityId: created.id,
+      cooperativeId
+    });
+    return created;
+  }
+
+  async update(user: AuthUser, id: string, dto: UpdatePassportDto) {
+    const existing = await this.get(user, id);
+    const updated = await this.prisma.traceabilityPassport.update({
+      where: { id },
+      data: {
+        status: dto.status,
+        publishedAt: dto.status === 'PUBLISHED' && existing.status !== 'PUBLISHED' ? new Date() : undefined,
+        expiredAt: dto.expiredAt
+      },
+      include: { product: true, cooperative: true }
+    });
+    await this.audit.record({
+      user,
+      action: 'passports.update',
+      entity: 'TraceabilityPassport',
+      entityId: id,
+      cooperativeId: existing.cooperativeId
+    });
+    return updated;
+  }
+
+  async remove(user: AuthUser, id: string) {
+    const existing = await this.get(user, id);
+    const updated = await this.prisma.traceabilityPassport.update({ where: { id }, data: { status: 'HIDDEN' } });
+    await this.audit.record({
+      user,
+      action: 'passports.hide',
+      entity: 'TraceabilityPassport',
+      entityId: id,
+      cooperativeId: existing.cooperativeId
+    });
+    return updated;
+  }
+
+  async publicPassport(code: string) {
+    const passport = await this.prisma.traceabilityPassport.findFirst({
+      where: {
+        AND: [
+          { OR: [{ passportCode: code }, { publicSlug: code }] },
+          { OR: [{ expiredAt: null }, { expiredAt: { gt: new Date() } }] }
+        ],
+        status: 'PUBLISHED'
+      },
+      include: {
+        cooperative: true,
+        product: {
+          include: {
+            category: true,
+            zone: true,
+            certifications: true,
+            farmingLogs: {
+              where: { status: 'PUBLISHED' },
+              orderBy: { logDate: 'asc' },
+              take: 80
+            }
+          }
+        }
+      }
+    });
+    if (!passport || passport.product.status !== 'PUBLISHED') {
+      throw new NotFoundException('Passport không tồn tại hoặc chưa được công khai');
+    }
+    await this.prisma.traceabilityPassport.update({
+      where: { id: passport.id },
+      data: { viewCount: { increment: 1 } }
+    });
+    return {
+      ...passport,
+      verified: true,
+      publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/public/passport/${passport.passportCode}`
+    };
+  }
+}

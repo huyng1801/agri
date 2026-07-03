@@ -1,0 +1,559 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  LOCKED
+}
+
+enum RoleSlug {
+  SUPER_ADMIN
+  ADMIN_HTX
+  MEMBER_HTX
+  FARMER
+  BUYER
+}
+
+enum CooperativeStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  ARCHIVED
+}
+
+enum MemberStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIAL
+  EXPIRED
+  CANCELLED
+  SUSPENDED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  UNPAID
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+  ARCHIVED
+}
+
+enum ZoneStatus {
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum FarmingActivityType {
+  SEEDING
+  WATERING
+  FERTILIZING
+  PEST_CONTROL
+  HARVESTING
+  PACKAGING
+  TRANSPORT
+  OTHER
+}
+
+enum FarmingLogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum PassportStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+  EXPIRED
+}
+
+enum FileVisibility {
+  PRIVATE
+  PUBLIC
+}
+
+enum OrderStatus {
+  DRAFT
+  CONFIRMED
+  FULFILLED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum NotificationStatus {
+  UNREAD
+  READ
+}
+
+model User {
+  id                  String              @id @default(uuid())
+  email               String              @unique
+  passwordHash        String
+  fullName            String
+  phone               String?
+  avatarUrl           String?
+  status              UserStatus          @default(ACTIVE)
+  cooperativeId       String?
+  cooperative         Cooperative?        @relation(fields: [cooperativeId], references: [id])
+  refreshTokenHash    String?
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
+  lastLoginAt         DateTime?
+  roles               UserRole[]
+  memberships         CooperativeMember[]
+  farmerProfile       FarmerProfile?
+  createdProducts     Product[]           @relation("ProductCreator")
+  farmingLogs         FarmingLog[]        @relation("FarmingLogActor")
+  auditLogs           AuditLog[]          @relation("AuditActor")
+  notifications       Notification[]
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([cooperativeId])
+  @@map("users")
+}
+
+model Role {
+  id          String     @id @default(uuid())
+  slug        RoleSlug   @unique
+  name        String
+  description String?
+  permissions Json       @default("[]")
+  isSystem    Boolean    @default(true)
+  users       UserRole[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("roles")
+}
+
+model UserRole {
+  id        String   @id @default(uuid())
+  userId    String
+  roleId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      Role     @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+model Cooperative {
+  id              String                    @id @default(uuid())
+  code            String                    @unique
+  name            String
+  taxCode         String?                   @unique
+  phone           String?
+  email           String?
+  address         String
+  province        String?
+  district        String?
+  ward            String?
+  representative  String?
+  status          CooperativeStatus         @default(ACTIVE)
+  members         CooperativeMember[]
+  users           User[]
+  products        Product[]
+  zones           Zone[]
+  farmingLogs     FarmingLog[]
+  files           FileAsset[]
+  subscriptions   CooperativeSubscription[]
+  invoices        SubscriptionInvoice[]
+  passports       TraceabilityPassport[]
+  farmerProfiles  FarmerProfile[]
+  orders          Order[]
+  notifications   Notification[]
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  @@map("cooperatives")
+}
+
+model CooperativeMember {
+  id            String       @id @default(uuid())
+  cooperativeId String
+  userId        String
+  title         String?
+  status        MemberStatus @default(ACTIVE)
+  cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([cooperativeId, userId])
+  @@index([cooperativeId])
+  @@index([userId])
+  @@map("cooperative_members")
+}
+
+model FarmerProfile {
+  id            String       @id @default(uuid())
+  userId        String       @unique
+  cooperativeId String
+  identityNo    String?
+  address       String?
+  householdJson Json         @default("{}")
+  assignedZones Json         @default("[]")
+  status        MemberStatus @default(ACTIVE)
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([cooperativeId])
+  @@map("farmer_profiles")
+}
+
+model SubscriptionPlan {
+  id              String                    @id @default(uuid())
+  name            String
+  slug            String                    @unique
+  priceMonthly    Decimal                   @default(0)
+  priceYearly     Decimal                   @default(0)
+  maxCooperatives Int?
+  maxProducts     Int?
+  maxMembers      Int?
+  maxZones        Int?
+  featuresJson    Json                      @default("[]")
+  isActive        Boolean                   @default(true)
+  subscriptions   CooperativeSubscription[]
+  createdAt       DateTime                  @default(now())
+  updatedAt       DateTime                  @updatedAt
+
+  @@map("subscription_plans")
+}
+
+model CooperativeSubscription {
+  id            String                @id @default(uuid())
+  cooperativeId String
+  planId        String
+  status        SubscriptionStatus    @default(ACTIVE)
+  startDate     DateTime
+  endDate       DateTime
+  autoRenew     Boolean               @default(false)
+  note          String?
+  createdBy     String?
+  cooperative   Cooperative           @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  plan          SubscriptionPlan      @relation(fields: [planId], references: [id])
+  invoices      SubscriptionInvoice[]
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([cooperativeId])
+  @@index([planId])
+  @@map("cooperative_subscriptions")
+}
+
+model SubscriptionInvoice {
+  id             String                    @id @default(uuid())
+  cooperativeId  String
+  subscriptionId String?
+  invoiceCode    String                    @unique
+  amount         Decimal
+  currency       String                    @default("VND")
+  status         InvoiceStatus             @default(UNPAID)
+  dueDate        DateTime
+  paidAt         DateTime?
+  paymentMethod  String?
+  note           String?
+  cooperative    Cooperative               @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  subscription   CooperativeSubscription?  @relation(fields: [subscriptionId], references: [id])
+  payments       Payment[]
+  createdAt      DateTime                  @default(now())
+  updatedAt      DateTime                  @updatedAt
+
+  @@index([cooperativeId])
+  @@map("subscription_invoices")
+}
+
+model ProductCategory {
+  id            String   @id @default(uuid())
+  cooperativeId String?
+  name          String
+  slug          String
+  description   String?
+  products      Product[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([cooperativeId, slug])
+  @@map("product_categories")
+}
+
+model Product {
+  id              String                  @id @default(uuid())
+  cooperativeId   String
+  categoryId      String?
+  code            String
+  name            String
+  slug            String
+  description     String?
+  price           Decimal                 @default(0)
+  unit            String
+  status          ProductStatus           @default(DRAFT)
+  thumbnailFileId String?
+  zoneId          String?
+  farmerId        String?
+  packagingInfo   String?
+  specification   String?
+  createdBy       String?
+  cooperative     Cooperative             @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  category        ProductCategory?        @relation(fields: [categoryId], references: [id])
+  zone            Zone?                   @relation(fields: [zoneId], references: [id])
+  creator         User?                   @relation("ProductCreator", fields: [createdBy], references: [id])
+  farmingLogs     FarmingLog[]
+  passports       TraceabilityPassport[]
+  orderItems      OrderItem[]
+  certifications  Certification[]
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@unique([cooperativeId, slug])
+  @@unique([cooperativeId, code])
+  @@index([cooperativeId])
+  @@index([categoryId])
+  @@map("products")
+}
+
+model Zone {
+  id            String       @id @default(uuid())
+  cooperativeId String
+  name          String
+  code          String
+  address       String?
+  areaM2        Decimal?
+  geojson       Json?
+  latitude      Decimal?
+  longitude     Decimal?
+  status        ZoneStatus   @default(ACTIVE)
+  cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  products      Product[]
+  farmingLogs   FarmingLog[]
+  certifications Certification[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@unique([cooperativeId, code])
+  @@index([cooperativeId])
+  @@map("zones")
+}
+
+model FarmingLog {
+  id                 String              @id @default(uuid())
+  cooperativeId      String
+  productId          String
+  zoneId             String?
+  actorId            String?
+  logDate            DateTime
+  activityType       FarmingActivityType
+  description        String
+  inputMaterialsJson Json                @default("[]")
+  imagesJson         Json                @default("[]")
+  status             FarmingLogStatus    @default(PUBLISHED)
+  cooperative        Cooperative         @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  product            Product             @relation(fields: [productId], references: [id], onDelete: Cascade)
+  zone               Zone?               @relation(fields: [zoneId], references: [id])
+  actor              User?               @relation("FarmingLogActor", fields: [actorId], references: [id])
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([cooperativeId])
+  @@index([productId])
+  @@index([zoneId])
+  @@map("farming_logs")
+}
+
+model TraceabilityPassport {
+  id            String         @id @default(uuid())
+  cooperativeId String
+  productId     String
+  passportCode  String         @unique
+  publicSlug    String         @unique
+  qrDataUrl     String?
+  status        PassportStatus @default(DRAFT)
+  publishedAt   DateTime?
+  expiredAt     DateTime?
+  viewCount     Int            @default(0)
+  cooperative   Cooperative    @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  product       Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([cooperativeId])
+  @@index([passportCode])
+  @@map("traceability_passports")
+}
+
+model Certification {
+  id            String      @id @default(uuid())
+  cooperativeId String
+  productId     String?
+  zoneId        String?
+  name          String
+  issuer        String?
+  issuedAt      DateTime?
+  expiresAt     DateTime?
+  fileId        String?
+  metadataJson  Json        @default("{}")
+  product       Product?    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  zone          Zone?       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([cooperativeId])
+  @@index([productId])
+  @@map("passport_certifications")
+}
+
+model FileAsset {
+  id            String         @id @default(uuid())
+  cooperativeId String?
+  ownerId       String?
+  bucket        String
+  objectKey     String
+  publicUrl     String?
+  mimeType      String
+  sizeBytes     Int
+  checksum      String?
+  visibility    FileVisibility @default(PRIVATE)
+  cooperative   Cooperative?   @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([cooperativeId])
+  @@map("files")
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  cooperativeId String
+  buyerId       String?
+  orderCode     String      @unique
+  status        OrderStatus @default(DRAFT)
+  totalAmount   Decimal     @default(0)
+  note          String?
+  cooperative   Cooperative @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  items         OrderItem[]
+  payments      Payment[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([cooperativeId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Decimal
+  unitPrice Decimal
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model Payment {
+  id        String               @id @default(uuid())
+  orderId   String?
+  invoiceId String?
+  amount    Decimal
+  method    String?
+  status    PaymentStatus        @default(PENDING)
+  paidAt    DateTime?
+  order     Order?               @relation(fields: [orderId], references: [id])
+  invoice   SubscriptionInvoice? @relation(fields: [invoiceId], references: [id])
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@map("payments")
+}
+
+model Notification {
+  id            String             @id @default(uuid())
+  cooperativeId String?
+  userId        String?
+  title         String
+  body          String
+  type          String             @default("SYSTEM")
+  status        NotificationStatus @default(UNREAD)
+  metadataJson  Json               @default("{}")
+  cooperative   Cooperative?       @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  user          User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([cooperativeId])
+  @@index([userId])
+  @@map("notifications")
+}
+
+model Setting {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       Json
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("settings")
+}
+
+model ReportSnapshot {
+  id            String   @id @default(uuid())
+  cooperativeId String?
+  type          String
+  fromDate      DateTime?
+  toDate        DateTime?
+  payloadJson   Json     @default("{}")
+  fileId        String?
+  createdAt     DateTime @default(now())
+
+  @@index([cooperativeId])
+  @@map("reports")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  cooperativeId String?
+  actorId       String?
+  action        String
+  entity        String
+  entityId      String?
+  ipAddress     String?
+  userAgent     String?
+  metadataJson  Json     @default("{}")
+  actor         User?    @relation("AuditActor", fields: [actorId], references: [id])
+  createdAt     DateTime @default(now())
+
+  @@index([actorId])
+  @@index([cooperativeId])
+  @@map("audit_logs")
+}

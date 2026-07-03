@@ -1,0 +1,15 @@
+{
+  "name": "Agri Passport",
+  "short_name": "Agri",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#e7f6ee",
+  "theme_color": "#2f7d4f",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
