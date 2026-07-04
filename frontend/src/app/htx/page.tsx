@@ -5,7 +5,8 @@ import {
   PublicProduct,
   PublicSearch,
   PublicShell,
-  cooperativesFromProducts
+  cooperativesFromProducts,
+  publicListItems
 } from '@/components/public-marketplace';
 
 type ProductList = {
@@ -18,8 +19,8 @@ async function getCooperatives(search?: string) {
   try {
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
     if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList>;
-    return cooperativesFromProducts(body.data.data ?? []);
+    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
+    return cooperativesFromProducts(publicListItems(body.data));
   } catch {
     return [];
   }

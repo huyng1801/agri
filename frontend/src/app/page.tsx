@@ -8,7 +8,8 @@ import {
   PublicProduct,
   PublicSearch,
   PublicShell,
-  cooperativesFromProducts
+  cooperativesFromProducts,
+  publicListItems
 } from '@/components/public-marketplace';
 import { Button, Panel } from '@/components/ui';
 
@@ -20,8 +21,8 @@ async function getPublicProducts() {
   try {
     const response = await fetch(`${API_URL}/products/public?limit=8`, { cache: 'no-store' });
     if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList>;
-    return body.data.data ?? [];
+    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
+    return publicListItems(body.data);
   } catch {
     return [];
   }

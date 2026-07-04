@@ -1,5 +1,5 @@
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { EmptyPublicState, ProductCard, PublicProduct, PublicSearch, PublicShell } from '@/components/public-marketplace';
+import { EmptyPublicState, ProductCard, PublicProduct, PublicSearch, PublicShell, publicListItems } from '@/components/public-marketplace';
 
 type ProductList = {
   data: PublicProduct[];
@@ -11,8 +11,8 @@ async function getProducts(search?: string) {
   try {
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
     if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList>;
-    return body.data.data ?? [];
+    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
+    return publicListItems(body.data);
   } catch {
     return [];
   }

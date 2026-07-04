@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { MapPin, Phone, Store } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { ProductCard, PublicProduct, PublicShell, cooperativesFromProducts } from '@/components/public-marketplace';
+import { ProductCard, PublicProduct, PublicShell, cooperativesFromProducts, publicListItems } from '@/components/public-marketplace';
 import { Button, Panel } from '@/components/ui';
 
 type ProductList = {
@@ -12,8 +12,8 @@ async function getProductsForCooperative(code: string) {
   try {
     const response = await fetch(`${API_URL}/products/public?limit=100`, { cache: 'no-store' });
     if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList>;
-    return (body.data.data ?? []).filter((product) => product.cooperative?.code === code);
+    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
+    return publicListItems(body.data).filter((product) => product.cooperative?.code === code);
   } catch {
     return [];
   }

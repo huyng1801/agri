@@ -250,6 +250,12 @@ export function cooperativesFromProducts(products: PublicProduct[]) {
   return Array.from(byId.values());
 }
 
+export function publicListItems<T>(payload: T[] | { data?: T[] } | undefined | null) {
+  if (Array.isArray(payload)) return payload;
+  if (payload && Array.isArray(payload.data)) return payload.data;
+  return [];
+}
+
 function formatPrice(value: string | number) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Number(value ?? 0));
 }
