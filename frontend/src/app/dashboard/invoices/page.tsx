@@ -14,6 +14,7 @@ export default function InvoicesPage() {
         secondary: ['cooperativeId', 'currency'],
         amountField: 'amount',
         dateField: 'dueDate',
+        createRoles: ['SUPER_ADMIN'],
         fields: [
           { name: 'cooperativeId', label: 'ID HTX' },
           { name: 'subscriptionId', label: 'ID gói đã gán' },

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { AssignSubscriptionDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
+import { requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -11,7 +12,8 @@ export class SubscriptionsService {
     private readonly audit: AuditLogsService
   ) {}
 
-  async get(cooperativeId: string) {
+  async get(user: AuthUser, cooperativeId: string) {
+    requireTenant(user, cooperativeId);
     return this.prisma.cooperativeSubscription.findFirst({
       where: { cooperativeId },
       include: { plan: true },
@@ -59,7 +61,7 @@ export class SubscriptionsService {
   }
 
   async update(user: AuthUser, cooperativeId: string, dto: Partial<AssignSubscriptionDto>) {
-    const current = await this.get(cooperativeId);
+    const current = await this.get(user, cooperativeId);
     if (!current) throw new NotFoundException('HTX chưa có gói');
     if (dto.startDate && dto.endDate && dto.endDate <= dto.startDate) {
       throw new BadRequestException('Ngày kết thúc phải lớn hơn ngày bắt đầu');
@@ -91,7 +93,7 @@ export class SubscriptionsService {
   }
 
   async cancel(user: AuthUser, cooperativeId: string) {
-    const current = await this.get(cooperativeId);
+    const current = await this.get(user, cooperativeId);
     if (!current) throw new NotFoundException('HTX chưa có gói');
     const updated = await this.prisma.cooperativeSubscription.update({
       where: { id: current.id },

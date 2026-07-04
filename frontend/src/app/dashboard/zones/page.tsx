@@ -12,6 +12,7 @@ export default function ZonesPage() {
         schema: zoneSchema,
         primary: 'name',
         secondary: ['code', 'areaM2'],
+        createRoles: ['ADMIN_HTX', 'MEMBER_HTX'],
         fields: [
           { name: 'cooperativeId', label: 'ID HTX' },
           { name: 'name', label: 'Tên vùng' },

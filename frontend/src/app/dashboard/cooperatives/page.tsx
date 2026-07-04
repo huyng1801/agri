@@ -12,6 +12,7 @@ export default function CooperativesPage() {
         schema: cooperativeSchema,
         primary: 'name',
         secondary: ['phone', 'address'],
+        createRoles: ['SUPER_ADMIN'],
         fields: [
           { name: 'name', label: 'Tên HTX' },
           { name: 'code', label: 'Mã HTX' },

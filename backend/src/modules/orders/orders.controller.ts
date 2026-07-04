@@ -14,17 +14,18 @@ export class OrdersController {
   constructor(private readonly orders: OrdersService) {}
 
   @Get()
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.orders.list(user, query);
   }
 
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   @Post()
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateOrderDto) {
     return this.orders.create(user, dto);
   }
 
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   @Patch(':id')
   update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateOrderDto) {
     return this.orders.update(user, id, dto);

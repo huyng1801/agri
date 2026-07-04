@@ -30,6 +30,7 @@ export class CooperativesController {
   }
 
   @Post()
+  @Roles(RoleSlug.SUPER_ADMIN)
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateCooperativeDto) {
     return this.cooperatives.create(user, dto);
   }
@@ -40,11 +41,13 @@ export class CooperativesController {
   }
 
   @Post(':id/assign-admin')
+  @Roles(RoleSlug.SUPER_ADMIN)
   assignAdmin(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: AssignAdminDto) {
     return this.cooperatives.assignAdmin(user, id, dto);
   }
 
   @Delete(':id')
+  @Roles(RoleSlug.SUPER_ADMIN)
   remove(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.cooperatives.remove(user, id);
   }

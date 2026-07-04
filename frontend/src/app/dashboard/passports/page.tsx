@@ -13,6 +13,7 @@ export default function PassportsPage() {
         primary: 'passportCode',
         secondary: ['product', 'viewCount'],
         dateField: 'publishedAt',
+        createRoles: ['ADMIN_HTX', 'MEMBER_HTX'],
         fields: [
           { name: 'cooperativeId', label: 'ID HTX' },
           { name: 'productId', label: 'ID sản phẩm' },

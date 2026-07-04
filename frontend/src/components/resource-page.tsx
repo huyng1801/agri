@@ -6,7 +6,7 @@ import { Plus, RefreshCcw, Search, SlidersHorizontal } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ZodSchema } from 'zod';
-import { apiFetch } from '@/lib/api';
+import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency, formatDate, statusTone } from '@/lib/format';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from './ui';
 
@@ -29,6 +29,7 @@ export type ResourceConfig = {
   dateField?: string;
   statusField?: string;
   createLabel?: string;
+  createRoles?: string[];
 };
 
 type ListResponse = {
@@ -39,6 +40,8 @@ type ListResponse = {
 export function ResourcePage({ config }: { config: ResourceConfig }) {
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
+  const user = typeof window !== 'undefined' ? currentUser() : null;
+  const canCreate = !config.createRoles?.length || config.createRoles.some((role) => user?.roles.includes(role));
   const queryClient = useQueryClient();
   const queryKey = [config.endpoint, search];
   const { data, isLoading, isError, error, refetch } = useQuery({
@@ -82,10 +85,12 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
           <Button variant="ghost" onClick={() => refetch()} aria-label="Tải lại">
             <RefreshCcw size={18} aria-hidden="true" />
           </Button>
-          <Button onClick={() => setOpen(true)}>
-            <Plus size={18} aria-hidden="true" />
-            {config.createLabel ?? 'Thêm'}
-          </Button>
+          {canCreate && (
+            <Button onClick={() => setOpen(true)}>
+              <Plus size={18} aria-hidden="true" />
+              {config.createLabel ?? 'Thêm'}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -99,7 +104,7 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
         </Button>
       </div>
 
-      {open && (
+      {open && canCreate && (
         <Panel className="fixed inset-x-0 bottom-0 z-40 max-h-[86vh] overflow-y-auto rounded-b-none border-x-0 border-b-0 p-4 shadow-soft sm:static sm:rounded-md sm:border sm:shadow-sm">
           <form className="space-y-4" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
             <div className="flex items-center justify-between gap-3">

@@ -4,12 +4,30 @@ import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 const permissions = {
-  SUPER_ADMIN: ['*'],
+  SUPER_ADMIN: [
+    'system.*',
+    'users.*',
+    'roles.*',
+    'permissions.*',
+    'cooperatives.*',
+    'subscription_plans.*',
+    'subscriptions.*',
+    'invoices.*',
+    'reports.overview',
+    'reports.revenue',
+    'settings.*',
+    'audit_logs.*',
+    'notifications.*',
+    'product_categories.*'
+  ],
   ADMIN_HTX: [
     'cooperatives.read',
     'cooperatives.update',
     'users.read',
     'users.create',
+    'subscription_plans.read',
+    'subscriptions.read',
+    'invoices.read',
     'products.*',
     'zones.*',
     'farming_logs.*',
@@ -18,7 +36,7 @@ const permissions = {
     'files.*',
     'notifications.*'
   ],
-  MEMBER_HTX: ['products.read', 'products.update', 'zones.read', 'farming_logs.*', 'passports.read', 'files.*'],
+  MEMBER_HTX: ['products.read', 'products.create', 'products.update', 'zones.read', 'farming_logs.*', 'passports.read', 'passports.create', 'files.*'],
   FARMER: ['products.read', 'zones.read', 'farming_logs.create', 'farming_logs.read', 'notifications.read'],
   BUYER: ['public.read', 'orders.read']
 };

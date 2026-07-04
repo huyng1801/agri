@@ -14,11 +14,13 @@ export class SubscriptionPlansController {
   constructor(private readonly plans: SubscriptionPlansService) {}
 
   @Get()
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
   list(@Query() query: Record<string, unknown>) {
     return this.plans.list(query);
   }
 
   @Get(':id')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
   get(@Param('id') id: string) {
     return this.plans.get(id);
   }

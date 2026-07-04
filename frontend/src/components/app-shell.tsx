@@ -20,26 +20,29 @@ import {
 import { currentUser, logout } from '@/lib/api';
 import { cn } from './ui';
 
-const nav = [
-  { href: '/dashboard', label: 'Tổng quan', icon: Home },
-  { href: '/dashboard/cooperatives', label: 'HTX', icon: Boxes },
-  { href: '/dashboard/products', label: 'Sản phẩm', icon: Package },
-  { href: '/dashboard/zones', label: 'Vùng trồng', icon: Map },
-  { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList },
-  { href: '/dashboard/passports', label: 'QR', icon: QrCode },
-  { href: '/dashboard/users', label: 'Thành viên', icon: Users },
-  { href: '/dashboard/subscription-plans', label: 'Gói', icon: WalletCards },
-  { href: '/dashboard/invoices', label: 'Hóa đơn', icon: FileText },
-  { href: '/dashboard/reports', label: 'Báo cáo', icon: Bell },
-  { href: '/dashboard/settings', label: 'Cài đặt', icon: Settings }
-];
+type NavRole = 'SUPER_ADMIN' | 'ADMIN_HTX' | 'MEMBER_HTX' | 'FARMER' | 'BUYER';
 
-const mobileNav = nav.slice(0, 6);
+const nav = [
+  { href: '/dashboard', label: 'Tổng quan', icon: Home, roles: ['SUPER_ADMIN', 'ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { href: '/dashboard/cooperatives', label: 'HTX', icon: Boxes, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
+  { href: '/dashboard/products', label: 'Sản phẩm', icon: Package, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { href: '/dashboard/zones', label: 'Vùng trồng', icon: Map, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { href: '/dashboard/passports', label: 'QR', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX'] },
+  { href: '/dashboard/users', label: 'Người dùng', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
+  { href: '/dashboard/subscription-plans', label: 'Gói', icon: WalletCards, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
+  { href: '/dashboard/invoices', label: 'Hóa đơn', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
+  { href: '/dashboard/reports', label: 'Báo cáo', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN_HTX', 'MEMBER_HTX'] },
+  { href: '/dashboard/settings', label: 'Cài đặt', icon: Settings, roles: ['SUPER_ADMIN'] }
+] satisfies Array<{ href: string; label: string; icon: typeof Home; roles: NavRole[] }>;
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const user = typeof window !== 'undefined' ? currentUser() : null;
+  const roleSet = new Set(user?.roles ?? []);
+  const visibleNav = nav.filter((item) => item.roles.some((role) => roleSet.has(role)));
+  const mobileNav = visibleNav.slice(0, 5);
 
   function signOut() {
     logout();
@@ -59,7 +62,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </span>
         </Link>
         <nav className="flex-1 space-y-1 overflow-y-auto">
-          {nav.map((item) => {
+          {visibleNav.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
             return (
@@ -101,7 +104,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+8px)] pt-2 shadow-soft backdrop-blur lg:hidden">
-        <div className="grid grid-cols-6 gap-1">
+        <div className="grid grid-cols-5 gap-1">
           {mobileNav.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;

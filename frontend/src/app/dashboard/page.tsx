@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { ClipboardList, LucideIcon, Map, Package, QrCode, WalletCards } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { Boxes, ClipboardList, FileText, LucideIcon, Map, Package, QrCode, Users, WalletCards } from 'lucide-react';
+import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
 
@@ -19,27 +19,56 @@ type Overview = {
 };
 
 export default function DashboardPage() {
+  const user = typeof window !== 'undefined' ? currentUser() : null;
+  const isSuperAdmin = user?.roles.includes('SUPER_ADMIN') ?? false;
+  const isFarmerOnly =
+    user?.roles.includes('FARMER') && !user.roles.some((role) => role === 'ADMIN_HTX' || role === 'MEMBER_HTX' || role === 'SUPER_ADMIN');
   const { data, isLoading } = useQuery({
     queryKey: ['overview'],
     queryFn: () => apiFetch<Overview>('/reports/overview')
   });
   const overview = data?.data;
-  const stats: Array<{ label: string; value?: number; icon: LucideIcon }> = [
-    { label: 'Sản phẩm', value: overview?.products, icon: Package },
-    { label: 'QR Passport', value: overview?.passports, icon: QrCode },
-    { label: 'Vùng trồng', value: overview?.zones, icon: Map },
-    { label: 'Nhật ký', value: overview?.logs, icon: ClipboardList }
-  ];
+  const stats: Array<{ label: string; value?: number; icon: LucideIcon }> = isSuperAdmin
+    ? [
+        { label: 'HTX', value: overview?.cooperatives, icon: Boxes },
+        { label: 'Người dùng', value: overview?.users, icon: Users },
+        { label: 'Hóa đơn chưa thu', value: overview?.unpaidInvoices, icon: FileText },
+        { label: 'QR toàn hệ thống', value: overview?.passports, icon: QrCode }
+      ]
+    : [
+        { label: 'Sản phẩm', value: overview?.products, icon: Package },
+        { label: 'QR Passport', value: overview?.passports, icon: QrCode },
+        { label: 'Vùng trồng', value: overview?.zones, icon: Map },
+        { label: 'Nhật ký', value: overview?.logs, icon: ClipboardList }
+      ];
+  const quickActions = isSuperAdmin
+    ? [
+        ['/dashboard/cooperatives', 'Quản lý HTX'],
+        ['/dashboard/users', 'Quản lý tài khoản'],
+        ['/dashboard/subscription-plans', 'Quản lý gói'],
+        ['/dashboard/invoices', 'Hóa đơn']
+      ]
+    : isFarmerOnly
+      ? [
+          ['/dashboard/farming-logs', 'Ghi nhật ký'],
+          ['/dashboard/products', 'Xem sản phẩm'],
+          ['/dashboard/zones', 'Xem vùng trồng']
+        ]
+      : [
+          ['/dashboard/farming-logs', 'Ghi nhật ký'],
+          ['/dashboard/passports', 'Tạo QR'],
+          ['/dashboard/zones', 'Thêm vùng trồng']
+        ];
 
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-ink">Tổng quan</h1>
-          <p className="text-sm text-slate-600">Agri Passport</p>
+          <p className="text-sm text-slate-600">{isSuperAdmin ? 'Quản trị hệ thống và SaaS HTX' : 'Vận hành HTX'}</p>
         </div>
-        <Link href="/dashboard/products">
-          <Button>Thêm sản phẩm</Button>
+        <Link href={isSuperAdmin ? '/dashboard/cooperatives' : '/dashboard/products'}>
+          <Button>{isSuperAdmin ? 'Quản lý HTX' : 'Thêm sản phẩm'}</Button>
         </Link>
       </div>
 
@@ -49,7 +78,7 @@ export default function DashboardPage() {
             <WalletCards size={24} aria-hidden="true" />
           </span>
           <div>
-            <p className="text-sm opacity-90">Doanh thu đã ghi nhận</p>
+            <p className="text-sm opacity-90">{isSuperAdmin ? 'Doanh thu đã ghi nhận' : 'Gói và doanh thu HTX'}</p>
             <p className="text-2xl font-bold">{isLoading ? '...' : formatCurrency(overview?.revenue)}</p>
           </div>
         </div>
@@ -66,11 +95,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        {[
-          ['/dashboard/farming-logs', 'Ghi nhật ký'],
-          ['/dashboard/passports', 'Tạo QR'],
-          ['/dashboard/zones', 'Thêm vùng trồng']
-        ].map(([href, label]) => (
+        {quickActions.map(([href, label]) => (
           <Link key={href} href={href}>
             <Panel className="transition hover:border-leaf hover:bg-mint">
               <span className="font-bold">{label}</span>

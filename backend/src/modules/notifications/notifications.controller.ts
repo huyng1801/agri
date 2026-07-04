@@ -14,6 +14,7 @@ export class NotificationsController {
   constructor(private readonly notifications: NotificationsService) {}
 
   @Get()
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.notifications.list(user, query);
   }
@@ -25,6 +26,7 @@ export class NotificationsController {
   }
 
   @Post(':id/read')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   markRead(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.notifications.markRead(user, id);
   }

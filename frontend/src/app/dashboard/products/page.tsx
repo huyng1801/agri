@@ -13,6 +13,7 @@ export default function ProductsPage() {
         primary: 'name',
         secondary: ['unit', 'zone'],
         amountField: 'price',
+        createRoles: ['ADMIN_HTX', 'MEMBER_HTX'],
         fields: [
           { name: 'cooperativeId', label: 'ID HTX' },
           { name: 'categoryId', label: 'ID danh mục' },

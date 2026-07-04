@@ -13,6 +13,7 @@ export default function FarmingLogsPage() {
         primary: 'description',
         secondary: ['activityType', 'product'],
         dateField: 'logDate',
+        createRoles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'],
         fields: [
           { name: 'cooperativeId', label: 'ID HTX' },
           { name: 'productId', label: 'ID sản phẩm' },

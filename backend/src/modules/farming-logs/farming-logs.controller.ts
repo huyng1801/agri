@@ -14,29 +14,31 @@ export class FarmingLogsController {
   constructor(private readonly logs: FarmingLogsService) {}
 
   @Get()
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.logs.list(user, query);
   }
 
   @Get(':id')
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.logs.get(user, id);
   }
 
   @Post()
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateFarmingLogDto) {
     return this.logs.create(user, dto);
   }
 
   @Patch(':id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateFarmingLogDto) {
     return this.logs.update(user, id, dto);
   }
 
   @Delete(':id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
+  @Roles(RoleSlug.ADMIN_HTX)
   remove(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.logs.remove(user, id);
   }

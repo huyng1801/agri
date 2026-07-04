@@ -14,6 +14,7 @@ export default function SubscriptionPlansPage() {
         secondary: ['maxProducts', 'maxMembers'],
         amountField: 'priceMonthly',
         statusField: 'isActive',
+        createRoles: ['SUPER_ADMIN'],
         fields: [
           { name: 'name', label: 'Tên gói' },
           { name: 'slug', label: 'Slug' },

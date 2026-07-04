@@ -15,29 +15,31 @@ export class PassportsController {
   constructor(private readonly passports: PassportsService) {}
 
   @Get('passports')
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.passports.list(user, query);
   }
 
   @Get('passports/:id')
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.passports.get(user, id);
   }
 
   @Post('passports')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   create(@CurrentUser() user: AuthUser, @Body() dto: CreatePassportDto) {
     return this.passports.create(user, dto);
   }
 
   @Patch('passports/:id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdatePassportDto) {
     return this.passports.update(user, id, dto);
   }
 
   @Delete('passports/:id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
+  @Roles(RoleSlug.ADMIN_HTX)
   remove(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.passports.remove(user, id);
   }

@@ -14,11 +14,13 @@ export class InvoicesController {
   constructor(private readonly invoices: InvoicesService) {}
 
   @Get()
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.invoices.list(user, query);
   }
 
   @Get(':id')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.invoices.get(user, id);
   }

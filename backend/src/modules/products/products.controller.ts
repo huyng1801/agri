@@ -21,6 +21,7 @@ export class ProductsController {
   }
 
   @Get('categories')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   categories(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.products.categories(user, query);
   }
@@ -32,29 +33,31 @@ export class ProductsController {
   }
 
   @Get()
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.products.list(user, query);
   }
 
   @Get(':id')
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.products.get(user, id);
   }
 
   @Post()
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateProductDto) {
     return this.products.create(user, dto);
   }
 
   @Patch(':id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateProductDto) {
     return this.products.update(user, id, dto);
   }
 
   @Delete(':id')
-  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
+  @Roles(RoleSlug.ADMIN_HTX)
   remove(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.products.remove(user, id);
   }
