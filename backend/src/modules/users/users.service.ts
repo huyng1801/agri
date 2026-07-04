@@ -8,6 +8,8 @@ import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { PrismaService } from '../prisma/prisma.service';
 
+const HTX_ASSIGNABLE_ROLES: RoleSlug[] = [RoleSlug.MEMBER_HTX, RoleSlug.FARMER, RoleSlug.BUYER];
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -68,8 +70,8 @@ export class UsersService {
     if (existing) throw new BadRequestException('Email đã tồn tại');
 
     const roleSlug = dto.role ?? RoleSlug.MEMBER_HTX;
-    if (!isSuperAdmin(actor) && roleSlug === RoleSlug.SUPER_ADMIN) {
-      throw new ForbiddenException('Admin HTX không được tạo Super Admin');
+    if (!isSuperAdmin(actor) && !HTX_ASSIGNABLE_ROLES.includes(roleSlug)) {
+      throw new ForbiddenException('Admin HTX chỉ được tạo thành viên, nông dân hoặc người mua');
     }
     const cooperativeId = requireTenant(actor, dto.cooperativeId);
     if (!isSuperAdmin(actor) && !cooperativeId) {
@@ -140,8 +142,8 @@ export class UsersService {
 
   async update(actor: AuthUser, id: string, dto: UpdateUserDto) {
     await this.get(actor, id);
-    if (!isSuperAdmin(actor) && dto.roles?.includes(RoleSlug.SUPER_ADMIN)) {
-      throw new ForbiddenException('Không được gán quyền Super Admin');
+    if (!isSuperAdmin(actor) && dto.roles?.some((role) => !HTX_ASSIGNABLE_ROLES.includes(role))) {
+      throw new ForbiddenException('Admin HTX chỉ được gán vai trò trong HTX');
     }
 
     const cooperativeId =
@@ -196,8 +198,9 @@ export class UsersService {
     return { disabled: true };
   }
 
-  async roles() {
-    return this.prisma.role.findMany({ orderBy: { slug: 'asc' } });
+  async roles(user: AuthUser) {
+    const where = isSuperAdmin(user) ? {} : { slug: { in: HTX_ASSIGNABLE_ROLES } };
+    return this.prisma.role.findMany({ where, orderBy: { slug: 'asc' } });
   }
 
   private includeRoles() {

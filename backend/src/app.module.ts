@@ -6,6 +6,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
+import { PermissionsGuard } from './common/guards/permissions.guard';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
@@ -24,6 +25,7 @@ import { SettingsModule } from './modules/settings/settings.module';
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { BackupsModule } from './modules/backups/backups.module';
+import { RolesModule } from './modules/roles/roles.module';
 
 @Module({
   imports: [
@@ -39,6 +41,7 @@ import { BackupsModule } from './modules/backups/backups.module';
     HealthModule,
     AuthModule,
     UsersModule,
+    RolesModule,
     CooperativesModule,
     SubscriptionPlansModule,
     SubscriptionsModule,
@@ -67,6 +70,10 @@ import { BackupsModule } from './modules/backups/backups.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionsGuard
     }
   ]
 })

@@ -45,6 +45,7 @@ export default function DashboardPage() {
     ? [
         ['/dashboard/cooperatives', 'Quản lý HTX'],
         ['/dashboard/users', 'Quản lý tài khoản'],
+        ['/dashboard/roles', 'Vai trò & quyền'],
         ['/dashboard/subscription-plans', 'Quản lý gói'],
         ['/dashboard/invoices', 'Hóa đơn'],
         ['/dashboard/audit-logs', 'Nhật ký hệ thống'],

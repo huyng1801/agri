@@ -16,6 +16,7 @@ import {
   Package,
   QrCode,
   Settings,
+  ShieldCheck,
   Users,
   WalletCards
 } from 'lucide-react';
@@ -32,6 +33,7 @@ const nav = [
   { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
   { href: '/dashboard/passports', label: 'QR', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX'] },
   { href: '/dashboard/users', label: 'Người dùng', icon: Users, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
+  { href: '/dashboard/roles', label: 'Vai trò & quyền', icon: ShieldCheck, roles: ['SUPER_ADMIN'] },
   { href: '/dashboard/subscription-plans', label: 'Gói', icon: WalletCards, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
   { href: '/dashboard/invoices', label: 'Hóa đơn', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
   { href: '/dashboard/reports', label: 'Báo cáo', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN_HTX', 'MEMBER_HTX'] },

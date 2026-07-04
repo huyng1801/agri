@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestj
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RoleSlug } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Permissions } from '../../common/decorators/permissions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { CreateFarmingLogDto, UpdateFarmingLogDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
@@ -15,30 +16,35 @@ export class FarmingLogsController {
 
   @Get()
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Permissions('farming_logs.read')
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.logs.list(user, query);
   }
 
   @Get(':id')
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Permissions('farming_logs.read')
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.logs.get(user, id);
   }
 
   @Post()
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Permissions('farming_logs.create')
   create(@CurrentUser() user: AuthUser, @Body() dto: CreateFarmingLogDto) {
     return this.logs.create(user, dto);
   }
 
   @Patch(':id')
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+  @Permissions('farming_logs.update')
   update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateFarmingLogDto) {
     return this.logs.update(user, id, dto);
   }
 
   @Delete(':id')
   @Roles(RoleSlug.ADMIN_HTX)
+  @Permissions('farming_logs.delete')
   remove(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.logs.remove(user, id);
   }

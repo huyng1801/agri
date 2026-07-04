@@ -3,6 +3,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RoleSlug } from '@prisma/client';
 import { Response } from 'express';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
+import { Permissions } from '../../common/decorators/permissions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { RestoreBackupDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
@@ -16,16 +17,19 @@ export class BackupsController {
   constructor(private readonly backups: BackupsService) {}
 
   @Get()
+  @Permissions('backups.read')
   list() {
     return this.backups.list();
   }
 
   @Post()
+  @Permissions('backups.create')
   create(@CurrentUser() user: AuthUser) {
     return this.backups.create(user);
   }
 
   @Get(':fileName/download')
+  @Permissions('backups.download')
   async download(@Param('fileName') fileName: string, @Res({ passthrough: true }) response: Response) {
     const file = await this.backups.download(fileName);
     response.set({
@@ -37,6 +41,7 @@ export class BackupsController {
   }
 
   @Post(':fileName/restore')
+  @Permissions('backups.restore')
   restore(@CurrentUser() user: AuthUser, @Param('fileName') fileName: string, @Body() dto: RestoreBackupDto) {
     return this.backups.restore(user, fileName, dto);
   }

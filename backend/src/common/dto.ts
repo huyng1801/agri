@@ -128,6 +128,22 @@ export class UpdateUserDto {
   roles?: RoleSlug[];
 }
 
+export class UpdateRoleDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  name?: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  permissions?: string[];
+}
+
 export class CreateCooperativeDto {
   @IsString()
   @IsNotEmpty()
