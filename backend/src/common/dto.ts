@@ -118,6 +118,11 @@ export class UpdateUserDto {
   phone?: string;
 
   @IsOptional()
+  @IsString()
+  @MinLength(8)
+  password?: string;
+
+  @IsOptional()
   @IsEnum(UserStatus)
   status?: UserStatus;
 

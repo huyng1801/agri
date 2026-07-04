@@ -9,6 +9,7 @@ import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 const HTX_ASSIGNABLE_ROLES: RoleSlug[] = [RoleSlug.MEMBER_HTX, RoleSlug.FARMER, RoleSlug.BUYER];
+const ROLES_REQUIRING_COOPERATIVE: RoleSlug[] = [RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER];
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,9 @@ export class UsersService {
     }
     if (query.role) {
       where.roles = { some: { role: { slug: String(query.role) as RoleSlug } } };
+    }
+    if (query.status) {
+      where.status = String(query.status) as Prisma.EnumUserStatusFilter;
     }
 
     const [data, total] = await Promise.all([
@@ -74,6 +78,9 @@ export class UsersService {
       throw new ForbiddenException('Admin HTX chỉ được tạo thành viên, nông dân hoặc người mua');
     }
     const cooperativeId = requireTenant(actor, dto.cooperativeId);
+    if (ROLES_REQUIRING_COOPERATIVE.includes(roleSlug) && !cooperativeId) {
+      throw new BadRequestException('Tài khoản HTX cần được gán HTX');
+    }
     if (!isSuperAdmin(actor) && !cooperativeId) {
       throw new ForbiddenException('Thiếu HTX');
     }
@@ -155,6 +162,7 @@ export class UsersService {
         email: dto.email?.toLowerCase(),
         fullName: dto.fullName,
         phone: dto.phone,
+        passwordHash: dto.password ? await bcrypt.hash(dto.password, 12) : undefined,
         status: dto.status,
         cooperativeId
       },
@@ -183,6 +191,9 @@ export class UsersService {
 
   async remove(actor: AuthUser, id: string) {
     const found = await this.get(actor, id);
+    if (actor.id === id) {
+      throw new BadRequestException('Không thể khóa chính tài khoản đang đăng nhập');
+    }
     if (found.roles.includes(RoleSlug.SUPER_ADMIN)) {
       const superCount = await this.prisma.userRole.count({ where: { role: { slug: RoleSlug.SUPER_ADMIN } } });
       if (superCount <= 1) throw new BadRequestException('Không thể xóa Super Admin cuối cùng');
@@ -225,6 +236,7 @@ export class UsersService {
         : null,
       roles: user.roles.map((item) => item.role.slug),
       permissions: user.roles.flatMap((item) => item.role.permissions as string[]),
+      lastLoginAt: user.lastLoginAt,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     };
