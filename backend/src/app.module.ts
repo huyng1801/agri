@@ -23,6 +23,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { SettingsModule } from './modules/settings/settings.module';
 import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 import { OrdersModule } from './modules/orders/orders.module';
+import { BackupsModule } from './modules/backups/backups.module';
 
 @Module({
   imports: [
@@ -51,7 +52,8 @@ import { OrdersModule } from './modules/orders/orders.module';
     NotificationsModule,
     SettingsModule,
     AuditLogsModule,
-    OrdersModule
+    OrdersModule,
+    BackupsModule
   ],
   providers: [
     {

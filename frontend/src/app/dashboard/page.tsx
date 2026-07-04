@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Boxes, ClipboardList, FileText, LucideIcon, Map, Package, QrCode, Users, WalletCards } from 'lucide-react';
+import { Boxes, ClipboardList, Database, FileText, LucideIcon, Map, Package, QrCode, Users, WalletCards } from 'lucide-react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
@@ -46,7 +46,8 @@ export default function DashboardPage() {
         ['/dashboard/cooperatives', 'Quản lý HTX'],
         ['/dashboard/users', 'Quản lý tài khoản'],
         ['/dashboard/subscription-plans', 'Quản lý gói'],
-        ['/dashboard/invoices', 'Hóa đơn']
+        ['/dashboard/invoices', 'Hóa đơn'],
+        ['/dashboard/backups', 'Sao lưu']
       ]
     : isFarmerOnly
       ? [

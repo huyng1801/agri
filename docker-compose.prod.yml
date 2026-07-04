@@ -51,6 +51,8 @@ services:
     networks:
       - agri_edge
       - agri_data
+    volumes:
+      - ./backups:/backups
     expose:
       - "3001"
     command: sh -c "npx prisma migrate deploy && node dist/src/main.js"

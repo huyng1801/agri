@@ -349,6 +349,12 @@ export class MarkPaidDto {
   paymentMethod?: string;
 }
 
+export class RestoreBackupDto {
+  @IsString()
+  @IsNotEmpty()
+  confirmation!: string;
+}
+
 export class CreateCategoryDto {
   @IsOptional()
   @IsUUID()

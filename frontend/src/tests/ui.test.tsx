@@ -46,6 +46,7 @@ describe('AppShell role navigation', () => {
 
     expect(screen.getAllByRole('link', { name: /HTX/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Gói/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Sao lưu/i }).length).toBeGreaterThan(0);
     expect(screen.queryAllByRole('link', { name: /Sản phẩm/i })).toHaveLength(0);
     expect(screen.queryAllByRole('link', { name: /Vùng trồng/i })).toHaveLength(0);
     expect(screen.queryAllByRole('link', { name: /Nhật ký/i })).toHaveLength(0);
@@ -71,5 +72,6 @@ describe('AppShell role navigation', () => {
     expect(screen.getAllByRole('link', { name: /Vùng trồng/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Nhật ký/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /^QR$/i }).length).toBeGreaterThan(0);
+    expect(screen.queryAllByRole('link', { name: /Sao lưu/i })).toHaveLength(0);
   });
 });

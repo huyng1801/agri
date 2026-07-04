@@ -16,7 +16,7 @@ RUN npm run build
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apk add --no-cache openssl
+RUN apk add --no-cache openssl postgresql-client gzip
 COPY package.json package-lock.json ./
 COPY backend/package.json backend/package.json
 RUN npm ci --omit=dev --workspace backend

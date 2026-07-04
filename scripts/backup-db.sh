@@ -10,6 +10,10 @@ mkdir -p "$BACKUP_DIR"
 PGPASSWORD="$POSTGRES_PASSWORD" pg_dump \
   -h postgres \
   -U "$POSTGRES_USER" \
+  --clean \
+  --if-exists \
+  --no-owner \
+  --no-acl \
   "$POSTGRES_DB" | gzip > "$FILE"
 
 find "$BACKUP_DIR" -type f -name "*.sql.gz" -mtime +14 -delete

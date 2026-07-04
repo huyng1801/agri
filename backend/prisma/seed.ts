@@ -17,6 +17,7 @@ const permissions = {
     'reports.revenue',
     'settings.*',
     'audit_logs.*',
+    'backups.*',
     'notifications.*',
     'product_categories.*'
   ],

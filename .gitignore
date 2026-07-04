@@ -11,7 +11,7 @@ test-results/
 !.env.production.example
 *.log
 *.tsbuildinfo
-backups/
+/backups/
 nginx/certs/
 nginx/logs/
 backend/prisma/migrations/*/migration_lock.toml
