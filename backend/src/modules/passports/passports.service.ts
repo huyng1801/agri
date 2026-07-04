@@ -26,7 +26,7 @@ export class PassportsService {
     const [data, total] = await Promise.all([
       this.prisma.traceabilityPassport.findMany({
         where,
-        include: { product: true, cooperative: true },
+        include: { product: { include: { thumbnail: true, zone: true } }, cooperative: true },
         orderBy: { createdAt: 'desc' },
         skip,
         take
@@ -39,7 +39,7 @@ export class PassportsService {
   async get(user: AuthUser, id: string) {
     const passport = await this.prisma.traceabilityPassport.findUnique({
       where: { id },
-      include: { product: true, cooperative: true }
+      include: { product: { include: { thumbnail: true, zone: true } }, cooperative: true }
     });
     if (!passport) throw new NotFoundException('Không tìm thấy QR Passport');
     if (!isSuperAdmin(user) && passport.cooperativeId !== user.cooperativeId) {
@@ -53,6 +53,9 @@ export class PassportsService {
     if (!product) throw new NotFoundException('Không tìm thấy sản phẩm');
     const cooperativeId = requireTenant(user, dto.cooperativeId ?? product.cooperativeId);
     if (product.cooperativeId !== cooperativeId) throw new BadRequestException('Sản phẩm không thuộc HTX');
+    const status = dto.status ?? 'PUBLISHED';
+    this.assertPublishableProduct(product.status, status);
+    this.assertExpiration(dto.expiredAt, status);
 
     const code = `AP-${nanoid(10).toUpperCase()}`;
     const publicSlug = `${product.slug}-${code.toLowerCase()}`;
@@ -63,7 +66,6 @@ export class PassportsService {
       width: 512
     });
     const now = new Date();
-    const status = dto.status ?? 'PUBLISHED';
     const created = await this.prisma.traceabilityPassport.create({
       data: {
         cooperativeId,
@@ -75,7 +77,7 @@ export class PassportsService {
         publishedAt: status === 'PUBLISHED' ? now : null,
         expiredAt: dto.expiredAt
       },
-      include: { product: true, cooperative: true }
+      include: { product: { include: { thumbnail: true, zone: true } }, cooperative: true }
     });
     await this.audit.record({
       user,
@@ -89,6 +91,10 @@ export class PassportsService {
 
   async update(user: AuthUser, id: string, dto: UpdatePassportDto) {
     const existing = await this.get(user, id);
+    const nextStatus = dto.status ?? existing.status;
+    const nextExpiredAt = dto.expiredAt ?? existing.expiredAt ?? undefined;
+    this.assertPublishableProduct(existing.product.status, nextStatus);
+    this.assertExpiration(nextExpiredAt, nextStatus);
     const updated = await this.prisma.traceabilityPassport.update({
       where: { id },
       data: {
@@ -96,7 +102,7 @@ export class PassportsService {
         publishedAt: dto.status === 'PUBLISHED' && existing.status !== 'PUBLISHED' ? new Date() : undefined,
         expiredAt: dto.expiredAt
       },
-      include: { product: true, cooperative: true }
+      include: { product: { include: { thumbnail: true, zone: true } }, cooperative: true }
     });
     await this.audit.record({
       user,
@@ -136,11 +142,16 @@ export class PassportsService {
           include: {
             category: true,
             zone: true,
+            thumbnail: true,
             certifications: true,
             farmingLogs: {
               where: { status: 'PUBLISHED' },
               orderBy: { logDate: 'asc' },
-              take: 80
+              take: 80,
+              include: {
+                actor: { select: { id: true, fullName: true } },
+                zone: true
+              }
             }
           }
         }
@@ -158,5 +169,17 @@ export class PassportsService {
       verified: true,
       publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${passport.passportCode}`
     };
+  }
+
+  private assertPublishableProduct(productStatus: string, passportStatus?: PassportStatus) {
+    if (passportStatus === 'PUBLISHED' && productStatus !== 'PUBLISHED') {
+      throw new BadRequestException('Chỉ tạo passport public cho sản phẩm đã publish');
+    }
+  }
+
+  private assertExpiration(expiredAt?: Date, passportStatus?: PassportStatus) {
+    if (passportStatus === 'PUBLISHED' && expiredAt && expiredAt <= new Date()) {
+      throw new BadRequestException('Ngày hết hạn passport public phải lớn hơn hiện tại');
+    }
   }
 }

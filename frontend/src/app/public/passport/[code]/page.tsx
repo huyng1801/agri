@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, CheckCircle2, Leaf, MapPin, QrCode } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { Badge, Panel } from '@/components/ui';
@@ -20,6 +21,9 @@ type Passport = {
     description?: string;
     unit: string;
     price: string;
+    thumbnail?: {
+      publicUrl?: string | null;
+    } | null;
     zone?: {
       name: string;
       address?: string;
@@ -30,6 +34,13 @@ type Passport = {
       logDate: string;
       activityType: string;
       description: string;
+      imagesJson?: unknown[];
+      zone?: {
+        name: string;
+      } | null;
+      actor?: {
+        fullName: string;
+      } | null;
     }>;
     certifications: Array<{
       id: string;
@@ -53,8 +64,13 @@ async function getPassport(code: string) {
   }
 }
 
-export default async function PublicPassportPage({ params }: { params: { code: string } }) {
-  const passport = await getPassport(params.code);
+type PublicPassportPageProps = {
+  params: Promise<{ code: string }>;
+};
+
+export default async function PublicPassportPage({ params }: PublicPassportPageProps) {
+  const { code } = await params;
+  const passport = await getPassport(code);
   if (!passport) {
     return (
       <main className="grid min-h-screen place-items-center px-4">
@@ -68,6 +84,8 @@ export default async function PublicPassportPage({ params }: { params: { code: s
       </main>
     );
   }
+
+  const productImage = passport.product.thumbnail?.publicUrl;
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 py-5">
@@ -87,6 +105,9 @@ export default async function PublicPassportPage({ params }: { params: { code: s
             )}
           </div>
         </div>
+        {productImage && (
+          <div className="aspect-[16/9] bg-cover bg-center" style={{ backgroundImage: `url('${productImage}')` }} />
+        )}
 
         <div className="grid gap-3 p-4 sm:grid-cols-3">
           <Info icon={QrCode} label="Mã" value={passport.passportCode} />
@@ -122,6 +143,18 @@ export default async function PublicPassportPage({ params }: { params: { code: s
                     </span>
                   </div>
                   <p className="mt-2 text-slate-700">{log.description}</p>
+                  {(log.zone?.name || log.actor?.fullName) && (
+                    <p className="mt-2 text-xs font-semibold text-slate-500">
+                      {[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}
+                    </p>
+                  )}
+                  {logImages(log.imagesJson).length > 0 && (
+                    <div className="mt-3 grid grid-cols-3 gap-2">
+                      {logImages(log.imagesJson).slice(0, 6).map((image) => (
+                        <img key={image.url} src={image.url} alt="" className="aspect-square rounded-md object-cover" />
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
@@ -155,7 +188,7 @@ export default async function PublicPassportPage({ params }: { params: { code: s
   );
 }
 
-function Info({ icon: Icon, label, value }: { icon: typeof QrCode; label: string; value: string }) {
+function Info({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="rounded-md bg-slate-50 p-3">
       <Icon className="text-leaf" size={20} aria-hidden="true" />
@@ -163,4 +196,17 @@ function Info({ icon: Icon, label, value }: { icon: typeof QrCode; label: string
       <p className="mt-1 break-words font-bold">{value}</p>
     </div>
   );
+}
+
+function logImages(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      if (typeof item === 'string') return { url: item };
+      if (item && typeof item === 'object' && typeof (item as { url?: unknown }).url === 'string') {
+        return { url: String((item as { url: string }).url) };
+      }
+      return null;
+    })
+    .filter((item): item is { url: string } => Boolean(item?.url));
 }
