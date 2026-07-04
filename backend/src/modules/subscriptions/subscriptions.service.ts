@@ -1,5 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { AssignSubscriptionDto } from '../../common/dto';
+import { Prisma } from '@prisma/client';
+import { nanoid } from 'nanoid';
+import { AssignSubscriptionDto, UpdateSubscriptionDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
 import { requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
@@ -16,7 +18,7 @@ export class SubscriptionsService {
     requireTenant(user, cooperativeId);
     return this.prisma.cooperativeSubscription.findFirst({
       where: { cooperativeId },
-      include: { plan: true },
+      include: { plan: true, invoices: { orderBy: { createdAt: 'desc' }, take: 5 } },
       orderBy: { createdAt: 'desc' }
     });
   }
@@ -50,6 +52,9 @@ export class SubscriptionsService {
       },
       include: { plan: true, cooperative: true }
     });
+    const invoice = dto.createInvoice
+      ? await this.createInvoiceForSubscription(created.id, cooperativeId, plan, dto)
+      : null;
     await this.audit.record({
       user,
       action: 'subscriptions.assign',
@@ -57,14 +62,21 @@ export class SubscriptionsService {
       entityId: created.id,
       cooperativeId
     });
-    return created;
+    return { ...created, invoice };
   }
 
-  async update(user: AuthUser, cooperativeId: string, dto: Partial<AssignSubscriptionDto>) {
+  async update(user: AuthUser, cooperativeId: string, dto: UpdateSubscriptionDto) {
     const current = await this.get(user, cooperativeId);
     if (!current) throw new NotFoundException('HTX chưa có gói');
-    if (dto.startDate && dto.endDate && dto.endDate <= dto.startDate) {
+    const nextStart = dto.startDate ?? current.startDate;
+    const nextEnd = dto.endDate ?? current.endDate;
+    if (nextEnd <= nextStart) {
       throw new BadRequestException('Ngày kết thúc phải lớn hơn ngày bắt đầu');
+    }
+    if (dto.planId) {
+      const plan = await this.prisma.subscriptionPlan.findUnique({ where: { id: dto.planId } });
+      if (!plan) throw new NotFoundException('Không tìm thấy gói');
+      if (!plan.isActive) throw new BadRequestException('Không thể gán gói inactive');
     }
     const updated = await this.prisma.cooperativeSubscription.update({
       where: { id: current.id },
@@ -76,7 +88,7 @@ export class SubscriptionsService {
         autoRenew: dto.autoRenew,
         note: dto.note
       },
-      include: { plan: true }
+      include: { plan: true, invoices: { orderBy: { createdAt: 'desc' }, take: 5 } }
     });
     await this.audit.record({
       user,
@@ -108,5 +120,35 @@ export class SubscriptionsService {
       cooperativeId
     });
     return updated;
+  }
+
+  private async createInvoiceForSubscription(
+    subscriptionId: string,
+    cooperativeId: string,
+    plan: { priceMonthly: Prisma.Decimal; priceYearly: Prisma.Decimal },
+    dto: AssignSubscriptionDto
+  ) {
+    const amount = dto.invoiceAmount ?? this.defaultInvoiceAmount(plan, dto.startDate, dto.endDate);
+    return this.prisma.subscriptionInvoice.create({
+      data: {
+        cooperativeId,
+        subscriptionId,
+        invoiceCode: `INV-${new Date().getFullYear()}-${nanoid(8).toUpperCase()}`,
+        amount,
+        currency: 'VND',
+        status: 'UNPAID',
+        dueDate: dto.invoiceDueDate ?? new Date(dto.startDate.getTime() + 7 * 24 * 60 * 60 * 1000),
+        note: dto.note ? `Tự tạo khi gán gói: ${dto.note}` : 'Tự tạo khi gán gói'
+      }
+    });
+  }
+
+  private defaultInvoiceAmount(
+    plan: { priceMonthly: Prisma.Decimal; priceYearly: Prisma.Decimal },
+    startDate: Date,
+    endDate: Date
+  ) {
+    const durationDays = Math.ceil((endDate.getTime() - startDate.getTime()) / (24 * 60 * 60 * 1000));
+    return durationDays >= 360 ? Number(plan.priceYearly) : Number(plan.priceMonthly);
   }
 }

@@ -4,7 +4,7 @@ import { RoleSlug } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { AssignSubscriptionDto } from '../../common/dto';
+import { AssignSubscriptionDto, UpdateSubscriptionDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
 import { SubscriptionsService } from './subscriptions.service';
 
@@ -31,7 +31,7 @@ export class SubscriptionsController {
   @Patch()
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('subscriptions.update')
-  update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: AssignSubscriptionDto) {
+  update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateSubscriptionDto) {
     return this.subscriptions.update(user, id, dto);
   }
 

@@ -301,6 +301,49 @@ export class AssignSubscriptionDto {
   @IsOptional()
   @IsString()
   note?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  createInvoice?: boolean;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  invoiceAmount?: number;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  invoiceDueDate?: Date;
+}
+
+export class UpdateSubscriptionDto {
+  @IsOptional()
+  @IsUUID()
+  planId?: string;
+
+  @IsOptional()
+  @IsEnum(SubscriptionStatus)
+  status?: SubscriptionStatus;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  startDate?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  endDate?: Date;
+
+  @IsOptional()
+  @IsBoolean()
+  autoRenew?: boolean;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class CreateInvoiceDto {

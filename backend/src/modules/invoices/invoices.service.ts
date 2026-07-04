@@ -24,6 +24,20 @@ export class InvoicesService {
       where.cooperativeId = String(query.cooperativeId);
     }
     if (query.status) where.status = String(query.status) as Prisma.EnumInvoiceStatusFilter;
+    if (query.search) {
+      const search = String(query.search);
+      where.OR = [
+        { invoiceCode: { contains: search, mode: 'insensitive' } },
+        { cooperative: { name: { contains: search, mode: 'insensitive' } } },
+        { cooperative: { code: { contains: search, mode: 'insensitive' } } }
+      ];
+    }
+    if (query.fromDate || query.toDate) {
+      where.dueDate = {
+        ...(query.fromDate ? { gte: new Date(String(query.fromDate)) } : {}),
+        ...(query.toDate ? { lte: new Date(String(query.toDate)) } : {})
+      };
+    }
     const [data, total] = await Promise.all([
       this.prisma.subscriptionInvoice.findMany({
         where,
@@ -55,6 +69,12 @@ export class InvoicesService {
     }
     const cooperative = await this.prisma.cooperative.findUnique({ where: { id: dto.cooperativeId } });
     if (!cooperative) throw new NotFoundException('Không tìm thấy HTX');
+    if (dto.subscriptionId) {
+      const subscription = await this.prisma.cooperativeSubscription.findUnique({ where: { id: dto.subscriptionId } });
+      if (!subscription || subscription.cooperativeId !== dto.cooperativeId) {
+        throw new BadRequestException('Gói đã gán không thuộc HTX của hóa đơn');
+      }
+    }
     const invoice = await this.prisma.subscriptionInvoice.create({
       data: {
         cooperativeId: dto.cooperativeId,
@@ -114,5 +134,122 @@ export class InvoicesService {
       cooperativeId: updated.cooperativeId
     });
     return updated;
+  }
+
+  async markUnpaid(user: AuthUser, id: string) {
+    if (!isSuperAdmin(user)) throw new ForbiddenException('Chỉ Super Admin được mark unpaid');
+    const invoice = await this.get(user, id);
+    if (invoice.status === 'CANCELLED') {
+      throw new BadRequestException('Không thể chuyển hóa đơn đã hủy về chưa thanh toán');
+    }
+    const updated = await this.prisma.subscriptionInvoice.update({
+      where: { id },
+      data: {
+        status: 'UNPAID',
+        paidAt: null,
+        paymentMethod: null
+      }
+    });
+    await this.audit.record({
+      user,
+      action: 'invoices.mark_unpaid',
+      entity: 'SubscriptionInvoice',
+      entityId: id,
+      cooperativeId: updated.cooperativeId
+    });
+    return updated;
+  }
+
+  async cancel(user: AuthUser, id: string) {
+    if (!isSuperAdmin(user)) throw new ForbiddenException('Chỉ Super Admin được hủy hóa đơn');
+    const invoice = await this.get(user, id);
+    if (invoice.status === 'PAID') {
+      throw new BadRequestException('Không thể hủy hóa đơn đã thanh toán');
+    }
+    const updated = await this.prisma.subscriptionInvoice.update({
+      where: { id },
+      data: {
+        status: 'CANCELLED',
+        paidAt: null
+      }
+    });
+    await this.audit.record({
+      user,
+      action: 'invoices.cancel',
+      entity: 'SubscriptionInvoice',
+      entityId: id,
+      cooperativeId: updated.cooperativeId
+    });
+    return updated;
+  }
+
+  async pdf(user: AuthUser, id: string) {
+    const invoice = await this.get(user, id);
+    const lines = [
+      'HTXONLINE - HOA DON SAAS',
+      `Ma hoa don: ${invoice.invoiceCode}`,
+      `HTX: ${invoice.cooperative.name} (${invoice.cooperative.code})`,
+      `Goi dich vu: ${invoice.subscription?.plan?.name ?? 'Khong gan goi'}`,
+      `So tien: ${this.formatCurrency(invoice.amount, invoice.currency)}`,
+      `Trang thai: ${invoice.status}`,
+      `Han thanh toan: ${this.date(invoice.dueDate)}`,
+      `Ngay thanh toan: ${this.date(invoice.paidAt)}`,
+      `Phuong thuc: ${invoice.paymentMethod ?? '-'}`,
+      `Ghi chu: ${invoice.note ?? '-'}`
+    ];
+    return {
+      fileName: `${invoice.invoiceCode}.pdf`,
+      buffer: this.simplePdf(lines)
+    };
+  }
+
+  private simplePdf(lines: string[]) {
+    const safeLines = lines.map((line) => this.pdfText(line));
+    const content = [
+      'BT',
+      '/F1 18 Tf',
+      '72 760 Td',
+      `(${safeLines[0]}) Tj`,
+      '/F1 11 Tf',
+      ...safeLines.slice(1).flatMap((line) => ['0 -28 Td', `(${line}) Tj`]),
+      'ET'
+    ].join('\n');
+    const objects = [
+      '<< /Type /Catalog /Pages 2 0 R >>',
+      '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
+      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
+      '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+      `<< /Length ${Buffer.byteLength(content, 'ascii')} >>\nstream\n${content}\nendstream`
+    ];
+    let pdf = '%PDF-1.4\n';
+    const offsets = [0];
+    objects.forEach((object, index) => {
+      offsets.push(Buffer.byteLength(pdf, 'ascii'));
+      pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+    });
+    const xrefOffset = Buffer.byteLength(pdf, 'ascii');
+    pdf += `xref\n0 ${objects.length + 1}\n`;
+    pdf += '0000000000 65535 f \n';
+    for (const offset of offsets.slice(1)) {
+      pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
+    }
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+    return Buffer.from(pdf, 'ascii');
+  }
+
+  private pdfText(value: string) {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\x20-\x7E]/g, '')
+      .replace(/[()\\]/g, (char) => `\\${char}`);
+  }
+
+  private formatCurrency(amount: unknown, currency: string) {
+    return `${Number(amount ?? 0).toLocaleString('vi-VN')} ${currency}`;
+  }
+
+  private date(value?: Date | null) {
+    return value ? value.toISOString().slice(0, 10) : '-';
   }
 }

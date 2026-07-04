@@ -30,6 +30,8 @@ export const PERMISSION_CATALOG = [
   { key: 'invoices.create', group: 'Hóa đơn', label: 'Tạo hóa đơn' },
   { key: 'invoices.update', group: 'Hóa đơn', label: 'Cập nhật hóa đơn' },
   { key: 'invoices.mark_paid', group: 'Hóa đơn', label: 'Đánh dấu đã thu' },
+  { key: 'invoices.mark_unpaid', group: 'Hóa đơn', label: 'Đánh dấu chưa thu' },
+  { key: 'invoices.cancel', group: 'Hóa đơn', label: 'Hủy hóa đơn' },
   { key: 'product_categories.read', group: 'Danh mục sản phẩm', label: 'Xem danh mục' },
   { key: 'product_categories.create', group: 'Danh mục sản phẩm', label: 'Tạo danh mục' },
   { key: 'products.read', group: 'Sản phẩm', label: 'Xem sản phẩm' },
