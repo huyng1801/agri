@@ -360,7 +360,7 @@ export default function ProductsPage() {
                       </div>
                     )}
                   </div>
-                  <Input data-testid="product-image-input" value={form.imageUrl} onChange={(event) => update('imageUrl', event.target.value)} placeholder="URL ảnh public" />
+                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Upload R2 để tạo URL ảnh public" className="bg-slate-100 text-slate-600" />
                   <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                     <ImagePlus size={18} aria-hidden="true" />
                     {uploading ? 'Đang upload' : 'Upload R2'}

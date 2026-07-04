@@ -17,8 +17,13 @@ async function getProduct(slug: string) {
   }
 }
 
-export default async function ProductDetailPage({ params }: { params: { slug: string } }) {
-  const product = await getProduct(params.slug);
+type ProductDetailPageProps = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
   if (!product) {
     return (
       <PublicShell>

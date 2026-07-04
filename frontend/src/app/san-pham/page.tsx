@@ -1,13 +1,50 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { Search, SlidersHorizontal } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { EmptyPublicState, ProductCard, PublicProduct, PublicSearch, PublicShell, publicListItems } from '@/components/public-marketplace';
+import { EmptyPublicState, ProductCard, PublicProduct, PublicShell, publicListItems } from '@/components/public-marketplace';
+import { Button } from '@/components/ui';
+
+export const metadata: Metadata = {
+  title: 'Sản phẩm | HTXONLINE',
+  description: 'Sàn sản phẩm nông nghiệp, đặc sản địa phương và sản phẩm có QR Passport từ các hợp tác xã trên HTXONLINE.',
+  alternates: {
+    canonical: 'https://htxonline.vn/san-pham'
+  },
+  openGraph: {
+    title: 'Sản phẩm HTXONLINE',
+    description: 'Tìm kiếm sản phẩm nông nghiệp từ hợp tác xã, lọc theo giá, địa phương và QR Passport.',
+    url: 'https://htxonline.vn/san-pham',
+    siteName: 'HTXONLINE',
+    locale: 'vi_VN',
+    type: 'website'
+  }
+};
 
 type ProductList = {
   data: PublicProduct[];
 };
 
-async function getProducts(search?: string) {
+type ProductFilters = {
+  search?: string;
+  category?: string;
+  cooperative?: string;
+  province?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  hasQr?: string;
+  sort?: string;
+};
+
+type ProductsPageProps = {
+  searchParams?: Promise<ProductFilters>;
+};
+
+async function getProducts(filters: ProductFilters) {
   const params = new URLSearchParams({ limit: '24' });
-  if (search) params.set('search', search);
+  for (const key of ['search', 'category', 'cooperative', 'province', 'minPrice', 'maxPrice', 'hasQr', 'sort'] as const) {
+    if (filters[key]) params.set(key, filters[key]);
+  }
   try {
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
     if (!response.ok) return [];
@@ -18,8 +55,11 @@ async function getProducts(search?: string) {
   }
 }
 
-export default async function ProductsPage({ searchParams }: { searchParams: { search?: string } }) {
-  const products = await getProducts(searchParams.search);
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+  const filters = (await searchParams) ?? {};
+  const products = await getProducts(filters);
+  const hasActiveFilter = Boolean(filters.search || filters.category || filters.cooperative || filters.province || filters.minPrice || filters.maxPrice || filters.hasQr || filters.sort);
+
   return (
     <PublicShell>
       <main className="mx-auto max-w-6xl px-4 py-8">
@@ -27,7 +67,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: { s
           <h1 className="text-3xl font-bold">Sản phẩm</h1>
           <p className="mt-2 text-slate-600">Sản phẩm public từ các HTX trên HTXONLINE.</p>
         </div>
-        <PublicSearch placeholder="Tìm sản phẩm" />
+        <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} />
         {products.length ? (
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((product) => (
@@ -41,5 +81,65 @@ export default async function ProductsPage({ searchParams }: { searchParams: { s
         )}
       </main>
     </PublicShell>
+  );
+}
+
+function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
+  return (
+    <form className="rounded-md border border-slate-200 bg-white p-3 shadow-sm" action="/san-pham">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_160px_150px_150px]">
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+          <input
+            name="search"
+            defaultValue={filters.search ?? ''}
+            placeholder="Tìm sản phẩm, HTX, mô tả"
+            className="min-h-11 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          />
+        </div>
+        <input
+          name="province"
+          defaultValue={filters.province ?? ''}
+          placeholder="Tỉnh/thành"
+          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+        />
+        <input
+          name="minPrice"
+          defaultValue={filters.minPrice ?? ''}
+          inputMode="numeric"
+          placeholder="Giá từ"
+          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+        />
+        <input
+          name="maxPrice"
+          defaultValue={filters.maxPrice ?? ''}
+          inputMode="numeric"
+          placeholder="Giá đến"
+          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+        />
+      </div>
+      <div className="mt-3 flex flex-wrap items-center gap-3">
+        <label className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+          <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="h-4 w-4 accent-leaf" />
+          Có QR Passport
+        </label>
+        <label className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+          <SlidersHorizontal size={16} aria-hidden="true" />
+          <select name="sort" defaultValue={filters.sort ?? ''} className="bg-transparent outline-none">
+            <option value="">Mới nhất</option>
+            <option value="price_asc">Giá tăng dần</option>
+            <option value="price_desc">Giá giảm dần</option>
+          </select>
+        </label>
+        {filters.category && <input type="hidden" name="category" value={filters.category} />}
+        {filters.cooperative && <input type="hidden" name="cooperative" value={filters.cooperative} />}
+        <Button>Tìm sản phẩm</Button>
+        {hasActiveFilter && (
+          <Link href="/san-pham" className="inline-flex min-h-11 items-center rounded-md px-3 text-sm font-semibold text-slate-600 hover:bg-mint">
+            Xóa lọc
+          </Link>
+        )}
+      </div>
+    </form>
   );
 }
