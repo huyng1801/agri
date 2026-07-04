@@ -31,6 +31,11 @@ export type PublicProduct = {
     passportCode: string;
     publicSlug?: string | null;
   }>;
+  thumbnail?: {
+    id: string;
+    publicUrl?: string | null;
+    objectKey?: string;
+  } | null;
   farmingLogs?: Array<{
     id: string;
     logDate: string;
@@ -131,10 +136,11 @@ export function PublicSearch({ placeholder = 'Tìm sản phẩm, HTX, vùng tr�
 }
 
 export function ProductCard({ product }: { product: PublicProduct }) {
+  const imageUrl = productImage(product);
   return (
     <article className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
       <Link href={`/san-pham/${product.slug}`} className="block">
-        <div className="aspect-[4/3] bg-[url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80')] bg-cover bg-center" />
+        <div data-testid="product-card-image" className="aspect-[4/3] bg-cover bg-center" style={{ backgroundImage: `url('${imageUrl}')` }} />
       </Link>
       <div className="space-y-3 p-4">
         <div>
@@ -157,6 +163,10 @@ export function ProductCard({ product }: { product: PublicProduct }) {
       </div>
     </article>
   );
+}
+
+export function productImage(product: PublicProduct) {
+  return product.thumbnail?.publicUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80';
 }
 
 export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {

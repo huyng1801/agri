@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Calendar, MapPin, Phone, QrCode, Store } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { PublicProduct, PublicShell } from '@/components/public-marketplace';
+import { PublicProduct, PublicShell, productImage } from '@/components/public-marketplace';
 import { AddToCartButton } from '@/components/add-to-cart-button';
 import { formatDate } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
@@ -35,12 +35,13 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
   }
 
   const passport = product.passports?.[0];
+  const imageUrl = productImage(product);
   return (
     <PublicShell>
       <main className="mx-auto max-w-6xl px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-            <div className="aspect-[4/3] bg-[url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center" />
+            <div className="aspect-[4/3] bg-cover bg-center" style={{ backgroundImage: `url('${imageUrl}')` }} />
           </section>
           <section className="space-y-4">
             <div>

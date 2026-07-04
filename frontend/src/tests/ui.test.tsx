@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import type React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppShell } from '@/components/app-shell';
+import { ProductCard, type PublicProduct } from '@/components/public-marketplace';
 import { Button } from '@/components/ui';
 
 vi.mock('next/link', () => ({
@@ -21,6 +22,27 @@ describe('Button', () => {
   it('renders accessible button text', () => {
     render(<Button>Lưu</Button>);
     expect(screen.getByRole('button', { name: 'Lưu' })).toBeInTheDocument();
+  });
+});
+
+describe('ProductCard', () => {
+  it('uses the product thumbnail returned by the API', () => {
+    const product: PublicProduct = {
+      id: 'product-1',
+      code: 'SP001',
+      name: 'Gạo thơm',
+      slug: 'gao-thom',
+      price: 120000,
+      unit: 'kg',
+      thumbnail: {
+        id: 'file-1',
+        publicUrl: 'https://cdn.htxonline.vn/coop/gao-thom.webp'
+      }
+    };
+
+    render(<ProductCard product={product} />);
+
+    expect(screen.getByTestId('product-card-image').getAttribute('style')).toContain('https://cdn.htxonline.vn/coop/gao-thom.webp');
   });
 });
 

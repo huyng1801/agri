@@ -132,12 +132,15 @@ export function CheckoutClient() {
         {items.length ? (
           <div className="mt-3 space-y-3">
             {items.map((item) => (
-              <div key={item.productId} className="rounded-md bg-slate-50 p-3 text-sm">
-                <div className="flex justify-between gap-3">
-                  <span className="font-semibold">{item.name}</span>
-                  <span>x{item.quantity}</span>
+              <div key={item.productId} className="flex gap-3 rounded-md bg-slate-50 p-3 text-sm">
+                {item.imageUrl && <img src={item.imageUrl} alt="" className="h-14 w-14 rounded-md object-cover" />}
+                <div className="min-w-0 flex-1">
+                  <div className="flex justify-between gap-3">
+                    <span className="font-semibold">{item.name}</span>
+                    <span>x{item.quantity}</span>
+                  </div>
+                  <p className="mt-1 text-slate-600">{formatVnd(item.price)} / {item.unit}</p>
                 </div>
-                <p className="mt-1 text-slate-600">{formatVnd(item.price)} / {item.unit}</p>
               </div>
             ))}
             <div className="flex justify-between border-t border-slate-200 pt-3 font-bold">

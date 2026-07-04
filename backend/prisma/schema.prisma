@@ -139,6 +139,7 @@ model User {
   memberships         CooperativeMember[]
   farmerProfile       FarmerProfile?
   createdProducts     Product[]           @relation("ProductCreator")
+  assignedProducts    Product[]           @relation("ProductFarmer")
   authoredNews        NewsArticle[]       @relation("NewsAuthor")
   farmingLogs         FarmingLog[]        @relation("FarmingLogActor")
   auditLogs           AuditLog[]          @relation("AuditActor")
@@ -396,6 +397,8 @@ model Product {
   cooperative     Cooperative             @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   category        ProductCategory?        @relation(fields: [categoryId], references: [id])
   zone            Zone?                   @relation(fields: [zoneId], references: [id])
+  farmer          User?                   @relation("ProductFarmer", fields: [farmerId], references: [id])
+  thumbnail       FileAsset?              @relation("ProductThumbnail", fields: [thumbnailFileId], references: [id], onDelete: SetNull)
   creator         User?                   @relation("ProductCreator", fields: [createdBy], references: [id])
   farmingLogs     FarmingLog[]
   passports       TraceabilityPassport[]
@@ -408,6 +411,8 @@ model Product {
   @@unique([cooperativeId, code])
   @@index([cooperativeId])
   @@index([categoryId])
+  @@index([farmerId])
+  @@index([thumbnailFileId])
   @@map("products")
 }
 
@@ -513,6 +518,7 @@ model FileAsset {
   checksum      String?
   visibility    FileVisibility @default(PRIVATE)
   cooperative   Cooperative?   @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  productThumbnails Product[]  @relation("ProductThumbnail")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

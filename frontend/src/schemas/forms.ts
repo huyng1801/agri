@@ -72,6 +72,7 @@ export const productSchema = z.object({
   price: money,
   unit: z.string().min(1, 'Đơn vị bắt buộc'),
   status: z.enum(['DRAFT', 'PUBLISHED', 'HIDDEN', 'ARCHIVED']).default('DRAFT'),
+  thumbnailFileId: z.string().optional(),
   zoneId: z.string().optional(),
   farmerId: z.string().optional(),
   packagingInfo: z.string().optional(),

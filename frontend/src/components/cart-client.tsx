@@ -43,6 +43,7 @@ export function CartClient() {
       <div className="space-y-3">
         {items.map((item) => (
           <Panel key={item.productId} className="flex flex-col gap-3 sm:flex-row sm:items-center" data-testid="cart-item">
+            {item.imageUrl && <img src={item.imageUrl} alt="" className="h-20 w-20 rounded-md object-cover" />}
             <div className="min-w-0 flex-1">
               <Link href={`/san-pham/${item.slug}`} className="font-bold text-ink">
                 {item.name}

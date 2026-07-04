@@ -11,6 +11,7 @@ export type CartItem = {
   unit: string;
   cooperativeId?: string;
   cooperativeName?: string;
+  imageUrl?: string;
   quantity: number;
 };
 
@@ -45,6 +46,7 @@ export function addProductToCart(product: PublicProduct, quantity = 1) {
       unit: product.unit,
       cooperativeId: product.cooperative?.id,
       cooperativeName: product.cooperative?.name,
+      imageUrl: product.thumbnail?.publicUrl ?? undefined,
       quantity
     });
   }
