@@ -12,7 +12,10 @@ import { ApiResponseInterceptor } from './common/interceptors/api-response.inter
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: false });
-  const frontendUrl = process.env.FRONTEND_URL || process.env.CORS_ORIGIN || 'http://localhost:3000';
+  const corsOrigins = (process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:3000')
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
 
   app.use('/health', (_req: Request, res: Response) => {
     res.json({
@@ -24,7 +27,7 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api/v1');
   app.enableCors({
-    origin: frontendUrl.split(',').map((item) => item.trim()),
+    origin: corsOrigins,
     credentials: true
   });
   app.use(helmet());
