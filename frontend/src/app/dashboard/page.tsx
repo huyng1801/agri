@@ -47,6 +47,7 @@ export default function DashboardPage() {
         ['/dashboard/users', 'Quản lý tài khoản'],
         ['/dashboard/subscription-plans', 'Quản lý gói'],
         ['/dashboard/invoices', 'Hóa đơn'],
+        ['/dashboard/audit-logs', 'Nhật ký hệ thống'],
         ['/dashboard/backups', 'Sao lưu']
       ]
     : isFarmerOnly

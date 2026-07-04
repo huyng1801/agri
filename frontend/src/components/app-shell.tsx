@@ -8,6 +8,7 @@ import {
   ClipboardList,
   Database,
   FileText,
+  History,
   Home,
   Leaf,
   LogOut,
@@ -34,6 +35,7 @@ const nav = [
   { href: '/dashboard/subscription-plans', label: 'Gói', icon: WalletCards, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
   { href: '/dashboard/invoices', label: 'Hóa đơn', icon: FileText, roles: ['SUPER_ADMIN', 'ADMIN_HTX'] },
   { href: '/dashboard/reports', label: 'Báo cáo', icon: Bell, roles: ['SUPER_ADMIN', 'ADMIN_HTX', 'MEMBER_HTX'] },
+  { href: '/dashboard/audit-logs', label: 'Nhật ký hệ thống', icon: History, roles: ['SUPER_ADMIN'] },
   { href: '/dashboard/backups', label: 'Sao lưu', icon: Database, roles: ['SUPER_ADMIN'] },
   { href: '/dashboard/settings', label: 'Cài đặt', icon: Settings, roles: ['SUPER_ADMIN'] }
 ] satisfies Array<{ href: string; label: string; icon: typeof Home; roles: NavRole[] }>;

@@ -38,6 +38,14 @@ export class AuditLogsService {
     if (query.action) where.action = { contains: String(query.action), mode: 'insensitive' };
     return this.prisma.auditLog.findMany({
       where,
+      include: {
+        actor: {
+          select: {
+            email: true,
+            fullName: true
+          }
+        }
+      },
       orderBy: { createdAt: 'desc' },
       take: 200
     });
