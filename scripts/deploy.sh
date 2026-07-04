@@ -18,6 +18,12 @@ fi
 echo "Pull latest code..."
 git pull --ff-only
 
+echo "Start database services..."
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d postgres redis
+
+echo "Harden PostgreSQL role privileges..."
+bash scripts/harden-postgres.sh
+
 echo "Build and restart containers..."
 docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
 
