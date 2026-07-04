@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: Array<string | false | null | undefined>) {
@@ -48,9 +49,13 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
   );
 }
 
-export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
+export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(function Textarea(
+  props,
+  ref
+) {
   return (
     <textarea
+      ref={ref}
       className={cn(
         'min-h-24 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition placeholder:text-slate-400 focus:border-leaf focus:ring-4 focus:ring-mint',
         props.className
@@ -58,7 +63,7 @@ export function Textarea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
       {...props}
     />
   );
-}
+});
 
 export function Badge({ children, className }: { children: React.ReactNode; className?: string }) {
   return <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', className)}>{children}</span>;

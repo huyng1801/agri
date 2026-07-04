@@ -26,6 +26,7 @@ import { AuditLogsModule } from './modules/audit-logs/audit-logs.module';
 import { OrdersModule } from './modules/orders/orders.module';
 import { BackupsModule } from './modules/backups/backups.module';
 import { RolesModule } from './modules/roles/roles.module';
+import { NewsModule } from './modules/news/news.module';
 
 @Module({
   imports: [
@@ -56,7 +57,8 @@ import { RolesModule } from './modules/roles/roles.module';
     SettingsModule,
     AuditLogsModule,
     OrdersModule,
-    BackupsModule
+    BackupsModule,
+    NewsModule
   ],
   providers: [
     {

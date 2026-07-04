@@ -10,7 +10,7 @@ import { FilesService } from './files.service';
 
 @ApiTags('files')
 @ApiBearerAuth()
-@Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
+@Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
 @Controller('files')
 export class FilesController {
   constructor(private readonly files: FilesService) {}

@@ -17,6 +17,7 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('admin-menu-plans')).toBeVisible();
     await expect(page.getByTestId('admin-menu-invoices')).toBeVisible();
     await expect(page.getByTestId('admin-menu-orders')).toBeVisible();
+    await expect(page.getByTestId('admin-menu-news')).toBeVisible();
     await expect(page.getByTestId('admin-menu-roles')).toBeVisible();
     await expect(page.getByTestId('admin-menu-settings')).toBeVisible();
     await expect(page.getByTestId('admin-menu-audit-logs')).toBeVisible();
@@ -54,6 +55,7 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('htx-menu-reports')).toBeVisible();
 
     await expect(page.getByTestId('admin-menu-roles')).toHaveCount(0);
+    await expect(page.getByTestId('admin-menu-news')).toHaveCount(0);
     await expect(page.getByTestId('admin-menu-backups')).toHaveCount(0);
     await expect(page.getByTestId('admin-menu-settings')).toHaveCount(0);
     await expect(page.getByTestId('admin-menu-audit-logs')).toHaveCount(0);

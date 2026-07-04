@@ -15,3 +15,9 @@ test('login form validates on mobile viewport', async ({ page }) => {
   await page.getByRole('button', { name: /Đăng nhập/ }).click();
   await expect(page.getByText('Email không hợp lệ')).toBeVisible();
 });
+
+test('public news route renders searchable page', async ({ page }) => {
+  await page.goto('/tin-tuc');
+  await expect(page.getByRole('heading', { name: 'Tin tức', exact: true })).toBeVisible();
+  await expect(page.getByPlaceholder('Tìm bài viết')).toBeVisible();
+});

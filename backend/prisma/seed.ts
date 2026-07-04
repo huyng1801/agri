@@ -21,7 +21,9 @@ const permissions = {
     'backups.*',
     'notifications.*',
     'product_categories.*',
-    'orders.read'
+    'orders.read',
+    'news.*',
+    'files.*'
   ],
   ADMIN_HTX: [
     'cooperatives.read',
@@ -143,6 +145,23 @@ async function main() {
       where: { slug: plan.slug },
       create: plan,
       update: plan
+    });
+  }
+
+  const newsCategories = [
+    ['Tin HTX', 'tin-htx'],
+    ['Tin thị trường', 'tin-thi-truong'],
+    ['Kiến thức nông nghiệp', 'kien-thuc-nong-nghiep'],
+    ['Chuyển đổi số', 'chuyen-doi-so'],
+    ['Truy xuất nguồn gốc', 'truy-xuat-nguon-goc'],
+    ['Câu chuyện sản phẩm', 'cau-chuyen-san-pham']
+  ];
+
+  for (const [name, slug] of newsCategories) {
+    await prisma.newsCategory.upsert({
+      where: { slug },
+      create: { name, slug, isActive: true },
+      update: { name, isActive: true }
     });
   }
 

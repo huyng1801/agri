@@ -114,6 +114,13 @@ enum NotificationStatus {
   READ
 }
 
+enum NewsStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
 model User {
   id                  String              @id @default(uuid())
   email               String              @unique
@@ -132,6 +139,7 @@ model User {
   memberships         CooperativeMember[]
   farmerProfile       FarmerProfile?
   createdProducts     Product[]           @relation("ProductCreator")
+  authoredNews        NewsArticle[]       @relation("NewsAuthor")
   farmingLogs         FarmingLog[]        @relation("FarmingLogActor")
   auditLogs           AuditLog[]          @relation("AuditActor")
   notifications       Notification[]
@@ -309,6 +317,63 @@ model ProductCategory {
 
   @@unique([cooperativeId, slug])
   @@map("product_categories")
+}
+
+model NewsCategory {
+  id          String        @id @default(uuid())
+  name        String
+  slug        String        @unique
+  description String?
+  sortOrder   Int           @default(0)
+  isActive    Boolean       @default(true)
+  articles    NewsArticle[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("news_categories")
+}
+
+model NewsArticle {
+  id                 String        @id @default(uuid())
+  categoryId         String?
+  authorId           String?
+  title              String
+  slug               String        @unique
+  excerpt            String?
+  bodyHtml           String
+  coverImageUrl      String?
+  coverImageAlt      String?
+  status             NewsStatus    @default(DRAFT)
+  isFeatured         Boolean       @default(false)
+  showOnHome         Boolean       @default(false)
+  focusKeyword       String?
+  seoTitle           String?
+  seoDescription     String?
+  canonicalUrl       String?
+  robotsNoIndex      Boolean       @default(false)
+  robotsNoFollow     Boolean       @default(false)
+  schemaType         String        @default("NewsArticle")
+  ogTitle            String?
+  ogDescription      String?
+  ogImageUrl         String?
+  twitterTitle       String?
+  twitterDescription String?
+  twitterImageUrl    String?
+  tagsJson           Json          @default("[]")
+  seoScore           Int           @default(0)
+  readabilityScore   Int           @default(0)
+  publishedAt        DateTime?
+  scheduledAt        DateTime?
+  viewCount          Int           @default(0)
+  category           NewsCategory? @relation(fields: [categoryId], references: [id])
+  author             User?         @relation("NewsAuthor", fields: [authorId], references: [id])
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([categoryId])
+  @@index([status])
+  @@index([publishedAt])
+  @@map("news_articles")
 }
 
 model Product {

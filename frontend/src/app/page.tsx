@@ -4,6 +4,7 @@ import { API_URL, ApiEnvelope } from '@/lib/api';
 import {
   CooperativeCard,
   EmptyPublicState,
+  NewsCard,
   ProductCard,
   PublicProduct,
   PublicSearch,
@@ -12,6 +13,7 @@ import {
   publicListItems
 } from '@/components/public-marketplace';
 import { Button, Panel } from '@/components/ui';
+import { fetchPublicNews } from '@/lib/news';
 
 type ProductList = {
   data: PublicProduct[];
@@ -29,7 +31,7 @@ async function getPublicProducts() {
 }
 
 export default async function HomePage() {
-  const products = await getPublicProducts();
+  const [products, news] = await Promise.all([getPublicProducts(), fetchPublicNews('/news/public?home=true&limit=3')]);
   const cooperatives = cooperativesFromProducts(products).slice(0, 6);
   const stats: Array<[string, string | number, LucideIcon]> = [
     ['Sản phẩm public', products.length, ShoppingBag],
@@ -144,6 +146,31 @@ export default async function HomePage() {
               <p className="mt-2 text-sm leading-6 text-slate-600">{String(text)}</p>
             </Panel>
           ))}
+        </section>
+
+        <section className="bg-white py-10">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-bold">Tin tức mới nhất</h2>
+                <p className="mt-1 text-sm text-slate-600">Tin HTX, thị trường và truy xuất nguồn gốc từ đội vận hành HTXONLINE.</p>
+              </div>
+              <Link className="hidden font-semibold text-leaf sm:inline-flex" href="/tin-tuc">
+                Xem tin tức
+              </Link>
+            </div>
+            {news.data.length ? (
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+                {news.data.map((article) => (
+                  <NewsCard key={article.id} article={article} />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-5">
+                <EmptyPublicState title="Chưa có tin tức public" description="Tin tức do Super Admin publish sẽ xuất hiện tại đây." />
+              </div>
+            )}
+          </div>
         </section>
       </main>
     </PublicShell>

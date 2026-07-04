@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowRight, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound, Zap } from 'lucide-react';
+import { ArrowRight, Calendar, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound, Zap } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
+import type { NewsArticle } from '@/lib/news';
 import { Button, Panel } from './ui';
 
 export type PublicProduct = {
@@ -183,6 +184,34 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
             <Phone size={18} aria-hidden="true" />
           </a>
         )}
+      </div>
+    </article>
+  );
+}
+
+export function NewsCard({ article }: { article: NewsArticle }) {
+  return (
+    <article className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      <Link href={`/tin-tuc/${article.slug}`} className="block">
+        <div
+          className="aspect-[16/10] bg-cover bg-center"
+          style={{ backgroundImage: `url('${article.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80'}')` }}
+        />
+      </Link>
+      <div className="space-y-3 p-4">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
+          {article.category?.name && <span>{article.category.name}</span>}
+          {article.publishedAt && (
+            <span className="inline-flex items-center gap-1 text-slate-500">
+              <Calendar size={13} aria-hidden="true" />
+              {new Date(article.publishedAt).toLocaleDateString('vi-VN')}
+            </span>
+          )}
+        </div>
+        <Link href={`/tin-tuc/${article.slug}`} className="block text-lg font-bold leading-6 text-ink">
+          {article.title}
+        </Link>
+        <p className="line-clamp-3 text-sm leading-6 text-slate-600">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
       </div>
     </article>
   );

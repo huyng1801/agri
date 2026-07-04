@@ -26,6 +26,7 @@ import {
   FileVisibility,
   InvoiceStatus,
   MemberStatus,
+  NewsStatus,
   OrderStatus,
   PassportStatus,
   ProductStatus,
@@ -388,6 +389,155 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   description?: string;
+}
+
+export class CreateNewsCategoryDto {
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  slug!: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+
+export class UpdateNewsCategoryDto extends CreateNewsCategoryDto {
+  @IsOptional()
+  override name!: string;
+
+  @IsOptional()
+  override slug!: string;
+}
+
+export class CreateNewsArticleDto {
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  title!: string;
+
+  @IsOptional()
+  @IsString()
+  slug?: string;
+
+  @IsOptional()
+  @IsString()
+  excerpt?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  bodyHtml!: string;
+
+  @IsOptional()
+  @IsString()
+  coverImageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  coverImageAlt?: string;
+
+  @IsOptional()
+  @IsEnum(NewsStatus)
+  status?: NewsStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  showOnHome?: boolean;
+
+  @IsOptional()
+  @IsString()
+  focusKeyword?: string;
+
+  @IsOptional()
+  @IsString()
+  seoTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  seoDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  canonicalUrl?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  robotsNoIndex?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  robotsNoFollow?: boolean;
+
+  @IsOptional()
+  @IsString()
+  schemaType?: string;
+
+  @IsOptional()
+  @IsString()
+  ogTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  ogDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  ogImageUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  twitterTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  twitterDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  twitterImageUrl?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  publishedAt?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  scheduledAt?: Date;
+}
+
+export class UpdateNewsArticleDto extends CreateNewsArticleDto {
+  @IsOptional()
+  override title!: string;
+
+  @IsOptional()
+  override bodyHtml!: string;
 }
 
 export class CreateProductDto {
