@@ -47,16 +47,16 @@ export default function LoginPage() {
           </div>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Email</span>
-            <Input type="email" autoComplete="email" {...form.register('email')} />
+            <Input data-testid="login-email-input" type="email" autoComplete="email" {...form.register('email')} />
             {form.formState.errors.email && <span className="text-rose-600">{form.formState.errors.email.message}</span>}
           </label>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Mật khẩu</span>
-            <Input type="password" autoComplete="current-password" {...form.register('password')} />
+            <Input data-testid="login-password-input" type="password" autoComplete="current-password" {...form.register('password')} />
             {form.formState.errors.password && <span className="text-rose-600">{form.formState.errors.password.message}</span>}
           </label>
           {error && <div className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-          <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+          <Button data-testid="login-submit-button" type="submit" className="w-full" disabled={form.formState.isSubmitting}>
             <LogIn size={18} aria-hidden="true" />
             {form.formState.isSubmitting ? 'Đang đăng nhập' : 'Đăng nhập'}
           </Button>

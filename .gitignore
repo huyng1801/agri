@@ -9,6 +9,7 @@ test-results/
 .env.*
 !.env.example
 !.env.production.example
+!.env.e2e.example
 *.log
 *.tsbuildinfo
 /backups/

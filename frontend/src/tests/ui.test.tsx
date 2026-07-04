@@ -29,7 +29,7 @@ describe('AppShell role navigation', () => {
     window.localStorage.clear();
   });
 
-  it('shows system navigation without HTX operation links for Super Admin', () => {
+  it('shows system navigation without HTX operation links for Super Admin', async () => {
     window.localStorage.setItem(
       'agri_user',
       JSON.stringify({
@@ -44,7 +44,7 @@ describe('AppShell role navigation', () => {
 
     render(<AppShell>Dashboard</AppShell>);
 
-    expect(screen.getAllByRole('link', { name: /HTX/i }).length).toBeGreaterThan(0);
+    expect((await screen.findAllByRole('link', { name: /HTX/i })).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Gói/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Vai trò & quyền/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Nhật ký hệ thống/i }).length).toBeGreaterThan(0);
@@ -55,7 +55,7 @@ describe('AppShell role navigation', () => {
     expect(screen.queryAllByRole('link', { name: /^QR$/i })).toHaveLength(0);
   });
 
-  it('shows HTX operation links for Admin HTX', () => {
+  it('shows HTX operation links for Admin HTX', async () => {
     window.localStorage.setItem(
       'agri_user',
       JSON.stringify({
@@ -70,7 +70,7 @@ describe('AppShell role navigation', () => {
 
     render(<AppShell>Dashboard</AppShell>);
 
-    expect(screen.getAllByRole('link', { name: /Sản phẩm/i }).length).toBeGreaterThan(0);
+    expect((await screen.findAllByRole('link', { name: /Sản phẩm/i })).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Vùng trồng/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Nhật ký/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /^QR$/i }).length).toBeGreaterThan(0);

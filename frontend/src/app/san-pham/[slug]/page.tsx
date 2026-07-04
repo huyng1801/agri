@@ -1,7 +1,8 @@
 import Link from 'next/link';
-import { Calendar, MapPin, Phone, QrCode, ShoppingCart, Store } from 'lucide-react';
+import { Calendar, MapPin, Phone, QrCode, Store } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { PublicProduct, PublicShell } from '@/components/public-marketplace';
+import { AddToCartButton } from '@/components/add-to-cart-button';
 import { formatDate } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
 
@@ -56,10 +57,7 @@ export default async function ProductDetailPage({ params }: { params: { slug: st
               <p className="text-sm text-slate-500">/{product.unit}</p>
             </Panel>
             <div className="grid gap-2 sm:grid-cols-2">
-              <Button>
-                <ShoppingCart size={18} aria-hidden="true" />
-                Thêm vào giỏ
-              </Button>
+              <AddToCartButton product={product} />
               {product.cooperative?.phone && (
                 <a href={`tel:${product.cooperative.phone}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink">
                   <Phone size={18} aria-hidden="true" />

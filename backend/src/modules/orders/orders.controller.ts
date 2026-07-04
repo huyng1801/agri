@@ -3,8 +3,9 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RoleSlug } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { CreateOrderDto, UpdateOrderDto } from '../../common/dto';
+import { CreateOrderDto, PublicCreateOrderDto, UpdateOrderDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
 import { OrdersService } from './orders.service';
 
@@ -15,10 +16,22 @@ export class OrdersController {
   constructor(private readonly orders: OrdersService) {}
 
   @Get()
-  @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   @Permissions('orders.read')
   list(@CurrentUser() user: AuthUser, @Query() query: Record<string, unknown>) {
     return this.orders.list(user, query);
+  }
+
+  @Public()
+  @Post('public')
+  createPublic(@Body() dto: PublicCreateOrderDto) {
+    return this.orders.createPublic(dto);
+  }
+
+  @Public()
+  @Get('public/lookup')
+  lookupPublic(@Query('orderCode') orderCode: string, @Query('phone') phone: string) {
+    return this.orders.lookupPublic(orderCode, phone);
   }
 
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)

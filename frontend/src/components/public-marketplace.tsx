@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound, Zap } from 'lucide-react';
+import { AddToCartButton } from './add-to-cart-button';
 import { Button, Panel } from './ui';
 
 export type PublicProduct = {
@@ -151,6 +152,7 @@ export function ProductCard({ product }: { product: PublicProduct }) {
             <Button variant="ghost">Xem</Button>
           </Link>
         </div>
+        <AddToCartButton product={product} className="w-full" />
       </div>
     </article>
   );

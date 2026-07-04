@@ -106,6 +106,15 @@ export const passportSchema = z.object({
   expiredAt: z.string().optional()
 });
 
+export const orderSchema = z.object({
+  cooperativeId: z.string().optional(),
+  buyerId: z.string().optional(),
+  orderCode: z.string().optional(),
+  status: z.enum(['DRAFT', 'NEW', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'COMPLETED', 'CANCELLED']).default('NEW'),
+  totalAmount: money,
+  note: z.string().optional()
+});
+
 export const resourceSchemas = {
   cooperatives: cooperativeSchema,
   users: userSchema,
@@ -114,5 +123,6 @@ export const resourceSchemas = {
   products: productSchema,
   zones: zoneSchema,
   'farming-logs': farmingLogSchema,
-  passports: passportSchema
+  passports: passportSchema,
+  orders: orderSchema
 };

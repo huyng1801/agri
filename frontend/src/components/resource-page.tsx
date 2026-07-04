@@ -30,6 +30,7 @@ export type ResourceConfig = {
   statusField?: string;
   createLabel?: string;
   createRoles?: string[];
+  baseQuery?: Record<string, string>;
 };
 
 type ListResponse = {
@@ -43,10 +44,11 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
   const user = typeof window !== 'undefined' ? currentUser() : null;
   const canCreate = !config.createRoles?.length || config.createRoles.some((role) => user?.roles.includes(role));
   const queryClient = useQueryClient();
-  const queryKey = [config.endpoint, search];
+  const baseQueryKey = JSON.stringify(config.baseQuery ?? {});
+  const queryKey = [config.endpoint, baseQueryKey, search];
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => apiFetch<ListResponse>(`${config.endpoint}?search=${encodeURIComponent(search)}`)
+    queryFn: () => apiFetch<ListResponse>(resourceListPath(config.endpoint, search, config.baseQuery))
   });
   const items = useMemo(() => {
     const payload = data?.data as ListResponse | unknown[] | undefined;
@@ -79,14 +81,14 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-normal text-ink">{config.title}</h1>
+          <h1 data-testid="page-title" className="text-2xl font-bold tracking-normal text-ink">{config.title}</h1>
         </div>
         <div className="flex gap-2">
           <Button variant="ghost" onClick={() => refetch()} aria-label="Tải lại">
             <RefreshCcw size={18} aria-hidden="true" />
           </Button>
           {canCreate && (
-            <Button onClick={() => setOpen(true)}>
+            <Button data-testid={createButtonTestId(config.endpoint)} onClick={() => setOpen(true)}>
               <Plus size={18} aria-hidden="true" />
               {config.createLabel ?? 'Thêm'}
             </Button>
@@ -117,14 +119,14 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
               {config.fields.map((field) => (
                 <label key={field.name} className={cn('space-y-1 text-sm font-semibold text-slate-700', field.type === 'textarea' && 'sm:col-span-2')}>
                   <span>{field.label}</span>
-                  <Field field={field} register={form.register(field.name)} />
+                  <Field field={field} endpoint={config.endpoint} register={form.register(field.name)} />
                   {form.formState.errors[field.name] && (
                     <span className="block text-sm font-medium text-rose-600">{String(form.formState.errors[field.name]?.message)}</span>
                   )}
                 </label>
               ))}
             </div>
-            {mutation.isError && <div className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{(mutation.error as Error).message}</div>}
+            {mutation.isError && <div data-testid="toast-error" className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{(mutation.error as Error).message}</div>}
             <div className="flex gap-2">
               <Button type="submit" disabled={mutation.isPending}>
                 {mutation.isPending ? 'Đang lưu' : 'Lưu'}
@@ -138,8 +140,8 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
       )}
 
       {isLoading && <SkeletonList />}
-      {isError && <Panel className="text-rose-700">{(error as Error).message}</Panel>}
-      {!isLoading && !isError && items.length === 0 && <Panel className="text-slate-600">Chưa có dữ liệu</Panel>}
+      {isError && <Panel data-testid="error-state" className="text-rose-700">{(error as Error).message}</Panel>}
+      {!isLoading && !isError && items.length === 0 && <Panel data-testid="empty-state" className="text-slate-600">Chưa có dữ liệu</Panel>}
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => (
@@ -150,11 +152,20 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
   );
 }
 
-function Field({ field, register }: { field: FieldConfig; register: ReturnType<typeof useForm>['register'] extends (...args: never[]) => infer R ? R : never }) {
-  if (field.type === 'textarea') return <Textarea placeholder={field.placeholder} {...register} />;
+function Field({
+  field,
+  endpoint,
+  register
+}: {
+  field: FieldConfig;
+  endpoint: string;
+  register: ReturnType<typeof useForm>['register'] extends (...args: never[]) => infer R ? R : never;
+}) {
+  const testId = fieldTestId(endpoint, field);
+  if (field.type === 'textarea') return <Textarea data-testid={testId} placeholder={field.placeholder} {...register} />;
   if (field.type === 'select') {
     return (
-      <Select {...register}>
+      <Select data-testid={testId} {...register}>
         <option value="">Chọn</option>
         {field.options?.map((option) => (
           <option key={option} value={option}>
@@ -164,7 +175,7 @@ function Field({ field, register }: { field: FieldConfig; register: ReturnType<t
       </Select>
     );
   }
-  return <Input type={field.type ?? 'text'} placeholder={field.placeholder} {...register} />;
+  return <Input data-testid={testId} type={field.type ?? 'text'} placeholder={field.placeholder} {...register} />;
 }
 
 function ResourceCard({ item, config }: { item: Record<string, unknown>; config: ResourceConfig }) {
@@ -205,7 +216,7 @@ function ResourceCard({ item, config }: { item: Record<string, unknown>; config:
 
 function SkeletonList() {
   return (
-    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+    <div data-testid="loading-skeleton" className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
       {Array.from({ length: 6 }).map((_, index) => (
         <div key={index} className="h-40 animate-pulse rounded-md border border-slate-200 bg-white p-4">
           <div className="h-5 w-2/3 rounded bg-slate-200" />
@@ -218,6 +229,46 @@ function SkeletonList() {
       ))}
     </div>
   );
+}
+
+function createButtonTestId(endpoint: string) {
+  const prefix = resourcePrefix(endpoint);
+  return prefix ? `${prefix}-create-button` : 'resource-create-button';
+}
+
+function fieldTestId(endpoint: string, field: FieldConfig) {
+  const prefix = resourcePrefix(endpoint);
+  if (!prefix) return `resource-${field.name}-input`;
+  const aliasedName = fieldAlias(field.name);
+  if (field.type === 'select' || ['categoryId', 'unit', 'zoneId', 'farmerId'].includes(field.name)) return `${prefix}-${aliasedName}-select`;
+  if (field.type === 'textarea') return `${prefix}-${aliasedName}-editor`;
+  return `${prefix}-${aliasedName}-input`;
+}
+
+function resourcePrefix(endpoint: string) {
+  const prefixes: Record<string, string> = {
+    '/products': 'product',
+    '/farming-logs': 'farming-log',
+    '/users': 'user',
+    '/zones': 'zone',
+    '/passports': 'passport',
+    '/orders': 'order',
+    '/subscription-plans': 'plan',
+    '/invoices': 'invoice',
+    '/cooperatives': 'cooperative'
+  };
+  return prefixes[endpoint];
+}
+
+function fieldAlias(fieldName: string) {
+  const aliases: Record<string, string> = {
+    categoryId: 'category',
+    zoneId: 'zone',
+    farmerId: 'farmer',
+    thumbnailFileId: 'image',
+    description: 'description'
+  };
+  return aliases[fieldName] ?? fieldName.replace(/Id$/, '');
 }
 
 function cleanValues(values: Record<string, unknown>) {
@@ -233,6 +284,13 @@ function displayValue(value: unknown) {
     return 'Đã nhập';
   }
   return String(value);
+}
+
+function resourceListPath(endpoint: string, search: string, baseQuery: Record<string, string> = {}) {
+  const params = new URLSearchParams(baseQuery);
+  if (search) params.set('search', search);
+  const query = params.toString();
+  return query ? `${endpoint}?${query}` : endpoint;
 }
 
 function labelOf(key: string) {

@@ -20,7 +20,8 @@ const permissions = {
     'audit_logs.*',
     'backups.*',
     'notifications.*',
-    'product_categories.*'
+    'product_categories.*',
+    'orders.read'
   ],
   ADMIN_HTX: [
     'cooperatives.read',

@@ -16,7 +16,8 @@ import {
   IsUUID,
   Min,
   MinLength,
-  ValidateIf
+  ValidateIf,
+  ValidateNested
 } from 'class-validator';
 import {
   CooperativeStatus,
@@ -662,6 +663,22 @@ export class UpsertSettingDto {
   description?: string;
 }
 
+export class CreateOrderItemDto {
+  @IsUUID()
+  productId!: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  quantity!: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  unitPrice?: number;
+}
+
 export class CreateOrderDto {
   @IsOptional()
   @IsUUID()
@@ -679,14 +696,92 @@ export class CreateOrderDto {
   @IsEnum(OrderStatus)
   status?: OrderStatus;
 
-  @Type(() => Number)
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  buyerName?: string;
+
+  @IsOptional()
+  @IsPhoneNumber('VN')
+  buyerPhone?: string;
+
+  @IsOptional()
+  @IsEmail()
+  buyerEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  province?: string;
+
+  @IsOptional()
+  @IsString()
+  district?: string;
+
+  @IsOptional()
+  @IsString()
+  ward?: string;
+
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsString()
+  paymentMethod?: string;
+
+  @ValidateIf((payload: CreateOrderDto) => !payload.items?.length)
   @IsNumber()
+  @Type(() => Number)
   @Min(0)
-  totalAmount!: number;
+  totalAmount?: number;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  items?: CreateOrderItemDto[];
 
   @IsOptional()
   @IsString()
   note?: string;
+}
+
+export class PublicCreateOrderDto {
+  @IsString()
+  @IsNotEmpty()
+  buyerName!: string;
+
+  @IsPhoneNumber('VN')
+  buyerPhone!: string;
+
+  @IsOptional()
+  @IsEmail()
+  buyerEmail?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  province!: string;
+
+  @IsOptional()
+  @IsString()
+  district?: string;
+
+  @IsOptional()
+  @IsString()
+  ward?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  address!: string;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateOrderItemDto)
+  items!: CreateOrderItemDto[];
 }
 
 export class UpdateOrderDto {

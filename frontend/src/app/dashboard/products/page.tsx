@@ -21,7 +21,7 @@ export default function ProductsPage() {
           { name: 'name', label: 'Tên sản phẩm' },
           { name: 'slug', label: 'Slug' },
           { name: 'price', label: 'Giá', type: 'number' },
-          { name: 'unit', label: 'Đơn vị' },
+          { name: 'unit', label: 'Đơn vị', type: 'select', options: ['kg', 'g', 'tấn', 'bao', 'thùng', 'hộp', 'chai', 'bó', 'cái'] },
           { name: 'status', label: 'Trạng thái', type: 'select', options: ['DRAFT', 'PUBLISHED', 'HIDDEN', 'ARCHIVED'] },
           { name: 'zoneId', label: 'ID vùng trồng' },
           { name: 'farmerId', label: 'ID nông dân' },

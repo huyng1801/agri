@@ -48,26 +48,30 @@ export default function DashboardPage() {
         ['/dashboard/roles', 'Vai trò & quyền'],
         ['/dashboard/subscription-plans', 'Quản lý gói'],
         ['/dashboard/invoices', 'Hóa đơn'],
+        ['/dashboard/orders', 'Đơn COD'],
         ['/dashboard/audit-logs', 'Nhật ký hệ thống'],
         ['/dashboard/backups', 'Sao lưu']
       ]
     : isFarmerOnly
       ? [
           ['/dashboard/farming-logs', 'Ghi nhật ký'],
+          ['/dashboard/orders', 'Xem đơn hàng'],
           ['/dashboard/products', 'Xem sản phẩm'],
           ['/dashboard/zones', 'Xem vùng trồng']
         ]
       : [
           ['/dashboard/farming-logs', 'Ghi nhật ký'],
+          ['/dashboard/orders', 'Xem đơn hàng'],
           ['/dashboard/passports', 'Tạo QR'],
+          ['/dashboard/farmers', 'Thêm nông dân'],
           ['/dashboard/zones', 'Thêm vùng trồng']
         ];
 
   return (
-    <div className="space-y-5">
+    <div data-testid={isSuperAdmin ? 'admin-dashboard' : 'htx-dashboard'} className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-ink">Tổng quan</h1>
+          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tổng quan</h1>
           <p className="text-sm text-slate-600">{isSuperAdmin ? 'Quản trị hệ thống và SaaS HTX' : 'Vận hành HTX'}</p>
         </div>
         <Link href={isSuperAdmin ? '/dashboard/cooperatives' : '/dashboard/products'}>

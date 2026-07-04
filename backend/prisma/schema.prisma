@@ -93,7 +93,11 @@ enum FileVisibility {
 
 enum OrderStatus {
   DRAFT
+  NEW
   CONFIRMED
+  PROCESSING
+  SHIPPING
+  COMPLETED
   FULFILLED
   CANCELLED
 }
@@ -188,6 +192,7 @@ model Cooperative {
   passports       TraceabilityPassport[]
   farmerProfiles  FarmerProfile[]
   orders          Order[]
+  orderItems      OrderItem[]
   notifications   Notification[]
   createdAt       DateTime                  @default(now())
   updatedAt       DateTime                  @updatedAt
@@ -455,8 +460,16 @@ model Order {
   cooperativeId String
   buyerId       String?
   orderCode     String      @unique
-  status        OrderStatus @default(DRAFT)
+  status        OrderStatus @default(NEW)
   totalAmount   Decimal     @default(0)
+  buyerName     String?
+  buyerPhone    String?
+  buyerEmail    String?
+  province      String?
+  district      String?
+  ward          String?
+  address       String?
+  paymentMethod String?     @default("COD")
   note          String?
   cooperative   Cooperative @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   items         OrderItem[]
@@ -469,14 +482,17 @@ model Order {
 }
 
 model OrderItem {
-  id        String   @id @default(uuid())
-  orderId   String
-  productId String
-  quantity  Decimal
-  unitPrice Decimal
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id])
+  id            String       @id @default(uuid())
+  orderId       String
+  productId     String
+  cooperativeId String?
+  quantity      Decimal
+  unitPrice     Decimal
+  order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product      @relation(fields: [productId], references: [id])
+  cooperative   Cooperative? @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
 
+  @@index([cooperativeId])
   @@map("order_items")
 }
 

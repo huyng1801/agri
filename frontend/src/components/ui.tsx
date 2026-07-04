@@ -64,6 +64,10 @@ export function Badge({ children, className }: { children: React.ReactNode; clas
   return <span className={cn('rounded-full px-2.5 py-1 text-xs font-semibold', className)}>{children}</span>;
 }
 
-export function Panel({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <section className={cn('rounded-md border border-slate-200 bg-white p-4 shadow-sm', className)}>{children}</section>;
+export function Panel({ children, className, ...props }: React.HTMLAttributes<HTMLElement> & { children: React.ReactNode }) {
+  return (
+    <section className={cn('rounded-md border border-slate-200 bg-white p-4 shadow-sm', className)} {...props}>
+      {children}
+    </section>
+  );
 }
