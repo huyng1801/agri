@@ -40,16 +40,55 @@ ALTER ROLE :"app_user" WITH
   NOBYPASSRLS
   PASSWORD :'app_password';
 
-REASSIGN OWNED BY :"admin_user" TO :"app_user";
 ALTER DATABASE :"db_name" OWNER TO :"app_user";
 
 \connect :"db_name"
 
-REASSIGN OWNED BY :"admin_user" TO :"app_user";
 ALTER SCHEMA public OWNER TO :"app_user";
 REVOKE CREATE ON SCHEMA public FROM PUBLIC;
 GRANT CONNECT, TEMPORARY ON DATABASE :"db_name" TO :"app_user";
 GRANT USAGE, CREATE ON SCHEMA public TO :"app_user";
+SQL
+
+psql -v ON_ERROR_STOP=1 -U "$POSTGRES_USER" -d "$POSTGRES_DB" <<SQL
+DO \$\$
+DECLARE
+  item record;
+BEGIN
+  FOR item IN
+    SELECT schemaname, tablename
+    FROM pg_tables
+    WHERE schemaname = 'public'
+  LOOP
+    EXECUTE format('ALTER TABLE %I.%I OWNER TO %I', item.schemaname, item.tablename, '$POSTGRES_APP_USER');
+  END LOOP;
+
+  FOR item IN
+    SELECT schemaname, sequencename
+    FROM pg_sequences
+    WHERE schemaname = 'public'
+  LOOP
+    EXECUTE format('ALTER SEQUENCE %I.%I OWNER TO %I', item.schemaname, item.sequencename, '$POSTGRES_APP_USER');
+  END LOOP;
+
+  FOR item IN
+    SELECT n.nspname AS schemaname, t.typname
+    FROM pg_type t
+    JOIN pg_namespace n ON n.oid = t.typnamespace
+    WHERE n.nspname = 'public'
+      AND t.typtype IN ('e', 'd')
+      AND t.typname NOT LIKE '\\_%'
+  LOOP
+    EXECUTE format('ALTER TYPE %I.%I OWNER TO %I', item.schemaname, item.typname, '$POSTGRES_APP_USER');
+  END LOOP;
+END
+\$\$;
+SQL
+
+psql -v ON_ERROR_STOP=1 \
+  -U "$POSTGRES_USER" \
+  -d "$POSTGRES_DB" \
+  --set=app_user="$POSTGRES_APP_USER" <<'SQL'
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO :"app_user";
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO :"app_user";
 GRANT USAGE ON ALL TYPES IN SCHEMA public TO :"app_user";
