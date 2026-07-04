@@ -21,6 +21,12 @@ export class ProductsController {
     return this.products.publicList(query);
   }
 
+  @Public()
+  @Get('public/:slug')
+  publicDetail(@Param('slug') slug: string) {
+    return this.products.publicDetail(slug);
+  }
+
   @Get('categories')
   @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   @Permissions('product_categories.read')

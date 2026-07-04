@@ -56,7 +56,7 @@ export class PassportsService {
 
     const code = `AP-${nanoid(10).toUpperCase()}`;
     const publicSlug = `${product.slug}-${code.toLowerCase()}`;
-    const url = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/public/passport/${code}`;
+    const url = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${code}`;
     const qrDataUrl = await QRCode.toDataURL(url, {
       errorCorrectionLevel: 'M',
       margin: 1,
@@ -156,7 +156,7 @@ export class PassportsService {
     return {
       ...passport,
       verified: true,
-      publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/public/passport/${passport.passportCode}`
+      publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${passport.passportCode}`
     };
   }
 }

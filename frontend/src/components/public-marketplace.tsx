@@ -1,0 +1,253 @@
+import Link from 'next/link';
+import { ArrowRight, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound, Zap } from 'lucide-react';
+import { Button, Panel } from './ui';
+
+export type PublicProduct = {
+  id: string;
+  code: string;
+  name: string;
+  slug: string;
+  description?: string | null;
+  price: string | number;
+  unit: string;
+  cooperative?: {
+    id: string;
+    name: string;
+    code: string;
+    province?: string | null;
+    phone?: string | null;
+  } | null;
+  category?: {
+    name: string;
+    slug: string;
+  } | null;
+  zone?: {
+    name: string;
+    address?: string | null;
+  } | null;
+  passports?: Array<{
+    passportCode: string;
+    publicSlug?: string | null;
+  }>;
+  farmingLogs?: Array<{
+    id: string;
+    logDate: string;
+    activityType: string;
+    description: string;
+  }>;
+  certifications?: Array<{
+    id: string;
+    name: string;
+    issuer?: string | null;
+    expiresAt?: string | null;
+  }>;
+};
+
+export type PublicCooperative = {
+  id: string;
+  name: string;
+  code: string;
+  province?: string | null;
+  phone?: string | null;
+  productCount: number;
+};
+
+export function PublicShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
+      <PublicHeader />
+      {children}
+      <FloatingContact />
+      <PublicBottomNav />
+      <footer className="border-t border-slate-200 bg-white px-4 py-8">
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
+          <div>
+            <div className="flex items-center gap-2 text-lg font-bold">
+              <Leaf className="text-leaf" size={24} aria-hidden="true" />
+              HTXONLINE
+            </div>
+            <p className="mt-3 text-sm leading-6 text-slate-600">Sàn nông sản số cho hợp tác xã Việt Nam, kết nối sản phẩm minh bạch với người mua.</p>
+          </div>
+          <div className="grid gap-2 text-sm">
+            <Link href="/gioi-thieu">Giới thiệu</Link>
+            <Link href="/san-pham">Sản phẩm</Link>
+            <Link href="/htx">HTX</Link>
+            <Link href="/tin-tuc">Tin tức</Link>
+          </div>
+          <div className="grid gap-2 text-sm">
+            <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
+            <Link href="/dieu-khoan-su-dung">Điều khoản sử dụng</Link>
+            <Link href="/huong-dan-mua-hang">Hướng dẫn mua hàng</Link>
+            <Link href="/lien-he">Liên hệ</Link>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export function PublicHeader() {
+  return (
+    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-4">
+        <Link href="/" className="flex items-center gap-2 text-lg font-bold">
+          <span className="grid h-10 w-10 place-items-center rounded-md bg-leaf text-white">
+            <Leaf size={22} aria-hidden="true" />
+          </span>
+          HTXONLINE
+        </Link>
+        <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-700 md:flex">
+          <Link href="/san-pham">Sản phẩm</Link>
+          <Link href="/htx">HTX</Link>
+          <Link href="/gioi-thieu">QR Passport</Link>
+          <Link href="/tin-tuc">Tin tức</Link>
+          <Link href="/lien-he">Liên hệ</Link>
+        </nav>
+        <div className="flex items-center gap-2">
+          <Link href="/gio-hang" aria-label="Giỏ hàng" className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white">
+            <ShoppingCart size={19} aria-hidden="true" />
+          </Link>
+          <Link href="/login">
+            <Button className="hidden sm:inline-flex">Đăng nhập</Button>
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+export function PublicSearch({ placeholder = 'Tìm sản phẩm, HTX, vùng trồng' }: { placeholder?: string }) {
+  return (
+    <form className="flex gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm" action="/san-pham">
+      <div className="relative flex-1">
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+        <input name="search" placeholder={placeholder} className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint" />
+      </div>
+      <Button>Tìm</Button>
+    </form>
+  );
+}
+
+export function ProductCard({ product }: { product: PublicProduct }) {
+  return (
+    <article className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+      <Link href={`/san-pham/${product.slug}`} className="block">
+        <div className="aspect-[4/3] bg-[url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80')] bg-cover bg-center" />
+      </Link>
+      <div className="space-y-3 p-4">
+        <div>
+          <p className="text-xs font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
+          <Link href={`/san-pham/${product.slug}`} className="mt-1 block text-lg font-bold text-ink">
+            {product.name}
+          </Link>
+          <p className="mt-1 text-sm text-slate-600">{product.cooperative?.name ?? 'HTX đang cập nhật'}</p>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <p className="text-lg font-bold text-leaf">{formatPrice(product.price)}</p>
+            <p className="text-xs text-slate-500">/{product.unit}</p>
+          </div>
+          <Link href={`/san-pham/${product.slug}`}>
+            <Button variant="ghost">Xem</Button>
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {
+  return (
+    <article className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="flex items-start gap-3">
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-md bg-mint text-leaf">
+          <Store size={26} aria-hidden="true" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-lg font-bold">{cooperative.name}</h3>
+          <p className="text-sm text-slate-600">{cooperative.province || 'Đang cập nhật địa phương'}</p>
+          <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+        </div>
+      </div>
+      <div className="mt-4 flex gap-2">
+        <Link href={`/htx/${cooperative.code}`} className="flex-1">
+          <Button className="w-full" variant="ghost">
+            Xem HTX
+            <ArrowRight size={16} aria-hidden="true" />
+          </Button>
+        </Link>
+        {cooperative.phone && (
+          <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf" aria-label="Gọi HTX">
+            <Phone size={18} aria-hidden="true" />
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
+export function PublicBottomNav() {
+  const items = [
+    ['/', 'Trang chủ', Home],
+    ['/htx', 'HTX', Store],
+    ['/san-pham', 'Sản phẩm', Leaf],
+    ['/gio-hang', 'Giỏ hàng', ShoppingCart],
+    ['/login', 'Tài khoản', UserRound]
+  ] as const;
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+8px)] pt-2 shadow-soft backdrop-blur lg:hidden">
+      <div className="grid grid-cols-5 gap-1">
+        {items.map(([href, label, Icon]) => (
+          <Link key={href} href={href} className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold text-slate-500">
+            <Icon size={20} aria-hidden="true" />
+            <span className="max-w-full truncate">{label}</span>
+          </Link>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+export function FloatingContact() {
+  return (
+    <div className="fixed bottom-24 right-3 z-40 grid gap-2 lg:bottom-5">
+      <a href="tel:0900000000" className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
+        <Phone size={19} aria-hidden="true" />
+      </a>
+      <a href="https://zalo.me" className="grid h-11 w-11 place-items-center rounded-full bg-sky text-ink shadow-soft" aria-label="Zalo">
+        <Zap size={19} aria-hidden="true" />
+      </a>
+    </div>
+  );
+}
+
+export function EmptyPublicState({ title, description }: { title: string; description: string }) {
+  return (
+    <Panel className="text-center">
+      <Leaf className="mx-auto text-leaf" size={36} aria-hidden="true" />
+      <h2 className="mt-3 text-xl font-bold">{title}</h2>
+      <p className="mt-2 text-sm text-slate-600">{description}</p>
+    </Panel>
+  );
+}
+
+export function cooperativesFromProducts(products: PublicProduct[]) {
+  const byId = new Map<string, PublicCooperative>();
+  for (const product of products) {
+    if (!product.cooperative?.id) continue;
+    const existing = byId.get(product.cooperative.id);
+    byId.set(product.cooperative.id, {
+      id: product.cooperative.id,
+      name: product.cooperative.name,
+      code: product.cooperative.code,
+      province: product.cooperative.province,
+      phone: product.cooperative.phone,
+      productCount: (existing?.productCount ?? 0) + 1
+    });
+  }
+  return Array.from(byId.values());
+}
+
+function formatPrice(value: string | number) {
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Number(value ?? 0));
+}

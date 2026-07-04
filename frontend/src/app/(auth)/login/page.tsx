@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button, Input, Panel } from '@/components/ui';
 import { login } from '@/lib/api';
+import { dashboardUrlForRoles } from '@/lib/domain';
 import { loginSchema } from '@/schemas/forms';
 
 type LoginValues = z.infer<typeof loginSchema>;
@@ -24,8 +25,13 @@ export default function LoginPage() {
   async function onSubmit(values: LoginValues) {
     setError('');
     try {
-      await login(values.email, values.password);
-      router.replace('/dashboard');
+      const result = await login(values.email, values.password);
+      const nextUrl = dashboardUrlForRoles(result.user.roles, window.location.origin);
+      if (nextUrl.startsWith('http')) {
+        window.location.assign(nextUrl);
+      } else {
+        router.replace(nextUrl);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Đăng nhập thất bại');
     }

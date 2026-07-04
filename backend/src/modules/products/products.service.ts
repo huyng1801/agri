@@ -68,6 +68,33 @@ export class ProductsService {
     return paginated(data, total, page, limit);
   }
 
+  async publicDetail(slug: string) {
+    const product = await this.prisma.product.findFirst({
+      where: {
+        status: 'PUBLISHED',
+        OR: [{ slug }, { id: slug }, { code: slug }]
+      },
+      include: {
+        cooperative: true,
+        category: true,
+        zone: true,
+        passports: {
+          where: { status: 'PUBLISHED' },
+          orderBy: { createdAt: 'desc' },
+          take: 1
+        },
+        certifications: true,
+        farmingLogs: {
+          where: { status: 'PUBLISHED' },
+          orderBy: { logDate: 'asc' },
+          take: 20
+        }
+      }
+    });
+    if (!product) throw new NotFoundException('Không tìm thấy sản phẩm public');
+    return product;
+  }
+
   async get(user: AuthUser, id: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },

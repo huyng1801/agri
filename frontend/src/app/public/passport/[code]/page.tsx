@@ -41,12 +41,16 @@ type Passport = {
 };
 
 async function getPassport(code: string) {
-  const response = await fetch(`${API_URL}/public/passports/${encodeURIComponent(code)}`, {
-    cache: 'no-store'
-  });
-  if (!response.ok) return null;
-  const body = (await response.json()) as ApiEnvelope<Passport>;
-  return body.data;
+  try {
+    const response = await fetch(`${API_URL}/public/passports/${encodeURIComponent(code)}`, {
+      cache: 'no-store'
+    });
+    if (!response.ok) return null;
+    const body = (await response.json()) as ApiEnvelope<Passport>;
+    return body.data;
+  } catch {
+    return null;
+  }
 }
 
 export default async function PublicPassportPage({ params }: { params: { code: string } }) {
