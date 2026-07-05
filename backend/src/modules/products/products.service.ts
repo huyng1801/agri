@@ -90,7 +90,14 @@ export class ProductsService {
           zone: true,
           thumbnail: true,
           passports: { where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'desc' }, take: 1 },
-          certifications: { take: 3, orderBy: { createdAt: 'desc' } }
+          certifications: {
+            where: { isPublic: true },
+            take: 3,
+            orderBy: { createdAt: 'desc' },
+            include: {
+              file: { select: { id: true, publicUrl: true, objectKey: true, mimeType: true } }
+            }
+          }
         },
         orderBy,
         skip,
@@ -117,7 +124,13 @@ export class ProductsService {
           orderBy: { createdAt: 'desc' },
           take: 1
         },
-        certifications: true,
+        certifications: {
+          where: { isPublic: true },
+          orderBy: { createdAt: 'desc' },
+          include: {
+            file: { select: { id: true, publicUrl: true, objectKey: true, mimeType: true } }
+          }
+        },
         farmingLogs: {
           where: { status: 'PUBLISHED' },
           orderBy: { logDate: 'asc' },
@@ -140,7 +153,12 @@ export class ProductsService {
         farmer: { select: { id: true, fullName: true, email: true, phone: true } },
         farmingLogs: { orderBy: { logDate: 'desc' }, take: 30 },
         passports: { orderBy: { createdAt: 'desc' } },
-        certifications: true
+        certifications: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            file: { select: { id: true, publicUrl: true, objectKey: true, mimeType: true, visibility: true, sizeBytes: true } }
+          }
+        }
       }
     });
     if (!product) throw new NotFoundException('Không tìm thấy sản phẩm');

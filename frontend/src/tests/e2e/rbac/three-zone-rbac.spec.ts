@@ -24,6 +24,7 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('admin-menu-backups')).toBeVisible();
 
     await expect(page.getByTestId('htx-menu-products')).toHaveCount(0);
+    await expect(page.getByTestId('htx-menu-certifications')).toHaveCount(0);
     await expect(page.getByTestId('htx-menu-zones')).toHaveCount(0);
     await expect(page.getByTestId('htx-menu-farming-logs')).toHaveCount(0);
     await expect(page.getByTestId('htx-menu-passports')).toHaveCount(0);
@@ -46,6 +47,7 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('sidebar')).toBeVisible();
     await expect(page.getByTestId('htx-dashboard')).toBeVisible();
     await expect(page.getByTestId('htx-menu-products')).toBeVisible();
+    await expect(page.getByTestId('htx-menu-certifications')).toBeVisible();
     await expect(page.getByTestId('htx-menu-zones')).toBeVisible();
     await expect(page.getByTestId('htx-menu-members')).toBeVisible();
     await expect(page.getByTestId('htx-menu-farmers')).toBeVisible();

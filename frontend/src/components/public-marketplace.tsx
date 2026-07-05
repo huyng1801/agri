@@ -47,6 +47,12 @@ export type PublicProduct = {
     name: string;
     issuer?: string | null;
     expiresAt?: string | null;
+    file?: {
+      id: string;
+      publicUrl?: string | null;
+      objectKey?: string;
+      mimeType?: string;
+    } | null;
   }>;
 };
 

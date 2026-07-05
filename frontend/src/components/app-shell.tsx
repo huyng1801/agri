@@ -48,6 +48,7 @@ const nav: NavItem[] = [
   { href: '/dashboard', label: 'Tổng quan', icon: Home, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-dashboard' },
   { href: '/dashboard/cooperatives', label: 'Thông tin HTX', icon: Boxes, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-profile' },
   { href: '/dashboard/products', label: 'Sản phẩm', icon: Package, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-products' },
+  { href: '/dashboard/certifications', label: 'Chứng nhận', icon: ShieldCheck, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-certifications' },
   { href: '/dashboard/zones', label: 'Vùng trồng', icon: Map, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-zones' },
   { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-farming-logs' },
   { href: '/dashboard/passports', label: 'QR', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-passports' },

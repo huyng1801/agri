@@ -47,6 +47,9 @@ type Passport = {
       name: string;
       issuer?: string;
       expiresAt?: string;
+      file?: {
+        publicUrl?: string | null;
+      } | null;
     }>;
   };
 };
@@ -171,6 +174,11 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                 <span className="block text-slate-600">
                   {cert.issuer || 'Đơn vị cấp'} · Hết hạn {formatDate(cert.expiresAt)}
                 </span>
+                {cert.file?.publicUrl && (
+                  <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex font-semibold text-leaf">
+                    Xem tài liệu chứng nhận
+                  </a>
+                )}
               </div>
             ))}
             {passport.product.certifications.length === 0 && <p className="text-slate-600">Chưa có chứng nhận công khai.</p>}

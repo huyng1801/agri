@@ -143,7 +143,13 @@ export class PassportsService {
             category: true,
             zone: true,
             thumbnail: true,
-            certifications: true,
+            certifications: {
+              where: { isPublic: true },
+              orderBy: { createdAt: 'desc' },
+              include: {
+                file: { select: { id: true, publicUrl: true, objectKey: true, mimeType: true } }
+              }
+            },
             farmingLogs: {
               where: { status: 'PUBLISHED' },
               orderBy: { logDate: 'asc' },

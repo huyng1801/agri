@@ -105,6 +105,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
                     <strong>{cert.name}</strong>
                     <span className="block text-slate-600">{cert.issuer || 'Đơn vị cấp'} · {formatDate(cert.expiresAt)}</span>
+                    {cert.file?.publicUrl && (
+                      <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex font-semibold text-leaf">
+                        Xem tài liệu chứng nhận
+                      </a>
+                    )}
                   </div>
                 ))
               ) : (

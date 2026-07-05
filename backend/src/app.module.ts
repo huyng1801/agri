@@ -27,6 +27,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 import { BackupsModule } from './modules/backups/backups.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { NewsModule } from './modules/news/news.module';
+import { CertificationsModule } from './modules/certifications/certifications.module';
 
 @Module({
   imports: [
@@ -58,7 +59,8 @@ import { NewsModule } from './modules/news/news.module';
     AuditLogsModule,
     OrdersModule,
     BackupsModule,
-    NewsModule
+    NewsModule,
+    CertificationsModule
   ],
   providers: [
     {

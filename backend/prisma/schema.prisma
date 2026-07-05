@@ -199,6 +199,7 @@ model Cooperative {
   subscriptions   CooperativeSubscription[]
   invoices        SubscriptionInvoice[]
   passports       TraceabilityPassport[]
+  certifications  Certification[]
   farmerProfiles  FarmerProfile[]
   orders          Order[]
   orderItems      OrderItem[]
@@ -495,14 +496,20 @@ model Certification {
   issuedAt      DateTime?
   expiresAt     DateTime?
   fileId        String?
+  isPublic      Boolean     @default(true)
   metadataJson  Json        @default("{}")
+  cooperative   Cooperative @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   product       Product?    @relation(fields: [productId], references: [id], onDelete: Cascade)
   zone          Zone?       @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+  file          FileAsset?  @relation("CertificationFile", fields: [fileId], references: [id], onDelete: SetNull)
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 
   @@index([cooperativeId])
   @@index([productId])
+  @@index([zoneId])
+  @@index([fileId])
+  @@index([isPublic])
   @@map("passport_certifications")
 }
 
@@ -519,6 +526,7 @@ model FileAsset {
   visibility    FileVisibility @default(PRIVATE)
   cooperative   Cooperative?   @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   productThumbnails Product[]  @relation("ProductThumbnail")
+  certifications  Certification[] @relation("CertificationFile")
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

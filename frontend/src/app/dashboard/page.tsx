@@ -62,6 +62,7 @@ export default function DashboardPage() {
       : [
           ['/dashboard/farming-logs', 'Ghi nhật ký'],
           ['/dashboard/orders', 'Xem đơn hàng'],
+          ['/dashboard/certifications', 'Quản lý chứng nhận'],
           ['/dashboard/passports', 'Tạo QR'],
           ['/dashboard/farmers', 'Thêm nông dân'],
           ['/dashboard/zones', 'Thêm vùng trồng']

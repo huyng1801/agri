@@ -661,6 +661,55 @@ export class UpdateProductDto extends CreateProductDto {
   override unit!: string;
 }
 
+export class CreateCertificationDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  productId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  zoneId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsOptional()
+  @IsString()
+  issuer?: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  issuedAt?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  expiresAt?: Date;
+
+  @IsOptional()
+  @IsUUID()
+  fileId?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isPublic?: boolean;
+
+  @IsOptional()
+  @IsObject()
+  metadataJson?: Record<string, unknown>;
+}
+
+export class UpdateCertificationDto extends CreateCertificationDto {
+  @IsOptional()
+  override name!: string;
+}
+
 export class CreateZoneDto {
   @IsOptional()
   @IsUUID()

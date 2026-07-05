@@ -29,6 +29,7 @@ const ROUTE_RULES: RouteRule[] = [
   { prefix: '/dashboard/backups', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/settings', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/products', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/certifications', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX'] },
   { prefix: '/dashboard/zones', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
   { prefix: '/dashboard/farmers', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/farming-logs', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
