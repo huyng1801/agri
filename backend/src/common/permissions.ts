@@ -69,6 +69,8 @@ export const PERMISSION_CATALOG = [
   { key: 'reports.snapshots', group: 'Báo cáo', label: 'Tạo snapshot báo cáo' },
   { key: 'settings.read', group: 'Hệ thống', label: 'Xem cài đặt' },
   { key: 'settings.update', group: 'Hệ thống', label: 'Cập nhật cài đặt' },
+  { key: 'contacts.read', group: 'Liên hệ', label: 'Xem liên hệ public' },
+  { key: 'contacts.update', group: 'Liên hệ', label: 'Cập nhật trạng thái liên hệ' },
   { key: 'audit_logs.read', group: 'Hệ thống', label: 'Xem nhật ký hệ thống' },
   { key: 'backups.read', group: 'Sao lưu', label: 'Xem backup' },
   { key: 'backups.create', group: 'Sao lưu', label: 'Tạo backup' },

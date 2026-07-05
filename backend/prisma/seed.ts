@@ -17,6 +17,8 @@ const permissions = {
     'reports.revenue',
     'reports.snapshots',
     'settings.*',
+    'contacts.read',
+    'contacts.update',
     'audit_logs.*',
     'backups.*',
     'notifications.*',
@@ -176,11 +178,44 @@ async function main() {
       key: 'system.profile',
       value: {
         appName: 'Agri Passport',
-        supportEmail: 'support@example.com',
+        supportEmail: 'support@htxonline.vn',
         manualPaymentEnabled: true,
         r2UploadEnabled: true
       },
       description: 'Cấu hình hệ thống mặc định'
+    },
+    update: {}
+  });
+
+  await prisma.setting.upsert({
+    where: { key: 'public.siteProfile' },
+    create: {
+      key: 'public.siteProfile',
+      value: {
+        appName: 'HTXONLINE',
+        hotline: '0900000000',
+        hotlineDisplay: '0900 000 000',
+        supportEmail: 'support@htxonline.vn',
+        address: 'Việt Nam',
+        zaloUrl: 'https://zalo.me',
+        messengerUrl: '',
+        mapEmbedUrl: '',
+        faqs: [
+          {
+            question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+            answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và bán hàng COD trên cùng một nền tảng.'
+          },
+          {
+            question: 'Người mua có cần tài khoản để xem QR không?',
+            answer: 'Không. QR Passport public được mở trực tiếp cho khách truy cập.'
+          },
+          {
+            question: 'Ai xác nhận đơn hàng COD?',
+            answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+          }
+        ]
+      },
+      description: 'Thông tin public của HTXONLINE dùng cho contact/footer/floating actions'
     },
     update: {}
   });

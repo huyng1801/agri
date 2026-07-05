@@ -114,6 +114,14 @@ enum NotificationStatus {
   READ
 }
 
+enum ContactInquiryStatus {
+  NEW
+  CONTACTED
+  IN_PROGRESS
+  DONE
+  SPAM
+}
+
 enum NewsStatus {
   DRAFT
   PUBLISHED
@@ -613,6 +621,23 @@ model Notification {
   @@index([cooperativeId])
   @@index([userId])
   @@map("notifications")
+}
+
+model ContactInquiry {
+  id         String               @id @default(uuid())
+  fullName   String
+  phone      String
+  email      String?
+  message    String
+  sourcePath String?              @default("/lien-he")
+  status     ContactInquiryStatus @default(NEW)
+  note       String?
+  createdAt  DateTime             @default(now())
+  updatedAt  DateTime             @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("contact_inquiries")
 }
 
 model Setting {

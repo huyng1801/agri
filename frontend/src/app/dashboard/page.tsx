@@ -15,6 +15,7 @@ type Overview = {
   logs: number;
   passports: number;
   unpaidInvoices: number;
+  contacts: number;
   revenue: number;
 };
 
@@ -32,6 +33,7 @@ export default function DashboardPage() {
     ? [
         { label: 'HTX', value: overview?.cooperatives, icon: Boxes },
         { label: 'Người dùng', value: overview?.users, icon: Users },
+        { label: 'Liên hệ mới', value: overview?.contacts, icon: ClipboardList },
         { label: 'Hóa đơn chưa thu', value: overview?.unpaidInvoices, icon: FileText },
         { label: 'QR toàn hệ thống', value: overview?.passports, icon: QrCode }
       ]
@@ -49,6 +51,7 @@ export default function DashboardPage() {
         ['/dashboard/subscription-plans', 'Quản lý gói'],
         ['/dashboard/invoices', 'Hóa đơn'],
         ['/dashboard/orders', 'Đơn COD'],
+        ['/dashboard/contacts', 'Liên hệ public'],
         ['/dashboard/audit-logs', 'Nhật ký hệ thống'],
         ['/dashboard/backups', 'Sao lưu']
       ]
@@ -92,7 +95,7 @@ export default function DashboardPage() {
         </div>
       </Panel>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className={isSuperAdmin ? 'grid grid-cols-2 gap-3 lg:grid-cols-5' : 'grid grid-cols-2 gap-3 lg:grid-cols-4'}>
         {stats.map(({ label, value, icon: Icon }) => (
           <Panel key={label}>
             <Icon className="mb-3 text-leaf" size={24} aria-hidden="true" />

@@ -1,6 +1,7 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound, Zap } from 'lucide-react';
+import { ArrowRight, Calendar, Home, Leaf, Phone, Search, ShoppingCart, Store, UserRound } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
+import { FloatingContactClient, FooterContactInfo } from './public-site-support';
 import type { NewsArticle } from '@/lib/news';
 import { Button, Panel } from './ui';
 
@@ -69,10 +70,10 @@ export type PublicCooperative = {
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
-      <PublicHeader />
+    <div id="top" className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
+      <PublicHeader appName="HTXONLINE" />
       {children}
-      <FloatingContact />
+      <FloatingContactClient />
       <PublicBottomNav />
       <footer className="border-t border-slate-200 bg-white px-4 py-8">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-3">
@@ -95,13 +96,14 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
             <Link href="/huong-dan-mua-hang">Hướng dẫn mua hàng</Link>
             <Link href="/lien-he">Liên hệ</Link>
           </div>
+          <FooterContactInfo />
         </div>
       </footer>
     </div>
   );
 }
 
-export function PublicHeader() {
+export function PublicHeader({ appName }: { appName: string }) {
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-4">
@@ -109,7 +111,7 @@ export function PublicHeader() {
           <span className="grid h-10 w-10 place-items-center rounded-md bg-leaf text-white">
             <Leaf size={22} aria-hidden="true" />
           </span>
-          HTXONLINE
+          {appName}
         </Link>
         <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-700 md:flex">
           <Link href="/san-pham">Sản phẩm</Link>
@@ -254,19 +256,6 @@ export function PublicBottomNav() {
         ))}
       </div>
     </nav>
-  );
-}
-
-export function FloatingContact() {
-  return (
-    <div className="fixed bottom-24 right-3 z-40 grid gap-2 lg:bottom-5">
-      <a href="tel:0900000000" className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
-        <Phone size={19} aria-hidden="true" />
-      </a>
-      <a href="https://zalo.me" className="grid h-11 w-11 place-items-center rounded-full bg-sky text-ink shadow-soft" aria-label="Zalo">
-        <Zap size={19} aria-hidden="true" />
-      </a>
-    </div>
   );
 }
 

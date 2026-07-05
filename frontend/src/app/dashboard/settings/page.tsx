@@ -22,9 +22,9 @@ export default function SettingsPage() {
   const form = useForm<SettingValues>({
     resolver: zodResolver(settingSchema),
     defaultValues: {
-      key: 'system.profile',
-      value: '{"appName":"Agri Passport","manualPaymentEnabled":true}',
-      description: ''
+      key: 'public.siteProfile',
+      value: '{"appName":"HTXONLINE","hotline":"0900000000","hotlineDisplay":"0900 000 000","supportEmail":"support@htxonline.vn","address":"Viet Nam","zaloUrl":"https://zalo.me","messengerUrl":"","mapEmbedUrl":"","faqs":[{"question":"HTXONLINE ho tro gi cho hop tac xa?","answer":"Quan ly san pham, QR truy xuat va don COD tren cung mot nen tang."}]}',
+      description: 'Thong tin public cua sàn, footer, lien he va floating actions'
     }
   });
   const mutation = useMutation({
@@ -42,6 +42,10 @@ export default function SettingsPage() {
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">Cài đặt</h1>
+      <Panel className="bg-slate-50 shadow-none">
+        <h2 className="text-lg font-bold text-ink">Gợi ý cấu hình public.siteProfile</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">Khóa này đang điều khiển hotline, Zalo, email, FAQ và floating contact trên htxonline.vn.</p>
+      </Panel>
       <Panel>
         <form className="grid gap-3 sm:grid-cols-2" onSubmit={form.handleSubmit((values) => mutation.mutate(values))}>
           <label className="space-y-1 text-sm font-semibold">

@@ -71,6 +71,7 @@ describe('AppShell role navigation', () => {
     expect(screen.getAllByRole('link', { name: /Gói/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Vai trò & quyền/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Tin tức/i }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('link', { name: /Liên hệ/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Nhật ký hệ thống/i }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole('link', { name: /Sao lưu/i }).length).toBeGreaterThan(0);
     expect(screen.queryAllByRole('link', { name: /Sản phẩm/i })).toHaveLength(0);
@@ -102,6 +103,7 @@ describe('AppShell role navigation', () => {
     expect(screen.getAllByRole('link', { name: /^QR$/i }).length).toBeGreaterThan(0);
     expect(screen.queryAllByRole('link', { name: /Vai trò & quyền/i })).toHaveLength(0);
     expect(screen.queryAllByRole('link', { name: /Tin tức/i })).toHaveLength(0);
+    expect(screen.queryAllByRole('link', { name: /Liên hệ/i })).toHaveLength(0);
     expect(screen.queryAllByRole('link', { name: /Nhật ký hệ thống/i })).toHaveLength(0);
     expect(screen.queryAllByRole('link', { name: /Sao lưu/i })).toHaveLength(0);
   });
@@ -109,40 +111,63 @@ describe('AppShell role navigation', () => {
 
 describe('CooperativeDetailPage', () => {
   it('renders public products and public zones for the requested cooperative', async () => {
-    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        success: true,
-        message: 'OK',
-        data: [
-          {
-            id: 'product-1',
-            code: 'SP-HTX-001',
-            name: 'Xoai Cat Chu',
-            slug: 'xoai-cat-chu',
-            price: 45000,
-            unit: 'kg',
-            cooperative: {
-              id: 'coop-1',
-              name: 'HTX Cao Lanh',
-              code: 'HTX-CAO-LANH',
-              province: 'Dong Thap',
-              phone: '0912345678'
-            },
-            zone: {
-              id: 'zone-1',
-              name: 'Vung xoai huu co',
-              address: 'Cao Lanh, Dong Thap',
-              areaM2: 5200
-            },
-            category: {
-              name: 'Trai cay',
-              slug: 'trai-cay'
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+      const url = String(input);
+      if (url.includes('/settings/public/site-profile')) {
+        return {
+          ok: true,
+          json: async () => ({
+            success: true,
+            message: 'OK',
+            data: {
+              appName: 'HTXONLINE',
+              hotline: '0900000000',
+              hotlineDisplay: '0900 000 000',
+              supportEmail: 'support@htxonline.vn',
+              address: 'Dong Thap',
+              zaloUrl: 'https://zalo.me',
+              messengerUrl: '',
+              mapEmbedUrl: '',
+              faqs: []
             }
-          }
-        ]
-      })
-    } as Response);
+          })
+        } as Response;
+      }
+      return {
+        ok: true,
+        json: async () => ({
+          success: true,
+          message: 'OK',
+          data: [
+            {
+              id: 'product-1',
+              code: 'SP-HTX-001',
+              name: 'Xoai Cat Chu',
+              slug: 'xoai-cat-chu',
+              price: 45000,
+              unit: 'kg',
+              cooperative: {
+                id: 'coop-1',
+                name: 'HTX Cao Lanh',
+                code: 'HTX-CAO-LANH',
+                province: 'Dong Thap',
+                phone: '0912345678'
+              },
+              zone: {
+                id: 'zone-1',
+                name: 'Vung xoai huu co',
+                address: 'Cao Lanh, Dong Thap',
+                areaM2: 5200
+              },
+              category: {
+                name: 'Trai cay',
+                slug: 'trai-cay'
+              }
+            }
+          ]
+        })
+      } as Response;
+    });
 
     render(await CooperativeDetailPage({ params: Promise.resolve({ code: 'HTX-CAO-LANH' }) }));
 

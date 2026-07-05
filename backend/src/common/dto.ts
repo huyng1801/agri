@@ -20,6 +20,7 @@ import {
   ValidateNested
 } from 'class-validator';
 import {
+  ContactInquiryStatus,
   CooperativeStatus,
   FarmingActivityType,
   FarmingLogStatus,
@@ -912,6 +913,37 @@ export class UpsertSettingDto {
   @IsOptional()
   @IsString()
   description?: string;
+}
+
+export class CreateContactInquiryDto {
+  @IsString()
+  @IsNotEmpty()
+  fullName!: string;
+
+  @IsPhoneNumber('VN')
+  phone!: string;
+
+  @IsOptional()
+  @IsEmail()
+  email?: string;
+
+  @IsString()
+  @MinLength(10)
+  message!: string;
+
+  @IsOptional()
+  @IsString()
+  sourcePath?: string;
+}
+
+export class UpdateContactInquiryDto {
+  @IsOptional()
+  @IsEnum(ContactInquiryStatus)
+  status?: ContactInquiryStatus;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
 }
 
 export class CreateOrderItemDto {

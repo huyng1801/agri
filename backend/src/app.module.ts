@@ -28,6 +28,7 @@ import { BackupsModule } from './modules/backups/backups.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { NewsModule } from './modules/news/news.module';
 import { CertificationsModule } from './modules/certifications/certifications.module';
+import { ContactsModule } from './modules/contacts/contacts.module';
 
 @Module({
   imports: [
@@ -60,7 +61,8 @@ import { CertificationsModule } from './modules/certifications/certifications.mo
     OrdersModule,
     BackupsModule,
     NewsModule,
-    CertificationsModule
+    CertificationsModule,
+    ContactsModule
   ],
   providers: [
     {

@@ -15,7 +15,7 @@ export class ReportsService {
         : undefined
       : requireTenant(user);
     const tenant = cooperativeId ? { cooperativeId } : {};
-    const [cooperatives, users, products, zones, logs, passports, unpaidInvoices, revenue] = await Promise.all([
+    const [cooperatives, users, products, zones, logs, passports, unpaidInvoices, contacts, revenue] = await Promise.all([
       isSuperAdmin(user) ? this.prisma.cooperative.count() : Promise.resolve(1),
       this.prisma.user.count({ where: tenant }),
       this.prisma.product.count({ where: tenant }),
@@ -23,6 +23,7 @@ export class ReportsService {
       this.prisma.farmingLog.count({ where: tenant }),
       this.prisma.traceabilityPassport.count({ where: tenant }),
       this.prisma.subscriptionInvoice.count({ where: { ...tenant, status: { in: ['UNPAID', 'OVERDUE'] } } }),
+      isSuperAdmin(user) ? this.prisma.contactInquiry.count({ where: { status: 'NEW' } }) : Promise.resolve(0),
       this.prisma.subscriptionInvoice.aggregate({
         where: { ...tenant, status: 'PAID' },
         _sum: { amount: true }
@@ -36,6 +37,7 @@ export class ReportsService {
       logs,
       passports,
       unpaidInvoices,
+      contacts,
       revenue: Number(revenue._sum.amount ?? 0)
     };
   }
