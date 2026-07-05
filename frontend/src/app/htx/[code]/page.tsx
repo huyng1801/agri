@@ -19,8 +19,9 @@ async function getProductsForCooperative(code: string) {
   }
 }
 
-export default async function CooperativeDetailPage({ params }: { params: { code: string } }) {
-  const products = await getProductsForCooperative(params.code);
+export default async function CooperativeDetailPage({ params }: { params: Promise<{ code: string }> }) {
+  const { code } = await params;
+  const products = await getProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   const zones = zonesFromProducts(products);
   if (!cooperative) {
