@@ -26,10 +26,16 @@ export class ZonesService {
       ];
     }
     if (query.status) where.status = String(query.status) as ZoneStatus;
+    if (query.isPublic !== undefined && String(query.isPublic) !== '') {
+      const normalized = String(query.isPublic).toLowerCase();
+      if (normalized === 'true' || normalized === 'false') {
+        where.isPublic = normalized === 'true';
+      }
+    }
     const [data, total] = await Promise.all([
       this.prisma.zone.findMany({
         where,
-        include: { cooperative: true, _count: { select: { products: true, farmingLogs: true } } },
+        include: { cooperative: true, _count: { select: { products: true, farmingLogs: true, certifications: true } } },
         orderBy: { createdAt: 'desc' },
         skip,
         take
@@ -63,6 +69,7 @@ export class ZonesService {
         geojson: dto.geojson as Prisma.InputJsonValue | undefined,
         latitude: dto.latitude,
         longitude: dto.longitude,
+        isPublic: dto.isPublic ?? true,
         status: dto.status ?? 'ACTIVE'
       }
     });
@@ -88,6 +95,7 @@ export class ZonesService {
         geojson: dto.geojson as Prisma.InputJsonValue | undefined,
         latitude: dto.latitude,
         longitude: dto.longitude,
+        isPublic: dto.isPublic,
         status: dto.status
       }
     });

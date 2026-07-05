@@ -22,6 +22,7 @@ async function getProductsForCooperative(code: string) {
 export default async function CooperativeDetailPage({ params }: { params: { code: string } }) {
   const products = await getProductsForCooperative(params.code);
   const cooperative = cooperativesFromProducts(products)[0];
+  const zones = zonesFromProducts(products);
   if (!cooperative) {
     return (
       <PublicShell>
@@ -76,6 +77,37 @@ export default async function CooperativeDetailPage({ params }: { params: { code
           </div>
         </section>
 
+        <section className="mx-auto max-w-6xl px-4 pb-2">
+          <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            <Panel>
+              <h2 className="text-xl font-bold">Vùng trồng công khai</h2>
+              {zones.length ? (
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {zones.map((zone) => (
+                    <div key={zone.key} className="rounded-md bg-slate-50 p-4">
+                      <p className="font-bold text-ink">{zone.name}</p>
+                      <p className="mt-1 text-sm text-slate-600">{zone.address || 'Đang cập nhật địa chỉ vùng trồng'}</p>
+                      <p className="mt-2 text-sm font-semibold text-leaf">{zone.productCount} sản phẩm public</p>
+                      {zone.areaM2 && <p className="mt-1 text-xs text-slate-500">Diện tích {formatArea(zone.areaM2)}</p>}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-slate-600">HTX chưa công khai vùng trồng nào trên sàn.</p>
+              )}
+            </Panel>
+
+            <Panel>
+              <h2 className="text-xl font-bold">Minh bạch dữ liệu public</h2>
+              <div className="mt-4 grid gap-3 text-sm text-slate-700">
+                <p>Chỉ sản phẩm đã publish mới xuất hiện trên trang HTX.</p>
+                <p>Vùng trồng bị tắt public sẽ không hiển thị ở đây và cũng không lộ trên trang sản phẩm hay QR Passport.</p>
+                <p>Nhật ký, chứng nhận và thông tin nội bộ chưa công khai vẫn tiếp tục được giữ riêng trong dashboard HTX.</p>
+              </div>
+            </Panel>
+          </div>
+        </section>
+
         <section className="mx-auto max-w-6xl px-4 py-8">
           <h2 className="text-2xl font-bold">Sản phẩm public của HTX</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -87,4 +119,38 @@ export default async function CooperativeDetailPage({ params }: { params: { code
       </main>
     </PublicShell>
   );
+}
+
+function zonesFromProducts(products: PublicProduct[]) {
+  const byZone = new Map<
+    string,
+    {
+      key: string;
+      name: string;
+      address?: string | null;
+      areaM2?: string | number | null;
+      productCount: number;
+    }
+  >();
+
+  for (const product of products) {
+    if (!product.zone?.name) continue;
+    const key = product.zone.id || `${product.zone.name}:${product.zone.address || ''}`;
+    const existing = byZone.get(key);
+    byZone.set(key, {
+      key,
+      name: product.zone.name,
+      address: product.zone.address,
+      areaM2: product.zone.areaM2,
+      productCount: (existing?.productCount ?? 0) + 1
+    });
+  }
+
+  return Array.from(byZone.values()).sort((a, b) => b.productCount - a.productCount || a.name.localeCompare(b.name, 'vi'));
+}
+
+function formatArea(value: string | number) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return String(value);
+  return `${new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(numeric)} m²`;
 }

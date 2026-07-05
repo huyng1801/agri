@@ -427,6 +427,7 @@ model Zone {
   geojson       Json?
   latitude      Decimal?
   longitude     Decimal?
+  isPublic      Boolean      @default(true)
   status        ZoneStatus   @default(ACTIVE)
   cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   products      Product[]
@@ -437,6 +438,7 @@ model Zone {
 
   @@unique([cooperativeId, code])
   @@index([cooperativeId])
+  @@index([cooperativeId, isPublic])
   @@map("zones")
 }
 

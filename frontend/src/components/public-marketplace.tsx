@@ -24,8 +24,10 @@ export type PublicProduct = {
     slug: string;
   } | null;
   zone?: {
+    id?: string;
     name: string;
     address?: string | null;
+    areaM2?: string | number | null;
   } | null;
   passports?: Array<{
     passportCode: string;

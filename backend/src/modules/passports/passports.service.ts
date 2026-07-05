@@ -170,8 +170,18 @@ export class PassportsService {
       where: { id: passport.id },
       data: { viewCount: { increment: 1 } }
     });
+    const productZone = passport.product.zone?.isPublic === false ? null : passport.product.zone;
+    const farmingLogs = passport.product.farmingLogs.map((log) => ({
+      ...log,
+      zone: log.zone?.isPublic === false ? null : log.zone
+    }));
     return {
       ...passport,
+      product: {
+        ...passport.product,
+        zone: productZone,
+        farmingLogs
+      },
       verified: true,
       publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${passport.passportCode}`
     };

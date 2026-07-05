@@ -80,4 +80,32 @@ describe('ProductsService', () => {
       slug: 'gao-thom'
     });
   });
+
+  it('hides a non-public zone from the public product detail payload', async () => {
+    const service = new ProductsService(
+      {
+        product: {
+          findFirst: jest.fn().mockResolvedValue({
+            id: 'product-1',
+            code: 'SP001',
+            slug: 'gao-thom',
+            name: 'Gạo thơm',
+            status: ProductStatus.PUBLISHED,
+            zone: {
+              id: 'zone-1',
+              name: 'Vùng nội bộ',
+              isPublic: false
+            },
+            certifications: [],
+            farmingLogs: []
+          })
+        }
+      } as never,
+      { record: jest.fn() } as never
+    );
+
+    const result = await service.publicDetail('gao-thom');
+
+    expect(result.zone).toBeNull();
+  });
 });

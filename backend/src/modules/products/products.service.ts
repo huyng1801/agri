@@ -105,7 +105,7 @@ export class ProductsService {
       }),
       this.prisma.product.count({ where })
     ]);
-    return paginated(data, total, page, limit);
+    return paginated(data.map((product) => this.sanitizePublicProduct(product)), total, page, limit);
   }
 
   async publicDetail(slug: string) {
@@ -139,7 +139,7 @@ export class ProductsService {
       }
     });
     if (!product) throw new NotFoundException('Không tìm thấy sản phẩm public');
-    return product;
+    return this.sanitizePublicProduct(product);
   }
 
   async get(user: AuthUser, id: string) {
@@ -308,5 +308,13 @@ export class ProductsService {
     if (sort === 'price_asc') return [{ price: 'asc' }, { createdAt: 'desc' }];
     if (sort === 'price_desc') return [{ price: 'desc' }, { createdAt: 'desc' }];
     return [{ createdAt: 'desc' }];
+  }
+
+  private sanitizePublicProduct<T extends { zone?: ({ isPublic?: boolean | null } & Record<string, unknown>) | null }>(product: T) {
+    if (!product.zone || product.zone.isPublic !== false) return product;
+    return {
+      ...product,
+      zone: null
+    };
   }
 }

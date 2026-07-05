@@ -747,6 +747,10 @@ export class CreateZoneDto {
   longitude?: number;
 
   @IsOptional()
+  @IsBoolean()
+  isPublic?: boolean;
+
+  @IsOptional()
   @IsEnum(ZoneStatus)
   status?: ZoneStatus;
 }

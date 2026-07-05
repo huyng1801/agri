@@ -87,6 +87,7 @@ export const zoneSchema = z.object({
   areaM2: z.coerce.number().positive('Diện tích phải lớn hơn 0').optional().or(z.literal('')),
   latitude: z.coerce.number().optional().or(z.literal('')),
   longitude: z.coerce.number().optional().or(z.literal('')),
+  isPublic: z.coerce.boolean().default(true),
   status: z.enum(['ACTIVE', 'INACTIVE', 'ARCHIVED']).default('ACTIVE')
 });
 
