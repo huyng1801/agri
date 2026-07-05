@@ -34,6 +34,13 @@ export class OrdersController {
     return this.orders.lookupPublic(orderCode, phone);
   }
 
+  @Get(':id')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
+  @Permissions('orders.read')
+  get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.orders.get(user, id);
+  }
+
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX)
   @Post()
   @Permissions('orders.create')

@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { OrderStatus, Prisma } from '@prisma/client';
 import { nanoid } from 'nanoid';
 import { CreateOrderDto, PublicCreateOrderDto, UpdateOrderDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
@@ -7,35 +7,50 @@ import { paginated, parsePagination } from '../../common/utils/pagination';
 import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { PrismaService } from '../prisma/prisma.service';
 
+const ORDER_STATUSES = Object.values(OrderStatus);
+
 @Injectable()
 export class OrdersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
-    const cooperativeId = isSuperAdmin(user) ? (query.cooperativeId ? String(query.cooperativeId) : undefined) : requireTenant(user, query.cooperativeId ? String(query.cooperativeId) : undefined);
-    const where: Prisma.OrderWhereInput = cooperativeId
-      ? {
-          OR: [{ cooperativeId }, { items: { some: { cooperativeId } } }]
-        }
-      : {};
+    const cooperativeId = isSuperAdmin(user)
+      ? query.cooperativeId
+        ? String(query.cooperativeId)
+        : undefined
+      : requireTenant(user, query.cooperativeId ? String(query.cooperativeId) : undefined);
+    const scopedCooperativeId = cooperativeId && !isSuperAdmin(user) ? cooperativeId : undefined;
+    const where = this.buildWhere({
+      cooperativeId,
+      status: this.parseStatus(query.status),
+      search: typeof query.search === 'string' ? query.search.trim() : '',
+      scopedCooperativeId
+    });
     const [data, total] = await Promise.all([
       this.prisma.order.findMany({
         where,
-        include: {
-          items: {
-            where: cooperativeId && !isSuperAdmin(user) ? { cooperativeId } : undefined,
-            include: { product: true }
-          },
-          payments: true
-        },
+        include: this.orderInclude(scopedCooperativeId),
         orderBy: { createdAt: 'desc' },
         skip,
         take
       }),
       this.prisma.order.count({ where })
     ]);
-    return paginated(data, total, page, limit);
+    return paginated(data.map((order) => this.presentOrder(order, scopedCooperativeId)), total, page, limit);
+  }
+
+  async get(user: AuthUser, id: string) {
+    const scopedCooperativeId = isSuperAdmin(user) ? undefined : requireTenant(user);
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: this.orderInclude(scopedCooperativeId)
+    });
+    if (!order) throw new NotFoundException('Không tìm thấy đơn hàng');
+    if (scopedCooperativeId && order.cooperativeId !== scopedCooperativeId && !order.items.length) {
+      throw new ForbiddenException('Không có quyền truy cập đơn hàng này');
+    }
+    return this.presentOrder(order, scopedCooperativeId);
   }
 
   async create(user: AuthUser, dto: CreateOrderDto) {
@@ -55,6 +70,7 @@ export class OrdersService {
     const cooperativeId = isSuperAdmin(user) ? (dto.cooperativeId ?? firstItemCooperativeId) : requireTenant(user, dto.cooperativeId ?? firstItemCooperativeId);
     if (!cooperativeId) throw new BadRequestException('Thiếu HTX của đơn hàng');
 
+    const status = dto.status ?? OrderStatus.NEW;
     const itemData =
       dto.items?.map((item) => {
         const product = productsById.get(item.productId);
@@ -66,7 +82,8 @@ export class OrdersService {
           productId: item.productId,
           cooperativeId: product.cooperativeId,
           quantity: item.quantity,
-          unitPrice: item.unitPrice ?? product.price
+          unitPrice: item.unitPrice ?? product.price,
+          status
         };
       }) ?? [];
     const totalAmount = dto.totalAmount ?? itemData.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0);
@@ -76,7 +93,7 @@ export class OrdersService {
         cooperativeId,
         buyerId: dto.buyerId,
         orderCode: dto.orderCode ?? `ORD-${nanoid(8).toUpperCase()}`,
-        status: dto.status ?? 'NEW',
+        status,
         totalAmount,
         buyerName: dto.buyerName,
         buyerPhone: dto.buyerPhone,
@@ -122,7 +139,8 @@ export class OrdersService {
         productId: product.id,
         cooperativeId: product.cooperativeId,
         quantity: item.quantity,
-        unitPrice: item.unitPrice ?? product.price
+        unitPrice: item.unitPrice ?? product.price,
+        status: OrderStatus.NEW
       };
     });
     const totalAmount = itemData.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0);
@@ -131,7 +149,7 @@ export class OrdersService {
       data: {
         cooperativeId: itemData[0].cooperativeId,
         orderCode: `ORD-${nanoid(8).toUpperCase()}`,
-        status: 'NEW',
+        status: OrderStatus.NEW,
         totalAmount,
         buyerName: dto.buyerName,
         buyerPhone: dto.buyerPhone,
@@ -144,21 +162,7 @@ export class OrdersService {
         note: dto.note,
         items: { create: itemData }
       },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-                unit: true,
-                cooperative: { select: { id: true, name: true, code: true, phone: true } }
-              }
-            }
-          }
-        }
-      }
+      include: this.publicOrderInclude()
     });
   }
 
@@ -169,30 +173,210 @@ export class OrdersService {
         orderCode,
         buyerPhone: phone
       },
-      include: {
-        items: {
-          include: {
-            product: {
-              select: {
-                id: true,
-                name: true,
-                slug: true,
-                unit: true,
-                cooperative: { select: { id: true, name: true, code: true, phone: true } }
-              }
-            }
-          }
-        }
-      }
+      include: this.publicOrderInclude()
     });
     if (!order) throw new NotFoundException('Không tìm thấy đơn hàng');
     return order;
   }
 
   async update(user: AuthUser, id: string, dto: UpdateOrderDto) {
-    const found = await this.prisma.order.findUnique({ where: { id } });
+    const found = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: { select: { id: true, cooperativeId: true, status: true } }
+      }
+    });
     if (!found) throw new NotFoundException('Không tìm thấy đơn hàng');
-    requireTenant(user, found.cooperativeId);
-    return this.prisma.order.update({ where: { id }, data: dto });
+    const cooperativeId = requireTenant(user);
+
+    if (!cooperativeId) {
+      await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: dto.status,
+          totalAmount: dto.totalAmount,
+          note: dto.note
+        }
+      });
+      return this.get(user, id);
+    }
+
+    const hasScopedItems = found.items.some((item) => item.cooperativeId === cooperativeId);
+    const canUpdateLegacyItemlessOrder = found.cooperativeId === cooperativeId && found.items.length === 0;
+    if (!hasScopedItems && !canUpdateLegacyItemlessOrder) {
+      throw new ForbiddenException('Không có quyền cập nhật đơn hàng này');
+    }
+
+    if (hasScopedItems) {
+      const itemData: Prisma.OrderItemUpdateManyMutationInput = {};
+      if (dto.status) itemData.status = dto.status;
+      if (dto.note !== undefined) itemData.note = dto.note;
+      if (Object.keys(itemData).length) {
+        await this.prisma.orderItem.updateMany({
+          where: { orderId: id, cooperativeId },
+          data: itemData
+        });
+      }
+    }
+
+    if (canUpdateLegacyItemlessOrder) {
+      await this.prisma.order.update({
+        where: { id },
+        data: {
+          status: dto.status,
+          totalAmount: dto.totalAmount,
+          note: dto.note
+        }
+      });
+    } else if (dto.status) {
+      await this.syncOrderStatus(id);
+    }
+
+    return this.get(user, id);
+  }
+
+  private buildWhere({
+    cooperativeId,
+    status,
+    search,
+    scopedCooperativeId
+  }: {
+    cooperativeId?: string;
+    status?: OrderStatus;
+    search?: string;
+    scopedCooperativeId?: string;
+  }): Prisma.OrderWhereInput {
+    const and: Prisma.OrderWhereInput[] = [];
+    if (cooperativeId) {
+      and.push({
+        OR: [{ cooperativeId }, { items: { some: { cooperativeId } } }]
+      });
+    }
+    if (status) {
+      and.push(
+        scopedCooperativeId
+          ? {
+              OR: [
+                { items: { some: { cooperativeId: scopedCooperativeId, status } } },
+                { cooperativeId: scopedCooperativeId, status, items: { none: {} } }
+              ]
+            }
+          : { status }
+      );
+    }
+    if (search) {
+      and.push({
+        OR: [
+          { orderCode: { contains: search, mode: 'insensitive' } },
+          { buyerName: { contains: search, mode: 'insensitive' } },
+          { buyerPhone: { contains: search } },
+          { buyerEmail: { contains: search, mode: 'insensitive' } },
+          { items: { some: { product: { name: { contains: search, mode: 'insensitive' } } } } },
+          { items: { some: { cooperative: { name: { contains: search, mode: 'insensitive' } } } } }
+        ]
+      });
+    }
+    return and.length ? { AND: and } : {};
+  }
+
+  private orderInclude(scopedCooperativeId?: string): Prisma.OrderInclude {
+    return {
+      cooperative: { select: { id: true, name: true, code: true, phone: true, email: true, province: true } },
+      items: {
+        where: scopedCooperativeId ? { cooperativeId: scopedCooperativeId } : undefined,
+        include: {
+          cooperative: { select: { id: true, name: true, code: true, phone: true, email: true, province: true } },
+          product: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              unit: true,
+              price: true,
+              status: true,
+              thumbnail: { select: { id: true, publicUrl: true, mimeType: true } },
+              cooperative: { select: { id: true, name: true, code: true, phone: true, email: true, province: true } }
+            }
+          }
+        },
+        orderBy: { id: 'asc' }
+      },
+      payments: true
+    };
+  }
+
+  private publicOrderInclude(): Prisma.OrderInclude {
+    return {
+      items: {
+        select: {
+          id: true,
+          quantity: true,
+          unitPrice: true,
+          status: true,
+          product: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              unit: true,
+              cooperative: { select: { id: true, name: true, code: true, phone: true } }
+            }
+          }
+        }
+      }
+    };
+  }
+
+  private presentOrder(order: Record<string, any>, scopedCooperativeId?: string) {
+    const items = Array.isArray(order.items) ? order.items : [];
+    const visibleSubtotal = items.reduce((sum, item) => sum + Number(item.quantity ?? 0) * Number(item.unitPrice ?? 0), 0);
+    const itemCooperatives = Array.from(
+      items
+        .reduce((map, item) => {
+          const cooperative = item.cooperative ?? item.product?.cooperative;
+          if (cooperative?.id) map.set(cooperative.id, cooperative);
+          return map;
+        }, new Map<string, unknown>())
+        .values()
+    );
+
+    return {
+      ...order,
+      visibleSubtotal,
+      visibleItemsCount: items.length,
+      tenantStatus: scopedCooperativeId ? this.aggregateStatus(items.map((item) => item.status), order.status) : order.status,
+      itemCooperatives
+    };
+  }
+
+  private parseStatus(status: unknown) {
+    if (typeof status !== 'string') return undefined;
+    return ORDER_STATUSES.includes(status as OrderStatus) ? (status as OrderStatus) : undefined;
+  }
+
+  private aggregateStatus(statuses: Array<OrderStatus | string | null | undefined>, fallback: OrderStatus | string = OrderStatus.NEW): OrderStatus {
+    const valid = statuses.filter((status): status is OrderStatus => ORDER_STATUSES.includes(status as OrderStatus));
+    if (!valid.length) return this.parseStatus(fallback) ?? OrderStatus.NEW;
+    const active = valid.filter((status) => status !== OrderStatus.CANCELLED);
+    if (!active.length) return OrderStatus.CANCELLED;
+    if (active.every((status) => status === OrderStatus.COMPLETED || status === OrderStatus.FULFILLED)) return OrderStatus.COMPLETED;
+    if (active.includes(OrderStatus.SHIPPING)) return OrderStatus.SHIPPING;
+    if (active.includes(OrderStatus.PROCESSING)) return OrderStatus.PROCESSING;
+    const confirmedStatuses: OrderStatus[] = [OrderStatus.CONFIRMED, OrderStatus.COMPLETED, OrderStatus.FULFILLED];
+    if (active.some((status) => confirmedStatuses.includes(status))) return OrderStatus.CONFIRMED;
+    if (active.includes(OrderStatus.NEW)) return OrderStatus.NEW;
+    return active[0];
+  }
+
+  private async syncOrderStatus(orderId: string) {
+    const items = await this.prisma.orderItem.findMany({
+      where: { orderId },
+      select: { status: true }
+    });
+    if (!items.length) return;
+    await this.prisma.order.update({
+      where: { id: orderId },
+      data: { status: this.aggregateStatus(items.map((item) => item.status)) }
+    });
   }
 }

@@ -559,11 +559,14 @@ model OrderItem {
   cooperativeId String?
   quantity      Decimal
   unitPrice     Decimal
+  status        OrderStatus  @default(NEW)
+  note          String?
   order         Order        @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product       Product      @relation(fields: [productId], references: [id])
   cooperative   Cooperative? @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
 
   @@index([cooperativeId])
+  @@index([status])
   @@map("order_items")
 }
 
