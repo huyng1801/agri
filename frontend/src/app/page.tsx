@@ -1,21 +1,18 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Leaf, QrCode, ShoppingBag, Store, type LucideIcon } from 'lucide-react';
-import { API_URL, ApiEnvelope } from '@/lib/api';
 import { ProductSlider } from '@/components/product-slider';
 import {
   CooperativeCard,
   EmptyPublicState,
   NewsCard,
-  PublicProduct,
   PublicSearch,
-  PublicShell,
-  cooperativesFromProducts,
-  publicListItems
+  PublicShell
 } from '@/components/public-marketplace';
 import { PublicSection, PublicSectionHeader, publicContainerClass } from '@/components/public-layout';
 import { Button, Panel, cn } from '@/components/ui';
 import { fetchPublicNews } from '@/lib/news';
+import { fetchPublicCatalog } from '@/lib/public-catalog';
 
 export const metadata: Metadata = {
   title: 'HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam',
@@ -31,27 +28,13 @@ export const metadata: Metadata = {
   }
 };
 
-type ProductList = {
-  data: PublicProduct[];
-};
-
-async function getPublicProducts() {
-  try {
-    const response = await fetch(`${API_URL}/products/public?limit=8`, { cache: 'no-store' });
-    if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
-    return publicListItems(body.data);
-  } catch {
-    return [];
-  }
-}
-
 export default async function HomePage() {
-  const [products, news] = await Promise.all([getPublicProducts(), fetchPublicNews('/news/public?home=true&limit=3')]);
-  const cooperatives = cooperativesFromProducts(products).slice(0, 6);
+  const [catalog, news] = await Promise.all([fetchPublicCatalog(100), fetchPublicNews('/news/public?home=true&limit=3')]);
+  const featuredProducts = catalog.products.slice(0, 12);
+  const featuredCooperatives = catalog.cooperatives.slice(0, 6);
   const stats: Array<[string, string | number, LucideIcon]> = [
-    ['Sản phẩm public', products.length, ShoppingBag],
-    ['HTX đang hiển thị', cooperatives.length, Store],
+    ['Sản phẩm public', catalog.totalProducts, ShoppingBag],
+    ['HTX đang hiển thị', catalog.cooperatives.length, Store],
     ['QR Passport', 'Truy xuất nhanh', QrCode]
   ];
 
@@ -109,8 +92,8 @@ export default async function HomePage() {
             href="/san-pham"
             linkLabel="Xem tất cả"
           />
-          {products.length ? (
-            <ProductSlider products={products.slice(0, 12)} />
+          {featuredProducts.length ? (
+            <ProductSlider products={featuredProducts} />
           ) : (
             <div className="mt-5">
               <EmptyPublicState title="Chưa có sản phẩm public" description="Khi HTX publish sản phẩm, sản phẩm sẽ xuất hiện tại đây." />
@@ -125,9 +108,9 @@ export default async function HomePage() {
             href="/htx"
             linkLabel="Xem HTX"
           />
-          {cooperatives.length ? (
+          {featuredCooperatives.length ? (
             <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {cooperatives.map((cooperative) => (
+              {featuredCooperatives.map((cooperative) => (
                 <CooperativeCard key={cooperative.id} cooperative={cooperative} />
               ))}
             </div>

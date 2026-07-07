@@ -22,7 +22,7 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-10 bg-gradient-to-l from-[#f8faf7] to-transparent sm:block" />
       <div
         ref={trackRef}
-        className="flex gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {products.map((product) => (
           <div key={product.id} data-slider-card className="w-[min(85vw,280px)] shrink-0 snap-start sm:w-[300px]">

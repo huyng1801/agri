@@ -23,9 +23,9 @@ export function PublicContactForm({ sourcePath = '/lien-he' }: { sourcePath?: st
     const email = String(payload.get('email') || '').trim();
     const message = String(payload.get('message') || '').trim();
 
-    if (!fullName) return setError('Ho ten la bat buoc');
-    if (!phonePattern.test(phone)) return setError('So dien thoai Viet Nam khong hop le');
-    if (message.length < 10) return setError('Noi dung lien he can toi thieu 10 ky tu');
+    if (!fullName) return setError('Họ tên là bắt buộc');
+    if (!phonePattern.test(phone)) return setError('Số điện thoại Việt Nam không hợp lệ');
+    if (message.length < 10) return setError('Nội dung liên hệ cần tối thiểu 10 ký tự');
 
     setSubmitting(true);
     try {
@@ -42,12 +42,12 @@ export function PublicContactForm({ sourcePath = '/lien-he' }: { sourcePath?: st
       });
       const body = (await response.json().catch(() => null)) as ApiEnvelope<{ id: string }> | null;
       if (!response.ok || !body?.success) {
-        throw new Error(body?.errors?.[0]?.message || body?.message || 'Khong the gui lien he');
+        throw new Error(body?.errors?.[0]?.message || body?.message || 'Không thể gửi liên hệ');
       }
       form.reset();
-      setSuccess('Thong tin da duoc gui. Doi van hanh se lien he voi ban trong thoi gian som nhat.');
+      setSuccess('Thông tin đã được gửi. Đội vận hành sẽ liên hệ với bạn trong thời gian sớm nhất.');
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Khong the gui lien he');
+      setError(submitError instanceof Error ? submitError.message : 'Không thể gửi liên hệ');
     } finally {
       setSubmitting(false);
     }
@@ -56,11 +56,11 @@ export function PublicContactForm({ sourcePath = '/lien-he' }: { sourcePath?: st
   return (
     <form className="grid gap-3" onSubmit={submit}>
       <label className="space-y-1 text-sm font-semibold">
-        <span>Ho ten</span>
+        <span>Họ tên</span>
         <Input data-testid="contact-name-input" name="fullName" required />
       </label>
       <label className="space-y-1 text-sm font-semibold">
-        <span>So dien thoai</span>
+        <span>Số điện thoại</span>
         <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" />
       </label>
       <label className="space-y-1 text-sm font-semibold">
@@ -68,13 +68,13 @@ export function PublicContactForm({ sourcePath = '/lien-he' }: { sourcePath?: st
         <Input data-testid="contact-email-input" name="email" type="email" />
       </label>
       <label className="space-y-1 text-sm font-semibold">
-        <span>Noi dung</span>
+        <span>Nội dung</span>
         <Textarea data-testid="contact-message-input" name="message" required />
       </label>
       {success && <div data-testid="toast-success" className="rounded-md bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
       {error && <div data-testid="toast-error" className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
       <Button data-testid="contact-submit-button" type="submit" className="sm:w-max" disabled={submitting}>
-        {submitting ? 'Dang gui' : 'Gui lien he'}
+        {submitting ? 'Đang gửi' : 'Gửi liên hệ'}
       </Button>
     </form>
   );

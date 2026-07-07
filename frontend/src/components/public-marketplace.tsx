@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, Leaf, Phone, Search, ShoppingCart } from 'lucide-react';
+import { ArrowRight, Calendar, Phone, Search, ShoppingCart } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
 import { PublicBottomNav } from './public-bottom-nav';
 import { PublicFooter } from './public-footer';
+import { PublicHeader } from './public-header';
 import { publicCardClass } from './public-layout';
 import { FloatingContactClient } from './public-site-support';
 import type { NewsArticle } from '@/lib/news';
@@ -83,7 +84,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div id="top" className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
-      <PublicHeader appName="HTXONLINE" />
+      <PublicHeader />
       {children}
       <FloatingContactClient />
       <PublicBottomNav />
@@ -92,39 +93,15 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function PublicHeader({ appName }: { appName: string }) {
+export function PublicSearch({
+  placeholder = 'Tìm sản phẩm, HTX, vùng trồng',
+  action = '/san-pham'
+}: {
+  placeholder?: string;
+  action?: string;
+}) {
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-4 px-4">
-        <Link href="/" className="flex items-center gap-2 text-lg font-bold text-ink">
-          <span className="grid h-10 w-10 place-items-center rounded-md bg-leaf text-white">
-            <Leaf size={22} aria-hidden="true" />
-          </span>
-          {appName}
-        </Link>
-        <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-700 md:flex">
-          <Link href="/san-pham" className="hover:text-leaf">Sản phẩm</Link>
-          <Link href="/htx" className="hover:text-leaf">HTX</Link>
-          <Link href="/ve-chung-toi" className="hover:text-leaf">Về chúng tôi</Link>
-          <Link href="/tin-tuc" className="hover:text-leaf">Tin tức</Link>
-          <Link href="/lien-he" className="hover:text-leaf">Liên hệ</Link>
-        </nav>
-        <div className="flex items-center gap-2">
-          <Link href="/gio-hang" aria-label="Giỏ hàng" className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white">
-            <ShoppingCart size={19} aria-hidden="true" />
-          </Link>
-          <Link href="/login">
-            <Button className="hidden sm:inline-flex">Đăng nhập</Button>
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
-export function PublicSearch({ placeholder = 'Tìm sản phẩm, HTX, vùng trồng' }: { placeholder?: string }) {
-  return (
-    <form className="flex gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm" action="/san-pham">
+    <form className="flex gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm" action={action}>
       <div className="relative flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
         <input name="search" placeholder={placeholder} className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint" />
@@ -138,8 +115,14 @@ export function ProductCard({ product }: { product: PublicProduct }) {
   const imageUrl = productImage(product);
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col')}>
-      <Link href={`/san-pham/${product.slug}`} className="block">
-        <div data-testid="product-card-image" className="aspect-[4/3] bg-cover bg-center" style={{ backgroundImage: `url('${imageUrl}')` }} />
+      <Link href={`/san-pham/${product.slug}`} className="block overflow-hidden">
+        <img
+          data-testid="product-card-image"
+          src={imageUrl}
+          alt={product.name}
+          loading="lazy"
+          className="aspect-[4/3] w-full object-cover transition duration-300 hover:scale-[1.02]"
+        />
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
         <div>
@@ -172,12 +155,16 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
   const avatar = cooperativeAvatar(cooperative);
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col overflow-hidden')}>
-      <div className="aspect-[16/7] bg-cover bg-center" style={{ backgroundImage: `url('${avatar}')` }} />
+      <div className="relative aspect-[16/7] overflow-hidden">
+        <img src={avatar} alt="" loading="lazy" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+      </div>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start gap-3">
           <img
             src={avatar}
             alt=""
+            loading="lazy"
             className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-10"
           />
           <div className="min-w-0 flex-1 pt-1">
@@ -205,13 +192,11 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
 }
 
 export function NewsCard({ article }: { article: NewsArticle }) {
+  const cover = article.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80';
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col')}>
-      <Link href={`/tin-tuc/${article.slug}`} className="block">
-        <div
-          className="aspect-[16/10] bg-cover bg-center"
-          style={{ backgroundImage: `url('${article.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80'}')` }}
-        />
+      <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
+        <img src={cover} alt="" loading="lazy" className="aspect-[16/10] w-full object-cover transition duration-300 hover:scale-[1.02]" />
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
@@ -235,7 +220,9 @@ export function NewsCard({ article }: { article: NewsArticle }) {
 export function EmptyPublicState({ title, description }: { title: string; description: string }) {
   return (
     <Panel className="text-center">
-      <Leaf className="mx-auto text-leaf" size={36} aria-hidden="true" />
+      <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-mint text-leaf text-xl font-bold" aria-hidden="true">
+        HTX
+      </span>
       <h2 className="mt-3 text-xl font-bold text-ink">{title}</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
     </Panel>
@@ -257,7 +244,7 @@ export function cooperativesFromProducts(products: PublicProduct[]) {
       productCount: (existing?.productCount ?? 0) + 1
     });
   }
-  return Array.from(byId.values());
+  return Array.from(byId.values()).sort((a, b) => b.productCount - a.productCount || a.name.localeCompare(b.name, 'vi'));
 }
 
 export function publicListItems<T>(payload: T[] | { data?: T[] } | undefined | null) {

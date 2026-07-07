@@ -67,7 +67,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <PublicPageHeader title="Sản phẩm" description="Sản phẩm public từ các HTX trên HTXONLINE." />
         <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} />
         {products.length ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}

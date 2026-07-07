@@ -1,39 +1,41 @@
-import { API_URL, ApiEnvelope } from '@/lib/api';
+import type { Metadata } from 'next';
 import {
   CooperativeCard,
   EmptyPublicState,
-  PublicProduct,
   PublicSearch,
-  PublicShell,
-  cooperativesFromProducts,
-  publicListItems
+  PublicShell
 } from '@/components/public-marketplace';
 import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
+import { fetchPublicCatalog } from '@/lib/public-catalog';
 
-type ProductList = {
-  data: PublicProduct[];
+export const metadata: Metadata = {
+  title: 'Danh sách HTX | HTXONLINE',
+  description: 'Khám phá hợp tác xã đang bán sản phẩm nông nghiệp minh bạch trên sàn HTXONLINE.',
+  alternates: { canonical: 'https://htxonline.vn/htx' }
 };
 
-async function getCooperatives(search?: string) {
-  const params = new URLSearchParams({ limit: '100' });
-  if (search) params.set('search', search);
-  try {
-    const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
-    if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
-    return cooperativesFromProducts(publicListItems(body.data));
-  } catch {
-    return [];
-  }
-}
+type CooperativesPageProps = {
+  searchParams?: Promise<{ search?: string }>;
+};
 
-export default async function CooperativesPublicPage({ searchParams }: { searchParams: { search?: string } }) {
-  const cooperatives = await getCooperatives(searchParams.search);
+export default async function CooperativesPublicPage({ searchParams }: CooperativesPageProps) {
+  const filters = (await searchParams) ?? {};
+  const catalog = await fetchPublicCatalog(100);
+  const search = filters.search?.trim().toLowerCase();
+  const cooperatives = search
+    ? catalog.cooperatives.filter((cooperative) =>
+        [cooperative.name, cooperative.code, cooperative.province ?? ''].some((value) => value.toLowerCase().includes(search))
+      )
+    : catalog.cooperatives;
+
   return (
     <PublicShell>
       <PublicPageMain>
-        <PublicPageHeader title="HTX trên HTXONLINE" description="Danh sách HTX đang có sản phẩm public trên sàn." />
-        <PublicSearch placeholder="Tìm HTX hoặc sản phẩm của HTX" />
+        <PublicPageHeader
+          title="HTX trên HTXONLINE"
+          description={`${catalog.cooperatives.length} hợp tác xã đang có sản phẩm public trên sàn.`}
+        />
+        <PublicSearch placeholder="Tìm HTX theo tên hoặc tỉnh thành" action="/htx" />
         {cooperatives.length ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {cooperatives.map((cooperative) => (
@@ -42,7 +44,10 @@ export default async function CooperativesPublicPage({ searchParams }: { searchP
           </div>
         ) : (
           <div className="mt-6">
-            <EmptyPublicState title="Chưa có HTX public" description="HTX sẽ xuất hiện khi có sản phẩm được publish lên sàn." />
+            <EmptyPublicState
+              title={search ? 'Không tìm thấy HTX phù hợp' : 'Chưa có HTX public'}
+              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được publish lên sàn.'}
+            />
           </div>
         )}
       </PublicPageMain>

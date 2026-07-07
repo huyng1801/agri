@@ -43,7 +43,7 @@ export default function LoginPage() {
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-1">
             <h1 className="text-2xl font-bold">Đăng nhập</h1>
-            <p className="text-sm text-slate-600">Agri Passport</p>
+            <p className="text-sm text-slate-600">HTXONLINE — Sàn nông sản số cho hợp tác xã</p>
           </div>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Email</span>

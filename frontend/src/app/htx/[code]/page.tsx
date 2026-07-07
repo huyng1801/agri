@@ -1,31 +1,36 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Phone } from 'lucide-react';
-import { API_URL, ApiEnvelope } from '@/lib/api';
-import { ProductCard, PublicProduct, PublicShell, cooperativesFromProducts, cooperativeAvatar, publicListItems } from '@/components/public-marketplace';
+import { ProductCard, PublicShell, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
 import { PublicPageMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
 import { Button, Panel } from '@/components/ui';
+import { fetchProductsForCooperative } from '@/lib/public-catalog';
 
-type ProductList = {
-  data: PublicProduct[];
+type CooperativeDetailPageProps = {
+  params: Promise<{ code: string }>;
 };
 
-async function getProductsForCooperative(code: string) {
-  try {
-    const response = await fetch(`${API_URL}/products/public?limit=100`, { cache: 'no-store' });
-    if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
-    return publicListItems(body.data).filter((product) => product.cooperative?.code === code);
-  } catch {
-    return [];
+export async function generateMetadata({ params }: CooperativeDetailPageProps): Promise<Metadata> {
+  const { code } = await params;
+  const products = await fetchProductsForCooperative(code);
+  const cooperative = cooperativesFromProducts(products)[0];
+  if (!cooperative) {
+    return { title: 'Không tìm thấy HTX | HTXONLINE' };
   }
+  return {
+    title: `${cooperative.name} | HTXONLINE`,
+    description: `Xem sản phẩm, vùng trồng và thông tin public của ${cooperative.name} trên HTXONLINE.`,
+    alternates: { canonical: `https://htxonline.vn/htx/${cooperative.code}` }
+  };
 }
 
-export default async function CooperativeDetailPage({ params }: { params: Promise<{ code: string }> }) {
+export default async function CooperativeDetailPage({ params }: CooperativeDetailPageProps) {
   const { code } = await params;
-  const products = await getProductsForCooperative(code);
+  const products = await fetchProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   const zones = zonesFromProducts(products);
   const avatar = cooperative ? cooperativeAvatar(cooperative) : '';
+
   if (!cooperative) {
     return (
       <PublicShell>
@@ -46,8 +51,11 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
       <main>
         <PublicSection band className="!py-8">
           <article className={publicCardClass}>
-            <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url('${avatar}')` }} />
-            <div className="p-5">
+            <div className="relative h-52 overflow-hidden sm:h-60">
+              <img src={avatar} alt="" className="h-full w-full object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
+            </div>
+            <div className="p-5 sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
                   <img src={avatar} alt="" className="h-16 w-16 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-12" />
@@ -70,7 +78,7 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
                 )}
               </div>
               <p className="mt-5 max-w-3xl leading-7 text-slate-700">
-                Hồ sơ public của HTX trên HTXONLINE. Các thông tin nội bộ, nhật ký chưa publish và dữ liệu nhạy cảm không hiển thị tại trang này.
+                Hồ sơ public của HTX trên HTXONLINE. Người mua có thể xem sản phẩm, vùng trồng công khai và quét QR Passport để kiểm tra nguồn gốc.
               </p>
             </div>
           </article>
@@ -97,11 +105,11 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
             </Panel>
 
             <Panel>
-              <h2 className="text-xl font-bold text-ink">Minh bạch dữ liệu public</h2>
-              <div className="mt-4 grid gap-3 text-sm text-slate-700">
+              <h2 className="text-xl font-bold text-ink">Cam kết minh bạch</h2>
+              <div className="mt-4 grid gap-3 text-sm leading-6 text-slate-700">
                 <p>Chỉ sản phẩm đã publish mới xuất hiện trên trang HTX.</p>
                 <p>Vùng trồng bị tắt public sẽ không hiển thị ở đây và cũng không lộ trên trang sản phẩm hay QR Passport.</p>
-                <p>Nhật ký, chứng nhận và thông tin nội bộ chưa công khai vẫn tiếp tục được giữ riêng trong dashboard HTX.</p>
+                <p>Nhật ký, chứng nhận và thông tin nội bộ chưa công khai vẫn được giữ riêng trong dashboard HTX.</p>
               </div>
             </Panel>
           </div>
@@ -109,7 +117,7 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
 
         <PublicSection>
           <PublicSectionHeader title="Sản phẩm public của HTX" description="Danh sách sản phẩm đang được publish trên sàn." />
-          <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
@@ -120,7 +128,7 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
   );
 }
 
-function zonesFromProducts(products: PublicProduct[]) {
+function zonesFromProducts(products: Parameters<typeof cooperativesFromProducts>[0]) {
   const byZone = new Map<
     string,
     {

@@ -35,7 +35,7 @@ export function PublicFooter() {
               <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
               <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
               <Link href="/gioi-thieu" className={footerLinkClass}>QR Passport truy xuất</Link>
-              <Link href="/huong-dan-mua-hang" className={footerLinkClass}>Đặt hàng COD</Link>
+              <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
           </div>
 
