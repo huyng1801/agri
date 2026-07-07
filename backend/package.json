@@ -4,7 +4,8 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "build": "nest build",
+    "build": "nest build && npm run build:seed",
+    "build:seed": "tsc prisma/seed.ts prisma/seed-demo.ts --outDir dist/prisma --esModuleInterop --module commonjs --target ES2022 --skipLibCheck --resolveJsonModule",
     "start": "node dist/src/main.js",
     "start:dev": "nest start --watch",
     "lint": "npm run typecheck",
@@ -16,7 +17,9 @@
     "migrate:dev": "prisma migrate dev",
     "migrate:deploy": "prisma migrate deploy",
     "seed:dev": "tsx prisma/seed.ts",
-    "seed:prod": "node dist/prisma/seed.js"
+    "seed:prod": "node dist/prisma/seed.js",
+    "seed:demo": "tsx prisma/seed-demo.ts",
+    "seed:demo:prod": "node dist/prisma/seed-demo.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.637.0",

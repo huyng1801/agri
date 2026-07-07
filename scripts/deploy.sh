@@ -33,6 +33,9 @@ docker exec agri_backend npx prisma migrate deploy
 echo "Seed required records..."
 docker exec agri_backend npm run seed:prod
 
+echo "Seed demo marketplace data..."
+docker exec agri_backend npm run seed:demo:prod
+
 echo "Health check..."
 sleep 8
 docker compose -f docker-compose.prod.yml --env-file .env.production ps

@@ -197,6 +197,7 @@ model Cooperative {
   district        String?
   ward            String?
   representative  String?
+  avatarUrl       String?
   status          CooperativeStatus         @default(ACTIVE)
   members         CooperativeMember[]
   users           User[]

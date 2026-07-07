@@ -194,6 +194,10 @@ export class CreateCooperativeDto {
   representative?: string;
 
   @IsOptional()
+  @IsString()
+  avatarUrl?: string;
+
+  @IsOptional()
   @IsEnum(CooperativeStatus)
   status?: CooperativeStatus;
 }

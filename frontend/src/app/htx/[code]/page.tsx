@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import { MapPin, Phone, Store } from 'lucide-react';
+import { MapPin, Phone } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { ProductCard, PublicProduct, PublicShell, cooperativesFromProducts, publicListItems } from '@/components/public-marketplace';
+import { ProductCard, PublicProduct, PublicShell, cooperativesFromProducts, cooperativeAvatar, publicListItems } from '@/components/public-marketplace';
 import { PublicPageMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
 import { Button, Panel } from '@/components/ui';
 
@@ -25,6 +25,7 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
   const products = await getProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   const zones = zonesFromProducts(products);
+  const avatar = cooperative ? cooperativeAvatar(cooperative) : '';
   if (!cooperative) {
     return (
       <PublicShell>
@@ -45,14 +46,12 @@ export default async function CooperativeDetailPage({ params }: { params: Promis
       <main>
         <PublicSection band className="!py-8">
           <article className={publicCardClass}>
-            <div className="h-48 bg-[url('https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=80')] bg-cover bg-center" />
+            <div className="h-48 bg-cover bg-center" style={{ backgroundImage: `url('${avatar}')` }} />
             <div className="p-5">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
-                  <span className="grid h-16 w-16 shrink-0 place-items-center rounded-md bg-mint text-leaf">
-                    <Store size={30} aria-hidden="true" />
-                  </span>
-                  <div>
+                  <img src={avatar} alt="" className="h-16 w-16 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-12" />
+                  <div className="pt-1">
                     <h1 className="text-3xl font-bold text-ink">{cooperative.name}</h1>
                     <p className="mt-2 flex items-center gap-2 text-slate-600">
                       <MapPin size={16} aria-hidden="true" />

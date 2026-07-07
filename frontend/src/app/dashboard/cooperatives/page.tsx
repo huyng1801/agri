@@ -55,6 +55,7 @@ type Cooperative = {
   district?: string | null;
   ward?: string | null;
   representative?: string | null;
+  avatarUrl?: string | null;
   status: CooperativeStatus;
   subscriptions?: Subscription[];
   _count?: {
@@ -78,6 +79,7 @@ type CooperativeForm = {
   district: string;
   ward: string;
   representative: string;
+  avatarUrl: string;
   status: CooperativeStatus;
 };
 
@@ -119,6 +121,7 @@ const emptyCooperativeForm: CooperativeForm = {
   district: '',
   ward: '',
   representative: '',
+  avatarUrl: '',
   status: 'ACTIVE'
 };
 
@@ -153,6 +156,7 @@ export default function CooperativesPage() {
   const [detailTab, setDetailTab] = useState<Record<string, DetailTab>>({});
   const [subscriptionForm, setSubscriptionForm] = useState<SubscriptionForm>(emptySubscriptionForm);
   const [adminUserId, setAdminUserId] = useState('');
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const cooperatives = useQuery({
     queryKey: ['cooperatives-dashboard', search, statusFilter, planFilter],
@@ -275,6 +279,39 @@ export default function CooperativesPage() {
     setDetailTab((current) => ({ ...current, [cooperativeId]: tab }));
   }
 
+  async function uploadAvatar(file: File) {
+    setUploadingAvatar(true);
+    try {
+      const presign = await apiFetch<{ uploadUrl: string; publicUrl?: string; objectKey: string }>('/files/presign-upload', {
+        method: 'POST',
+        body: JSON.stringify({
+          cooperativeId: editingId ?? undefined,
+          fileName: file.name,
+          mimeType: file.type,
+          sizeBytes: file.size,
+          visibility: 'PUBLIC'
+        })
+      });
+      const response = await fetch(presign.data.uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+      if (!response.ok) throw new Error('Không upload được ảnh đại diện lên R2');
+      const confirmed = await apiFetch<{ publicUrl?: string }>('/files/confirm-upload', {
+        method: 'POST',
+        body: JSON.stringify({
+          cooperativeId: editingId ?? undefined,
+          objectKey: presign.data.objectKey,
+          fileName: file.name,
+          mimeType: file.type,
+          sizeBytes: file.size,
+          visibility: 'PUBLIC',
+          publicUrl: presign.data.publicUrl
+        })
+      });
+      update('avatarUrl', confirmed.data.publicUrl ?? presign.data.publicUrl ?? '');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
+
   function cooperativeTab(cooperativeId: string): DetailTab {
     return detailTab[cooperativeId] ?? 'info';
   }
@@ -315,6 +352,25 @@ export default function CooperativesPage() {
               <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>Đóng</Button>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
+              <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-end">
+                <div className="flex items-center gap-4">
+                  {form.avatarUrl ? (
+                    <img src={form.avatarUrl} alt="" className="h-20 w-20 rounded-md object-cover border border-slate-200" />
+                  ) : (
+                    <span className="grid h-20 w-20 place-items-center rounded-md bg-mint text-leaf">
+                      <Building2 size={32} aria-hidden="true" />
+                    </span>
+                  )}
+                  <div className="space-y-2">
+                    <p className="text-sm font-semibold text-ink">Ảnh đại diện HTX</p>
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                      {uploadingAvatar ? 'Đang upload...' : 'Upload ảnh'}
+                      <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadAvatar(event.target.files[0])} />
+                    </label>
+                    <Input value={form.avatarUrl} onChange={(event) => update('avatarUrl', event.target.value)} placeholder="Hoặc dán URL ảnh" />
+                  </div>
+                </div>
+              </div>
               <Field label="Tên HTX">
                 <Input data-testid="cooperative-name-input" value={form.name} onChange={(event) => update('name', event.target.value)} required />
               </Field>
@@ -531,9 +587,18 @@ function CooperativeCard({
   return (
     <article className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h2 className="truncate text-lg font-bold text-ink">{cooperative.name}</h2>
-          <p className="mt-1 text-sm text-slate-500">{cooperative.code} · {cooperative.province || 'Đang cập nhật'}</p>
+        <div className="flex min-w-0 items-start gap-3">
+          {cooperative.avatarUrl ? (
+            <img src={cooperative.avatarUrl} alt="" className="h-14 w-14 shrink-0 rounded-md object-cover" />
+          ) : (
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-md bg-mint text-leaf">
+              <Building2 size={24} aria-hidden="true" />
+            </span>
+          )}
+          <div className="min-w-0">
+            <h2 className="truncate text-lg font-bold text-ink">{cooperative.name}</h2>
+            <p className="mt-1 text-sm text-slate-500">{cooperative.code} · {cooperative.province || 'Đang cập nhật'}</p>
+          </div>
         </div>
         <Badge className={statusTone(cooperative.status)}>{cooperative.status}</Badge>
       </div>
@@ -688,6 +753,7 @@ function cooperativePayload(form: CooperativeForm) {
     district: form.district || undefined,
     ward: form.ward || undefined,
     representative: form.representative || undefined,
+    avatarUrl: form.avatarUrl || undefined,
     status: form.status
   };
 }
@@ -718,6 +784,7 @@ function fromCooperative(cooperative: Cooperative): CooperativeForm {
     district: cooperative.district ?? '',
     ward: cooperative.ward ?? '',
     representative: cooperative.representative ?? '',
+    avatarUrl: cooperative.avatarUrl ?? '',
     status: cooperative.status
   };
 }

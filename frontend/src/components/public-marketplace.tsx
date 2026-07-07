@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, Leaf, Phone, Search, ShoppingCart, Store } from 'lucide-react';
+import { ArrowRight, Calendar, Leaf, Phone, Search, ShoppingCart } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
 import { PublicBottomNav } from './public-bottom-nav';
 import { PublicFooter } from './public-footer';
@@ -22,6 +22,7 @@ export type PublicProduct = {
     code: string;
     province?: string | null;
     phone?: string | null;
+    avatarUrl?: string | null;
   } | null;
   category?: {
     name: string;
@@ -68,8 +69,16 @@ export type PublicCooperative = {
   code: string;
   province?: string | null;
   phone?: string | null;
+  avatarUrl?: string | null;
   productCount: number;
 };
+
+const defaultCooperativeAvatar =
+  'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=400&q=80';
+
+export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUrl'>) {
+  return cooperative.avatarUrl || defaultCooperativeAvatar;
+}
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
@@ -160,30 +169,36 @@ export function productImage(product: PublicProduct) {
 }
 
 export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {
+  const avatar = cooperativeAvatar(cooperative);
   return (
-    <article className={cn(publicCardClass, 'flex h-full flex-col p-4')}>
-      <div className="flex items-start gap-3">
-        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-md bg-mint text-leaf">
-          <Store size={26} aria-hidden="true" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <h3 className="truncate text-lg font-bold text-ink">{cooperative.name}</h3>
-          <p className="text-sm text-slate-600">{cooperative.province || 'Đang cập nhật địa phương'}</p>
-          <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+    <article className={cn(publicCardClass, 'flex h-full flex-col overflow-hidden')}>
+      <div className="aspect-[16/7] bg-cover bg-center" style={{ backgroundImage: `url('${avatar}')` }} />
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-start gap-3">
+          <img
+            src={avatar}
+            alt=""
+            className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-10"
+          />
+          <div className="min-w-0 flex-1 pt-1">
+            <h3 className="truncate text-lg font-bold text-ink">{cooperative.name}</h3>
+            <p className="text-sm text-slate-600">{cooperative.province || 'Đang cập nhật địa phương'}</p>
+            <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+          </div>
         </div>
-      </div>
-      <div className="mt-auto flex gap-2 pt-4">
-        <Link href={`/htx/${cooperative.code}`} className="flex-1">
-          <Button className="w-full" variant="ghost">
-            Xem HTX
-            <ArrowRight size={16} aria-hidden="true" />
-          </Button>
-        </Link>
-        {cooperative.phone && (
-          <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf" aria-label="Gọi HTX">
-            <Phone size={18} aria-hidden="true" />
-          </a>
-        )}
+        <div className="mt-auto flex gap-2 pt-4">
+          <Link href={`/htx/${cooperative.code}`} className="flex-1">
+            <Button className="w-full" variant="ghost">
+              Xem HTX
+              <ArrowRight size={16} aria-hidden="true" />
+            </Button>
+          </Link>
+          {cooperative.phone && (
+            <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf" aria-label="Gọi HTX">
+              <Phone size={18} aria-hidden="true" />
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );
@@ -238,6 +253,7 @@ export function cooperativesFromProducts(products: PublicProduct[]) {
       code: product.cooperative.code,
       province: product.cooperative.province,
       phone: product.cooperative.phone,
+      avatarUrl: product.cooperative.avatarUrl,
       productCount: (existing?.productCount ?? 0) + 1
     });
   }
