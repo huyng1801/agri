@@ -8,6 +8,7 @@ import {
   cooperativesFromProducts,
   publicListItems
 } from '@/components/public-marketplace';
+import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 
 type ProductList = {
   data: PublicProduct[];
@@ -30,11 +31,8 @@ export default async function CooperativesPublicPage({ searchParams }: { searchP
   const cooperatives = await getCooperatives(searchParams.search);
   return (
     <PublicShell>
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-5">
-          <h1 className="text-3xl font-bold">HTX trên HTXONLINE</h1>
-          <p className="mt-2 text-slate-600">Danh sách HTX đang có sản phẩm public trên sàn.</p>
-        </div>
+      <PublicPageMain>
+        <PublicPageHeader title="HTX trên HTXONLINE" description="Danh sách HTX đang có sản phẩm public trên sàn." />
         <PublicSearch placeholder="Tìm HTX hoặc sản phẩm của HTX" />
         {cooperatives.length ? (
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -47,7 +45,7 @@ export default async function CooperativesPublicPage({ searchParams }: { searchP
             <EmptyPublicState title="Chưa có HTX public" description="HTX sẽ xuất hiện khi có sản phẩm được publish lên sàn." />
           </div>
         )}
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }

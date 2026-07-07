@@ -1,4 +1,5 @@
 import { PublicShell } from './public-marketplace';
+import { PublicPageHeader, PublicPageMain } from './public-layout';
 import { Panel } from './ui';
 
 export function PublicStaticPage({
@@ -12,17 +13,14 @@ export function PublicStaticPage({
 }) {
   return (
     <PublicShell>
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <div className="mb-5">
-          <h1 className="text-3xl font-bold text-ink">{title}</h1>
-          <p className="mt-2 max-w-3xl leading-7 text-slate-600">{description}</p>
-        </div>
+      <PublicPageMain>
+        <PublicPageHeader title={title} description={description} />
         {children ?? (
           <Panel>
             <p className="leading-7 text-slate-700">Nội dung đang được đội vận hành HTXONLINE cập nhật.</p>
           </Panel>
         )}
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }

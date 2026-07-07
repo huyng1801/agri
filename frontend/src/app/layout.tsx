@@ -3,8 +3,11 @@ import './globals.css';
 import { QueryProvider } from '@/components/query-provider';
 
 export const metadata: Metadata = {
-  title: 'Agri Passport',
-  description: 'SaaS quản lý HTX, sản phẩm và QR truy xuất nguồn gốc',
+  title: {
+    default: 'HTXONLINE',
+    template: '%s | HTXONLINE'
+  },
+  description: 'Sàn nông sản số cho hợp tác xã Việt Nam — sản phẩm minh bạch, QR truy xuất và đặt hàng COD.',
   manifest: '/manifest.webmanifest'
 };
 

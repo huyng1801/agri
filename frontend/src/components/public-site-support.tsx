@@ -9,12 +9,13 @@ export function FooterContactInfo() {
   const profile = usePublicSiteProfile();
 
   return (
-    <div className="grid gap-2 text-sm text-slate-600">
-      <a href={telHref(profile.hotline)} className="font-semibold text-ink">
+    <div className="grid gap-2 text-sm font-medium text-slate-700">
+      <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Liên hệ</p>
+      <a href={telHref(profile.hotline)} className="font-semibold text-ink hover:text-leaf">
         Hotline: {profile.hotlineDisplay}
       </a>
-      <a href={`mailto:${profile.supportEmail}`}>{profile.supportEmail}</a>
-      <p>{profile.address}</p>
+      <a href={`mailto:${profile.supportEmail}`} className="hover:text-leaf">{profile.supportEmail}</a>
+      <p className="leading-6 text-slate-600">{profile.address}</p>
       {profile.zaloUrl && (
         <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="font-semibold text-leaf">
           Zalo hỗ trợ

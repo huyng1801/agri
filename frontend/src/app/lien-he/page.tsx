@@ -1,6 +1,7 @@
 import { Mail, MapPinned, MessageSquareText, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicStaticPage } from '@/components/public-static-page';
+import { PublicInfoTile } from '@/components/public-layout';
 import { Panel } from '@/components/ui';
 import { getPublicSiteProfile, telHref } from '@/lib/public-site';
 
@@ -20,9 +21,9 @@ export default async function ContactPage() {
 
         <div className="grid gap-4">
           <Panel>
-            <h2 className="text-lg font-bold">Thông tin nhanh</h2>
+            <h2 className="text-xl font-bold text-ink">Thông tin nhanh</h2>
             <div className="mt-4 grid gap-3 text-sm text-slate-700">
-              <a href={telHref(siteProfile.hotline)} className="flex items-start gap-3 rounded-md bg-slate-50 p-3">
+              <a href={telHref(siteProfile.hotline)} className="flex items-start gap-3 rounded-md bg-slate-50 p-3 transition-colors hover:bg-mint">
                 <PhoneCall className="mt-0.5 text-leaf" size={18} aria-hidden="true" />
                 <span>
                   <span className="block text-xs font-semibold uppercase text-slate-500">Hotline</span>
@@ -56,13 +57,10 @@ export default async function ContactPage() {
           </Panel>
 
           <Panel>
-            <h2 className="text-lg font-bold">FAQ nhanh</h2>
+            <h2 className="text-xl font-bold text-ink">FAQ nhanh</h2>
             <div className="mt-4 space-y-3">
               {siteProfile.faqs.map((faq) => (
-                <div key={faq.question} className="rounded-md bg-slate-50 p-3">
-                  <p className="font-semibold text-ink">{faq.question}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{faq.answer}</p>
-                </div>
+                <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />
               ))}
             </div>
           </Panel>

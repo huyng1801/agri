@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { EmptyPublicState, ProductCard, PublicProduct, PublicShell, publicListItems } from '@/components/public-marketplace';
+import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { Button } from '@/components/ui';
 
 export const metadata: Metadata = {
@@ -62,11 +63,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   return (
     <PublicShell>
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-5">
-          <h1 className="text-3xl font-bold">Sản phẩm</h1>
-          <p className="mt-2 text-slate-600">Sản phẩm public từ các HTX trên HTXONLINE.</p>
-        </div>
+      <PublicPageMain>
+        <PublicPageHeader title="Sản phẩm" description="Sản phẩm public từ các HTX trên HTXONLINE." />
         <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} />
         {products.length ? (
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -79,7 +77,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <EmptyPublicState title="Không tìm thấy sản phẩm" description="Thử tìm kiếm từ khóa khác hoặc quay lại sau khi HTX publish sản phẩm." />
           </div>
         )}
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }

@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { EmptyPublicState, NewsCard, PublicShell } from '@/components/public-marketplace';
+import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { Button, cn } from '@/components/ui';
+import { publicCardClass } from '@/components/public-layout';
 import { fetchPublicNews, fetchPublicNewsCategories } from '@/lib/news';
 
 export const metadata: Metadata = {
@@ -41,28 +43,26 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
   return (
     <PublicShell>
-      <main className="mx-auto max-w-6xl px-4 py-8">
-        <div className="mb-5 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-ink">Tin tức</h1>
-            <p className="mt-2 max-w-3xl leading-7 text-slate-600">
-              Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc.
-            </p>
-          </div>
-          <form action="/tin-tuc" className="flex min-w-0 gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm lg:w-[420px]">
-            <div className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-              <input
-                name="search"
-                defaultValue={filters.search ?? ''}
-                placeholder="Tìm bài viết"
-                className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint"
-              />
-            </div>
-            {filters.category && <input type="hidden" name="category" value={filters.category} />}
-            <Button>Tìm</Button>
-          </form>
-        </div>
+      <PublicPageMain>
+        <PublicPageHeader
+          title="Tin tức"
+          description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
+          action={
+            <form action="/tin-tuc" className="flex min-w-0 gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm lg:w-[420px]">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                <input
+                  name="search"
+                  defaultValue={filters.search ?? ''}
+                  placeholder="Tìm bài viết"
+                  className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint"
+                />
+              </div>
+              {filters.category && <input type="hidden" name="category" value={filters.category} />}
+              <Button>Tìm</Button>
+            </form>
+          }
+        />
 
         {categories.length > 0 && (
           <nav className="mb-6 flex gap-2 overflow-x-auto pb-1">
@@ -91,7 +91,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {featured && !filters.search && (
-          <article className="mb-6 overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+          <article className={cn(publicCardClass, 'mb-6')}>
             <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
               <Link href={`/tin-tuc/${featured.slug}`} className="block min-h-[280px] bg-cover bg-center" style={{ backgroundImage: `url('${featured.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=80'}')` }} />
               <div className="flex flex-col justify-center p-5">
@@ -117,7 +117,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         ) : (
           <EmptyPublicState title="Chưa có tin tức public" description="Tin tức do Super Admin đăng sẽ hiển thị tại đây." />
         )}
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }
