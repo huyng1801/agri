@@ -2,8 +2,9 @@ import Link from 'next/link';
 import { ArrowRight, Calendar, Leaf, Phone, Search, ShoppingCart, Store } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
 import { PublicBottomNav } from './public-bottom-nav';
+import { PublicFooter } from './public-footer';
 import { publicCardClass } from './public-layout';
-import { FloatingContactClient, FooterContactInfo } from './public-site-support';
+import { FloatingContactClient } from './public-site-support';
 import type { NewsArticle } from '@/lib/news';
 import { Button, Panel, cn } from './ui';
 
@@ -77,32 +78,7 @@ export function PublicShell({ children }: { children: React.ReactNode }) {
       {children}
       <FloatingContactClient />
       <PublicBottomNav />
-      <footer className="border-t border-slate-200 bg-white px-4 py-10">
-        <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <div className="flex items-center gap-2 text-lg font-bold text-ink">
-              <Leaf className="text-leaf" size={24} aria-hidden="true" />
-              HTXONLINE
-            </div>
-            <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">Sàn nông sản số cho hợp tác xã Việt Nam, kết nối sản phẩm minh bạch với người mua.</p>
-          </div>
-          <div className="grid gap-2 text-sm font-medium text-slate-700">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Khám phá</p>
-            <Link href="/gioi-thieu">Giới thiệu</Link>
-            <Link href="/san-pham">Sản phẩm</Link>
-            <Link href="/htx">HTX</Link>
-            <Link href="/tin-tuc">Tin tức</Link>
-          </div>
-          <div className="grid gap-2 text-sm font-medium text-slate-700">
-            <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Hỗ trợ</p>
-            <Link href="/chinh-sach-bao-mat">Chính sách bảo mật</Link>
-            <Link href="/dieu-khoan-su-dung">Điều khoản sử dụng</Link>
-            <Link href="/huong-dan-mua-hang">Hướng dẫn mua hàng</Link>
-            <Link href="/lien-he">Liên hệ</Link>
-          </div>
-          <FooterContactInfo />
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }
@@ -120,7 +96,7 @@ export function PublicHeader({ appName }: { appName: string }) {
         <nav className="hidden items-center gap-5 text-sm font-semibold text-slate-700 md:flex">
           <Link href="/san-pham" className="hover:text-leaf">Sản phẩm</Link>
           <Link href="/htx" className="hover:text-leaf">HTX</Link>
-          <Link href="/gioi-thieu" className="hover:text-leaf">Giới thiệu</Link>
+          <Link href="/ve-chung-toi" className="hover:text-leaf">Về chúng tôi</Link>
           <Link href="/tin-tuc" className="hover:text-leaf">Tin tức</Link>
           <Link href="/lien-he" className="hover:text-leaf">Liên hệ</Link>
         </nav>

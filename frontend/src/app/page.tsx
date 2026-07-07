@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Leaf, QrCode, ShoppingBag, Store, type LucideIcon } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
+import { ProductSlider } from '@/components/product-slider';
 import {
   CooperativeCard,
   EmptyPublicState,
   NewsCard,
-  ProductCard,
   PublicProduct,
   PublicSearch,
   PublicShell,
@@ -110,11 +110,7 @@ export default async function HomePage() {
             linkLabel="Xem tất cả"
           />
           {products.length ? (
-            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {products.slice(0, 8).map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <ProductSlider products={products.slice(0, 12)} />
           ) : (
             <div className="mt-5">
               <EmptyPublicState title="Chưa có sản phẩm public" description="Khi HTX publish sản phẩm, sản phẩm sẽ xuất hiện tại đây." />

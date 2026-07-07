@@ -36,7 +36,7 @@ export function FloatingContactClient() {
         </a>
       )}
       {siteProfile.zaloUrl && (
-        <a href={siteProfile.zaloUrl} className="grid h-11 w-11 place-items-center rounded-full bg-sky text-ink shadow-soft" aria-label="Zalo" target="_blank" rel="noreferrer">
+        <a href={siteProfile.zaloUrl} className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Zalo" target="_blank" rel="noreferrer">
           <Zap size={19} aria-hidden="true" />
         </a>
       )}
