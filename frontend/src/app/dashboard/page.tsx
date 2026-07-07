@@ -8,16 +8,12 @@ import { formatCurrency } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
 
 type Overview = {
-  cooperatives: number;
-  users: number;
-  products: number;
-  zones: number;
-  logs: number;
-  passports: number;
-  unpaidInvoices: number;
-  contacts: number;
-  revenue: number;
+  metrics: Array<{ key: string; label: string; value: number; isCurrency?: boolean }>;
 };
+
+function metricValue(overview: Overview | undefined, key: string) {
+  return overview?.metrics.find((item) => item.key === key)?.value;
+}
 
 export default function DashboardPage() {
   const user = typeof window !== 'undefined' ? currentUser() : null;
@@ -31,17 +27,17 @@ export default function DashboardPage() {
   const overview = data?.data;
   const stats: Array<{ label: string; value?: number; icon: LucideIcon }> = isSuperAdmin
     ? [
-        { label: 'HTX', value: overview?.cooperatives, icon: Boxes },
-        { label: 'Người dùng', value: overview?.users, icon: Users },
-        { label: 'Liên hệ mới', value: overview?.contacts, icon: ClipboardList },
-        { label: 'Hóa đơn chưa thu', value: overview?.unpaidInvoices, icon: FileText },
-        { label: 'QR toàn hệ thống', value: overview?.passports, icon: QrCode }
+        { label: 'HTX', value: metricValue(overview, 'cooperatives'), icon: Boxes },
+        { label: 'Người dùng', value: metricValue(overview, 'users'), icon: Users },
+        { label: 'Liên hệ mới', value: metricValue(overview, 'contacts'), icon: ClipboardList },
+        { label: 'Hóa đơn chưa thu', value: metricValue(overview, 'unpaidInvoices'), icon: FileText },
+        { label: 'QR toàn hệ thống', value: metricValue(overview, 'passports'), icon: QrCode }
       ]
     : [
-        { label: 'Sản phẩm', value: overview?.products, icon: Package },
-        { label: 'QR Passport', value: overview?.passports, icon: QrCode },
-        { label: 'Vùng trồng', value: overview?.zones, icon: Map },
-        { label: 'Nhật ký', value: overview?.logs, icon: ClipboardList }
+        { label: 'Sản phẩm', value: metricValue(overview, 'products'), icon: Package },
+        { label: 'QR Passport', value: metricValue(overview, 'passports'), icon: QrCode },
+        { label: 'Vùng trồng', value: metricValue(overview, 'zones'), icon: Map },
+        { label: 'Nhật ký', value: metricValue(overview, 'logs'), icon: ClipboardList }
       ];
   const quickActions = isSuperAdmin
     ? [
@@ -90,7 +86,7 @@ export default function DashboardPage() {
           </span>
           <div>
             <p className="text-sm opacity-90">{isSuperAdmin ? 'Doanh thu đã ghi nhận' : 'Gói và doanh thu HTX'}</p>
-            <p className="text-2xl font-bold">{isLoading ? '...' : formatCurrency(overview?.revenue)}</p>
+            <p className="text-2xl font-bold">{isLoading ? '...' : formatCurrency(metricValue(overview, 'revenue') ?? 0)}</p>
           </div>
         </div>
       </Panel>

@@ -19,7 +19,8 @@ describe('UsersService', () => {
           findUnique: jest.fn().mockResolvedValue(null)
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
     );
 
     await expect(
@@ -52,7 +53,8 @@ describe('UsersService', () => {
           })
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
     );
 
     await expect(service.remove(superAdmin, superAdmin.id)).rejects.toBeInstanceOf(BadRequestException);

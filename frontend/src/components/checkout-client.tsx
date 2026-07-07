@@ -11,6 +11,7 @@ type OrderResponse = {
   orderCode: string;
   status: string;
   totalAmount: string | number;
+  cooperative?: { id: string; name: string; code: string } | null;
   buyerName?: string | null;
   buyerPhone?: string | null;
   address?: string | null;
@@ -22,6 +23,11 @@ type OrderResponse = {
     unitPrice: string | number;
     product?: { name: string; unit: string };
   }>;
+};
+
+type CheckoutResponse = {
+  groupCode?: string | null;
+  orders: OrderResponse[];
 };
 
 const phonePattern = /^(0|\+84)[0-9]{8,10}$/;
@@ -70,13 +76,17 @@ export function CheckoutClient() {
           items: items.map((item) => ({ productId: item.productId, quantity: item.quantity }))
         })
       });
-      const body = (await response.json().catch(() => null)) as ApiEnvelope<OrderResponse> | null;
+      const body = (await response.json().catch(() => null)) as ApiEnvelope<CheckoutResponse> | null;
       if (!response.ok || !body?.success) {
         throw new Error(body?.errors?.[0]?.message || body?.message || 'Không thể đặt hàng');
       }
-      window.localStorage.setItem(LAST_ORDER_STORAGE_KEY, JSON.stringify(body.data));
+      const payload = body.data;
+      window.localStorage.setItem(LAST_ORDER_STORAGE_KEY, JSON.stringify(payload));
       writeCart([]);
-      router.push(`/dat-hang-thanh-cong?orderCode=${encodeURIComponent(body.data.orderCode)}`);
+      const query = payload.groupCode
+        ? `groupCode=${encodeURIComponent(payload.groupCode)}`
+        : `orderCode=${encodeURIComponent(payload.orders[0]?.orderCode ?? '')}`;
+      router.push(`/dat-hang-thanh-cong?${query}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Không thể đặt hàng');
     } finally {
@@ -139,10 +149,16 @@ export function CheckoutClient() {
                     <span className="font-semibold">{item.name}</span>
                     <span>x{item.quantity}</span>
                   </div>
+                  <p className="mt-1 text-slate-600">{item.cooperativeName || 'HTX'}</p>
                   <p className="mt-1 text-slate-600">{formatVnd(item.price)} / {item.unit}</p>
                 </div>
               </div>
             ))}
+            {new Set(items.map((item) => item.cooperativeId).filter(Boolean)).size > 1 && (
+              <p className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">
+                Giỏ hàng có sản phẩm từ nhiều HTX. Hệ thống sẽ tách thành nhiều đơn COD riêng khi đặt hàng.
+              </p>
+            )}
             <div className="flex justify-between border-t border-slate-200 pt-3 font-bold">
               <span>Tạm tính</span>
               <span className="text-leaf">{formatVnd(cartTotal(items))}</span>

@@ -545,11 +545,12 @@ model FileAsset {
 }
 
 model Order {
-  id            String      @id @default(uuid())
-  cooperativeId String
-  buyerId       String?
-  orderCode     String      @unique
-  status        OrderStatus @default(NEW)
+  id              String      @id @default(uuid())
+  cooperativeId   String
+  buyerId         String?
+  orderCode       String      @unique
+  orderGroupCode  String?
+  status          OrderStatus @default(NEW)
   totalAmount   Decimal     @default(0)
   buyerName     String?
   buyerPhone    String?
@@ -567,6 +568,7 @@ model Order {
   updatedAt     DateTime    @updatedAt
 
   @@index([cooperativeId])
+  @@index([orderGroupCode])
   @@map("orders")
 }
 

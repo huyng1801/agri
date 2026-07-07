@@ -3,17 +3,26 @@ import { Injectable } from '@nestjs/common';
 import { UpsertSettingDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { FilesService } from '../files/files.service';
 import { PrismaService } from '../prisma/prisma.service';
+
+const SECRET_KEYS = new Set(['system.r2', 'system.email', 'system.security']);
 
 @Injectable()
 export class SettingsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditLogsService
+    private readonly audit: AuditLogsService,
+    private readonly files: FilesService
   ) {}
 
-  list() {
-    return this.prisma.setting.findMany({ orderBy: { key: 'asc' } });
+  async list() {
+    const settings = await this.prisma.setting.findMany({ orderBy: { key: 'asc' } });
+    return settings.map((setting) => ({
+      ...setting,
+      value: this.maskValue(setting.key, setting.value),
+      hasSecret: SECRET_KEYS.has(setting.key)
+    }));
   }
 
   async publicSiteProfile() {
@@ -32,6 +41,7 @@ export class SettingsService {
       zaloUrl: stringValue(publicProfile.zaloUrl) || 'https://zalo.me',
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
       mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || '',
+      logoUrl: stringValue(publicProfile.logoUrl) || '',
       faqs: faqItems(publicProfile.faqs)
     };
   }
@@ -50,6 +60,28 @@ export class SettingsService {
         description: dto.description
       }
     });
+  }
+
+  testR2() {
+    return this.files.testConnection();
+  }
+
+  private maskValue(key: string, value: unknown) {
+    if (!SECRET_KEYS.has(key)) return value;
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return { masked: true, hasValue: Boolean(value) };
+    }
+    const object = value as Record<string, unknown>;
+    const masked: Record<string, unknown> = { masked: true };
+    for (const [field, fieldValue] of Object.entries(object)) {
+      if (/secret|password|key|token/i.test(field) && fieldValue) {
+        masked[field] = '***';
+        masked[`${field}HasValue`] = true;
+      } else {
+        masked[field] = fieldValue;
+      }
+    }
+    return masked;
   }
 }
 

@@ -28,6 +28,14 @@ export class CooperativesService {
       ];
     }
     if (query.status) where.status = String(query.status) as Prisma.EnumCooperativeStatusFilter;
+    if (query.planId) {
+      where.subscriptions = {
+        some: {
+          planId: String(query.planId),
+          status: { in: ['ACTIVE', 'TRIAL'] }
+        }
+      };
+    }
 
     const [data, total] = await Promise.all([
       this.prisma.cooperative.findMany({
@@ -163,14 +171,34 @@ export class CooperativesService {
 
   async stats(user: AuthUser, id: string) {
     await this.get(user, id);
-    const [products, zones, logs, passports, members, unpaidInvoices] = await Promise.all([
+    const [products, zones, logs, passports, members, unpaidInvoices, qrScanTotal, activeSubscription] = await Promise.all([
       this.prisma.product.count({ where: { cooperativeId: id } }),
       this.prisma.zone.count({ where: { cooperativeId: id } }),
       this.prisma.farmingLog.count({ where: { cooperativeId: id } }),
       this.prisma.traceabilityPassport.count({ where: { cooperativeId: id } }),
       this.prisma.cooperativeMember.count({ where: { cooperativeId: id, status: 'ACTIVE' } }),
-      this.prisma.subscriptionInvoice.count({ where: { cooperativeId: id, status: { in: ['UNPAID', 'OVERDUE'] } } })
+      this.prisma.subscriptionInvoice.count({ where: { cooperativeId: id, status: { in: ['UNPAID', 'OVERDUE'] } } }),
+      this.prisma.traceabilityPassport.aggregate({
+        where: { cooperativeId: id },
+        _sum: { viewCount: true }
+      }),
+      this.prisma.cooperativeSubscription.findFirst({
+        where: { cooperativeId: id, status: { in: ['ACTIVE', 'TRIAL'] } },
+        orderBy: { createdAt: 'desc' },
+        include: { plan: true }
+      })
     ]);
-    return { products, zones, logs, passports, members, unpaidInvoices };
+    return {
+      products,
+      zones,
+      logs,
+      passports,
+      members,
+      unpaidInvoices,
+      qrScanTotal: qrScanTotal._sum.viewCount ?? 0,
+      subscriptionEndDate: activeSubscription?.endDate ?? null,
+      currentPlan: activeSubscription?.plan?.name ?? null,
+      subscriptionStatus: activeSubscription?.status ?? null
+    };
   }
 }

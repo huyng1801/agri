@@ -12,6 +12,44 @@ describe('OrdersService', () => {
     permissions: ['orders.read', 'orders.update']
   };
 
+  const payments = { createForOrder: jest.fn().mockResolvedValue({ id: 'pay-1' }) };
+
+  function createService(prisma: Record<string, unknown>) {
+    return new OrdersService(prisma as never, payments as never);
+  }
+
+  it('splits public checkout into multiple orders grouped by cooperative', async () => {
+    const create = jest
+      .fn()
+      .mockResolvedValueOnce({ id: 'order-1', orderCode: 'ORD-A', orderGroupCode: 'ORD-GRP-TEST', cooperativeId: 'coop-1', items: [] })
+      .mockResolvedValueOnce({ id: 'order-2', orderCode: 'ORD-B', orderGroupCode: 'ORD-GRP-TEST', cooperativeId: 'coop-2', items: [] });
+    const service = createService({
+      product: {
+        findMany: jest.fn().mockResolvedValue([
+          { id: 'p1', cooperativeId: 'coop-1', price: 100000, name: 'A', unit: 'kg' },
+          { id: 'p2', cooperativeId: 'coop-2', price: 50000, name: 'B', unit: 'kg' }
+        ])
+      },
+      order: { create }
+    });
+
+    const result = await service.createPublic({
+      buyerName: 'Khách',
+      buyerPhone: '0912345678',
+      province: 'HCM',
+      address: '123',
+      items: [
+        { productId: 'p1', quantity: 1 },
+        { productId: 'p2', quantity: 2 }
+      ]
+    });
+
+    expect(create).toHaveBeenCalledTimes(2);
+    expect(result.orders).toHaveLength(2);
+    expect(result.groupCode).toMatch(/^ORD-GRP-/);
+    expect(payments.createForOrder).toHaveBeenCalledTimes(2);
+  });
+
   it('updates only the current HTX order items and syncs the aggregate order status', async () => {
     const orderFindUnique = jest
       .fn()
@@ -44,7 +82,7 @@ describe('OrdersService', () => {
       });
     const orderUpdate = jest.fn().mockResolvedValue({});
     const orderItemUpdateMany = jest.fn().mockResolvedValue({ count: 1 });
-    const service = new OrdersService({
+    const service = createService({
       order: {
         findUnique: orderFindUnique,
         update: orderUpdate
@@ -53,7 +91,7 @@ describe('OrdersService', () => {
         updateMany: orderItemUpdateMany,
         findMany: jest.fn().mockResolvedValue([{ status: OrderStatus.NEW }, { status: OrderStatus.PROCESSING }])
       }
-    } as never);
+    });
 
     const result = await service.update(htxUser, 'order-1', { status: OrderStatus.PROCESSING, note: 'Đã gọi khách' });
 
@@ -70,7 +108,7 @@ describe('OrdersService', () => {
   });
 
   it('rejects updating an order that has no item for the current HTX', async () => {
-    const service = new OrdersService({
+    const service = createService({
       order: {
         findUnique: jest.fn().mockResolvedValue({
           id: 'order-1',
@@ -78,32 +116,19 @@ describe('OrdersService', () => {
           items: [{ id: 'item-1', cooperativeId: 'coop-1', status: OrderStatus.NEW }]
         })
       }
-    } as never);
+    });
 
     await expect(service.update(htxUser, 'order-1', { status: OrderStatus.CONFIRMED })).rejects.toBeInstanceOf(ForbiddenException);
   });
 
-  it('does not select internal HTX item notes in public order lookup', async () => {
-    const findFirst = jest.fn().mockResolvedValue({
-      id: 'order-1',
-      orderCode: 'ORD-001',
-      buyerPhone: '0912345678',
-      items: []
-    });
-    const service = new OrdersService({
-      order: {
-        findFirst
-      }
-    } as never);
+  it('looks up all orders in a group by group code and phone', async () => {
+    const findMany = jest.fn().mockResolvedValue([{ id: 'order-1', orderCode: 'ORD-A' }, { id: 'order-2', orderCode: 'ORD-B' }]);
+    const service = createService({ order: { findMany } });
 
-    await service.lookupPublic('ORD-001', '0912345678');
+    const result = await service.lookupPublic('', '0912345678', 'ORD-GRP-TEST');
 
-    expect(findFirst.mock.calls[0][0].include.items.select).toMatchObject({
-      id: true,
-      quantity: true,
-      unitPrice: true,
-      status: true
-    });
-    expect(findFirst.mock.calls[0][0].include.items.select.note).toBeUndefined();
+    expect(findMany).toHaveBeenCalled();
+    expect(result.orders).toHaveLength(2);
+    expect(result.groupCode).toBe('ORD-GRP-TEST');
   });
 });

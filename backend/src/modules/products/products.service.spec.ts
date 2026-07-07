@@ -12,6 +12,8 @@ describe('ProductsService', () => {
     permissions: ['products.create']
   };
 
+  const planLimits = { assertCanCreate: jest.fn().mockResolvedValue(undefined) };
+
   it('rejects product thumbnails from another cooperative', async () => {
     const service = new ProductsService(
       {
@@ -25,7 +27,8 @@ describe('ProductsService', () => {
           })
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      planLimits as never
     );
 
     await expect(
@@ -62,7 +65,8 @@ describe('ProductsService', () => {
           create
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      planLimits as never
     );
 
     await service.create(user, {
@@ -101,7 +105,8 @@ describe('ProductsService', () => {
           })
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      planLimits as never
     );
 
     const result = await service.publicDetail('gao-thom');

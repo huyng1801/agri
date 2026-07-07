@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Pencil, Plus, RefreshCcw, Trash2, WalletCards } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '@/lib/api';
-import { formatCurrency } from '@/lib/format';
+import { formatCurrency, formatDate, statusTone } from '@/lib/format';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type ListResponse<T> = {
@@ -26,6 +26,16 @@ type Plan = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+type Subscription = {
+  id: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  autoRenew: boolean;
+  note?: string | null;
+  plan?: Plan | null;
 };
 
 type PlanForm = {
@@ -58,11 +68,18 @@ export default function SubscriptionPlansPage() {
   const queryClient = useQueryClient();
   const user = typeof window !== 'undefined' ? currentUser() : null;
   const isSuperAdmin = user?.roles.includes('SUPER_ADMIN') ?? false;
+  const cooperativeId = user?.cooperativeId ?? null;
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('');
   const [formOpen, setFormOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<PlanForm>(emptyForm);
+
+  const currentSubscription = useQuery({
+    queryKey: ['current-subscription', cooperativeId],
+    queryFn: () => apiFetch<Subscription>(`/cooperatives/${cooperativeId}/subscription`),
+    enabled: !isSuperAdmin && Boolean(cooperativeId)
+  });
 
   const plans = useQuery({
     queryKey: ['subscription-plans-dashboard', search, activeFilter],
@@ -115,8 +132,10 @@ export default function SubscriptionPlansPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Gói dịch vụ SaaS</h1>
-          <p className="text-sm text-slate-600">Quản lý Free, Basic, Pro, Enterprise và giới hạn gói cho HTXONLINE.</p>
+          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">{isSuperAdmin ? 'Gói dịch vụ SaaS' : 'Gói đang dùng'}</h1>
+          <p className="text-sm text-slate-600">
+            {isSuperAdmin ? 'Quản lý Free, Basic, Pro, Enterprise và giới hạn gói cho HTXONLINE.' : 'Xem gói SaaS hiện tại và danh mục gói của nền tảng.'}
+          </p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => plans.refetch()} aria-label="Tải lại">
@@ -136,6 +155,39 @@ export default function SubscriptionPlansPage() {
         <Metric label="Đang bật" value={stats.active} tone="leaf" />
         <Metric label="Có phí tháng" value={stats.paid} />
       </div>
+
+      {!isSuperAdmin && cooperativeId && (
+        <Panel data-testid="current-subscription-card" className="space-y-3">
+          <div className="flex items-center gap-2">
+            <WalletCards className="text-leaf" size={22} aria-hidden="true" />
+            <h2 className="text-lg font-bold">Gói đang dùng</h2>
+          </div>
+          {currentSubscription.isLoading && <p className="text-sm text-slate-500">Đang tải...</p>}
+          {currentSubscription.data?.data && (
+            <>
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="text-xl font-bold">{currentSubscription.data.data.plan?.name ?? 'Chưa gán gói'}</p>
+                <Badge className={statusTone(currentSubscription.data.data.status)}>{currentSubscription.data.data.status}</Badge>
+              </div>
+              <p className="text-sm text-slate-600">
+                Từ {formatDate(currentSubscription.data.data.startDate)} đến {formatDate(currentSubscription.data.data.endDate)}
+                {currentSubscription.data.data.autoRenew ? ' · Tự gia hạn' : ''}
+              </p>
+              {currentSubscription.data.data.plan && (
+                <div className="grid gap-2 text-sm sm:grid-cols-2">
+                  <Info label="Giới hạn sản phẩm" value={limitLabel(currentSubscription.data.data.plan.maxProducts)} />
+                  <Info label="Giới hạn thành viên" value={limitLabel(currentSubscription.data.data.plan.maxMembers)} />
+                  <Info label="Giới hạn vùng trồng" value={limitLabel(currentSubscription.data.data.plan.maxZones)} />
+                  <Info label="Phí tháng" value={formatCurrency(currentSubscription.data.data.plan.priceMonthly)} />
+                </div>
+              )}
+            </>
+          )}
+          {!currentSubscription.isLoading && !currentSubscription.data?.data && (
+            <p className="text-sm text-slate-600">HTX chưa được gán gói dịch vụ. Liên hệ Super Admin để kích hoạt.</p>
+          )}
+        </Panel>
+      )}
 
       {formOpen && isSuperAdmin && (
         <Panel className="space-y-4">
@@ -356,6 +408,10 @@ function slugifyLocal(input: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)+/g, '');
+}
+
+function limitLabel(value?: number | null) {
+  return value == null ? 'Không giới hạn' : String(value);
 }
 
 function errorMessage(error: unknown) {

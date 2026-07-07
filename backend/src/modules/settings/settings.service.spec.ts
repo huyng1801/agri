@@ -8,7 +8,8 @@ describe('SettingsService', () => {
           findUnique: jest.fn().mockResolvedValue(null)
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { testConnection: jest.fn() } as never
     );
 
     const profile = await service.publicSiteProfile();
@@ -46,7 +47,8 @@ describe('SettingsService', () => {
           findUnique
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { testConnection: jest.fn() } as never
     );
 
     const profile = await service.publicSiteProfile();

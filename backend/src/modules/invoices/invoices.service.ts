@@ -6,13 +6,15 @@ import { AuthUser } from '../../common/types';
 import { paginated, parsePagination } from '../../common/utils/pagination';
 import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PaymentsService } from '../payments/payments.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class InvoicesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditLogsService
+    private readonly audit: AuditLogsService,
+    private readonly payments: PaymentsService
   ) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
@@ -133,6 +135,7 @@ export class InvoicesService {
       entityId: id,
       cooperativeId: updated.cooperativeId
     });
+    await this.payments.createForInvoice(id, Number(updated.amount), dto.paymentMethod ?? 'manual');
     return updated;
   }
 
@@ -186,21 +189,32 @@ export class InvoicesService {
   async pdf(user: AuthUser, id: string) {
     const invoice = await this.get(user, id);
     const lines = [
-      'HTXONLINE - HOA DON SAAS',
+      'HTXONLINE - HOA DON DICH VU SAAS',
       `Ma hoa don: ${invoice.invoiceCode}`,
-      `HTX: ${invoice.cooperative.name} (${invoice.cooperative.code})`,
-      `Goi dich vu: ${invoice.subscription?.plan?.name ?? 'Khong gan goi'}`,
+      `Hop tac xa: ${invoice.cooperative.name} (${invoice.cooperative.code})`,
+      `Goi dich vu: ${invoice.subscription?.plan?.name ?? 'Chua gan goi'}`,
       `So tien: ${this.formatCurrency(invoice.amount, invoice.currency)}`,
-      `Trang thai: ${invoice.status}`,
+      `Trang thai: ${this.invoiceStatusLabel(invoice.status)}`,
       `Han thanh toan: ${this.date(invoice.dueDate)}`,
       `Ngay thanh toan: ${this.date(invoice.paidAt)}`,
-      `Phuong thuc: ${invoice.paymentMethod ?? '-'}`,
+      `Phuong thuc: ${invoice.paymentMethod ?? 'Thu cong'}`,
       `Ghi chu: ${invoice.note ?? '-'}`
     ];
     return {
       fileName: `${invoice.invoiceCode}.pdf`,
       buffer: this.simplePdf(lines)
     };
+  }
+
+  private invoiceStatusLabel(status: string) {
+    const labels: Record<string, string> = {
+      DRAFT: 'Nhap',
+      UNPAID: 'Chua thanh toan',
+      PAID: 'Da thanh toan',
+      OVERDUE: 'Qua han',
+      CANCELLED: 'Da huy'
+    };
+    return labels[status] ?? status;
   }
 
   private simplePdf(lines: string[]) {

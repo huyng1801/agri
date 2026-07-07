@@ -24,7 +24,7 @@ export const htxAdminUser: E2EUser = {
   fullName: 'Admin HTX E2E',
   cooperativeId: 'e2e-cooperative-id',
   roles: ['ADMIN_HTX'],
-  permissions: ['products.*', 'certifications.*', 'zones.*', 'farming_logs.*', 'passports.*', 'orders.*', 'reports.read']
+  permissions: ['products.*', 'certifications.*', 'zones.*', 'farming_logs.*', 'passports.*', 'orders.*', 'reports.overview', 'reports.snapshots', 'cooperatives.read', 'cooperatives.update', 'subscription_plans.read', 'subscriptions.read']
 };
 
 export async function seedAuthenticatedSession(page: Page, user: E2EUser) {

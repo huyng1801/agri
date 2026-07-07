@@ -6,6 +6,7 @@ import { AuthUser } from '../../common/types';
 import { paginated, parsePagination } from '../../common/utils/pagination';
 import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PlanLimitsService } from '../../common/services/plan-limits.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 const HTX_ASSIGNABLE_ROLES: RoleSlug[] = [RoleSlug.MEMBER_HTX, RoleSlug.FARMER, RoleSlug.BUYER];
@@ -15,7 +16,8 @@ const ROLES_REQUIRING_COOPERATIVE: RoleSlug[] = [RoleSlug.ADMIN_HTX, RoleSlug.ME
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditLogsService
+    private readonly audit: AuditLogsService,
+    private readonly planLimits: PlanLimitsService
   ) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
@@ -83,6 +85,9 @@ export class UsersService {
     }
     if (!isSuperAdmin(actor) && !cooperativeId) {
       throw new ForbiddenException('Thiếu HTX');
+    }
+    if (cooperativeId && ROLES_REQUIRING_COOPERATIVE.includes(roleSlug)) {
+      await this.planLimits.assertCanCreate(cooperativeId, 'members');
     }
 
     const role = await this.prisma.role.findUniqueOrThrow({ where: { slug: roleSlug } });

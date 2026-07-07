@@ -29,6 +29,9 @@ import { RolesModule } from './modules/roles/roles.module';
 import { NewsModule } from './modules/news/news.module';
 import { CertificationsModule } from './modules/certifications/certifications.module';
 import { ContactsModule } from './modules/contacts/contacts.module';
+import { PlanLimitsModule } from './common/services/plan-limits.module';
+import { PaymentsModule } from './modules/payments/payments.module';
+import { JobsModule } from './modules/jobs/jobs.module';
 
 @Module({
   imports: [
@@ -62,7 +65,10 @@ import { ContactsModule } from './modules/contacts/contacts.module';
     BackupsModule,
     NewsModule,
     CertificationsModule,
-    ContactsModule
+    ContactsModule,
+    PlanLimitsModule,
+    PaymentsModule,
+    JobsModule
   ],
   providers: [
     {

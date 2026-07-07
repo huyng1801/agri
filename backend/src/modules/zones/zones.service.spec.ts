@@ -21,7 +21,8 @@ describe('ZonesService', () => {
           count
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
     );
 
     await service.list(user, { isPublic: 'false', limit: '20' });
@@ -43,7 +44,8 @@ describe('ZonesService', () => {
           create
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
     );
 
     await service.create(user, {
@@ -76,7 +78,8 @@ describe('ZonesService', () => {
           update
         }
       } as never,
-      { record: jest.fn() } as never
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
     );
 
     await service.update(user, 'zone-1', {

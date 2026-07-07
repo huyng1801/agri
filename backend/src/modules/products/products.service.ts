@@ -6,13 +6,15 @@ import { paginated, parsePagination } from '../../common/utils/pagination';
 import { slugify } from '../../common/utils/slugify';
 import { isSuperAdmin, requireTenant, tenantWhere } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PlanLimitsService } from '../../common/services/plan-limits.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditLogsService
+    private readonly audit: AuditLogsService,
+    private readonly planLimits: PlanLimitsService
   ) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
@@ -171,6 +173,7 @@ export class ProductsService {
   async create(user: AuthUser, dto: CreateProductDto) {
     const cooperativeId = requireTenant(user, dto.cooperativeId);
     if (!cooperativeId) throw new BadRequestException('Thiếu cooperativeId');
+    await this.planLimits.assertCanCreate(cooperativeId, 'products');
     await this.validateRelations(cooperativeId, dto.zoneId, dto.farmerId);
     await this.assertThumbnail(cooperativeId, dto.thumbnailFileId);
     const slug = dto.slug ? slugify(dto.slug) : slugify(dto.name);

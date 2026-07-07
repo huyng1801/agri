@@ -45,6 +45,7 @@ type Order = {
   id: string;
   cooperativeId: string;
   orderCode: string;
+  orderGroupCode?: string | null;
   status: OrderStatus;
   tenantStatus?: OrderStatus;
   totalAmount: string | number;
@@ -82,6 +83,7 @@ export default function OrdersPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [cooperativeFilter, setCooperativeFilter] = useState('');
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
 
   const orders = useQuery({
     queryKey: ['orders-dashboard', search, statusFilter, cooperativeFilter],
@@ -184,6 +186,7 @@ export default function OrdersPage() {
                     <h2 className="text-xl font-bold text-ink">{order.orderCode}</h2>
                     <Badge className={orderStatusTone(currentStatus)}>{statusLabel(currentStatus)}</Badge>
                     <Badge className="bg-slate-100 text-slate-700">{order.paymentMethod || 'COD'}</Badge>
+                    {order.orderGroupCode && <Badge className="bg-violet-100 text-violet-700">Nhóm {order.orderGroupCode}</Badge>}
                   </div>
                   <p className="mt-1 text-sm text-slate-500">
                     Tạo ngày {formatDate(order.createdAt)} · {order.visibleItemsCount ?? order.items.length} sản phẩm hiển thị
@@ -196,6 +199,10 @@ export default function OrdersPage() {
                       Gọi khách
                     </a>
                   )}
+                  <Button type="button" variant="ghost" data-testid="order-detail-button" onClick={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}>
+                    <ClipboardList size={16} aria-hidden="true" />
+                    {expandedOrderId === order.id ? 'Thu gọn' : 'Chi tiết'}
+                  </Button>
                   <Button type="button" variant="ghost" onClick={() => printOrder(order, isSuperAdmin)}>
                     <Printer size={16} aria-hidden="true" />
                     In đơn
@@ -243,6 +250,26 @@ export default function OrdersPage() {
                   </div>
                 </aside>
               </div>
+
+              {expandedOrderId === order.id && (
+                <div className="mt-4 rounded-md border border-dashed border-slate-200 p-3">
+                  <p className="text-sm font-semibold text-slate-700">Tiến trình xử lý</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {['NEW', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'COMPLETED'].map((step) => (
+                      <span
+                        key={step}
+                        className={cn(
+                          'rounded-full px-3 py-1 text-xs font-semibold',
+                          step === currentStatus ? 'bg-leaf text-white' : statusIndex(step) < statusIndex(currentStatus) ? 'bg-mint text-leaf' : 'bg-slate-100 text-slate-500'
+                        )}
+                      >
+                        {statusLabel(step)}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-sm text-slate-600">Cập nhật lần cuối: {formatDate(order.updatedAt)}</p>
+                </div>
+              )}
 
               {!isSuperAdmin && (
                 <div className="mt-4 grid gap-3 rounded-md border border-slate-200 p-3 lg:grid-cols-[1fr_auto]">
@@ -339,6 +366,10 @@ function orderStats(items: Order[], isSuperAdmin: boolean) {
 
 function formatAddress(order: Order) {
   return [order.address, order.ward, order.district, order.province].filter(Boolean).join(', ') || '—';
+}
+
+function statusIndex(status: string) {
+  return ['NEW', 'CONFIRMED', 'PROCESSING', 'SHIPPING', 'COMPLETED', 'FULFILLED', 'CANCELLED'].indexOf(status);
 }
 
 function statusLabel(status: string) {

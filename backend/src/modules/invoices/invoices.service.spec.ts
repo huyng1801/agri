@@ -28,13 +28,17 @@ describe('InvoicesService', () => {
     subscription: { id: 'sub-1', plan: { name: 'Basic' } }
   };
 
+  const audit = { record: jest.fn() };
+  const payments = { createForInvoice: jest.fn(), createForOrder: jest.fn() };
+
   it('rejects creating an invoice for a subscription from another cooperative', async () => {
     const service = new InvoicesService(
       {
         cooperative: { findUnique: jest.fn().mockResolvedValue({ id: 'coop-1' }) },
         cooperativeSubscription: { findUnique: jest.fn().mockResolvedValue({ id: 'sub-1', cooperativeId: 'coop-2' }) }
       } as never,
-      { record: jest.fn() } as never
+      audit as never,
+      payments as never
     );
 
     await expect(
@@ -56,7 +60,8 @@ describe('InvoicesService', () => {
           update
         }
       } as never,
-      { record: jest.fn() } as never
+      audit as never,
+      payments as never
     );
 
     await service.markUnpaid(user, 'invoice-1');
@@ -68,6 +73,25 @@ describe('InvoicesService', () => {
     });
   });
 
+  it('creates a payment record when marking invoice paid', async () => {
+    const unpaid = { ...invoice, status: InvoiceStatus.UNPAID, paidAt: null, paymentMethod: null };
+    const update = jest.fn(({ data }) => ({ ...unpaid, ...data }));
+    const service = new InvoicesService(
+      {
+        subscriptionInvoice: {
+          findUnique: jest.fn().mockResolvedValue(unpaid),
+          update
+        }
+      } as never,
+      audit as never,
+      payments as never
+    );
+
+    await service.markPaid(user, 'invoice-1', { paymentMethod: 'bank_transfer' });
+
+    expect(payments.createForInvoice).toHaveBeenCalledWith('invoice-1', unpaid.amount, 'bank_transfer');
+  });
+
   it('rejects cancelling an already paid invoice', async () => {
     const service = new InvoicesService(
       {
@@ -75,7 +99,8 @@ describe('InvoicesService', () => {
           findUnique: jest.fn().mockResolvedValue(invoice)
         }
       } as never,
-      { record: jest.fn() } as never
+      audit as never,
+      payments as never
     );
 
     await expect(service.cancel(user, 'invoice-1')).rejects.toBeInstanceOf(BadRequestException);
@@ -88,7 +113,8 @@ describe('InvoicesService', () => {
           findUnique: jest.fn().mockResolvedValue(invoice)
         }
       } as never,
-      { record: jest.fn() } as never
+      audit as never,
+      payments as never
     );
 
     const file = await service.pdf(user, 'invoice-1');

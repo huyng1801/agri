@@ -112,6 +112,27 @@ export class FilesService {
     return { deleted: true };
   }
 
+  async testConnection() {
+    const accountId = process.env.R2_ACCOUNT_ID;
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+    const configured =
+      accountId &&
+      accessKeyId &&
+      secretAccessKey &&
+      ![accountId, accessKeyId, secretAccessKey].some((value) => value.includes('CHANGE_ME'));
+    if (!configured) {
+      return { ok: false, message: 'Chưa cấu hình R2 trong biến môi trường' };
+    }
+    try {
+      const bucket = process.env.R2_BUCKET || 'agri-passport';
+      await this.createSignedUrl(bucket, 'health-check.txt', 'text/plain');
+      return { ok: true, message: 'Kết nối R2 thành công', bucket };
+    } catch (error) {
+      return { ok: false, message: error instanceof Error ? error.message : 'Không thể kết nối R2' };
+    }
+  }
+
   private validateFile(mimeType: string, sizeBytes: number) {
     if (!ALLOWED_MIME.has(mimeType)) throw new BadRequestException('Loại file không được hỗ trợ');
     const limit = mimeType.startsWith('image/') ? 10 * 1024 * 1024 : 20 * 1024 * 1024;

@@ -30,8 +30,12 @@ export class OrdersController {
 
   @Public()
   @Get('public/lookup')
-  lookupPublic(@Query('orderCode') orderCode: string, @Query('phone') phone: string) {
-    return this.orders.lookupPublic(orderCode, phone);
+  lookupPublic(
+    @Query('orderCode') orderCode: string,
+    @Query('phone') phone: string,
+    @Query('groupCode') groupCode?: string
+  ) {
+    return this.orders.lookupPublic(orderCode, phone, groupCode);
   }
 
   @Get(':id')

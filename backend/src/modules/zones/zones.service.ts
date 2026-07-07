@@ -5,13 +5,15 @@ import { AuthUser } from '../../common/types';
 import { paginated, parsePagination } from '../../common/utils/pagination';
 import { isSuperAdmin, requireTenant, tenantWhere } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
+import { PlanLimitsService } from '../../common/services/plan-limits.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ZonesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly audit: AuditLogsService
+    private readonly audit: AuditLogsService,
+    private readonly planLimits: PlanLimitsService
   ) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
@@ -59,6 +61,7 @@ export class ZonesService {
 
   async create(user: AuthUser, dto: CreateZoneDto) {
     const cooperativeId = requireTenant(user, dto.cooperativeId);
+    await this.planLimits.assertCanCreate(cooperativeId!, 'zones');
     const created = await this.prisma.zone.create({
       data: {
         cooperativeId: cooperativeId!,

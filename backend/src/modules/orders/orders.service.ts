@@ -6,12 +6,16 @@ import { AuthUser } from '../../common/types';
 import { paginated, parsePagination } from '../../common/utils/pagination';
 import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { PrismaService } from '../prisma/prisma.service';
+import { PaymentsService } from '../payments/payments.service';
 
 const ORDER_STATUSES = Object.values(OrderStatus);
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly payments: PaymentsService
+  ) {}
 
   async list(user: AuthUser, query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
@@ -143,31 +147,66 @@ export class OrdersService {
         status: OrderStatus.NEW
       };
     });
-    const totalAmount = itemData.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0);
 
-    return this.prisma.order.create({
-      data: {
-        cooperativeId: itemData[0].cooperativeId,
-        orderCode: `ORD-${nanoid(8).toUpperCase()}`,
-        status: OrderStatus.NEW,
-        totalAmount,
-        buyerName: dto.buyerName,
-        buyerPhone: dto.buyerPhone,
-        buyerEmail: dto.buyerEmail,
-        province: dto.province,
-        district: dto.district,
-        ward: dto.ward,
-        address: dto.address,
-        paymentMethod: 'COD',
-        note: dto.note,
-        items: { create: itemData }
-      },
-      include: this.publicOrderInclude()
-    });
+    const groups = new Map<string, typeof itemData>();
+    for (const item of itemData) {
+      const bucket = groups.get(item.cooperativeId) ?? [];
+      bucket.push(item);
+      groups.set(item.cooperativeId, bucket);
+    }
+
+    const groupCode = groups.size > 1 ? `ORD-GRP-${nanoid(8).toUpperCase()}` : null;
+    const orders = [];
+
+    for (const [cooperativeId, items] of groups.entries()) {
+      const totalAmount = items.reduce((sum, item) => sum + Number(item.quantity) * Number(item.unitPrice), 0);
+      const order = await this.prisma.order.create({
+        data: {
+          cooperativeId,
+          orderCode: `ORD-${nanoid(8).toUpperCase()}`,
+          orderGroupCode: groupCode,
+          status: OrderStatus.NEW,
+          totalAmount,
+          buyerName: dto.buyerName,
+          buyerPhone: dto.buyerPhone,
+          buyerEmail: dto.buyerEmail,
+          province: dto.province,
+          district: dto.district,
+          ward: dto.ward,
+          address: dto.address,
+          paymentMethod: 'COD',
+          note: dto.note,
+          items: { create: items }
+        },
+        include: this.publicOrderInclude()
+      });
+      await this.payments.createForOrder(order.id, totalAmount, 'COD');
+      orders.push(order);
+    }
+
+    if (orders.length === 1) {
+      return { groupCode: orders[0].orderGroupCode, orders };
+    }
+    return { groupCode, orders };
   }
 
-  async lookupPublic(orderCode: string, phone: string) {
-    if (!orderCode || !phone) throw new BadRequestException('Nhập mã đơn hàng và số điện thoại');
+  async lookupPublic(orderCode: string, phone: string, groupCode?: string) {
+    if (!phone) throw new BadRequestException('Nhập số điện thoại');
+    if (!orderCode && !groupCode) throw new BadRequestException('Nhập mã đơn hàng hoặc mã nhóm đơn');
+
+    if (groupCode) {
+      const orders = await this.prisma.order.findMany({
+        where: {
+          orderGroupCode: groupCode,
+          buyerPhone: phone
+        },
+        include: this.publicOrderInclude(),
+        orderBy: { createdAt: 'asc' }
+      });
+      if (!orders.length) throw new NotFoundException('Không tìm thấy đơn hàng');
+      return { groupCode, orders };
+    }
+
     const order = await this.prisma.order.findFirst({
       where: {
         orderCode,
@@ -176,7 +215,20 @@ export class OrdersService {
       include: this.publicOrderInclude()
     });
     if (!order) throw new NotFoundException('Không tìm thấy đơn hàng');
-    return order;
+
+    if (order.orderGroupCode) {
+      const orders = await this.prisma.order.findMany({
+        where: {
+          orderGroupCode: order.orderGroupCode,
+          buyerPhone: phone
+        },
+        include: this.publicOrderInclude(),
+        orderBy: { createdAt: 'asc' }
+      });
+      return { groupCode: order.orderGroupCode, orders };
+    }
+
+    return { groupCode: null, orders: [order] };
   }
 
   async update(user: AuthUser, id: string, dto: UpdateOrderDto) {

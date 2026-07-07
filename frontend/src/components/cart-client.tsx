@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { CartItem, cartTotal, formatVnd, readCart, writeCart } from '@/lib/cart';
 import { Button, Panel } from './ui';
 
@@ -25,6 +25,18 @@ export function CartClient() {
   function remove(productId: string) {
     commit(items.filter((item) => item.productId !== productId));
   }
+
+  const cooperativeGroups = useMemo(() => {
+    const groups = new Map<string, { name: string; count: number; subtotal: number }>();
+    for (const item of items) {
+      const key = item.cooperativeId || 'unknown';
+      const current = groups.get(key) ?? { name: item.cooperativeName || 'HTX', count: 0, subtotal: 0 };
+      current.count += item.quantity;
+      current.subtotal += item.price * item.quantity;
+      groups.set(key, current);
+    }
+    return Array.from(groups.values());
+  }, [items]);
 
   if (!items.length) {
     return (
@@ -70,6 +82,17 @@ export function CartClient() {
       </div>
       <Panel className="h-max">
         <h2 className="text-lg font-bold">Tạm tính</h2>
+        {cooperativeGroups.length > 1 && (
+          <div className="mt-3 space-y-2 text-sm">
+            {cooperativeGroups.map((group) => (
+              <div key={group.name} className="flex justify-between rounded-md bg-slate-50 p-2">
+                <span>{group.name}</span>
+                <span className="font-semibold">{formatVnd(group.subtotal)}</span>
+              </div>
+            ))}
+            <p className="text-xs text-amber-700">Sẽ tách thành {cooperativeGroups.length} đơn COD khi thanh toán.</p>
+          </div>
+        )}
         <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-4">
           <span className="font-semibold">Tổng tiền</span>
           <span className="text-xl font-bold text-leaf">{formatVnd(cartTotal(items))}</span>

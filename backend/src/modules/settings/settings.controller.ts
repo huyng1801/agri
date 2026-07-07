@@ -28,6 +28,13 @@ export class SettingsController {
     return this.settings.publicSiteProfile();
   }
 
+  @Post('test-r2')
+  @Roles(RoleSlug.SUPER_ADMIN)
+  @Permissions('settings.update')
+  testR2() {
+    return this.settings.testR2();
+  }
+
   @Post()
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('settings.update')
