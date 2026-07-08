@@ -18,8 +18,6 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
 
   return (
     <div className="relative mt-5" data-testid="product-slider">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 hidden w-10 bg-gradient-to-r from-[#f8faf7] to-transparent sm:block" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 hidden w-10 bg-gradient-to-l from-[#f8faf7] to-transparent sm:block" />
       <div
         ref={trackRef}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
