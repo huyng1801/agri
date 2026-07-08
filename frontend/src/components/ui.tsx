@@ -25,24 +25,24 @@ export function Button({
   );
 }
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       className={cn(
-        'touch-target w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition placeholder:text-slate-400 focus:border-leaf focus:ring-4 focus:ring-mint',
-        props.className
+        'touch-target block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition placeholder:text-slate-400 focus:border-leaf focus:ring-4 focus:ring-mint',
+        className
       )}
       {...props}
     />
   );
 }
 
-export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({ className, ...props }: React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <select
       className={cn(
-        'touch-target w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition focus:border-leaf focus:ring-4 focus:ring-mint',
-        props.className
+        'touch-target block w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition focus:border-leaf focus:ring-4 focus:ring-mint',
+        className
       )}
       {...props}
     />
@@ -50,15 +50,15 @@ export function Select(props: React.SelectHTMLAttributes<HTMLSelectElement>) {
 }
 
 export const Textarea = React.forwardRef<HTMLTextAreaElement, React.TextareaHTMLAttributes<HTMLTextAreaElement>>(function Textarea(
-  props,
+  { className, ...props },
   ref
 ) {
   return (
     <textarea
       ref={ref}
       className={cn(
-        'min-h-24 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition placeholder:text-slate-400 focus:border-leaf focus:ring-4 focus:ring-mint',
-        props.className
+        'block min-h-24 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-base outline-none transition placeholder:text-slate-400 focus:border-leaf focus:ring-4 focus:ring-mint',
+        className
       )}
       {...props}
     />

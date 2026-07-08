@@ -73,8 +73,8 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
   if (isHero) {
     return (
-      <form className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]" onSubmit={submit}>
-        <div>
+      <form className="grid gap-6 lg:grid-cols-2" onSubmit={submit}>
+        <div className="min-w-0">
           <h2 className="text-xl font-bold leading-snug text-white sm:text-2xl">Bạn muốn HTXONLINE hỗ trợ gì?</h2>
           <p className="mt-2 text-sm leading-6 text-white/80">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
           <div className="mt-5 grid gap-3">
@@ -100,8 +100,8 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
           </div>
         </div>
 
-        <div className="grid gap-3">
-          <label className="space-y-1 text-sm font-semibold text-white">
+        <div className="grid min-w-0 gap-4">
+          <label className="grid gap-1.5 text-sm font-semibold text-white">
             <span>Họ tên / Tên HTX</span>
             <Input
               data-testid="contact-name-input"
@@ -111,15 +111,28 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               placeholder="VD: HTX Lúa ST25 Đồng Tháp"
             />
           </label>
-          <label className="space-y-1 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-white">
             <span>Số điện thoại</span>
-            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" className="border-0 bg-white text-ink" placeholder="0900 000 000" />
+            <Input
+              data-testid="contact-phone-input"
+              name="phone"
+              required
+              inputMode="tel"
+              className="border-0 bg-white text-ink"
+              placeholder="0900 000 000"
+            />
           </label>
-          <label className="space-y-1 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-white">
             <span>Email</span>
-            <Input data-testid="contact-email-input" name="email" type="email" className="border-0 bg-white text-ink" placeholder="ban@htx.vn" />
+            <Input
+              data-testid="contact-email-input"
+              name="email"
+              type="email"
+              className="border-0 bg-white text-ink"
+              placeholder="ban@htx.vn"
+            />
           </label>
-          <label className="space-y-1 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-white">
             <span>Nội dung</span>
             <Textarea
               data-testid="contact-message-input"
