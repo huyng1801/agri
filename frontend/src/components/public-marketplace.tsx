@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, Phone, Search, ShoppingCart } from 'lucide-react';
+import { ArrowRight, Calendar, Phone, QrCode, Search } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
 import { PublicBottomNav } from './public-bottom-nav';
 import { PublicFooter } from './public-footer';
@@ -112,24 +112,44 @@ export function PublicSearch({
 }
 
 export function ProductCard({ product }: { product: PublicProduct }) {
+  const hasQr = Boolean(product.passports?.length);
+
   return (
-    <article className={cn(publicCardClass, 'flex h-full flex-col')}>
-      <Link href={`/san-pham/${product.slug}`} className="block overflow-hidden">
+    <article className={cn(publicCardClass, 'group flex h-full flex-col transition-shadow hover:shadow-md')}>
+      <Link href={`/san-pham/${product.slug}`} className="relative block overflow-hidden">
         <PublicImage
           src={product.thumbnail?.publicUrl}
           alt={product.name}
           fallback={DEFAULT_PRODUCT_IMAGE}
           testId="product-card-image"
-          className="aspect-[4/3] w-full object-cover transition duration-300 hover:scale-[1.02]"
+          className="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.02]"
         />
+        {hasQr && (
+          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-leaf shadow-sm">
+            <QrCode size={12} aria-hidden="true" />
+            QR
+          </span>
+        )}
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
         <div>
           <p className="text-xs font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-          <Link href={`/san-pham/${product.slug}`} className="mt-1 block text-lg font-bold text-ink">
+          <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-lg font-bold leading-6 text-ink">
             {product.name}
           </Link>
-          <p className="mt-1 text-sm text-slate-600">{product.cooperative?.name ?? 'HTX đang cập nhật'}</p>
+          {product.cooperative && (
+            <Link href={`/htx/${product.cooperative.code}`} className="mt-2 flex items-center gap-2 text-sm text-slate-600 hover:text-leaf">
+              <PublicImage
+                src={product.cooperative.avatarUrl}
+                alt={product.cooperative.name}
+                fallback={defaultCooperativeAvatar}
+                className="h-6 w-6 rounded object-cover"
+                wrapperClassName="shrink-0"
+              />
+              <span className="min-w-0 truncate font-medium">{product.cooperative.name}</span>
+              {product.cooperative.province && <span className="hidden shrink-0 text-xs text-slate-400 sm:inline">· {product.cooperative.province}</span>}
+            </Link>
+          )}
         </div>
         <div className="flex items-center justify-between gap-3">
           <div>
@@ -152,28 +172,31 @@ export function productImage(product: PublicProduct) {
 
 export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {
   return (
-    <article className={cn(publicCardClass, 'flex h-full flex-col overflow-hidden')}>
-      <div className="relative aspect-[16/7] overflow-hidden">
+    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md')}>
+      <div className="relative aspect-[16/7] overflow-hidden bg-slate-100">
         <PublicImage
           src={cooperative.avatarUrl}
-          alt={cooperative.name}
+          alt=""
           fallback={defaultCooperativeAvatar}
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+        <div className="absolute bottom-3 left-3 right-3">
+          <p className="truncate text-sm font-semibold text-white drop-shadow">{cooperative.province || 'Việt Nam'}</p>
+        </div>
       </div>
-      <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-start gap-3">
+      <div className="flex flex-1 flex-col px-4 pb-4">
+        <div className="flex items-end gap-3 -mt-7 sm:-mt-8">
           <PublicImage
             src={cooperative.avatarUrl}
             alt={cooperative.name}
             fallback={defaultCooperativeAvatar}
-            className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-10"
+            className="relative z-10 h-14 w-14 shrink-0 rounded-md border-[3px] border-white object-cover shadow-md sm:h-16 sm:w-16"
+            wrapperClassName="shrink-0"
           />
-          <div className="min-w-0 flex-1 pt-1">
-            <h3 className="truncate text-lg font-bold text-ink">{cooperative.name}</h3>
-            <p className="text-sm text-slate-600">{cooperative.province || 'Đang cập nhật địa phương'}</p>
-            <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+          <div className="min-w-0 flex-1 pb-1">
+            <h3 className="line-clamp-2 text-lg font-bold leading-6 text-ink">{cooperative.name}</h3>
+            <p className="mt-1 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
           </div>
         </div>
         <div className="mt-auto flex gap-2 pt-4">
@@ -184,7 +207,7 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
             </Button>
           </Link>
           {cooperative.phone && (
-            <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf" aria-label="Gọi HTX">
+            <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf transition hover:border-leaf" aria-label="Gọi HTX">
               <Phone size={18} aria-hidden="true" />
             </a>
           )}
@@ -196,13 +219,13 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
 
 export function NewsCard({ article }: { article: NewsArticle }) {
   return (
-    <article className={cn(publicCardClass, 'flex h-full flex-col')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col transition-shadow hover:shadow-md')}>
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
         <PublicImage
           src={article.coverImageUrl}
           alt={article.title}
           fallback={DEFAULT_NEWS_IMAGE}
-          className="aspect-[16/10] w-full object-cover transition duration-300 hover:scale-[1.02]"
+          className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]"
         />
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
@@ -215,7 +238,7 @@ export function NewsCard({ article }: { article: NewsArticle }) {
             </span>
           )}
         </div>
-        <Link href={`/tin-tuc/${article.slug}`} className="block text-lg font-bold leading-6 text-ink">
+        <Link href={`/tin-tuc/${article.slug}`} className="line-clamp-2 text-lg font-bold leading-6 text-ink">
           {article.title}
         </Link>
         <p className="line-clamp-3 text-sm leading-6 text-slate-600">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>

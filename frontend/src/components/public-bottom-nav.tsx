@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Newspaper, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
+import { CartCountBadge } from './cart-count-badge';
 import { cn } from './ui';
 
 const items = [
@@ -30,11 +31,14 @@ export function PublicBottomNav() {
               key={item.href}
               href={item.href}
               className={cn(
-                'flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold transition-colors',
+                'relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold transition-colors',
                 active ? 'bg-mint text-leaf' : 'text-slate-500'
               )}
             >
-              <Icon size={20} aria-hidden="true" />
+              <span className="relative">
+                <Icon size={20} aria-hidden="true" />
+                {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
+              </span>
               <span className="max-w-full truncate">{item.label}</span>
             </Link>
           );

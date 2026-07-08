@@ -43,7 +43,7 @@ describe('ProductCard', () => {
 
     render(<ProductCard product={product} />);
 
-    expect(screen.getByTestId('product-card-image').getAttribute('style')).toContain('https://cdn.htxonline.vn/coop/gao-thom.webp');
+    expect(screen.getByTestId('product-card-image')).toHaveAttribute('src', 'https://cdn.htxonline.vn/coop/gao-thom.webp');
   });
 });
 
