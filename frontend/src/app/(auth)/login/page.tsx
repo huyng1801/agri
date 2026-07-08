@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button, Input, Panel } from '@/components/ui';
+import { PublicAuthShell } from '@/components/public-auth-shell';
 import { PublicLogo } from '@/components/public-logo';
 import { login } from '@/lib/api';
 import { dashboardUrlForRoles } from '@/lib/domain';
@@ -39,11 +40,11 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="grid min-h-screen place-items-center px-4 py-8">
+    <PublicAuthShell>
       <Panel className="w-full max-w-md">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-2 text-center">
-            <PublicLogo size={56} className="mx-auto ring-1 ring-slate-200" />
+            <PublicLogo size={56} className="mx-auto ring-1 ring-slate-200 lg:hidden" />
             <h1 className="text-2xl font-bold">Đăng nhập</h1>
             <p className="text-sm text-slate-600">HTXONLINE — Sàn nông sản số cho hợp tác xã</p>
           </div>
@@ -72,6 +73,6 @@ export default function LoginPage() {
           </div>
         </form>
       </Panel>
-    </main>
+    </PublicAuthShell>
   );
 }

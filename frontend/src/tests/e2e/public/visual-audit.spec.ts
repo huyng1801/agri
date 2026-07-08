@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { baseUrls } from '../helpers/auth';
@@ -29,6 +29,8 @@ const AUDIT_ROUTES: AuditRoute[] = [
   { id: 'products-search', path: '/san-pham?search=tra', batch: 'Shell', note: 'Search results state' },
   { id: 'cooperatives', path: '/htx', batch: 'Shell', note: 'HTX cards with avatars' },
   { id: 'news', path: '/tin-tuc', batch: 'Shell', note: 'Featured article + grid' },
+  { id: 'login', path: '/login', batch: 'Auth', note: 'Login form layout, CTA, mobile fit' },
+  { id: 'register', path: '/register', batch: 'Auth', note: 'Register form layout, validation states' },
   { id: 'product-detail', path: `/san-pham/${DEMO_FIXTURES.productSlug}`, batch: 'Chi tiết', note: 'PublicImage hero, HTX link' },
   { id: 'product-detail-rice', path: `/san-pham/${DEMO_FIXTURES.productSlugRice}`, batch: 'Chi tiết', note: 'Rice product from Đồng Tháp HTX' },
   { id: 'cooperative-detail', path: `/htx/${DEMO_FIXTURES.cooperativeCode}`, batch: 'Chi tiết', note: 'Avatar overlap, product list' },
@@ -52,19 +54,12 @@ const AUDIT_ROUTES: AuditRoute[] = [
 
 const OUTPUT_ROOT = join(process.cwd(), 'test-results', 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
+const FINDINGS_PATH = join(OUTPUT_ROOT, 'findings.jsonl');
 
 test.describe('public visual audit', () => {
   test.describe.configure({ mode: 'serial' });
 
   let passportCode = 'DEMO-PASSPORT';
-  const findings: Array<{
-    route: string;
-    viewport: string;
-    status: 'ok' | 'warn' | 'fail';
-    layout: string;
-    images: string;
-    mobile: string;
-  }> = [];
 
   test.beforeAll(async ({ request }) => {
     const { apiUrl } = baseUrls();
@@ -80,6 +75,7 @@ test.describe('public visual audit', () => {
       // Keep fallback passport code for offline screenshot runs.
     }
     mkdirSync(OUTPUT_ROOT, { recursive: true });
+    if (existsSync(FINDINGS_PATH)) unlinkSync(FINDINGS_PATH);
   });
 
   for (const route of AUDIT_ROUTES) {
@@ -101,24 +97,43 @@ test.describe('public visual audit', () => {
       const shotDir = join(OUTPUT_ROOT, route.id);
       mkdirSync(shotDir, { recursive: true });
       const shotPath = join(shotDir, `${viewportLabel}.png`);
-      await page.screenshot({ path: shotPath, fullPage: true });
+      await capturePageScreenshot(page, shotPath, viewportLabel);
 
       const imageStats = await analyzeImages(page);
-      const layoutNotes = await analyzeLayout(page, route.id);
-      const status = imageStats.broken > 0 ? 'fail' : imageStats.total === 0 ? 'warn' : 'ok';
+      const layoutNotes = await analyzeLayout(page, route);
+      const status =
+        imageStats.broken > 0 ? 'fail' : imageStats.total === 0 && !['Auth', 'QR'].includes(route.batch) ? 'warn' : 'ok';
 
-      findings.push({
+      const finding = {
         route: `${path} (${route.id})`,
         viewport: viewportLabel,
         status,
         layout: layoutNotes,
         images: `${imageStats.loaded}/${imageStats.total} loaded, ${imageStats.broken} broken`,
         mobile: viewportLabel === 'mobile' ? layoutNotes : '—'
-      });
+      };
+
+      appendFileSync(FINDINGS_PATH, `${JSON.stringify(finding)}\n`, 'utf8');
     });
   }
 
-  test.afterAll(() => {
+  test('@audit finalize report', async ({}, testInfo) => {
+    test.skip(testInfo.project.name !== 'iphone', 'Write merged report after all viewport captures');
+    const findings = existsSync(FINDINGS_PATH)
+      ? readFileSync(FINDINGS_PATH, 'utf8')
+          .trim()
+          .split('\n')
+          .filter(Boolean)
+          .map((line) => JSON.parse(line) as {
+            route: string;
+            viewport: string;
+            status: 'ok' | 'warn' | 'fail';
+            layout: string;
+            images: string;
+            mobile: string;
+          })
+      : [];
+
     const rows = findings
       .map(
         (item) =>
@@ -126,10 +141,23 @@ test.describe('public visual audit', () => {
       )
       .join('\n');
 
+    const fails = findings.filter((item) => item.status === 'fail');
+    const warns = findings.filter((item) => item.status === 'warn');
+
     const markdown = `# HTXONLINE public UI audit
 
 Generated: ${new Date().toISOString()}
 Passport fixture: \`${passportCode}\`
+
+## Summary
+
+- **Total captures:** ${findings.length}
+- **OK:** ${findings.filter((item) => item.status === 'ok').length}
+- **Warnings:** ${warns.length}
+- **Failures:** ${fails.length}
+
+${fails.length ? `### Failures\n${fails.map((item) => `- ${item.route} (${item.viewport}): ${item.images}`).join('\n')}\n` : ''}
+${warns.length ? `### Warnings\n${warns.map((item) => `- ${item.route} (${item.viewport}): ${item.layout}; ${item.images}`).join('\n')}\n` : ''}
 
 ## Per-page analysis
 
@@ -146,12 +174,41 @@ ${Array.from(new Set(AUDIT_ROUTES.map((route) => route.batch)))
 ## Screenshots
 
 Saved under \`frontend/test-results/ui-audit/{route}/{desktop|mobile}.png\`.
+Mobile long pages also save \`mobile-mid.png\` and \`mobile-bottom.png\` when needed.
 `;
 
     mkdirSync(dirname(ANALYSIS_PATH), { recursive: true });
     writeFileSync(ANALYSIS_PATH, markdown, 'utf8');
   });
 });
+
+async function capturePageScreenshot(page: Page, shotPath: string, viewportLabel: 'desktop' | 'mobile') {
+  if (viewportLabel === 'desktop') {
+    await page.screenshot({ path: shotPath, fullPage: true });
+    return;
+  }
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.screenshot({ path: shotPath, fullPage: false });
+
+  const { scrollHeight, viewportHeight } = await page.evaluate(() => ({
+    scrollHeight: document.documentElement.scrollHeight,
+    viewportHeight: window.innerHeight
+  }));
+
+  if (scrollHeight <= viewportHeight * 1.4) return;
+
+  const midY = Math.max(0, Math.floor(scrollHeight / 2) - Math.floor(viewportHeight / 2));
+  await page.evaluate((y) => window.scrollTo(0, y), midY);
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: shotPath.replace('.png', '-mid.png'), fullPage: false });
+
+  const bottomY = Math.max(0, scrollHeight - viewportHeight);
+  await page.evaluate((y) => window.scrollTo(0, y), bottomY);
+  await page.waitForTimeout(250);
+  await page.screenshot({ path: shotPath.replace('.png', '-bottom.png'), fullPage: false });
+  await page.evaluate(() => window.scrollTo(0, 0));
+}
 
 async function preparePage(page: Page, prepare?: AuditRoute['prepare']) {
   if (prepare === 'cart') {
@@ -223,20 +280,26 @@ async function analyzeImages(page: Page) {
   });
 }
 
-async function analyzeLayout(page: Page, routeId: string) {
-  return page.evaluate((id) => {
-    const notes: string[] = [];
-    const header = document.querySelector('header');
-    const main = document.querySelector('main');
-    if (!header) notes.push('missing header');
-    if (!main) notes.push('missing main');
-    if (window.innerWidth < 768 && header && header.scrollWidth > window.innerWidth + 4) {
-      notes.push('header horizontal overflow');
-    }
-    if (id.includes('cart') || id === 'checkout') {
-      const empty = document.querySelector('[data-testid="cart-empty"]');
-      if (empty) notes.push('cart empty state visible');
-    }
-    return notes.length ? notes.join('; ') : 'shell + main present';
-  }, routeId);
+async function analyzeLayout(page: Page, route: AuditRoute) {
+  return page.evaluate(
+    (meta) => {
+      const notes: string[] = [];
+      const header = document.querySelector('header');
+      const main = document.querySelector('main');
+      const expectsSiteHeader = !['Auth', 'QR'].includes(meta.batch);
+      if (!header && expectsSiteHeader) notes.push('missing header');
+      if (!main) notes.push('missing main');
+      if (window.innerWidth < 768 && header && header.scrollWidth > window.innerWidth + 4) {
+        notes.push('header horizontal overflow');
+      }
+      if (meta.id.includes('cart') || meta.id === 'checkout') {
+        const empty = document.querySelector('[data-testid="cart-empty"]');
+        if (empty) notes.push('cart empty state visible');
+      }
+      if (meta.batch === 'Auth' && header) notes.push('auth shell present');
+      if (meta.batch === 'QR' && header) notes.push('minimal passport header');
+      return notes.length ? notes.join('; ') : 'shell + main present';
+    },
+    { id: route.id, batch: route.batch }
+  );
 }

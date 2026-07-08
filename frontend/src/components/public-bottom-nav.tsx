@@ -30,6 +30,7 @@ export function PublicBottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-current={active ? 'page' : undefined}
               className={cn(
                 'relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold transition-colors',
                 active ? 'bg-mint text-leaf' : 'text-slate-500'

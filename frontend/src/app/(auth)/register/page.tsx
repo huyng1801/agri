@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button, Input, Panel } from '@/components/ui';
+import { PublicAuthShell } from '@/components/public-auth-shell';
+import { PublicLogo } from '@/components/public-logo';
 import { apiFetch } from '@/lib/api';
 import { registerSchema } from '@/schemas/forms';
 
@@ -32,10 +34,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="grid min-h-screen place-items-center px-4 py-8">
+    <PublicAuthShell>
       <Panel className="w-full max-w-md">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <h1 className="text-2xl font-bold">Tạo tài khoản</h1>
+          <div className="space-y-2 text-center">
+            <PublicLogo size={56} className="mx-auto ring-1 ring-slate-200 lg:hidden" />
+            <h1 className="text-2xl font-bold">Tạo tài khoản</h1>
+            <p className="text-sm text-slate-600">Tham gia HTXONLINE để mua sản phẩm HTX minh bạch</p>
+          </div>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Họ tên</span>
             <Input {...form.register('fullName')} />
@@ -61,11 +67,16 @@ export default function RegisterPage() {
             <UserPlus size={18} aria-hidden="true" />
             {form.formState.isSubmitting ? 'Đang tạo' : 'Tạo tài khoản'}
           </Button>
-          <Link className="block text-center text-sm font-semibold text-leaf" href="/login">
-            Đã có tài khoản
-          </Link>
+          <div className="flex justify-between text-sm">
+            <Link className="font-semibold text-leaf" href="/login">
+              Đã có tài khoản
+            </Link>
+            <Link className="font-semibold text-leaf" href="/">
+              Trang chủ
+            </Link>
+          </div>
         </form>
       </Panel>
-    </main>
+    </PublicAuthShell>
   );
 }

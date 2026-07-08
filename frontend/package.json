@@ -9,7 +9,8 @@
     "lint": "npm run typecheck",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:audit": "playwright test src/tests/e2e/public/visual-audit.spec.ts --workers=1"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

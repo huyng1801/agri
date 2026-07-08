@@ -93,7 +93,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 py-5">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <header className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
           <PublicLogo size={28} className="ring-1 ring-slate-200" />
           HTXONLINE
@@ -106,7 +106,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
             Trang chủ
           </Link>
         </div>
-      </div>
+      </header>
       <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-soft">
         <div className="bg-leaf p-5 text-white">
           <div className="flex items-start justify-between gap-3">
