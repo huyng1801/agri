@@ -1,11 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Leaf, Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { publicContainerClass } from './public-layout';
+import { PublicLogo } from './public-logo';
 
 const footerLinkClass = 'text-sm text-white/90 transition hover:text-white';
 
@@ -18,9 +19,7 @@ export function PublicFooter() {
         <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 text-xl font-bold">
-              <span className="grid h-10 w-10 place-items-center rounded-md bg-white/15">
-                <Leaf size={22} aria-hidden="true" />
-              </span>
+              <PublicLogo size={40} className="ring-2 ring-white/30" />
               HTXONLINE
             </div>
             <p className="mt-3 text-sm font-bold uppercase tracking-wide text-white/95">Sàn nông sản số cho hợp tác xã</p>

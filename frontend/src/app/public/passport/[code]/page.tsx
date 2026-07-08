@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Calendar, CheckCircle2, Leaf, MapPin, QrCode } from 'lucide-react';
+import { Calendar, CheckCircle2, Eye, MapPin, QrCode } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
+import { PublicLogo } from '@/components/public-logo';
 import { formatDate } from '@/lib/format';
 import { Badge, Panel } from '@/components/ui';
 
@@ -94,7 +95,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
     <main className="mx-auto min-h-screen max-w-3xl px-4 py-5">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
-          <Leaf size={18} aria-hidden="true" />
+          <PublicLogo size={28} className="ring-1 ring-slate-200" />
           HTXONLINE
         </Link>
         <div className="flex flex-wrap gap-3 text-sm font-semibold">
@@ -132,7 +133,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
         <div className="grid gap-3 p-4 sm:grid-cols-3">
           <Info icon={QrCode} label="Mã" value={passport.passportCode} />
           <Info icon={MapPin} label="Vùng trồng" value={passport.product.zone?.name ?? 'Đang cập nhật'} />
-          <Info icon={Leaf} label="Lượt xem" value={String(passport.viewCount + 1)} />
+          <Info icon={Eye} label="Lượt xem" value={String(passport.viewCount + 1)} />
         </div>
       </section>
 

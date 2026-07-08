@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { LogIn, Menu, ShoppingCart, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
+import { PublicLogo } from './public-logo';
 import { Button, cn } from './ui';
 
 const navItems = [
@@ -52,7 +53,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
     >
       <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 text-lg font-bold text-ink" aria-label={`${appName} — Trang chủ`}>
-          <img src="/icon.svg" alt="" width={40} height={40} className="h-10 w-10 shrink-0 rounded-md" />
+          <PublicLogo size={40} className="ring-1 ring-slate-200" />
           <span className="truncate">{appName}</span>
         </Link>
 
