@@ -306,15 +306,15 @@ export default async function AboutUsPage() {
         </section>
 
         <section className={cn(publicContainerClass, 'pb-12 pt-4')}>
-          <div className="overflow-hidden rounded-2xl bg-leaf p-5 text-white shadow-sm sm:p-8">
-            <div className="mb-6 flex flex-col gap-4 border-b border-white/15 pb-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="overflow-hidden rounded-2xl bg-leaf p-5 text-white shadow-soft ring-1 ring-black/5 sm:p-8">
+            <div className="mb-6 flex flex-col gap-4 border-b border-white/20 pb-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-white/75">Bắt đầu cùng HTXONLINE</p>
-                <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight">
+                <p className="text-sm font-semibold uppercase tracking-wide text-white/80">Bắt đầu cùng HTXONLINE</p>
+                <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight text-white">
                   HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?
                 </h2>
               </div>
-              <p className="max-w-md text-sm leading-6 text-white/85">
+              <p className="max-w-md text-sm leading-6 text-white/90">
                 Để lại thông tin — đội vận hành sẽ hỗ trợ onboarding và hướng dẫn quy trình phù hợp với HTX của bạn.
               </p>
             </div>

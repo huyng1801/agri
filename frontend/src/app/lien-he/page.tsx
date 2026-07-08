@@ -116,16 +116,16 @@ export default async function ContactPage() {
         </section>
 
         <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
-          <div className="overflow-hidden rounded-2xl bg-leaf p-5 text-white shadow-sm sm:p-8">
-            <div className="mb-6 flex flex-col gap-4 border-b border-white/15 pb-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="overflow-hidden rounded-2xl bg-leaf p-5 text-white shadow-soft ring-1 ring-black/5 sm:p-8">
+            <div className="mb-6 flex flex-col gap-4 border-b border-white/20 pb-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
-                <PublicLogo size={56} className="rounded-xl bg-white p-1" />
+                <PublicLogo size={56} className="rounded-xl bg-white p-1 shadow-sm" />
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white/75">Form tư vấn</p>
-                  <h2 className="text-2xl font-bold">Kết nối với đội vận hành HTXONLINE</h2>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white/80">Form tư vấn</p>
+                  <h2 className="text-2xl font-bold text-white">Kết nối với đội vận hành HTXONLINE</h2>
                 </div>
               </div>
-              <p className="max-w-md text-sm leading-6 text-white/85">
+              <p className="max-w-md text-sm leading-6 text-white/90">
                 Điền thông tin bên dưới. Chúng tôi sẽ phản hồi qua điện thoại hoặc email trong thời gian sớm nhất.
               </p>
             </div>

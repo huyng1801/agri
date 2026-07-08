@@ -73,30 +73,44 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
   if (isHero) {
     return (
-      <form className="grid gap-6 lg:grid-cols-2" onSubmit={submit}>
+      <form className="grid gap-8 lg:grid-cols-2 lg:gap-10" onSubmit={submit}>
         <div className="min-w-0">
           <h2 className="text-xl font-bold leading-snug text-white sm:text-2xl">Bạn muốn HTXONLINE hỗ trợ gì?</h2>
-          <p className="mt-2 text-sm leading-6 text-white/80">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
+          <p className="mt-2 text-sm leading-6 text-white/85">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
           <div className="mt-5 grid gap-3">
-            {HELP_TOPICS.map((item) => (
-              <label
-                key={item.id}
-                className={cn(
-                  'flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 text-sm transition',
-                  topic === item.id ? 'border-white bg-white/15 text-white' : 'border-white/20 bg-white/5 text-white/90 hover:bg-white/10'
-                )}
-              >
-                <input
-                  type="radio"
-                  name="topic"
-                  value={item.id}
-                  checked={topic === item.id}
-                  onChange={() => setTopic(item.id)}
-                  className="mt-1 accent-white"
-                />
-                <span className="leading-6">{item.label}</span>
-              </label>
-            ))}
+            {HELP_TOPICS.map((item) => {
+              const selected = topic === item.id;
+              return (
+                <label
+                  key={item.id}
+                  className={cn(
+                    'flex cursor-pointer items-start gap-3 rounded-xl border px-3.5 py-3.5 text-sm transition',
+                    selected
+                      ? 'border-white/70 bg-white/18 text-white shadow-sm'
+                      : 'border-white/25 bg-white/8 text-white/92 hover:border-white/45 hover:bg-white/12'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2',
+                      selected ? 'border-white bg-white' : 'border-white/70 bg-transparent'
+                    )}
+                    aria-hidden="true"
+                  >
+                    {selected ? <span className="h-2.5 w-2.5 rounded-full bg-leaf" /> : null}
+                  </span>
+                  <input
+                    type="radio"
+                    name="topic"
+                    value={item.id}
+                    checked={selected}
+                    onChange={() => setTopic(item.id)}
+                    className="sr-only"
+                  />
+                  <span className="leading-6">{item.label}</span>
+                </label>
+              );
+            })}
           </div>
         </div>
 
@@ -107,7 +121,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               data-testid="contact-name-input"
               name="fullName"
               required
-              className="border-0 bg-white text-ink"
+              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
               placeholder="VD: HTX Lúa ST25 Đồng Tháp"
             />
           </label>
@@ -118,7 +132,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               name="phone"
               required
               inputMode="tel"
-              className="border-0 bg-white text-ink"
+              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
               placeholder="0900 000 000"
             />
           </label>
@@ -128,7 +142,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               data-testid="contact-email-input"
               name="email"
               type="email"
-              className="border-0 bg-white text-ink"
+              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
               placeholder="ban@htx.vn"
             />
           </label>
@@ -138,13 +152,18 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               data-testid="contact-message-input"
               name="message"
               required
-              className="min-h-28 border-0 bg-white text-ink"
+              className="min-h-28 border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
               placeholder="Mô tả ngắn nhu cầu của bạn..."
             />
           </label>
           {success && <div data-testid="toast-success" className="rounded-xl bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
           {error && <div data-testid="toast-error" className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-          <Button data-testid="contact-submit-button" type="submit" className="mt-1 w-full bg-white text-leaf hover:bg-mint sm:w-max" disabled={submitting}>
+          <Button
+            data-testid="contact-submit-button"
+            type="submit"
+            className="mt-1 w-full border border-white/20 bg-white text-leaf shadow-sm hover:bg-mint sm:w-max"
+            disabled={submitting}
+          >
             {submitting ? 'Đang gửi' : 'Liên hệ ngay'}
             <ArrowRight size={18} aria-hidden="true" />
           </Button>
