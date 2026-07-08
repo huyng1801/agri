@@ -7,6 +7,7 @@ import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
+import { ZaloIcon } from './zalo-icon';
 
 const footerLinkClass = 'text-sm text-white/90 transition hover:text-white';
 
@@ -79,6 +80,7 @@ export function PublicFooter() {
                 </a>
                 {profile.zaloUrl && (
                   <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold transition hover:bg-white/25">
+                    <ZaloIcon size={22} />
                     Zalo hỗ trợ
                   </a>
                 )}

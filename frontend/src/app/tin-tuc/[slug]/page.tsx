@@ -99,7 +99,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
       name: 'HTXONLINE',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://htxonline.vn/logo.jpg'
+        url: 'https://htxonline.vn/logo.png'
       }
     }
   };

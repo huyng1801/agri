@@ -1,9 +1,10 @@
 'use client';
 
-import { ChevronUp, MessageCircle, Phone, Zap } from 'lucide-react';
+import { ChevronUp, MessageCircle, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
+import { ZaloIcon } from './zalo-icon';
 
 export function FooterContactInfo() {
   const profile = usePublicSiteProfile();
@@ -17,7 +18,8 @@ export function FooterContactInfo() {
       <a href={`mailto:${profile.supportEmail}`} className="hover:text-leaf">{profile.supportEmail}</a>
       <p className="leading-6 text-slate-600">{profile.address}</p>
       {profile.zaloUrl && (
-        <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="font-semibold text-leaf">
+        <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-semibold text-leaf">
+          <ZaloIcon size={20} />
           Zalo hỗ trợ
         </a>
       )}
@@ -36,8 +38,14 @@ export function FloatingContactClient() {
         </a>
       )}
       {siteProfile.zaloUrl && (
-        <a href={siteProfile.zaloUrl} className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Zalo" target="_blank" rel="noreferrer">
-          <Zap size={19} aria-hidden="true" />
+        <a
+          href={siteProfile.zaloUrl}
+          className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200"
+          aria-label="Chat Zalo"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <ZaloIcon size={28} />
         </a>
       )}
       {siteProfile.messengerUrl && (

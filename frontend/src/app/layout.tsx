@@ -8,7 +8,11 @@ export const metadata: Metadata = {
     template: '%s | HTXONLINE'
   },
   description: 'Sàn nông sản số cho hợp tác xã Việt Nam — sản phẩm minh bạch, QR truy xuất và đặt hàng COD.',
-  manifest: '/manifest.webmanifest'
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: '/logo.png',
+    apple: '/logo.png'
+  }
 };
 
 export const viewport: Viewport = {

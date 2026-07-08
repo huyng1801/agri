@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
-import { Mail, MapPinned, MessageSquareText, PhoneCall } from 'lucide-react';
+import { Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
+import { ZaloIcon } from '@/components/zalo-icon';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicInfoTile } from '@/components/public-layout';
 import { Panel } from '@/components/ui';
@@ -45,8 +46,8 @@ export default async function ContactPage() {
                 </span>
               </a>
               {siteProfile.zaloUrl && (
-                <a href={siteProfile.zaloUrl} target="_blank" rel="noreferrer" className="flex items-start gap-3 rounded-md bg-slate-50 p-3">
-                  <MessageSquareText className="mt-0.5 text-leaf" size={18} aria-hidden="true" />
+                <a href={siteProfile.zaloUrl} target="_blank" rel="noreferrer" className="flex items-start gap-3 rounded-md bg-slate-50 p-3 transition-colors hover:bg-mint">
+                  <ZaloIcon size={22} className="mt-0.5" />
                   <span>
                     <span className="block text-xs font-semibold uppercase text-slate-500">Zalo</span>
                     <span className="mt-1 block font-bold text-ink">Chat nhanh với HTXONLINE</span>

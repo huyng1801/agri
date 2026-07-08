@@ -53,7 +53,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
     >
       <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 text-lg font-bold text-ink" aria-label={`${appName} — Trang chủ`}>
-          <PublicLogo size={40} className="ring-1 ring-slate-200" />
+          <PublicLogo size={44} />
           <span className="truncate">{appName}</span>
         </Link>
 
