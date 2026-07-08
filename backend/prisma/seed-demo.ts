@@ -14,8 +14,28 @@ const prisma = new PrismaClient();
 const passportCode = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 10);
 const DEMO_ADMIN_PASSWORD = process.env.SEED_DEMO_ADMIN_PASSWORD || 'Demo@2026';
 
+function demoPhoto(seed: string, width = 900, height = 600) {
+  return `https://picsum.photos/seed/htxonline-${seed}/${width}/${height}`;
+}
+
 function img(photoId: string, width = 900) {
   return `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&w=${width}&q=80`;
+}
+
+async function assertImageUrls(urls: string[]) {
+  const unique = [...new Set(urls)];
+  const failures: string[] = [];
+  for (const url of unique) {
+    try {
+      const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      if (!response.ok) failures.push(`${url} -> HTTP ${response.status}`);
+    } catch (error) {
+      failures.push(`${url} -> ${error instanceof Error ? error.message : 'fetch failed'}`);
+    }
+  }
+  if (failures.length) {
+    throw new Error(`Seed demo image URLs failed validation:\n${failures.join('\n')}`);
+  }
 }
 
 function slugify(input: string) {
@@ -41,26 +61,26 @@ const GLOBAL_CATEGORIES = [
 
 const PHOTOS = {
   farm: img('1464226184884-fa280b87c399', 1200),
-  rice: img('1586201375775-1a2b9b2a3b9a'),
-  riceField: img('1593113646773-55f1c6ca0e8a', 1200),
-  veg: img('1540420773420-336cca9448aa'),
-  vegBasket: img('1598170845888-ab7b4c4b5c2f'),
-  fruit: img('1560807703-8c763bf73a6f'),
-  mango: img('1601493700949-57ec489f9644'),
-  coffee: img('1447936164168-4a0854462d81', 1200),
-  honey: img('1587049355687-3a79b191a9df'),
-  fish: img('1544943910-63ca1cdb92bd'),
-  chicken: img('1607623811926-b41b0c3321ae'),
-  tea: img('1556679343-1c4ae4fd5920'),
-  mushroom: img('1518977677822-5a4279d6a585'),
-  orchard: img('1416879591252-3373b0488b2d', 1200),
+  rice: demoPhoto('rice', 900, 600),
+  riceField: demoPhoto('rice-field', 1200, 700),
+  veg: demoPhoto('vegetables', 900, 600),
+  vegBasket: demoPhoto('veg-basket', 900, 600),
+  fruit: demoPhoto('fruit', 900, 600),
+  mango: demoPhoto('mango', 900, 600),
+  coffee: demoPhoto('coffee', 1200, 700),
+  honey: demoPhoto('honey', 900, 600),
+  fish: demoPhoto('fish', 900, 600),
+  chicken: demoPhoto('chicken', 900, 600),
+  tea: demoPhoto('tea', 900, 600),
+  mushroom: demoPhoto('mushroom', 900, 600),
+  orchard: demoPhoto('orchard', 1200, 700),
   market: img('1542838132-92c53300491e', 1200),
   harvest: img('1500937386664-56d1dfef3854', 1200),
-  coopTeam: img('1625246337938-f738035b44b4', 800),
-  dragonfruit: img('1528825871115-3582a0661b41'),
+  coopTeam: demoPhoto('coop-team', 900, 600),
+  dragonfruit: demoPhoto('dragonfruit', 900, 600),
   pepper: img('1596040033229-a9821ebd058d'),
   shrimp: img('1559339352-11d035aa65de'),
-  durian: img('1550258989-87da75f32e96')
+  durian: demoPhoto('durian', 900, 600)
 };
 
 type DemoProduct = {
@@ -849,6 +869,9 @@ async function main() {
     console.log('Resetting previous demo cooperatives...');
     await resetDemoData();
   }
+
+  await assertImageUrls(Object.values(PHOTOS));
+  console.log(`Validated ${Object.keys(PHOTOS).length} demo image URLs`);
 
   await ensureCategories();
 

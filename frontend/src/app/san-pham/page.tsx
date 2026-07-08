@@ -85,16 +85,41 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
   return (
     <form className="rounded-md border border-slate-200 bg-white p-3 shadow-sm" action="/san-pham">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1.5fr)_160px_150px_150px]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+      <div className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+        <input
+          name="search"
+          defaultValue={filters.search ?? ''}
+          placeholder="Tìm sản phẩm, HTX, mô tả"
+          className="min-h-11 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+        />
+      </div>
+      <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 lg:hidden" open={Boolean(filters.province || filters.minPrice || filters.maxPrice)}>
+        <summary className="cursor-pointer text-sm font-semibold text-slate-700">Bộ lọc thêm</summary>
+        <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <input
-            name="search"
-            defaultValue={filters.search ?? ''}
-            placeholder="Tìm sản phẩm, HTX, mô tả"
-            className="min-h-11 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            name="province"
+            defaultValue={filters.province ?? ''}
+            placeholder="Tỉnh/thành"
+            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          />
+          <input
+            name="minPrice"
+            defaultValue={filters.minPrice ?? ''}
+            inputMode="numeric"
+            placeholder="Giá từ"
+            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          />
+          <input
+            name="maxPrice"
+            defaultValue={filters.maxPrice ?? ''}
+            inputMode="numeric"
+            placeholder="Giá đến"
+            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
         </div>
+      </details>
+      <div className="mt-3 hidden gap-3 lg:grid lg:grid-cols-3">
         <input
           name="province"
           defaultValue={filters.province ?? ''}

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { EmptyPublicState, NewsCard, PublicShell } from '@/components/public-marketplace';
+import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { Button, cn } from '@/components/ui';
 import { publicCardClass } from '@/components/public-layout';
@@ -91,9 +92,16 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {featured && !filters.search && (
-          <article className={cn(publicCardClass, 'mb-6')}>
+          <article className={cn(publicCardClass, 'mb-6 overflow-hidden')}>
             <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
-              <Link href={`/tin-tuc/${featured.slug}`} className="block min-h-[280px] bg-cover bg-center" style={{ backgroundImage: `url('${featured.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1400&q=80'}')` }} />
+              <Link href={`/tin-tuc/${featured.slug}`} className="block">
+                <PublicImage
+                  src={featured.coverImageUrl}
+                  alt={featured.coverImageAlt || featured.title}
+                  fallback={DEFAULT_NEWS_IMAGE}
+                  className="aspect-[16/9] w-full object-cover lg:min-h-[280px] lg:aspect-auto lg:h-full"
+                />
+              </Link>
               <div className="flex flex-col justify-center p-5">
                 <p className="text-sm font-semibold uppercase text-leaf">{featured.category?.name ?? 'Tin HTXONLINE'}</p>
                 <Link href={`/tin-tuc/${featured.slug}`} className="mt-3 text-3xl font-bold leading-tight text-ink">

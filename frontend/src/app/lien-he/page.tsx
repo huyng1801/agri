@@ -1,9 +1,16 @@
+import type { Metadata } from 'next';
 import { Mail, MapPinned, MessageSquareText, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicInfoTile } from '@/components/public-layout';
 import { Panel } from '@/components/ui';
 import { getPublicSiteProfile, telHref } from '@/lib/public-site';
+
+export const metadata: Metadata = {
+  title: 'Liên hệ | HTXONLINE',
+  description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
+  alternates: { canonical: 'https://htxonline.vn/lien-he' }
+};
 
 export default async function ContactPage() {
   const siteProfile = await getPublicSiteProfile();
@@ -66,11 +73,11 @@ export default async function ContactPage() {
           </Panel>
 
           {siteProfile.mapEmbedUrl ? (
-            <Panel className="overflow-hidden p-0">
+            <Panel className="overflow-hidden p-0 lg:col-span-1">
               <iframe
                 title="Bản đồ HTXONLINE"
                 src={siteProfile.mapEmbedUrl}
-                className="h-72 w-full border-0"
+                className="h-72 min-h-[18rem] w-full border-0 sm:h-80"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />

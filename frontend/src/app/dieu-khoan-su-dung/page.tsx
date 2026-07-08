@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicPolicyBody } from '@/components/public-policy-body';
+
+export const metadata: Metadata = {
+  title: 'Điều khoản sử dụng | HTXONLINE',
+  description: 'Điều khoản sử dụng website HTXONLINE, đặt hàng COD và truy cập QR Passport.',
+  alternates: { canonical: 'https://htxonline.vn/dieu-khoan-su-dung' }
+};
 
 const sections = [
   {

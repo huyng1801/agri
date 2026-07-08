@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicPolicyBody } from '@/components/public-policy-body';
+
+export const metadata: Metadata = {
+  title: 'Chính sách vận chuyển | HTXONLINE',
+  description: 'Chính sách giao hàng COD và phạm vi vận chuyển trên HTXONLINE.',
+  alternates: { canonical: 'https://htxonline.vn/chinh-sach-van-chuyen' }
+};
 
 const sections = [
   {

@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicPolicyBody } from '@/components/public-policy-body';
+
+export const metadata: Metadata = {
+  title: 'Chính sách bảo mật | HTXONLINE',
+  description: 'Cách HTXONLINE thu thập, sử dụng và bảo vệ thông tin người dùng.',
+  alternates: { canonical: 'https://htxonline.vn/chinh-sach-bao-mat' }
+};
 
 const sections = [
   {

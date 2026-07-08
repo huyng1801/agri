@@ -1,7 +1,14 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { QrCode, ShoppingBag, Store } from 'lucide-react';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { Panel } from '@/components/ui';
+
+export const metadata: Metadata = {
+  title: 'Giới thiệu | HTXONLINE',
+  description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+  alternates: { canonical: 'https://htxonline.vn/gioi-thieu' }
+};
 
 export default function AboutPage() {
   return (

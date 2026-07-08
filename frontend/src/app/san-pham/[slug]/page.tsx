@@ -1,8 +1,11 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Calendar, MapPin, Phone, QrCode, Store } from 'lucide-react';
+import { Calendar, MapPin, Phone, QrCode } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { PublicProduct, PublicShell, productImage } from '@/components/public-marketplace';
+import { PublicProduct, PublicShell, cooperativeAvatar, productImage } from '@/components/public-marketplace';
 import { AddToCartButton } from '@/components/add-to-cart-button';
+import { DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
+import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
 import { formatDate } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
 
@@ -21,39 +24,64 @@ type ProductDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const product = await getProduct(slug);
+  if (!product) return { title: 'Không tìm thấy sản phẩm | HTXONLINE' };
+  return {
+    title: `${product.name} | HTXONLINE`,
+    description: product.description || `Mua ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên HTXONLINE.`,
+    alternates: { canonical: `https://htxonline.vn/san-pham/${product.slug}` }
+  };
+}
+
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) {
     return (
       <PublicShell>
-        <main className="mx-auto max-w-3xl px-4 py-10">
+        <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
             <h1 className="text-2xl font-bold">Không tìm thấy sản phẩm</h1>
             <Link className="mt-4 inline-block font-semibold text-leaf" href="/san-pham">
               Quay lại danh sách sản phẩm
             </Link>
           </Panel>
-        </main>
+        </PublicDetailMain>
       </PublicShell>
     );
   }
 
   const passport = product.passports?.[0];
-  const imageUrl = productImage(product);
+  const coopAvatar = product.cooperative ? cooperativeAvatar(product.cooperative) : null;
+
   return (
     <PublicShell>
-      <main className="mx-auto max-w-6xl px-4 py-8">
+      <PublicDetailMain>
+        <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
         <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
           <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-            <div className="aspect-[4/3] bg-cover bg-center" style={{ backgroundImage: `url('${imageUrl}')` }} />
+            <PublicImage
+              src={product.thumbnail?.publicUrl}
+              alt={product.name}
+              fallback={productImage(product)}
+              className="aspect-[4/3] w-full object-cover"
+            />
           </section>
           <section className="space-y-4">
             <div>
               <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
               <h1 className="mt-2 text-3xl font-bold">{product.name}</h1>
-              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
-                <Store size={16} aria-hidden="true" />
+              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-3 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
+                {coopAvatar && (
+                  <PublicImage
+                    src={product.cooperative?.avatarUrl}
+                    alt={product.cooperative?.name ?? 'HTX'}
+                    fallback={coopAvatar}
+                    className="h-10 w-10 rounded-md object-cover"
+                  />
+                )}
                 {product.cooperative?.name ?? 'HTX đang cập nhật'}
               </Link>
             </div>
@@ -140,7 +168,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             )}
           </div>
         </Panel>
-      </main>
+      </PublicDetailMain>
     </PublicShell>
   );
 }

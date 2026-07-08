@@ -43,7 +43,7 @@ export default async function HomePage() {
       <main>
         <section className="relative overflow-hidden bg-white">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1800&q=80')] bg-cover bg-center opacity-20" />
-          <div className={cn(publicContainerClass, 'relative grid min-h-[76vh] content-center gap-8 py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center')}>
+          <div className={cn(publicContainerClass, 'relative grid min-h-[60vh] content-center gap-8 py-8 sm:min-h-[76vh] sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center')}>
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-1 text-sm font-semibold text-leaf">
                 <Leaf size={16} aria-hidden="true" />

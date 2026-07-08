@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Calendar, ChevronLeft, Eye, UserRound } from 'lucide-react';
+import { Calendar, Eye, UserRound } from 'lucide-react';
 import { EmptyPublicState, NewsCard, PublicShell } from '@/components/public-marketplace';
-import { Badge, Panel } from '@/components/ui';
+import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
+import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
 import {
   articleDescription,
   articleImage,
@@ -12,6 +13,7 @@ import {
   type NewsArticle
 } from '@/lib/news';
 import { formatDate } from '@/lib/format';
+import { Badge, Panel } from '@/components/ui';
 
 type PageProps = {
   params: Promise<{
@@ -69,9 +71,9 @@ export default async function NewsDetailPage({ params }: PageProps) {
   if (!article) {
     return (
       <PublicShell>
-        <main className="mx-auto max-w-3xl px-4 py-10">
+        <PublicDetailMain className="max-w-3xl">
           <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được publish hoặc đã được ẩn khỏi trang public." />
-        </main>
+        </PublicDetailMain>
       </PublicShell>
     );
   }
@@ -105,14 +107,16 @@ export default async function NewsDetailPage({ params }: PageProps) {
   return (
     <PublicShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
-      <main className="mx-auto max-w-5xl px-4 py-8">
-        <Link href="/tin-tuc" className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-leaf">
-          <ChevronLeft size={18} aria-hidden="true" />
-          Tin tức
-        </Link>
+      <PublicDetailMain className="max-w-5xl">
+        <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
 
         <article className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
-          <div className="aspect-[16/8] bg-cover bg-center" style={{ backgroundImage: `url('${image}')` }} aria-label={article.coverImageAlt || article.title} />
+          <PublicImage
+            src={article.coverImageUrl || image}
+            alt={article.coverImageAlt || article.title}
+            fallback={DEFAULT_NEWS_IMAGE}
+            className="aspect-[16/8] w-full object-cover"
+          />
           <div className="p-5 md:p-8">
             <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-slate-500">
               {article.category?.name && <Badge className="bg-mint text-leaf">{article.category.name}</Badge>}
@@ -164,7 +168,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
             Xem sản phẩm public
           </Link>
         </Panel>
-      </main>
+      </PublicDetailMain>
     </PublicShell>
   );
 }

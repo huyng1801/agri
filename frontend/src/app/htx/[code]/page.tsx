@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Phone } from 'lucide-react';
 import { ProductCard, PublicShell, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
-import { PublicPageMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
+import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
+import { PublicBreadcrumb, PublicDetailMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
 import { Button, Panel } from '@/components/ui';
 import { fetchProductsForCooperative } from '@/lib/public-catalog';
 
@@ -29,19 +30,19 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
   const products = await fetchProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   const zones = zonesFromProducts(products);
-  const avatar = cooperative ? cooperativeAvatar(cooperative) : '';
+  const avatarFallback = cooperative ? cooperativeAvatar(cooperative) : DEFAULT_COOPERATIVE_IMAGE;
 
   if (!cooperative) {
     return (
       <PublicShell>
-        <PublicPageMain className="max-w-3xl">
+        <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
             <h1 className="text-2xl font-bold text-ink">Không tìm thấy HTX public</h1>
             <Link className="mt-4 inline-block font-semibold text-leaf" href="/htx">
               Quay lại danh sách HTX
             </Link>
           </Panel>
-        </PublicPageMain>
+        </PublicDetailMain>
       </PublicShell>
     );
   }
@@ -49,16 +50,22 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
   return (
     <PublicShell>
       <main>
-        <PublicSection band className="!py-8">
+        <PublicSection band className="!py-6 sm:!py-8">
+          <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
           <article className={publicCardClass}>
-            <div className="relative h-52 overflow-hidden sm:h-60">
-              <img src={avatar} alt="" className="h-full w-full object-cover" />
+            <div className="relative h-48 overflow-hidden sm:h-60">
+              <PublicImage src={cooperative.avatarUrl} alt={cooperative.name} fallback={avatarFallback} className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             </div>
             <div className="p-5 sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="flex items-start gap-3">
-                  <img src={avatar} alt="" className="h-16 w-16 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-12" />
+                  <PublicImage
+                    src={cooperative.avatarUrl}
+                    alt={cooperative.name}
+                    fallback={avatarFallback}
+                    className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm sm:h-16 sm:w-16 -mt-8 sm:-mt-12"
+                  />
                   <div className="pt-1">
                     <h1 className="text-3xl font-bold text-ink">{cooperative.name}</h1>
                     <p className="mt-2 flex items-center gap-2 text-slate-600">

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Calendar, CheckCircle2, Leaf, MapPin, QrCode } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
+import { DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
 import { formatDate } from '@/lib/format';
 import { Badge, Panel } from '@/components/ui';
 
@@ -88,10 +89,23 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
     );
   }
 
-  const productImage = passport.product.thumbnail?.publicUrl;
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-4 py-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
+          <Leaf size={18} aria-hidden="true" />
+          HTXONLINE
+        </Link>
+        <div className="flex flex-wrap gap-3 text-sm font-semibold">
+          <Link href="/san-pham" className="text-slate-600 hover:text-leaf">
+            Xem sản phẩm
+          </Link>
+          <Link href="/" className="text-slate-600 hover:text-leaf">
+            Trang chủ
+          </Link>
+        </div>
+      </div>
       <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-soft">
         <div className="bg-leaf p-5 text-white">
           <div className="flex items-start justify-between gap-3">
@@ -108,9 +122,12 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
             )}
           </div>
         </div>
-        {productImage && (
-          <div className="aspect-[16/9] bg-cover bg-center" style={{ backgroundImage: `url('${productImage}')` }} />
-        )}
+        <PublicImage
+          src={passport.product.thumbnail?.publicUrl}
+          alt={passport.product.name}
+          fallback={DEFAULT_PRODUCT_IMAGE}
+          className="aspect-[16/9] w-full object-cover"
+        />
 
         <div className="grid gap-3 p-4 sm:grid-cols-3">
           <Info icon={QrCode} label="Mã" value={passport.passportCode} />

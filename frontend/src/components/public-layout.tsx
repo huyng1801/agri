@@ -1,11 +1,24 @@
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from './ui';
 
 export const publicContainerClass = 'mx-auto max-w-6xl px-4';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return <main className={cn(publicContainerClass, 'py-10', className)}>{children}</main>;
+}
+
+export function PublicDetailMain({ children, className }: { children: React.ReactNode; className?: string }) {
+  return <main className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>{children}</main>;
+}
+
+export function PublicBreadcrumb({ href, label }: { href: string; label: string }) {
+  return (
+    <Link href={href} className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-leaf">
+      <ArrowLeft size={16} aria-hidden="true" />
+      {label}
+    </Link>
+  );
 }
 
 export function PublicPageHeader({

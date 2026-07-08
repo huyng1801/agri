@@ -1,5 +1,12 @@
+import type { Metadata } from 'next';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicPolicyBody } from '@/components/public-policy-body';
+
+export const metadata: Metadata = {
+  title: 'Chính sách đổi trả | HTXONLINE',
+  description: 'Điều kiện đổi trả và hỗ trợ đơn hàng nông sản trên HTXONLINE.',
+  alternates: { canonical: 'https://htxonline.vn/chinh-sach-doi-tra' }
+};
 
 const sections = [
   {

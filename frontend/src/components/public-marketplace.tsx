@@ -4,6 +4,7 @@ import { AddToCartButton } from './add-to-cart-button';
 import { PublicBottomNav } from './public-bottom-nav';
 import { PublicFooter } from './public-footer';
 import { PublicHeader } from './public-header';
+import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_NEWS_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { publicCardClass } from './public-layout';
 import { FloatingContactClient } from './public-site-support';
 import type { NewsArticle } from '@/lib/news';
@@ -74,8 +75,7 @@ export type PublicCooperative = {
   productCount: number;
 };
 
-const defaultCooperativeAvatar =
-  'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=400&q=80';
+const defaultCooperativeAvatar = DEFAULT_COOPERATIVE_IMAGE;
 
 export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUrl'>) {
   return cooperative.avatarUrl || defaultCooperativeAvatar;
@@ -112,15 +112,14 @@ export function PublicSearch({
 }
 
 export function ProductCard({ product }: { product: PublicProduct }) {
-  const imageUrl = productImage(product);
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col')}>
       <Link href={`/san-pham/${product.slug}`} className="block overflow-hidden">
-        <img
-          data-testid="product-card-image"
-          src={imageUrl}
+        <PublicImage
+          src={product.thumbnail?.publicUrl}
           alt={product.name}
-          loading="lazy"
+          fallback={DEFAULT_PRODUCT_IMAGE}
+          testId="product-card-image"
           className="aspect-[4/3] w-full object-cover transition duration-300 hover:scale-[1.02]"
         />
       </Link>
@@ -148,23 +147,27 @@ export function ProductCard({ product }: { product: PublicProduct }) {
 }
 
 export function productImage(product: PublicProduct) {
-  return product.thumbnail?.publicUrl || 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80';
+  return product.thumbnail?.publicUrl || DEFAULT_PRODUCT_IMAGE;
 }
 
 export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {
-  const avatar = cooperativeAvatar(cooperative);
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col overflow-hidden')}>
       <div className="relative aspect-[16/7] overflow-hidden">
-        <img src={avatar} alt="" loading="lazy" className="h-full w-full object-cover" />
+        <PublicImage
+          src={cooperative.avatarUrl}
+          alt={cooperative.name}
+          fallback={defaultCooperativeAvatar}
+          className="h-full w-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
       </div>
       <div className="flex flex-1 flex-col p-4">
         <div className="flex items-start gap-3">
-          <img
-            src={avatar}
-            alt=""
-            loading="lazy"
+          <PublicImage
+            src={cooperative.avatarUrl}
+            alt={cooperative.name}
+            fallback={defaultCooperativeAvatar}
             className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm -mt-10"
           />
           <div className="min-w-0 flex-1 pt-1">
@@ -192,11 +195,15 @@ export function CooperativeCard({ cooperative }: { cooperative: PublicCooperativ
 }
 
 export function NewsCard({ article }: { article: NewsArticle }) {
-  const cover = article.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80';
   return (
     <article className={cn(publicCardClass, 'flex h-full flex-col')}>
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
-        <img src={cover} alt="" loading="lazy" className="aspect-[16/10] w-full object-cover transition duration-300 hover:scale-[1.02]" />
+        <PublicImage
+          src={article.coverImageUrl}
+          alt={article.title}
+          fallback={DEFAULT_NEWS_IMAGE}
+          className="aspect-[16/10] w-full object-cover transition duration-300 hover:scale-[1.02]"
+        />
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
