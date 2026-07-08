@@ -27,8 +27,12 @@ async function assertImageUrls(urls: string[]) {
   const failures: string[] = [];
   for (const url of unique) {
     try {
-      const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      let response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+      if (response.status === 405 || response.status === 501) {
+        response = await fetch(url, { method: 'GET', redirect: 'follow' });
+      }
       if (!response.ok) failures.push(`${url} -> HTTP ${response.status}`);
+      await response.body?.cancel();
     } catch (error) {
       failures.push(`${url} -> ${error instanceof Error ? error.message : 'fetch failed'}`);
     }
