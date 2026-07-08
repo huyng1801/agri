@@ -75,8 +75,8 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     return (
       <form className="grid gap-8 lg:grid-cols-2 lg:gap-10" onSubmit={submit}>
         <div className="min-w-0">
-          <h2 className="text-xl font-bold leading-snug text-white sm:text-2xl">Bạn muốn HTXONLINE hỗ trợ gì?</h2>
-          <p className="mt-2 text-sm leading-6 text-white/85">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
+          <h2 className="text-xl font-bold leading-snug text-ink sm:text-2xl">Bạn muốn HTXONLINE hỗ trợ gì?</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
           <div className="mt-5 grid gap-3">
             {HELP_TOPICS.map((item) => {
               const selected = topic === item.id;
@@ -86,18 +86,18 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
                   className={cn(
                     'flex cursor-pointer items-start gap-3 rounded-xl border px-3.5 py-3.5 text-sm transition',
                     selected
-                      ? 'border-white/70 bg-white/18 text-white shadow-sm'
-                      : 'border-white/25 bg-white/8 text-white/92 hover:border-white/45 hover:bg-white/12'
+                      ? 'border-leaf bg-mint text-ink shadow-sm'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-leaf/40 hover:bg-mint/40'
                   )}
                 >
                   <span
                     className={cn(
                       'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2',
-                      selected ? 'border-white bg-white' : 'border-white/70 bg-transparent'
+                      selected ? 'border-leaf bg-leaf' : 'border-slate-300 bg-white'
                     )}
                     aria-hidden="true"
                   >
-                    {selected ? <span className="h-2.5 w-2.5 rounded-full bg-leaf" /> : null}
+                    {selected ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
                   </span>
                   <input
                     type="radio"
@@ -107,7 +107,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
                     onChange={() => setTopic(item.id)}
                     className="sr-only"
                   />
-                  <span className="leading-6">{item.label}</span>
+                  <span className="leading-6 font-medium">{item.label}</span>
                 </label>
               );
             })}
@@ -115,55 +115,50 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
         </div>
 
         <div className="grid min-w-0 gap-4">
-          <label className="grid gap-1.5 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Họ tên / Tên HTX</span>
             <Input
               data-testid="contact-name-input"
               name="fullName"
               required
-              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
+              className="bg-white"
               placeholder="VD: HTX Lúa ST25 Đồng Tháp"
             />
           </label>
-          <label className="grid gap-1.5 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Số điện thoại</span>
             <Input
               data-testid="contact-phone-input"
               name="phone"
               required
               inputMode="tel"
-              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
+              className="bg-white"
               placeholder="0900 000 000"
             />
           </label>
-          <label className="grid gap-1.5 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Email</span>
             <Input
               data-testid="contact-email-input"
               name="email"
               type="email"
-              className="border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
+              className="bg-white"
               placeholder="ban@htx.vn"
             />
           </label>
-          <label className="grid gap-1.5 text-sm font-semibold text-white">
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Nội dung</span>
             <Textarea
               data-testid="contact-message-input"
               name="message"
               required
-              className="min-h-28 border border-transparent bg-white text-ink placeholder:text-slate-400 focus:border-white focus:ring-4 focus:ring-white/25"
+              className="min-h-28 bg-white"
               placeholder="Mô tả ngắn nhu cầu của bạn..."
             />
           </label>
           {success && <div data-testid="toast-success" className="rounded-xl bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
           {error && <div data-testid="toast-error" className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-          <Button
-            data-testid="contact-submit-button"
-            type="submit"
-            className="mt-1 w-full border border-white/20 bg-white text-leaf shadow-sm hover:bg-mint sm:w-max"
-            disabled={submitting}
-          >
+          <Button data-testid="contact-submit-button" type="submit" className="mt-1 w-full sm:w-max" disabled={submitting}>
             {submitting ? 'Đang gửi' : 'Liên hệ ngay'}
             <ArrowRight size={18} aria-hidden="true" />
           </Button>

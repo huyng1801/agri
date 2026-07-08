@@ -306,19 +306,23 @@ export default async function AboutUsPage() {
         </section>
 
         <section className={cn(publicContainerClass, 'pb-12 pt-4')}>
-          <div className="overflow-hidden rounded-2xl bg-leaf p-5 text-white shadow-soft ring-1 ring-black/5 sm:p-8">
-            <div className="mb-6 flex flex-col gap-4 border-b border-white/20 pb-6 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <p className="text-sm font-semibold uppercase tracking-wide text-white/80">Bắt đầu cùng HTXONLINE</p>
-                <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight text-white">
-                  HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?
-                </h2>
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
+            <div className="border-b border-slate-100 bg-mint/70 px-5 py-5 sm:px-8 sm:py-6">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-leaf">Bắt đầu cùng HTXONLINE</p>
+                  <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight text-ink">
+                    HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?
+                  </h2>
+                </div>
+                <p className="max-w-md text-sm leading-6 text-slate-600">
+                  Để lại thông tin — đội vận hành sẽ hỗ trợ onboarding và hướng dẫn quy trình phù hợp với HTX của bạn.
+                </p>
               </div>
-              <p className="max-w-md text-sm leading-6 text-white/90">
-                Để lại thông tin — đội vận hành sẽ hỗ trợ onboarding và hướng dẫn quy trình phù hợp với HTX của bạn.
-              </p>
             </div>
-            <PublicContactForm sourcePath="/ve-chung-toi" variant="hero" />
+            <div className="p-5 sm:p-8">
+              <PublicContactForm sourcePath="/ve-chung-toi" variant="hero" />
+            </div>
           </div>
         </section>
       </main>
