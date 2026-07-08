@@ -60,7 +60,8 @@ export function CartClient() {
               src={item.imageUrl}
               alt={item.name}
               fallback={DEFAULT_PRODUCT_IMAGE}
-              className="h-20 w-20 rounded-md object-cover"
+              wrapperClassName="h-20 w-20 shrink-0 rounded-md"
+              className="h-full w-full object-cover"
             />
             <div className="min-w-0 flex-1">
               <Link href={`/san-pham/${item.slug}`} className="font-bold text-ink">

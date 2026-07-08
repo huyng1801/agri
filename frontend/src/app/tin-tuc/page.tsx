@@ -99,7 +99,9 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   src={featured.coverImageUrl}
                   alt={featured.coverImageAlt || featured.title}
                   fallback={DEFAULT_NEWS_IMAGE}
-                  className="aspect-[16/9] w-full object-cover lg:min-h-[280px] lg:aspect-auto lg:h-full"
+                  priority
+                  wrapperClassName="aspect-[16/9] w-full lg:min-h-[280px] lg:aspect-auto lg:h-full"
+                  className="h-full w-full object-cover"
                 />
               </Link>
               <div className="flex flex-col justify-center p-5">
@@ -117,9 +119,9 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {articles.length ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {(filters.search ? articles : rest).map((article) => (
-              <NewsCard key={article.id} article={article} />
+          <div className="grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {(filters.search ? articles : rest).map((article, index) => (
+              <NewsCard key={article.id} article={article} priority={index < 3} />
             ))}
           </div>
         ) : (

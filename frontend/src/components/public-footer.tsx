@@ -34,7 +34,7 @@ export function PublicFooter() {
             <div className="mt-4 grid gap-2">
               <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
               <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
-              <Link href="/gioi-thieu" className={footerLinkClass}>QR Passport truy xuất</Link>
+              <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
               <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
           </div>
@@ -98,8 +98,12 @@ export function PublicFooter() {
                 />
               </div>
             ) : (
-              <div className="flex items-center justify-center rounded-md border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
-                Bản đồ sẽ được cập nhật trong phần cài đặt hệ thống.
+              <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-md border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
+                <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
+                <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc HTX địa phương.</p>
+                <Link href="/lien-he" className="mt-3 font-semibold text-white underline-offset-2 hover:underline">
+                  Xem thông tin liên hệ
+                </Link>
               </div>
             )}
 

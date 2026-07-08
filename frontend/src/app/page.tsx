@@ -40,7 +40,7 @@ export default async function HomePage() {
 
   return (
     <PublicShell>
-      <main>
+      <main id="main-content">
         <section className="relative overflow-hidden bg-white">
           <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-15" />
           <div className={cn(publicContainerClass, 'relative grid min-h-[60vh] content-center gap-8 py-8 sm:min-h-[76vh] sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center')}>
@@ -148,8 +148,8 @@ export default async function HomePage() {
           />
           {news.data.length ? (
             <div className="mt-5 grid gap-4 md:grid-cols-3">
-              {news.data.map((article) => (
-                <NewsCard key={article.id} article={article} />
+              {news.data.map((article, index) => (
+                <NewsCard key={article.id} article={article} priority={index === 0} />
               ))}
             </div>
           ) : (

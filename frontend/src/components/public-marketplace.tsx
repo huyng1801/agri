@@ -84,6 +84,12 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
     <div id="top" className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
+      >
+        Bỏ qua đến nội dung chính
+      </a>
       <PublicHeader />
       {children}
       <FloatingContactClient />
@@ -153,6 +159,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
               src={product.cooperative.avatarUrl}
               alt={product.cooperative.name}
               fallback={defaultCooperativeAvatar}
+              decorative
               wrapperClassName="h-9 w-9 shrink-0 rounded-lg"
               className="h-full w-full object-cover"
             />
@@ -215,7 +222,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
   );
 }
 
-export function NewsCard({ article }: { article: NewsArticle }) {
+export function NewsCard({ article, priority = false }: { article: NewsArticle; priority?: boolean }) {
   return (
     <article className={cn(publicCardClass, 'group flex h-full flex-col transition-shadow hover:shadow-md')}>
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
@@ -223,11 +230,12 @@ export function NewsCard({ article }: { article: NewsArticle }) {
           src={article.coverImageUrl}
           alt={article.title}
           fallback={DEFAULT_NEWS_IMAGE}
+          priority={priority}
           wrapperClassName="aspect-[16/10] w-full"
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </Link>
-      <div className="flex flex-1 flex-col space-y-3 p-4">
+      <div className="flex flex-1 flex-col p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
           {article.category?.name && <span>{article.category.name}</span>}
           {article.publishedAt && (
@@ -237,10 +245,10 @@ export function NewsCard({ article }: { article: NewsArticle }) {
             </span>
           )}
         </div>
-        <Link href={`/tin-tuc/${article.slug}`} className="line-clamp-2 text-lg font-bold leading-6 text-ink">
+        <Link href={`/tin-tuc/${article.slug}`} className="mt-2 line-clamp-2 text-lg font-bold leading-6 text-ink hover:text-leaf">
           {article.title}
         </Link>
-        <p className="line-clamp-3 text-sm leading-6 text-slate-600">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
+        <p className="mt-auto line-clamp-3 pt-3 text-sm leading-6 text-slate-600">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
       </div>
     </article>
   );

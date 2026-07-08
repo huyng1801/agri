@@ -20,7 +20,7 @@ export default async function ContactPage() {
 
   return (
     <PublicShell>
-      <main>
+      <main id="main-content">
         <section className="relative overflow-hidden bg-leaf">
           <div
             className="absolute inset-0 opacity-20"

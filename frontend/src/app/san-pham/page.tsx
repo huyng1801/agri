@@ -64,12 +64,15 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   return (
     <PublicShell>
       <PublicPageMain>
-        <PublicPageHeader title="Sản phẩm" description="Sản phẩm public từ các HTX trên HTXONLINE." />
+        <PublicPageHeader
+          title="Sản phẩm"
+          description={`Sản phẩm public từ các HTX trên HTXONLINE${products.length ? ` · ${products.length} kết quả` : ''}.`}
+        />
         <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} />
         {products.length ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+          <div className="mt-6 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {products.map((product, index) => (
+              <ProductCard key={product.id} product={product} priority={index < 4} />
             ))}
           </div>
         ) : (
@@ -84,7 +87,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
 function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
   return (
-    <form className="rounded-md border border-slate-200 bg-white p-3 shadow-sm" action="/san-pham">
+    <form className="sticky top-16 z-20 rounded-md border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur" action="/san-pham">
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
         <input

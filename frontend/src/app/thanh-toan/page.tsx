@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   return (
-    <PublicStaticPage title="Thanh toán COD" description="MVP hỗ trợ COD — thanh toán khi nhận hàng. HTX sẽ liên hệ xác nhận sau khi đặt đơn.">
+    <PublicStaticPage title="Thanh toán COD" description="Thanh toán khi nhận hàng — HTX sẽ liên hệ xác nhận sau khi bạn đặt đơn.">
       <CheckoutClient />
     </PublicStaticPage>
   );

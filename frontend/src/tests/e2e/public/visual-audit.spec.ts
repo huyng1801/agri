@@ -54,28 +54,38 @@ const AUDIT_ROUTES: AuditRoute[] = [
 
 const OUTPUT_ROOT = join(process.cwd(), 'test-results', 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
-const FINDINGS_PATH = join(OUTPUT_ROOT, 'findings.jsonl');
+
+function findingsPathFor(viewport: 'desktop' | 'mobile') {
+  return join(OUTPUT_ROOT, `findings-${viewport}.jsonl`);
+}
 
 test.describe('public visual audit', () => {
   test.describe.configure({ mode: 'serial' });
 
   let passportCode = 'DEMO-PASSPORT';
 
-  test.beforeAll(async ({ request }) => {
+  test.beforeAll(async ({ request }, testInfo) => {
+    const viewportLabel = testInfo.project.name === 'iphone' ? 'mobile' : 'desktop';
+    mkdirSync(OUTPUT_ROOT, { recursive: true });
+    const findingsPath = findingsPathFor(viewportLabel);
+    if (existsSync(findingsPath)) unlinkSync(findingsPath);
+
     const { apiUrl } = baseUrls();
     try {
-      const response = await request.get(`${apiUrl}/products/public?limit=12&hasQr=true`);
+      const response = await request.get(`${apiUrl}/products/public?limit=24&hasQr=true`);
       if (response.ok()) {
-        const body = (await response.json()) as { data?: { data?: Array<{ passportCode?: string }> } | Array<{ passportCode?: string }> };
+        const body = (await response.json()) as {
+          data?: { data?: Array<{ passports?: Array<{ passportCode?: string }> }> } | Array<{ passports?: Array<{ passportCode?: string }> }>;
+        };
         const list = Array.isArray(body.data) ? body.data : body.data?.data;
-        const code = list?.find((item) => item.passportCode)?.passportCode;
+        const code = list
+          ?.flatMap((item) => item.passports ?? [])
+          .find((passport) => passport.passportCode)?.passportCode;
         if (code) passportCode = code;
       }
     } catch {
       // Keep fallback passport code for offline screenshot runs.
     }
-    mkdirSync(OUTPUT_ROOT, { recursive: true });
-    if (existsSync(FINDINGS_PATH)) unlinkSync(FINDINGS_PATH);
   });
 
   for (const route of AUDIT_ROUTES) {
@@ -94,6 +104,7 @@ test.describe('public visual audit', () => {
       expect(response?.status()).toBeLessThan(400);
 
       await page.waitForTimeout(500);
+      await warmLazyImages(page);
       const shotDir = join(OUTPUT_ROOT, route.id);
       mkdirSync(shotDir, { recursive: true });
       const shotPath = join(shotDir, `${viewportLabel}.png`);
@@ -113,26 +124,34 @@ test.describe('public visual audit', () => {
         mobile: viewportLabel === 'mobile' ? layoutNotes : '—'
       };
 
-      appendFileSync(FINDINGS_PATH, `${JSON.stringify(finding)}\n`, 'utf8');
+      appendFileSync(findingsPathFor(viewportLabel), `${JSON.stringify(finding)}\n`, 'utf8');
     });
   }
 
   test('@audit finalize report', async ({}, testInfo) => {
     test.skip(testInfo.project.name !== 'iphone', 'Write merged report after all viewport captures');
-    const findings = existsSync(FINDINGS_PATH)
-      ? readFileSync(FINDINGS_PATH, 'utf8')
+    const desktopFindings = existsSync(findingsPathFor('desktop'))
+      ? readFileSync(findingsPathFor('desktop'), 'utf8')
           .trim()
           .split('\n')
           .filter(Boolean)
-          .map((line) => JSON.parse(line) as {
-            route: string;
-            viewport: string;
-            status: 'ok' | 'warn' | 'fail';
-            layout: string;
-            images: string;
-            mobile: string;
-          })
+          .map((line) => JSON.parse(line))
       : [];
+    const mobileFindings = existsSync(findingsPathFor('mobile'))
+      ? readFileSync(findingsPathFor('mobile'), 'utf8')
+          .trim()
+          .split('\n')
+          .filter(Boolean)
+          .map((line) => JSON.parse(line))
+      : [];
+    const findings = [...desktopFindings, ...mobileFindings] as Array<{
+      route: string;
+      viewport: string;
+      status: 'ok' | 'warn' | 'fail';
+      layout: string;
+      images: string;
+      mobile: string;
+    }>;
 
     const rows = findings
       .map(
@@ -181,6 +200,18 @@ Mobile long pages also save \`mobile-mid.png\` and \`mobile-bottom.png\` when ne
     writeFileSync(ANALYSIS_PATH, markdown, 'utf8');
   });
 });
+
+async function warmLazyImages(page: Page) {
+  await page.evaluate(async () => {
+    const height = document.documentElement.scrollHeight;
+    window.scrollTo(0, height);
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    window.scrollTo(0, Math.floor(height / 2));
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    window.scrollTo(0, 0);
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  });
+}
 
 async function capturePageScreenshot(page: Page, shotPath: string, viewportLabel: 'desktop' | 'mobile') {
   if (viewportLabel === 'desktop') {

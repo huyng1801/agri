@@ -66,7 +66,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               src={product.thumbnail?.publicUrl}
               alt={product.name}
               fallback={productImage(product)}
-              className="aspect-[4/3] w-full object-cover"
+              priority
+              wrapperClassName="aspect-[4/3] w-full"
+              className="h-full w-full object-cover"
             />
           </section>
           <section className="space-y-4">
@@ -79,7 +81,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     src={product.cooperative?.avatarUrl}
                     alt={product.cooperative?.name ?? 'HTX'}
                     fallback={coopAvatar}
-                    className="h-10 w-10 rounded-md object-cover"
+                    decorative
+                    wrapperClassName="h-10 w-10 shrink-0 rounded-md"
+                    className="h-full w-full object-cover"
                   />
                 )}
                 {product.cooperative?.name ?? 'HTX đang cập nhật'}

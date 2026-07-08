@@ -90,7 +90,7 @@ export default async function AboutUsPage() {
 
   return (
     <PublicShell>
-      <main>
+      <main id="main-content">
         <section className="relative overflow-hidden bg-mint/60">
           <div className={cn(publicContainerClass, 'relative grid items-center gap-6 py-12 lg:grid-cols-[1fr_0.85fr_1fr] lg:py-16')}>
             <div>

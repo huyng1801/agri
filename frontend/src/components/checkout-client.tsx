@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { CartItem, LAST_ORDER_STORAGE_KEY, cartTotal, formatVnd, readCart, writeCart } from '@/lib/cart';
+import { DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { Button, Input, Panel, Textarea } from './ui';
 
 type OrderResponse = {
@@ -143,7 +144,16 @@ export function CheckoutClient() {
           <div className="mt-3 space-y-3">
             {items.map((item) => (
               <div key={item.productId} className="flex gap-3 rounded-md bg-slate-50 p-3 text-sm">
-                {item.imageUrl && <img src={item.imageUrl} alt="" className="h-14 w-14 rounded-md object-cover" />}
+                {item.imageUrl ? (
+                  <PublicImage
+                    src={item.imageUrl}
+                    alt={item.name}
+                    fallback={DEFAULT_PRODUCT_IMAGE}
+                    decorative
+                    wrapperClassName="h-14 w-14 shrink-0 rounded-md"
+                    className="h-full w-full object-cover"
+                  />
+                ) : null}
                 <div className="min-w-0 flex-1">
                   <div className="flex justify-between gap-3">
                     <span className="font-semibold">{item.name}</span>

@@ -1,13 +1,13 @@
-import { PublicInfoTile } from './public-layout';
-import { Panel } from './ui';
+import { PublicInfoTile, publicProseClass } from './public-layout';
+import { Panel, cn } from './ui';
 
 export function PublicPolicyBody({ sections }: { sections: Array<{ title: string; paragraphs: string[] }> }) {
   return (
-    <Panel className="space-y-6">
+    <Panel className="space-y-8">
       {sections.map((section) => (
         <section key={section.title}>
           <h2 className="text-lg font-bold text-ink">{section.title}</h2>
-          <div className="mt-3 space-y-3 text-sm leading-7 text-slate-700">
+          <div className={cn('mt-3 space-y-3', publicProseClass)}>
             {section.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}

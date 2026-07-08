@@ -49,12 +49,19 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
 
   return (
     <PublicShell>
-      <main>
+      <main id="main-content">
         <PublicSection band className="!py-6 sm:!py-8">
           <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
           <article className={publicCardClass}>
             <div className="relative h-48 overflow-hidden sm:h-60">
-              <PublicImage src={cooperative.avatarUrl} alt={cooperative.name} fallback={avatarFallback} className="h-full w-full object-cover" />
+              <PublicImage
+                    src={cooperative.avatarUrl}
+                    alt={cooperative.name}
+                    fallback={avatarFallback}
+                    priority
+                    wrapperClassName="h-full w-full"
+                    className="h-full w-full object-cover"
+                  />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             </div>
             <div className="p-5 sm:p-6">
@@ -64,7 +71,9 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                     src={cooperative.avatarUrl}
                     alt={cooperative.name}
                     fallback={avatarFallback}
-                    className="h-14 w-14 shrink-0 rounded-md border-2 border-white object-cover shadow-sm sm:h-16 sm:w-16 -mt-8 sm:-mt-12"
+                    decorative
+                    wrapperClassName="h-14 w-14 shrink-0 -mt-8 rounded-md border-2 border-white shadow-sm sm:h-16 sm:w-16 sm:-mt-12"
+                    className="h-full w-full object-cover"
                   />
                   <div className="pt-1">
                     <h1 className="text-3xl font-bold text-ink">{cooperative.name}</h1>

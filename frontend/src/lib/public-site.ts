@@ -22,18 +22,18 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
   hotline: '0900000000',
   hotlineDisplay: '0900 000 000',
   supportEmail: 'support@htxonline.vn',
-  address: 'Viet Nam',
+  address: 'Việt Nam',
   zaloUrl: 'https://zalo.me',
   messengerUrl: '',
   mapEmbedUrl: '',
   faqs: [
     {
-      question: 'HTXONLINE ho tro gi cho hop tac xa?',
-      answer: 'Quan ly san pham, vung trong, QR truy xuat va don COD tren cung mot nen tang.'
+      question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+      answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
     },
     {
-      question: 'Nguoi mua co can dang nhap de xem QR?',
-      answer: 'Khong. QR Passport public duoc mo truc tiep cho khach truy cap.'
+      question: 'Người mua có cần đăng nhập để xem QR?',
+      answer: 'Không. QR Passport public được mở trực tiếp cho khách truy cập.'
     }
   ]
 };

@@ -5,11 +5,19 @@ import { cn } from './ui';
 export const publicContainerClass = 'mx-auto max-w-6xl px-4';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <main className={cn(publicContainerClass, 'py-10', className)}>{children}</main>;
+  return (
+    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>
+      {children}
+    </main>
+  );
 }
 
 export function PublicDetailMain({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <main className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>{children}</main>;
+  return (
+    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>
+      {children}
+    </main>
+  );
 }
 
 export function PublicBreadcrumb({ href, label }: { href: string; label: string }) {
@@ -77,6 +85,8 @@ export function PublicSectionHeader({
 }
 
 export const publicCardClass = 'overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm';
+
+export const publicProseClass = 'text-sm leading-7 text-slate-700';
 
 export function PublicInfoTile({ title, description }: { title: string; description: string }) {
   return (

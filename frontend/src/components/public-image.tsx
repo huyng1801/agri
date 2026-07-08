@@ -20,6 +20,7 @@ type PublicImageProps = {
   wrapperClassName?: string;
   testId?: string;
   priority?: boolean;
+  decorative?: boolean;
 };
 
 export function PublicImage({
@@ -29,7 +30,8 @@ export function PublicImage({
   className,
   wrapperClassName,
   testId,
-  priority = false
+  priority = false,
+  decorative = false
 }: PublicImageProps) {
   const resolved = src || fallback;
   const [currentSrc, setCurrentSrc] = useState(resolved);
@@ -55,9 +57,11 @@ export function PublicImage({
         ref={imgRef}
         data-testid={testId}
         src={currentSrc}
-        alt={alt}
+        alt={decorative ? '' : alt}
         loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
+        aria-hidden={decorative ? true : undefined}
         className={cn('block max-w-full', className)}
         onLoad={() => setLoaded(true)}
         onError={() => {
