@@ -24,9 +24,9 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
         ref={trackRef}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        {products.map((product) => (
-          <div key={product.id} data-slider-card className="w-[min(85vw,280px)] shrink-0 snap-start sm:w-[300px]">
-            <ProductCard product={product} />
+        {products.map((product, index) => (
+          <div key={product.id} data-slider-card className="w-[min(88vw,300px)] shrink-0 snap-start sm:w-[280px] lg:w-[300px]">
+            <ProductCard product={product} priority={index < 4} />
           </div>
         ))}
       </div>

@@ -42,7 +42,7 @@ export default async function HomePage() {
     <PublicShell>
       <main>
         <section className="relative overflow-hidden bg-white">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1800&q=80')] bg-cover bg-center opacity-20" />
+          <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-15" />
           <div className={cn(publicContainerClass, 'relative grid min-h-[60vh] content-center gap-8 py-8 sm:min-h-[76vh] sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center')}>
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-1 text-sm font-semibold text-leaf">
@@ -109,9 +109,9 @@ export default async function HomePage() {
             linkLabel="Xem HTX"
           />
           {featuredCooperatives.length ? (
-            <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {featuredCooperatives.map((cooperative) => (
-                <CooperativeCard key={cooperative.id} cooperative={cooperative} />
+            <div className="mt-5 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredCooperatives.map((cooperative, index) => (
+                <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
               ))}
             </div>
           ) : (

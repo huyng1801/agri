@@ -76,7 +76,7 @@ export function PublicSectionHeader({
   );
 }
 
-export const publicCardClass = 'overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm';
+export const publicCardClass = 'overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm';
 
 export function PublicInfoTile({ title, description }: { title: string; description: string }) {
   return (

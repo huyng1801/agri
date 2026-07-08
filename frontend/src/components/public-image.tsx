@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from './ui';
 
 export const DEFAULT_PRODUCT_IMAGE =
@@ -19,6 +19,7 @@ type PublicImageProps = {
   className?: string;
   wrapperClassName?: string;
   testId?: string;
+  priority?: boolean;
 };
 
 export function PublicImage({
@@ -27,27 +28,37 @@ export function PublicImage({
   fallback = DEFAULT_PRODUCT_IMAGE,
   className,
   wrapperClassName,
-  testId
+  testId,
+  priority = false
 }: PublicImageProps) {
   const resolved = src || fallback;
   const [currentSrc, setCurrentSrc] = useState(resolved);
   const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    setLoaded(false);
     setCurrentSrc(resolved);
+    setLoaded(false);
   }, [resolved]);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    if (img?.complete && img.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [currentSrc]);
 
   return (
     <div className={cn('relative overflow-hidden bg-slate-100', wrapperClassName)}>
-      {!loaded && <div className="absolute inset-0 animate-pulse bg-slate-200" aria-hidden="true" />}
+      {!loaded && <div className="absolute inset-0 z-[1] animate-pulse bg-slate-200" aria-hidden="true" />}
       <img
+        ref={imgRef}
         data-testid={testId}
         src={currentSrc}
         alt={alt}
-        loading="lazy"
+        loading={priority ? 'eager' : 'lazy'}
         decoding="async"
-        className={cn(className, loaded ? 'opacity-100' : 'opacity-0', 'transition-opacity duration-300')}
+        className={cn('block max-w-full', className)}
         onLoad={() => setLoaded(true)}
         onError={() => {
           if (currentSrc !== fallback) {

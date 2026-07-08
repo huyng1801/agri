@@ -111,7 +111,7 @@ export function PublicSearch({
   );
 }
 
-export function ProductCard({ product }: { product: PublicProduct }) {
+export function ProductCard({ product, priority = false }: { product: PublicProduct; priority?: boolean }) {
   const hasQr = Boolean(product.passports?.length);
 
   return (
@@ -122,45 +122,48 @@ export function ProductCard({ product }: { product: PublicProduct }) {
           alt={product.name}
           fallback={DEFAULT_PRODUCT_IMAGE}
           testId="product-card-image"
-          className="aspect-[4/3] w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+          priority={priority}
+          wrapperClassName="aspect-[4/3] w-full"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
         {hasQr && (
-          <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-[11px] font-bold uppercase tracking-wide text-leaf shadow-sm">
+          <span className="absolute left-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-leaf shadow-sm">
             <QrCode size={12} aria-hidden="true" />
-            QR
+            QR Passport
           </span>
         )}
       </Link>
-      <div className="flex flex-1 flex-col space-y-3 p-4">
-        <div>
-          <p className="text-xs font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-          <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-lg font-bold leading-6 text-ink">
-            {product.name}
-          </Link>
-          {product.cooperative && (
-            <Link href={`/htx/${product.cooperative.code}`} className="mt-2 flex items-center gap-2 text-sm text-slate-600 hover:text-leaf">
-              <PublicImage
-                src={product.cooperative.avatarUrl}
-                alt={product.cooperative.name}
-                fallback={defaultCooperativeAvatar}
-                className="h-6 w-6 rounded object-cover"
-                wrapperClassName="shrink-0"
-              />
-              <span className="min-w-0 truncate font-medium">{product.cooperative.name}</span>
-              {product.cooperative.province && <span className="hidden shrink-0 text-xs text-slate-400 sm:inline">· {product.cooperative.province}</span>}
-            </Link>
-          )}
+      <div className="flex flex-1 flex-col p-4">
+        <p className="text-[11px] font-bold uppercase tracking-wide text-leaf">{product.category?.name ?? 'Nông sản'}</p>
+        <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-base font-bold leading-snug text-ink hover:text-leaf">
+          {product.name}
+        </Link>
+
+        <div className="mt-3 border-t border-slate-100 pt-3">
+          <p className="text-xl font-bold text-leaf">{formatPrice(product.price)}</p>
+          <p className="text-xs text-slate-500">/{product.unit}</p>
         </div>
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-lg font-bold text-leaf">{formatPrice(product.price)}</p>
-            <p className="text-xs text-slate-500">/{product.unit}</p>
-          </div>
-          <Link href={`/san-pham/${product.slug}`}>
-            <Button variant="ghost">Xem</Button>
+
+        {product.cooperative && (
+          <Link
+            href={`/htx/${product.cooperative.code}`}
+            className="mt-3 flex items-center gap-2.5 rounded-lg bg-slate-50 p-2.5 transition hover:bg-mint/50"
+          >
+            <PublicImage
+              src={product.cooperative.avatarUrl}
+              alt={product.cooperative.name}
+              fallback={defaultCooperativeAvatar}
+              wrapperClassName="h-9 w-9 shrink-0 rounded-lg"
+              className="h-full w-full object-cover"
+            />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-xs font-semibold text-ink">{product.cooperative.name}</span>
+              <span className="block truncate text-[11px] text-slate-500">{product.cooperative.province || 'HTX địa phương'}</span>
+            </span>
           </Link>
-        </div>
-        <AddToCartButton product={product} className="mt-auto w-full" />
+        )}
+
+        <AddToCartButton product={product} className="mt-auto w-full pt-3" />
       </div>
     </article>
   );
@@ -170,45 +173,40 @@ export function productImage(product: PublicProduct) {
   return product.thumbnail?.publicUrl || DEFAULT_PRODUCT_IMAGE;
 }
 
-export function CooperativeCard({ cooperative }: { cooperative: PublicCooperative }) {
+export function CooperativeCard({ cooperative, priority = false }: { cooperative: PublicCooperative; priority?: boolean }) {
   return (
     <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md')}>
-      <div className="relative aspect-[16/7] overflow-hidden bg-slate-100">
+      <Link href={`/htx/${cooperative.code}`} className="relative block overflow-hidden">
         <PublicImage
           src={cooperative.avatarUrl}
-          alt=""
+          alt={cooperative.name}
           fallback={defaultCooperativeAvatar}
-          className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          priority={priority}
+          wrapperClassName="aspect-[5/3] w-full"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
-        <div className="absolute bottom-3 left-3 right-3">
-          <p className="truncate text-sm font-semibold text-white drop-shadow">{cooperative.province || 'Việt Nam'}</p>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+          <p className="text-[11px] font-bold uppercase tracking-wide text-white/80">{cooperative.province || 'Việt Nam'}</p>
+          <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug">{cooperative.name}</h3>
         </div>
-      </div>
-      <div className="flex flex-1 flex-col px-4 pb-4">
-        <div className="flex items-end gap-3 -mt-7 sm:-mt-8">
-          <PublicImage
-            src={cooperative.avatarUrl}
-            alt={cooperative.name}
-            fallback={defaultCooperativeAvatar}
-            className="relative z-10 h-14 w-14 shrink-0 rounded-md border-[3px] border-white object-cover shadow-md sm:h-16 sm:w-16"
-            wrapperClassName="shrink-0"
-          />
-          <div className="min-w-0 flex-1 pb-1">
-            <h3 className="line-clamp-2 text-lg font-bold leading-6 text-ink">{cooperative.name}</h3>
-            <p className="mt-1 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
-          </div>
-        </div>
-        <div className="mt-auto flex gap-2 pt-4">
-          <Link href={`/htx/${cooperative.code}`} className="flex-1">
-            <Button className="w-full" variant="ghost">
+      </Link>
+      <div className="flex items-center justify-between gap-3 p-4">
+        <p className="text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+        <div className="flex shrink-0 gap-2">
+          <Link href={`/htx/${cooperative.code}`}>
+            <Button variant="ghost" className="px-3 py-2 text-xs">
               Xem HTX
-              <ArrowRight size={16} aria-hidden="true" />
+              <ArrowRight size={14} aria-hidden="true" />
             </Button>
           </Link>
           {cooperative.phone && (
-            <a href={`tel:${cooperative.phone}`} className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-leaf transition hover:border-leaf" aria-label="Gọi HTX">
-              <Phone size={18} aria-hidden="true" />
+            <a
+              href={`tel:${cooperative.phone}`}
+              className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-leaf transition hover:border-leaf"
+              aria-label="Gọi HTX"
+            >
+              <Phone size={17} aria-hidden="true" />
             </a>
           )}
         </div>
@@ -225,7 +223,8 @@ export function NewsCard({ article }: { article: NewsArticle }) {
           src={article.coverImageUrl}
           alt={article.title}
           fallback={DEFAULT_NEWS_IMAGE}
-          className="aspect-[16/10] w-full object-cover transition duration-300 group-hover:scale-[1.02]"
+          wrapperClassName="aspect-[16/10] w-full"
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </Link>
       <div className="flex flex-1 flex-col space-y-3 p-4">
