@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar, CheckCircle2, Eye, MapPin, QrCode } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -119,7 +118,13 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
               <p className="mt-2 text-white/85">{passport.cooperative.name}</p>
             </div>
             {passport.qrDataUrl && (
-              <Image src={passport.qrDataUrl} width={96} height={96} alt={`QR ${passport.passportCode}`} className="rounded-md bg-white p-1" />
+              <img
+                src={passport.qrDataUrl}
+                width={96}
+                height={96}
+                alt={`QR ${passport.passportCode}`}
+                className="rounded-md bg-white p-1"
+              />
             )}
           </div>
         </div>
@@ -127,7 +132,9 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
           src={passport.product.thumbnail?.publicUrl}
           alt={passport.product.name}
           fallback={DEFAULT_PRODUCT_IMAGE}
-          className="aspect-[16/9] w-full object-cover"
+          priority
+          wrapperClassName="aspect-[16/9] w-full"
+          className="h-full w-full object-cover"
         />
 
         <div className="grid gap-3 p-4 sm:grid-cols-3">
@@ -171,8 +178,16 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                   )}
                   {logImages(log.imagesJson).length > 0 && (
                     <div className="mt-3 grid grid-cols-3 gap-2">
-                      {logImages(log.imagesJson).slice(0, 6).map((image) => (
-                        <img key={image.url} src={image.url} alt="" className="aspect-square rounded-md object-cover" />
+                      {logImages(log.imagesJson).slice(0, 6).map((image, imageIndex) => (
+                        <PublicImage
+                          key={`${log.id}-${imageIndex}`}
+                          src={image.url}
+                          alt={`Ảnh nhật ký ${index + 1}`}
+                          fallback={DEFAULT_PRODUCT_IMAGE}
+                          decorative
+                          wrapperClassName="aspect-square w-full rounded-md"
+                          className="h-full w-full object-cover"
+                        />
                       ))}
                     </div>
                   )}
