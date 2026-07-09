@@ -37,7 +37,7 @@ export class SettingsService {
       hotline: stringValue(publicProfile.hotline) || '0900000000',
       hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0900 000 000',
       supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'support@htxonline.vn',
-      address: stringValue(publicProfile.address) || 'Việt Nam',
+      address: stringValue(publicProfile.address) || 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp',
       zaloUrl: stringValue(publicProfile.zaloUrl) || 'https://zalo.me',
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
       mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || '',

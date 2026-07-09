@@ -113,6 +113,7 @@ export function PublicFooter() {
                 <p className="mt-2 leading-6">HTXONLINE hỗ trợ hợp tác xã số hóa sản phẩm, vùng trồng, nhật ký canh tác và QR Passport để người mua tin tưởng nguồn gốc.</p>
               </div>
               <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
+              <p className="text-xs text-white/60">Được thiết kế và Vận Hành bởi THT Agri PassPort</p>
             </div>
           </div>
         </div>

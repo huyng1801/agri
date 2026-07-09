@@ -189,6 +189,8 @@ async function main() {
     update: {}
   });
 
+  const siteAddress = 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp';
+
   await prisma.setting.upsert({
     where: { key: 'public.siteProfile' },
     create: {
@@ -198,7 +200,7 @@ async function main() {
         hotline: '0900000000',
         hotlineDisplay: '0900 000 000',
         supportEmail: 'support@htxonline.vn',
-        address: 'Việt Nam',
+        address: siteAddress,
         zaloUrl: 'https://zalo.me',
         messengerUrl: '',
         mapEmbedUrl: '',
@@ -221,6 +223,17 @@ async function main() {
     },
     update: {}
   });
+
+  const existingSiteProfile = await prisma.setting.findUnique({ where: { key: 'public.siteProfile' } });
+  if (existingSiteProfile?.value && typeof existingSiteProfile.value === 'object' && !Array.isArray(existingSiteProfile.value)) {
+    const current = existingSiteProfile.value as Record<string, unknown>;
+    if (current.address !== siteAddress) {
+      await prisma.setting.update({
+        where: { key: 'public.siteProfile' },
+        data: { value: { ...current, address: siteAddress } }
+      });
+    }
+  }
 
   const email = process.env.SEED_SUPER_ADMIN_EMAIL || 'admin@example.com';
   const password = process.env.SEED_SUPER_ADMIN_PASSWORD || 'ChangeMe123!';

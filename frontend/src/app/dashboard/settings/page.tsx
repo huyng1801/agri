@@ -314,7 +314,7 @@ function objectToPublicForm(value: unknown) {
     hotline: String(object.hotline ?? '0900000000'),
     hotlineDisplay: String(object.hotlineDisplay ?? ''),
     supportEmail: String(object.supportEmail ?? 'support@htxonline.vn'),
-    address: String(object.address ?? 'Việt Nam'),
+    address: String(object.address ?? 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp'),
     zaloUrl: String(object.zaloUrl ?? 'https://zalo.me'),
     messengerUrl: String(object.messengerUrl ?? ''),
     mapEmbedUrl: String(object.mapEmbedUrl ?? ''),

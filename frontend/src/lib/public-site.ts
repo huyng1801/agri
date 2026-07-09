@@ -22,7 +22,7 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
   hotline: '0900000000',
   hotlineDisplay: '0900 000 000',
   supportEmail: 'support@htxonline.vn',
-  address: 'Việt Nam',
+  address: 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp',
   zaloUrl: 'https://zalo.me',
   messengerUrl: '',
   mapEmbedUrl: '',
