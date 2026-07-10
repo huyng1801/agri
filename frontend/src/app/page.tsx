@@ -62,8 +62,8 @@ export default async function HomePage() {
                 Kết nối người mua với sản phẩm HTX có thông tin minh bạch, QR truy xuất nguồn gốc và đặt hàng COD.
               </p>
               <PublicSearch />
-              <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
-                <Link href="/san-pham" className="col-span-2 block sm:col-span-1 sm:inline-flex">
+              <div className="hidden sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
+                <Link href="/san-pham" className="sm:inline-flex">
                   <Button className="w-full sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />

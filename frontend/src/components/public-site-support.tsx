@@ -32,13 +32,26 @@ export function FooterContactInfo() {
 export function FloatingContactClient() {
   const siteProfile = usePublicSiteProfile();
   const [showTop, setShowTop] = useState(false);
+  const [showFloating, setShowFloating] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 500);
+    const onScroll = () => {
+      const mobileViewport = window.innerWidth < 1024;
+      setShowTop(window.scrollY > 500);
+      setShowFloating(!mobileViewport || window.scrollY > 320);
+    };
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
   }, []);
+
+  if (!showFloating && !showTop) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-[calc(6.5rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
