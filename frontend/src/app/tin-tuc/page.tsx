@@ -49,14 +49,14 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           title="Tin tức"
           description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
           action={
-            <form action="/tin-tuc" className="flex min-w-0 gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm lg:w-[420px]">
+            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm sm:flex-row sm:rounded-md lg:w-[420px]">
               <div className="relative flex-1">
                 <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                 <input
                   name="search"
                   defaultValue={filters.search ?? ''}
                   placeholder="Tìm bài viết"
-                  className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint"
+                  className="min-h-11 w-full rounded-xl border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:rounded-md"
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
@@ -70,7 +70,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             <Link
               href="/tin-tuc"
               className={cn(
-                'shrink-0 rounded-md border px-3 py-2 text-sm font-semibold',
+                'shrink-0 rounded-xl border px-3 py-2 text-sm font-semibold',
                 !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
               )}
             >
@@ -81,7 +81,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                 key={category.id}
                 href={`/tin-tuc?category=${category.slug}`}
                 className={cn(
-                  'shrink-0 rounded-md border px-3 py-2 text-sm font-semibold',
+                  'shrink-0 rounded-xl border px-3 py-2 text-sm font-semibold',
                   filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
                 )}
               >

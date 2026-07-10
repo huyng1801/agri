@@ -83,7 +83,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div id="top" className="min-h-screen bg-transparent pb-[calc(6.8rem+var(--safe-bottom))] text-ink lg:pb-0">
+    <div id="top" className="min-h-screen bg-transparent pb-[calc(7.8rem+var(--safe-bottom))] text-ink lg:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
@@ -205,11 +205,11 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug">{cooperative.name}</h3>
         </div>
       </Link>
-      <div className="flex items-center justify-between gap-3 p-4">
+      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
         <div className="flex shrink-0 gap-2">
           <Link href={`/htx/${cooperative.code}`}>
-            <Button variant="ghost" className="px-3 py-2 text-xs">
+            <Button variant="ghost" className="min-h-10 px-3 py-2 text-xs">
               Xem HTX
               <ArrowRight size={14} aria-hidden="true" />
             </Button>
@@ -217,7 +217,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           {cooperative.phone && (
             <a
               href={`tel:${cooperative.phone}`}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf"
+              className="hidden h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf sm:grid"
               aria-label="Gọi HTX"
             >
               <Phone size={17} aria-hidden="true" />
