@@ -64,9 +64,9 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                   />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
             </div>
-            <div className="p-5 sm:p-6">
+            <div className="p-4 sm:p-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex items-start gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
                   <PublicImage
                     src={cooperative.avatarUrl}
                     alt={cooperative.name}
@@ -75,8 +75,8 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                     wrapperClassName="h-14 w-14 shrink-0 -mt-8 rounded-md border-2 border-white shadow-sm sm:h-16 sm:w-16 sm:-mt-12"
                     className="h-full w-full object-cover"
                   />
-                  <div className="pt-1">
-                    <h1 className="text-[2.35rem] font-bold leading-[1.04] text-ink sm:text-3xl">{cooperative.name}</h1>
+                  <div className="pt-0.5 sm:pt-1">
+                    <h1 className="text-[1.8rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-3xl">{cooperative.name}</h1>
                     <p className="mt-2 flex items-center gap-2 text-slate-600">
                       <MapPin size={16} aria-hidden="true" />
                       {cooperative.province || 'Đang cập nhật địa phương'}
@@ -85,15 +85,15 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                   </div>
                 </div>
                 {cooperative.phone && (
-                  <a href={`tel:${cooperative.phone}`}>
-                    <Button>
+                  <a href={`tel:${cooperative.phone}`} className="w-full sm:w-auto">
+                    <Button className="w-full sm:w-auto">
                       <Phone size={18} aria-hidden="true" />
                       Gọi HTX
                     </Button>
                   </a>
                 )}
               </div>
-              <p className="mt-5 max-w-3xl leading-7 text-slate-700">
+              <p className="mt-4 max-w-3xl text-[0.98rem] leading-7 text-slate-700">
                 Hồ sơ public của HTX trên HTXONLINE. Người mua có thể xem sản phẩm, vùng trồng công khai và quét QR Passport để kiểm tra nguồn gốc.
               </p>
             </div>

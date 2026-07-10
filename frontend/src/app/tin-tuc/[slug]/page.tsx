@@ -117,8 +117,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
             fallback={DEFAULT_NEWS_IMAGE}
             className="aspect-[16/8] w-full object-cover"
           />
-          <div className="p-5 md:p-8">
-            <div className="mb-4 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+          <div className="p-4 md:p-8">
+            <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500">
               {article.category?.name && <Badge className="bg-mint text-leaf">{article.category.name}</Badge>}
               <span className="inline-flex items-center gap-1">
                 <Calendar size={15} aria-hidden="true" />
@@ -133,13 +133,13 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 {article.viewCount}
               </span>
             </div>
-            <h1 className="text-[2.55rem] font-bold leading-[1.03] tracking-tight text-ink md:text-5xl">{article.title}</h1>
+            <h1 className="text-[1.9rem] font-bold leading-[1.03] tracking-tight text-ink sm:text-[2.55rem] md:text-5xl">{article.title}</h1>
             {(article.excerpt || article.seoDescription) && (
-              <p className="mt-4 text-lg leading-8 text-slate-600">{article.excerpt || article.seoDescription}</p>
+              <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">{article.excerpt || article.seoDescription}</p>
             )}
-            <div className="news-body mt-8" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            <div className="news-body mt-6 sm:mt-8" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
             {article.tagsJson?.length ? (
-              <div className="mt-8 flex flex-wrap gap-2">
+              <div className="mt-6 flex flex-wrap gap-2 sm:mt-8">
                 {article.tagsJson.map((tag) => (
                   <Badge key={tag} className="bg-slate-100 text-slate-700">
                     {tag}
@@ -151,7 +151,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         </article>
 
         {related.length > 0 && (
-          <section className="mt-8">
+          <section className="mt-6 sm:mt-8">
             <h2 className="text-2xl font-bold text-ink">Bài viết liên quan</h2>
             <div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               {related.map((item) => (
@@ -161,7 +161,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           </section>
         )}
 
-        <Panel className="mt-8 text-center">
+        <Panel className="mt-6 text-center sm:mt-8">
           <h2 className="text-xl font-bold text-ink">Kết nối cùng HTXONLINE</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.</p>
           <Link href="/san-pham" className="mt-4 inline-block font-semibold text-leaf">

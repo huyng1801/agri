@@ -91,8 +91,8 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
 
   return (
-    <main className="mx-auto min-h-screen max-w-5xl px-4 py-5">
-      <header className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
+    <main className="mx-auto min-h-screen max-w-5xl px-3 py-4 sm:px-4 sm:py-5">
+      <header className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:px-4">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
           <PublicLogo size={28} className="ring-1 ring-slate-200" />
           HTXONLINE
@@ -107,14 +107,14 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
         </div>
       </header>
       <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-soft">
-        <div className="bg-leaf p-5 text-white">
-          <div className="flex items-start justify-between gap-3">
-            <div>
+        <div className="bg-leaf p-4 text-white sm:p-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="min-w-0">
               <Badge className="bg-white text-leaf">
                 <CheckCircle2 className="mr-1 inline" size={14} aria-hidden="true" />
                 Đã xác thực
               </Badge>
-              <h1 className="mt-4 text-3xl font-bold">{passport.product.name}</h1>
+              <h1 className="mt-3 max-w-[11ch] text-[2rem] font-bold leading-[1.05] sm:mt-4 sm:max-w-none sm:text-3xl">{passport.product.name}</h1>
               <p className="mt-2 text-white/85">{passport.cooperative.name}</p>
             </div>
             {passport.qrDataUrl && (
@@ -123,7 +123,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                 width={96}
                 height={96}
                 alt={`QR ${passport.passportCode}`}
-                className="rounded-md bg-white p-1"
+                className="h-20 w-20 self-start rounded-md bg-white p-1 sm:h-24 sm:w-24"
               />
             )}
           </div>
@@ -137,14 +137,14 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
           className="h-full w-full object-cover"
         />
 
-        <div className="grid gap-3 p-4 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2 p-3 sm:grid-cols-3 sm:gap-3 sm:p-4">
           <Info icon={QrCode} label="Mã" value={passport.passportCode} />
           <Info icon={MapPin} label="Vùng trồng" value={passport.product.zone?.name ?? 'Đang cập nhật'} />
           <Info icon={Eye} label="Lượt xem" value={String(passport.viewCount + 1)} />
         </div>
       </section>
 
-      <div className="mt-4 grid gap-4">
+      <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4">
         <Panel>
           <h2 className="text-lg font-bold">Thông tin sản phẩm</h2>
           <p className="mt-2 leading-7 text-slate-700">{passport.product.description || 'Thông tin sản phẩm đang được HTX cập nhật.'}</p>
@@ -158,10 +158,10 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
         <Panel>
           <h2 className="text-lg font-bold">Timeline truy xuất</h2>
-          <div className="mt-4 grid gap-3 xl:grid-cols-2">
+          <div className="mt-3 grid gap-3 xl:grid-cols-2">
             {passport.product.farmingLogs.map((log, index) => (
-              <div key={log.id} className="grid grid-cols-[32px_1fr] gap-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-leaf text-sm font-bold text-white">{index + 1}</span>
+              <div key={log.id} className="grid grid-cols-[28px_1fr] gap-2.5 sm:grid-cols-[32px_1fr] sm:gap-3">
+                <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">{index + 1}</span>
                 <div className="rounded-md bg-slate-50 p-3">
                   <div className="flex flex-wrap items-center gap-2 text-sm">
                     <Badge className="bg-mint text-leaf">{log.activityType}</Badge>
@@ -170,7 +170,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                       {formatDate(log.logDate)}
                     </span>
                   </div>
-                  <p className="mt-2 text-slate-700">{log.description}</p>
+                  <p className="mt-2 text-[0.98rem] leading-6 text-slate-700">{log.description}</p>
                   {(log.zone?.name || log.actor?.fullName) && (
                     <p className="mt-2 text-xs font-semibold text-slate-500">
                       {[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}
@@ -232,9 +232,13 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 function Info({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="rounded-md bg-slate-50 p-3">
-      <Icon className="text-leaf" size={20} aria-hidden="true" />
-      <p className="mt-2 text-xs font-semibold uppercase text-slate-500">{label}</p>
-      <p className="mt-1 break-words font-bold">{value}</p>
+      <div className="flex items-start gap-2">
+        <Icon className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
+        <div className="min-w-0">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p>
+          <p className="mt-1 break-words text-[0.98rem] font-bold leading-6 text-ink sm:text-base">{value}</p>
+        </div>
+      </div>
     </div>
   );
 }
