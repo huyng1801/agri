@@ -30,29 +30,53 @@ export default async function ContactPage() {
               backgroundSize: '28px 28px'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative py-5 text-center sm:py-16')}>
-            <p className="text-sm font-semibold uppercase tracking-wide text-white/80">Liên hệ</p>
-            <h1 className="mx-auto mt-2.5 max-w-[15.5rem] text-[1.48rem] font-bold leading-[1.08] text-white sm:mt-3 sm:max-w-3xl sm:text-4xl">
+          <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-16 sm:text-center')}>
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-white/75 sm:text-sm sm:tracking-wide">Liên hệ</p>
+            <h1 className="mt-2 max-w-[12.5rem] text-[1.22rem] font-bold leading-[1.12] text-white sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
               Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn
             </h1>
-            <p className="mx-auto mt-2.5 max-w-[18rem] text-[0.94rem] leading-6 text-white/85 sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
+            <p className="mt-2 max-w-[16.5rem] text-[0.86rem] leading-5 text-white/82 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
               Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.
             </p>
           </div>
         </section>
 
+        <section className={cn(publicContainerClass, 'grid gap-3 py-4 sm:hidden')}>
+          <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-2xl bg-white px-4 py-4 shadow-sm">
+            <span>
+              <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Hotline</span>
+              <span className="mt-1 block text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</span>
+            </span>
+            <PhoneCall className="text-leaf" size={22} aria-hidden="true" />
+          </a>
+          {siteProfile.zaloUrl ? (
+            <a
+              href={siteProfile.zaloUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center justify-between rounded-2xl bg-white px-4 py-4 shadow-sm"
+            >
+              <span>
+                <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Chat nhanh</span>
+                <span className="mt-1 block text-lg font-bold text-ink">Zalo hỗ trợ</span>
+              </span>
+              <ZaloIcon size={26} />
+            </a>
+          ) : null}
+        </section>
+
         <section className={cn(publicContainerClass, 'py-8 sm:py-10')}>
           <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-            <article className="flex flex-col justify-between rounded-2xl bg-mint p-6 shadow-sm sm:p-7">
+            <article className="flex flex-col justify-between rounded-2xl bg-mint p-5 shadow-sm sm:p-7">
               <div>
                 <div className="flex items-center gap-3">
-                  <PublicLogo size={48} />
+                  <PublicLogo size={44} />
                   <div>
-                    <h2 className="text-xl font-bold text-ink">{siteProfile.appName}</h2>
+                    <h2 className="text-lg font-bold text-ink sm:text-xl">{siteProfile.appName}</h2>
                     <p className="text-sm font-semibold text-leaf">Sàn nông sản số cho hợp tác xã</p>
                   </div>
                 </div>
-                <div className="mt-6 space-y-4 text-sm leading-6 text-slate-700">
+                <div className="mt-5 space-y-4 text-sm leading-6 text-slate-700">
                   <p className="flex items-start gap-3">
                     <MapPinned className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
                     <span>
@@ -77,7 +101,7 @@ export default async function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-xl bg-white p-4 shadow-sm">
+              <div className="mt-5 hidden rounded-xl bg-white p-4 shadow-sm sm:block">
                 <div className="flex items-center gap-3">
                   <span className="grid h-10 w-10 place-items-center rounded-lg bg-mint text-leaf">
                     <Download size={18} aria-hidden="true" />
