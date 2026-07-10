@@ -6,7 +6,7 @@ export const publicContainerClass = 'mx-auto max-w-6xl px-4';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <main id="main-content" className={cn(publicContainerClass, 'pb-8 pt-6 sm:py-10 lg:py-12', className)}>
+    <main id="main-content" className={cn(publicContainerClass, 'pb-[calc(8.5rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}>
       {children}
     </main>
   );
@@ -14,7 +14,7 @@ export function PublicPageMain({ children, className }: { children: React.ReactN
 
 export function PublicDetailMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <main id="main-content" className={cn(publicContainerClass, 'pb-8 pt-6 sm:py-10 lg:py-12', className)}>
+    <main id="main-content" className={cn(publicContainerClass, 'pb-[calc(8.5rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}>
       {children}
     </main>
   );

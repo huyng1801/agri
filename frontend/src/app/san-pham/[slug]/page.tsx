@@ -67,14 +67,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               alt={product.name}
               fallback={productImage(product)}
               priority
-              wrapperClassName="aspect-[5/4] w-full sm:aspect-[4/3]"
+              wrapperClassName="aspect-[16/11] w-full sm:aspect-[4/3]"
               className="h-full w-full object-cover"
             />
           </section>
           <section className="space-y-4">
             <div>
               <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-              <h1 className="mt-2 text-[2.4rem] font-bold leading-[1.02] tracking-tight sm:text-4xl">{product.name}</h1>
+              <h1 className="mt-2 text-[2.05rem] font-bold leading-[1.02] tracking-tight sm:text-4xl">{product.name}</h1>
               <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-3 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
                 {coopAvatar && (
                   <PublicImage

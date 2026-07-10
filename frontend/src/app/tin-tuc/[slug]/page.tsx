@@ -133,7 +133,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 {article.viewCount}
               </span>
             </div>
-            <h1 className="text-3xl font-bold leading-tight text-ink md:text-5xl">{article.title}</h1>
+            <h1 className="text-[2.55rem] font-bold leading-[1.03] tracking-tight text-ink md:text-5xl">{article.title}</h1>
             {(article.excerpt || article.seoDescription) && (
               <p className="mt-4 text-lg leading-8 text-slate-600">{article.excerpt || article.seoDescription}</p>
             )}

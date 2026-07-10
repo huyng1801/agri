@@ -49,11 +49,11 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
 
   return (
     <PublicShell>
-      <main id="main-content">
+      <main id="main-content" className="pb-[calc(8.5rem+var(--safe-bottom))] lg:pb-0">
         <PublicSection band className="!py-6 sm:!py-8">
           <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
           <article className={publicCardClass}>
-            <div className="relative h-48 overflow-hidden sm:h-60">
+            <div className="relative h-44 overflow-hidden sm:h-60">
               <PublicImage
                     src={cooperative.avatarUrl}
                     alt={cooperative.name}
@@ -76,7 +76,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                     className="h-full w-full object-cover"
                   />
                   <div className="pt-1">
-                    <h1 className="text-3xl font-bold text-ink">{cooperative.name}</h1>
+                    <h1 className="text-[2.35rem] font-bold leading-[1.04] text-ink sm:text-3xl">{cooperative.name}</h1>
                     <p className="mt-2 flex items-center gap-2 text-slate-600">
                       <MapPin size={16} aria-hidden="true" />
                       {cooperative.province || 'Đang cập nhật địa phương'}
