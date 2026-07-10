@@ -140,7 +140,9 @@ export function CheckoutClient() {
       </Panel>
       <Panel className="order-1 h-max lg:order-2 lg:sticky lg:top-24">
         <h2 className="text-lg font-bold">Đơn hàng</h2>
-        <p className="mt-1 text-sm text-slate-500">Kiá»ƒm tra láº¡i sáº£n pháº©m vÃ  tá»•ng tiá»n trÆ°á»›c khi Ä‘iá»n thÃ´ng tin giao hÃ ng.</p>
+        <p className="mt-1 text-sm text-slate-500">
+          {'Ki\u1ec3m tra l\u1ea1i s\u1ea3n ph\u1ea9m v\u00e0 t\u1ed5ng ti\u1ec1n tr\u01b0\u1edbc khi \u0111i\u1ec1n th\u00f4ng tin giao h\u00e0ng.'}
+        </p>
         {items.length ? (
           <div className="mt-3 space-y-3">
             {items.map((item) => (
