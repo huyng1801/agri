@@ -47,7 +47,7 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid content-center gap-5 py-5 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
+              'relative grid content-center gap-5 pb-5 pt-8 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
             )}
           >
             <div className="space-y-4 sm:space-y-5">
