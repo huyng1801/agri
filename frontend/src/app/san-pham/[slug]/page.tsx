@@ -206,7 +206,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Tổng hợp các chứng nhận public đi kèm sản phẩm để người mua kiểm tra nhanh.
               </p>
-              <div className="mt-4 grid gap-3">
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+                <div>
+                  <p className="font-semibold text-slate-500">Tổng chứng nhận</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{certifications.length}</p>
+                </div>
+                <p className="max-w-[12rem] text-right text-xs leading-5 text-slate-500">Danh sách đầy đủ vẫn hiển thị ngay bên dưới để người mua kiểm tra trực tiếp.</p>
+              </div>
+              <div className="mt-4 grid gap-3 xl:max-h-[42rem] xl:overflow-auto xl:pr-1">
                 {certifications.length ? (
                   certifications.map((cert) => (
                     <div key={cert.id} className="rounded-xl border border-slate-200 bg-slate-50/90 p-4 text-sm">
