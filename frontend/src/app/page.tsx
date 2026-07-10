@@ -81,7 +81,7 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-            <div className="grid gap-4">
+            <div className="hidden gap-4 sm:grid">
               {stats.map(([title, value, Icon]) => (
                 <Panel key={String(title)} className="flex items-center gap-4 bg-white/88 p-5 backdrop-blur">
                   <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-leaf text-white shadow-sm">
