@@ -71,7 +71,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               className="h-full w-full object-cover"
             />
           </section>
-          <section className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <section className="space-y-4">
             <div>
               <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
               <h1 className="mt-2 text-[2.4rem] font-bold leading-[1.02] tracking-tight sm:text-4xl">{product.name}</h1>

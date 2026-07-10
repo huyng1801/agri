@@ -87,7 +87,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
 function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
   return (
-    <form className="sticky top-20 z-20 rounded-2xl border border-slate-200/80 bg-white/94 p-3 shadow-[var(--shadow-card)] backdrop-blur-xl" action="/san-pham">
+    <form className="rounded-2xl border border-slate-200/80 bg-white/94 p-3 shadow-[var(--shadow-card)] backdrop-blur-xl" action="/san-pham">
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
         <input
