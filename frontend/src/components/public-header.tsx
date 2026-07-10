@@ -24,7 +24,6 @@ function isNavActive(pathname: string, href: string) {
 export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -37,20 +36,8 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
     };
   }, [menuOpen]);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 6);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
-    <header
-      className={cn(
-        'relative z-40 border-b border-white/60 bg-white/88 backdrop-blur-xl transition-all duration-200 md:sticky md:top-0 md:bg-white/82',
-        scrolled && 'md:border-slate-200/80 md:shadow-[0_8px_24px_rgba(23,33,27,0.06)]'
-      )}
-    >
+    <header className="relative z-40 border-b border-white/60 bg-white/88 backdrop-blur-xl">
       <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-3 px-4 py-3 md:min-h-[76px]">
         <Link
           href="/"
