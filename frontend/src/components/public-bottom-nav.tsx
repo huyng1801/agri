@@ -20,7 +20,7 @@ export function PublicBottomNav() {
   return (
     <nav
       data-testid="public-bottom-nav"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/90 bg-white/94 px-2 pb-[calc(var(--safe-bottom)+6px)] pt-1 shadow-[0_-10px_30px_rgba(23,33,27,0.08)] backdrop-blur-xl lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/85 bg-white/88 px-2 pb-[calc(var(--safe-bottom)+4px)] pt-1 shadow-[0_-8px_24px_rgba(23,33,27,0.06)] backdrop-blur-xl lg:hidden"
     >
       <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
         {items.map((item) => {
@@ -32,12 +32,12 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[48px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-[10px] font-semibold transition-colors',
+                'relative flex min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-[9px] font-semibold transition-colors',
                 active ? 'bg-mint text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.10)]' : 'text-slate-500'
               )}
             >
               <span className="relative">
-                <Icon size={18} aria-hidden="true" />
+                <Icon size={17} aria-hidden="true" />
                 {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>

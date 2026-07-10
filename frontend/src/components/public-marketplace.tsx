@@ -83,7 +83,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div id="top" className="min-h-screen bg-transparent pb-[calc(8.4rem+var(--safe-bottom))] text-ink lg:pb-0">
+    <div id="top" className="min-h-screen bg-transparent pb-[calc(8.8rem+var(--safe-bottom))] text-ink lg:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
