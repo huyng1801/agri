@@ -114,8 +114,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </section>
         </div>
 
-        <div className="mt-6 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-          <Panel className="lg:sticky lg:top-24 lg:self-start">
+        <div className="mt-6 space-y-4">
+          <Panel className="max-w-3xl">
             <h2 className="text-xl font-bold">Mô tả sản phẩm</h2>
             <p className="mt-3 leading-7 text-slate-700">{product.description || 'HTX đang cập nhật mô tả sản phẩm.'}</p>
             {product.zone && (
@@ -131,7 +131,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
           <Panel>
             <h2 className="text-xl font-bold">Chứng nhận</h2>
-            <div className="mt-3 grid gap-2 xl:grid-cols-2">
+            <div className="mt-3 grid gap-2 md:grid-cols-2 xl:grid-cols-3">
               {product.certifications?.length ? (
                 product.certifications.map((cert) => (
                   <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
