@@ -61,7 +61,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <PublicDetailMain>
         <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
         <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[var(--shadow-card)]">
             <PublicImage
               src={product.thumbnail?.publicUrl}
               alt={product.name}
@@ -71,10 +71,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               className="h-full w-full object-cover"
             />
           </section>
-          <section className="space-y-4">
+          <section className="space-y-4 lg:sticky lg:top-24 lg:self-start">
             <div>
               <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-              <h1 className="mt-2 text-3xl font-bold">{product.name}</h1>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{product.name}</h1>
               <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-3 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
                 {coopAvatar && (
                   <PublicImage
@@ -97,7 +97,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <div className="grid gap-2 sm:grid-cols-2">
               <AddToCartButton product={product} />
               {product.cooperative?.phone && (
-                <a href={`tel:${product.cooperative.phone}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink">
+                <a href={`tel:${product.cooperative.phone}`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm">
                   <Phone size={18} aria-hidden="true" />
                   Gọi HTX
                 </a>

@@ -15,8 +15,23 @@ export function PublicFooter() {
   const profile = usePublicSiteProfile();
 
   return (
-    <footer className="bg-leaf text-white">
+    <footer className="mt-8 bg-[#1f5f3d] pb-24 text-white lg:pb-0">
       <div className={publicContainerClass}>
+        <div className="grid gap-4 border-b border-white/15 py-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">HTXONLINE</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <a href={telHref(profile.hotline)} className="inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-5 text-sm font-bold text-leaf transition hover:-translate-y-0.5">
+              Gọi hotline
+            </a>
+            <Link href="/lien-he" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/25 px-5 text-sm font-bold text-white transition hover:bg-white/10">
+              Nhận tư vấn
+            </Link>
+          </div>
+        </div>
+
         <div className="grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 text-xl font-bold">
@@ -88,7 +103,7 @@ export function PublicFooter() {
             </div>
 
             {profile.mapEmbedUrl ? (
-              <div className="overflow-hidden rounded-md border border-white/20 bg-white/10">
+              <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10">
                 <iframe
                   title="Bản đồ HTXONLINE"
                   src={profile.mapEmbedUrl}
@@ -98,7 +113,7 @@ export function PublicFooter() {
                 />
               </div>
             ) : (
-              <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-md border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
+              <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
                 <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
                 <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc HTX địa phương.</p>
                 <Link href="/lien-he" className="mt-3 font-semibold text-white underline-offset-2 hover:underline">

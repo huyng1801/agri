@@ -47,13 +47,13 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur transition-shadow duration-200',
-        scrolled && 'shadow-sm'
+        'sticky top-0 z-40 border-b border-white/60 bg-white/82 backdrop-blur-xl transition-all duration-200',
+        scrolled && 'border-slate-200/80 shadow-[0_10px_30px_rgba(23,33,27,0.08)]'
       )}
     >
-      <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between gap-3 px-4">
+      <div className="mx-auto flex min-h-[72px] max-w-6xl items-center justify-between gap-3 px-4 py-3">
         <Link href="/" className="flex min-w-0 items-center gap-2.5 text-lg font-bold text-ink" aria-label={`${appName} — Trang chủ`}>
-          <PublicLogo size={44} />
+          <PublicLogo size={48} />
           <span className="truncate">{appName}</span>
         </Link>
 
@@ -65,8 +65,8 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'rounded-md px-3 py-2 transition-colors hover:bg-mint/60 hover:text-leaf',
-                  active && 'bg-mint text-leaf'
+                  'rounded-full px-4 py-2 transition-colors hover:bg-mint/60 hover:text-leaf',
+                  active && 'bg-leaf text-white shadow-sm'
                 )}
                 aria-current={active ? 'page' : undefined}
               >
@@ -80,7 +80,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           <Link
             href="/gio-hang"
             aria-label="Giỏ hàng"
-            className="relative grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 transition hover:border-leaf hover:text-leaf"
+            className="relative grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
           >
             <ShoppingCart size={19} aria-hidden="true" />
             <CartCountBadge />
@@ -90,7 +90,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           </Link>
           <button
             type="button"
-            className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white md:hidden"
+            className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white/92 shadow-sm md:hidden"
             aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -101,15 +101,15 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-0 top-16 z-40 md:hidden">
+        <div className="fixed inset-0 top-[76px] z-40 md:hidden">
           <button type="button" className="absolute inset-0 bg-black/30" aria-label="Đóng menu" onClick={() => setMenuOpen(false)} />
           <nav className="relative max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 shadow-lg" aria-label="Menu di động">
             <div className="grid gap-1">
               <Link
                 href="/"
                 className={cn(
-                  'rounded-md px-3 py-3 text-base font-semibold',
-                  pathname === '/' ? 'bg-mint text-leaf' : 'text-slate-700'
+                  'rounded-xl px-4 py-3 text-base font-semibold',
+                  pathname === '/' ? 'bg-leaf text-white' : 'text-slate-700'
                 )}
               >
                 Trang chủ
@@ -121,8 +121,8 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'rounded-md px-3 py-3 text-base font-semibold',
-                      active ? 'bg-mint text-leaf' : 'text-slate-700'
+                      'rounded-xl px-4 py-3 text-base font-semibold',
+                      active ? 'bg-leaf text-white' : 'text-slate-700'
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -132,7 +132,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
               })}
             </div>
             <div className="mt-4 grid gap-2 border-t border-slate-100 pt-4">
-              <Link href="/gio-hang" className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-semibold text-slate-700">
+              <Link href="/gio-hang" className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
                 <span>Giỏ hàng</span>
                 <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
               </Link>

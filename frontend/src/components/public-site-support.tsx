@@ -31,7 +31,7 @@ export function FloatingContactClient() {
   const siteProfile = usePublicSiteProfile();
 
   return (
-    <div className="fixed bottom-24 right-3 z-40 grid gap-2 lg:bottom-5">
+    <div className="fixed bottom-[calc(5.8rem+var(--safe-bottom))] right-3 z-40 grid gap-2 lg:bottom-6">
       {siteProfile.hotline && (
         <a href={telHref(siteProfile.hotline)} className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
           <Phone size={19} aria-hidden="true" />
@@ -40,7 +40,7 @@ export function FloatingContactClient() {
       {siteProfile.zaloUrl && (
         <a
           href={siteProfile.zaloUrl}
-          className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200"
+          className="grid h-12 w-12 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5"
           aria-label="Chat Zalo"
           target="_blank"
           rel="noreferrer"

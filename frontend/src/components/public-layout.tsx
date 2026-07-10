@@ -6,7 +6,7 @@ export const publicContainerClass = 'mx-auto max-w-6xl px-4';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>
+    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10 lg:py-12', className)}>
       {children}
     </main>
   );
@@ -14,7 +14,7 @@ export function PublicPageMain({ children, className }: { children: React.ReactN
 
 export function PublicDetailMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10', className)}>
+    <main id="main-content" className={cn(publicContainerClass, 'py-8 sm:py-10 lg:py-12', className)}>
       {children}
     </main>
   );
@@ -39,10 +39,11 @@ export function PublicPageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-ink">{title}</h1>
-        <p className="mt-2 max-w-3xl text-base leading-7 text-slate-600">{description}</p>
+    <div className="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+      <div className="max-w-3xl">
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-leaf/80">HTXONLINE</p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h1>
+        <p className="mt-3 text-base leading-7 text-slate-600">{description}</p>
       </div>
       {action}
     </div>
@@ -51,7 +52,7 @@ export function PublicPageHeader({
 
 export function PublicSection({ children, band = false, className }: { children: React.ReactNode; band?: boolean; className?: string }) {
   return (
-    <section className={cn(band ? 'bg-white py-10' : 'py-10', className)}>
+    <section className={cn(band ? 'bg-white/88 py-12 backdrop-blur-sm' : 'py-12', className)}>
       <div className={publicContainerClass}>{children}</div>
     </section>
   );
@@ -71,11 +72,11 @@ export function PublicSectionHeader({
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-2xl font-bold text-ink">{title}</h2>
-        <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
+        <h2 className="text-2xl font-bold tracking-tight text-ink sm:text-[2rem]">{title}</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
       </div>
       {href && linkLabel ? (
-        <Link href={href} className="inline-flex min-h-11 shrink-0 items-center gap-1 font-semibold text-leaf">
+        <Link href={href} className="inline-flex min-h-11 shrink-0 items-center gap-1 font-semibold text-leaf transition hover:gap-2">
           {linkLabel}
           <ArrowRight size={16} aria-hidden="true" />
         </Link>
@@ -84,7 +85,7 @@ export function PublicSectionHeader({
   );
 }
 
-export const publicCardClass = 'overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm';
+export const publicCardClass = 'overflow-hidden rounded-2xl border border-slate-200/80 bg-white/96 shadow-[var(--shadow-card)] backdrop-blur-sm';
 
 export const publicProseClass = 'text-sm leading-7 text-slate-700';
 

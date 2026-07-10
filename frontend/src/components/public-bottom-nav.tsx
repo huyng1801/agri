@@ -20,7 +20,7 @@ export function PublicBottomNav() {
   return (
     <nav
       data-testid="public-bottom-nav"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+8px)] pt-2 shadow-soft backdrop-blur lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200/90 bg-white/92 px-2 pb-[calc(var(--safe-bottom)+10px)] pt-2 shadow-[0_-10px_30px_rgba(23,33,27,0.08)] backdrop-blur-xl lg:hidden"
     >
       <div className="mx-auto grid max-w-lg grid-cols-5 gap-1">
         {items.map((item) => {
@@ -32,8 +32,8 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold transition-colors',
-                active ? 'bg-mint text-leaf' : 'text-slate-500'
+                'relative flex min-h-[58px] flex-col items-center justify-center gap-1 rounded-xl text-[11px] font-semibold transition-colors',
+                active ? 'bg-leaf text-white shadow-sm' : 'text-slate-500'
               )}
             >
               <span className="relative">

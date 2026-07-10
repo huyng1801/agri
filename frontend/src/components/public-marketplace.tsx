@@ -83,7 +83,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div id="top" className="min-h-screen bg-[#f8faf7] pb-20 text-ink lg:pb-0">
+    <div id="top" className="min-h-screen bg-transparent pb-[calc(5.8rem+var(--safe-bottom))] text-ink lg:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
@@ -107,12 +107,12 @@ export function PublicSearch({
   action?: string;
 }) {
   return (
-    <form className="flex gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-sm" action={action}>
+    <form className="flex flex-col gap-2 rounded-2xl border border-slate-200/80 bg-white/96 p-2 shadow-[var(--shadow-card)] sm:flex-row" action={action}>
       <div className="relative flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-        <input name="search" placeholder={placeholder} className="min-h-11 w-full rounded-md border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint" />
+        <input name="search" placeholder={placeholder} className="min-h-12 w-full rounded-xl border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint" />
       </div>
-      <Button>Tìm</Button>
+      <Button className="w-full sm:w-auto sm:px-5">Tìm</Button>
     </form>
   );
 }
@@ -121,7 +121,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col transition-shadow hover:shadow-md')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
       <Link href={`/san-pham/${product.slug}`} className="relative block overflow-hidden">
         <PublicImage
           src={product.thumbnail?.publicUrl}
@@ -153,7 +153,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
         {product.cooperative && (
           <Link
             href={`/htx/${product.cooperative.code}`}
-            className="mt-3 flex items-center gap-2.5 rounded-lg bg-slate-50 p-2.5 transition hover:bg-mint/50"
+            className="mt-3 flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 transition hover:bg-mint/50"
           >
             <PublicImage
               src={product.cooperative.avatarUrl}
@@ -182,7 +182,7 @@ export function productImage(product: PublicProduct) {
 
 export function CooperativeCard({ cooperative, priority = false }: { cooperative: PublicCooperative; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden transition-shadow hover:shadow-md')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
       <Link href={`/htx/${cooperative.code}`} className="relative block overflow-hidden">
         <PublicImage
           src={cooperative.avatarUrl}
@@ -210,7 +210,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           {cooperative.phone && (
             <a
               href={`tel:${cooperative.phone}`}
-              className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-leaf transition hover:border-leaf"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf"
               aria-label="Gọi HTX"
             >
               <Phone size={17} aria-hidden="true" />

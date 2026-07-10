@@ -42,10 +42,11 @@ export default async function HomePage() {
     <PublicShell>
       <main id="main-content">
         <section className="relative overflow-hidden bg-white">
-          <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-15" />
-          <div className={cn(publicContainerClass, 'relative grid min-h-[60vh] content-center gap-8 py-8 sm:min-h-[76vh] sm:py-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center')}>
+          <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/82 to-mint/55" />
+          <div className={cn(publicContainerClass, 'relative grid min-h-[68vh] content-center gap-8 py-10 sm:min-h-[78vh] sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center')}>
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-1 text-sm font-semibold text-leaf">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-sm font-semibold text-leaf shadow-sm backdrop-blur">
                 <Leaf size={16} aria-hidden="true" />
                 Sàn nông sản số
               </div>
@@ -69,15 +70,15 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
-            <div className="grid gap-3">
+            <div className="grid gap-4">
               {stats.map(([title, value, Icon]) => (
-                <Panel key={String(title)} className="flex items-center gap-4 bg-white/95">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-md bg-leaf text-white">
+                <Panel key={String(title)} className="flex items-center gap-4 bg-white/88 p-5 backdrop-blur">
+                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-leaf text-white shadow-sm">
                     <Icon size={22} aria-hidden="true" />
                   </span>
                   <span>
-                    <span className="block font-bold">{String(title)}</span>
-                    <span className="block text-sm text-slate-600">{String(value)}</span>
+                    <span className="block text-lg font-bold">{String(title)}</span>
+                    <span className="mt-1 block text-sm text-slate-600">{String(value)}</span>
                   </span>
                 </Panel>
               ))}
@@ -129,7 +130,7 @@ export default async function HomePage() {
               ['HTX tự vận hành', 'Sản phẩm, vùng trồng, nhật ký và đơn hàng do từng HTX tự quản lý.', BadgeCheck]
             ].map(([title, text, Icon]) => (
               <Panel key={String(title)} className="h-full">
-                <span className="grid h-12 w-12 place-items-center rounded-md bg-mint text-leaf">
+                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-mint text-leaf">
                   <Icon size={24} aria-hidden="true" />
                 </span>
                 <h3 className="mt-4 text-lg font-bold text-ink">{String(title)}</h3>

@@ -87,38 +87,38 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
 function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
   return (
-    <form className="sticky top-16 z-20 rounded-md border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur" action="/san-pham">
+    <form className="sticky top-20 z-20 rounded-2xl border border-slate-200/80 bg-white/94 p-3 shadow-[var(--shadow-card)] backdrop-blur-xl" action="/san-pham">
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
         <input
           name="search"
           defaultValue={filters.search ?? ''}
           placeholder="Tìm sản phẩm, HTX, mô tả"
-          className="min-h-11 w-full rounded-md border border-slate-200 bg-slate-50 pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-12 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
       </div>
-      <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3 lg:hidden" open={Boolean(filters.province || filters.minPrice || filters.maxPrice)}>
+      <details className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 lg:hidden" open={Boolean(filters.province || filters.minPrice || filters.maxPrice)}>
         <summary className="cursor-pointer text-sm font-semibold text-slate-700">Bộ lọc thêm</summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <input
             name="province"
             defaultValue={filters.province ?? ''}
             placeholder="Tỉnh/thành"
-            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
             name="minPrice"
             defaultValue={filters.minPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá từ"
-            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
             name="maxPrice"
             defaultValue={filters.maxPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá đến"
-            className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
         </div>
       </details>
@@ -127,29 +127,29 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
           name="province"
           defaultValue={filters.province ?? ''}
           placeholder="Tỉnh/thành"
-          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
         <input
           name="minPrice"
           defaultValue={filters.minPrice ?? ''}
           inputMode="numeric"
           placeholder="Giá từ"
-          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
         <input
           name="maxPrice"
           defaultValue={filters.maxPrice ?? ''}
           inputMode="numeric"
           placeholder="Giá đến"
-          className="min-h-11 w-full rounded-md border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-3">
-        <label className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+        <label className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
           <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="h-4 w-4 accent-leaf" />
           Có QR Passport
         </label>
-        <label className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+        <label className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
           <SlidersHorizontal size={16} aria-hidden="true" />
           <select name="sort" defaultValue={filters.sort ?? ''} className="bg-transparent outline-none">
             <option value="">Mới nhất</option>

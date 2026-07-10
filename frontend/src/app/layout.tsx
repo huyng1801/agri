@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/components/query-provider';
+
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['vietnamese', 'latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-body',
+  display: 'swap'
+});
 
 export const metadata: Metadata = {
   title: {
@@ -25,7 +33,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body>
+      <body className={beVietnamPro.variable}>
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
