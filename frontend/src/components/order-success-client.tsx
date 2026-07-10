@@ -55,21 +55,23 @@ export function OrderSuccessClient() {
   const orders = result?.orders ?? [];
 
   return (
-    <Panel data-testid="order-success" className="text-center">
+    <Panel data-testid="order-success" className="mx-auto max-w-4xl text-center">
       <CheckCircle2 className="mx-auto text-leaf" size={44} aria-hidden="true" />
       <h2 className="mt-3 text-xl font-bold">Cảm ơn bạn đã đặt hàng</h2>
       <p className="mt-2 text-sm text-slate-600">HTX hoặc bộ phận vận hành sẽ liên hệ xác nhận đơn hàng.</p>
+      {(groupCode || orders.length > 0) && (
+        <div className="mt-4 grid gap-4 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start">
       {groupCode && (
-        <div className="mx-auto mt-4 max-w-md rounded-md bg-slate-50 p-4 text-left">
+        <div className="rounded-xl bg-slate-50 p-4 text-left lg:h-full">
           <p className="text-sm text-slate-600">Mã nhóm đơn</p>
           <p className="text-xl font-bold text-ink">{groupCode}</p>
           <p className="mt-1 text-sm text-slate-600">Dùng mã này để tra cứu tất cả đơn trong cùng lần đặt hàng.</p>
         </div>
       )}
       {orders.length > 0 && (
-        <div className="mx-auto mt-4 max-w-xl space-y-3 text-left">
+        <div className="grid gap-3 text-left">
           {orders.map((order) => (
-            <div key={order.orderCode} className="rounded-md bg-mint p-4">
+            <div key={order.orderCode} className="rounded-xl bg-mint p-4">
               <p className="text-sm text-slate-600">{order.cooperative?.name ?? 'HTX'}</p>
               <p className="text-2xl font-bold text-leaf">{order.orderCode}</p>
               <div className="mt-2 space-y-1 text-sm text-slate-700">
@@ -83,16 +85,18 @@ export function OrderSuccessClient() {
           ))}
         </div>
       )}
-      <div className="mt-4 flex flex-wrap justify-center gap-2">
-        <a href="tel:0900000000" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink">
+        </div>
+      )}
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+        <a href="tel:0900000000" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink sm:w-auto">
           <Phone size={18} aria-hidden="true" />
           Gọi hotline
         </a>
         <Link href="/tra-cuu-don-hang">
-          <Button variant="ghost">Tra cứu đơn</Button>
+          <Button variant="ghost" className="w-full sm:w-auto">Tra cứu đơn</Button>
         </Link>
         <Link href="/san-pham">
-          <Button>Tiếp tục mua hàng</Button>
+          <Button className="w-full sm:w-auto">Tiếp tục mua hàng</Button>
         </Link>
       </div>
     </Panel>
