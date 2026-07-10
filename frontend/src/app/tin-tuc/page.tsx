@@ -60,17 +60,17 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
-              <Button>Tìm</Button>
+              <Button className="w-full sm:w-auto">Tìm</Button>
             </form>
           }
         />
 
         {categories.length > 0 && (
-          <nav className="mb-6 flex gap-2 overflow-x-auto pb-1">
+          <nav className="mb-6 flex gap-2.5 overflow-x-auto pb-2">
             <Link
               href="/tin-tuc"
               className={cn(
-                'shrink-0 rounded-xl border px-3 py-2 text-sm font-semibold',
+                'shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-semibold',
                 !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
               )}
             >
@@ -81,7 +81,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                 key={category.id}
                 href={`/tin-tuc?category=${category.slug}`}
                 className={cn(
-                  'shrink-0 rounded-xl border px-3 py-2 text-sm font-semibold',
+                  'shrink-0 rounded-2xl border px-4 py-2.5 text-sm font-semibold',
                   filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
                 )}
               >

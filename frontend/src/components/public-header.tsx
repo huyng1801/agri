@@ -47,14 +47,18 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 border-b border-white/60 bg-white/82 backdrop-blur-xl transition-all duration-200 md:static md:bg-white/72',
-        scrolled && 'border-slate-200/80 shadow-[0_8px_24px_rgba(23,33,27,0.06)] md:shadow-none'
+        'relative z-40 border-b border-white/60 bg-white/88 backdrop-blur-xl transition-all duration-200 md:sticky md:top-0 md:bg-white/82',
+        scrolled && 'md:border-slate-200/80 md:shadow-[0_8px_24px_rgba(23,33,27,0.06)]'
       )}
     >
-      <div className="mx-auto flex min-h-[68px] max-w-6xl items-center justify-between gap-3 px-4 py-3 md:min-h-[76px]">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5 text-lg font-bold text-ink" aria-label={`${appName} — Trang chủ`}>
-          <PublicLogo size={48} />
-          <span className="truncate">{appName}</span>
+      <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-3 px-4 py-3 md:min-h-[76px]">
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-2.5 text-base font-bold text-ink sm:text-lg"
+          aria-label={`${appName} - Trang chủ`}
+        >
+          <PublicLogo size={42} />
+          <span className="max-w-[8.5rem] truncate sm:max-w-none">{appName}</span>
         </Link>
 
         <nav className="hidden items-center gap-1 text-sm font-semibold text-slate-700 md:flex" aria-label="Menu chính">
@@ -101,16 +105,16 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-0 top-[76px] z-40 md:hidden">
+        <div className="fixed inset-0 top-[64px] z-40 md:hidden">
           <button type="button" className="absolute inset-0 bg-black/30" aria-label="Đóng menu" onClick={() => setMenuOpen(false)} />
-          <nav className="relative max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 shadow-lg" aria-label="Menu di động">
+          <nav
+            className="relative max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 shadow-lg"
+            aria-label="Menu di động"
+          >
             <div className="grid gap-1">
               <Link
                 href="/"
-                className={cn(
-                  'rounded-xl px-4 py-3 text-base font-semibold',
-                  pathname === '/' ? 'bg-leaf text-white' : 'text-slate-700'
-                )}
+                className={cn('rounded-xl px-4 py-3 text-base font-semibold', pathname === '/' ? 'bg-leaf text-white' : 'text-slate-700')}
               >
                 Trang chủ
               </Link>
@@ -120,10 +124,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={cn(
-                      'rounded-xl px-4 py-3 text-base font-semibold',
-                      active ? 'bg-leaf text-white' : 'text-slate-700'
-                    )}
+                    className={cn('rounded-xl px-4 py-3 text-base font-semibold', active ? 'bg-leaf text-white' : 'text-slate-700')}
                     aria-current={active ? 'page' : undefined}
                   >
                     {item.label}
