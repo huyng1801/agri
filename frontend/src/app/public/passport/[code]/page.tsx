@@ -91,7 +91,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
 
   return (
-    <main className="mx-auto min-h-screen max-w-3xl px-4 py-5">
+    <main className="mx-auto min-h-screen max-w-5xl px-4 py-5">
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
           <PublicLogo size={28} className="ring-1 ring-slate-200" />
@@ -158,7 +158,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
         <Panel>
           <h2 className="text-lg font-bold">Timeline truy xuất</h2>
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 grid gap-3 xl:grid-cols-2">
             {passport.product.farmingLogs.map((log, index) => (
               <div key={log.id} className="grid grid-cols-[32px_1fr] gap-3">
                 <span className="grid h-8 w-8 place-items-center rounded-full bg-leaf text-sm font-bold text-white">{index + 1}</span>
@@ -200,7 +200,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
         <Panel>
           <h2 className="text-lg font-bold">Chứng nhận</h2>
-          <div className="mt-3 grid gap-2">
+          <div className="mt-3 grid gap-2 xl:grid-cols-2">
             {passport.product.certifications.map((cert) => (
               <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
                 <strong>{cert.name}</strong>
