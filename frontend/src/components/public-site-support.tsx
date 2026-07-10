@@ -33,6 +33,7 @@ export function FloatingContactClient() {
   const siteProfile = usePublicSiteProfile();
   const [showTop, setShowTop] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
+  const [footerVisible, setFooterVisible] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
@@ -49,13 +50,31 @@ export function FloatingContactClient() {
     };
   }, []);
 
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.12 }
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
   if (!showFloating && !showTop) {
     return null;
   }
 
+  const mobileViewport = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
+  const showContactActions = showFloating && (!footerVisible || !mobileViewport);
+
   return (
-    <div className="fixed bottom-[calc(6.5rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
-      {siteProfile.hotline && (
+    <div className="fixed bottom-[calc(6rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
+      {showContactActions && siteProfile.hotline && (
         <a
           href={telHref(siteProfile.hotline)}
           className="grid h-9 w-9 place-items-center rounded-full bg-leaf text-white shadow-soft md:h-10 md:w-10"
@@ -64,7 +83,7 @@ export function FloatingContactClient() {
           <Phone size={16} aria-hidden="true" />
         </a>
       )}
-      {siteProfile.zaloUrl && (
+      {showContactActions && siteProfile.zaloUrl && (
         <a
           href={siteProfile.zaloUrl}
           className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5 md:h-10 md:w-10"
@@ -75,7 +94,7 @@ export function FloatingContactClient() {
           <ZaloIcon size={21} />
         </a>
       )}
-      {siteProfile.messengerUrl && (
+      {showContactActions && siteProfile.messengerUrl && (
         <a
           href={siteProfile.messengerUrl}
           className="hidden h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-soft lg:grid"
