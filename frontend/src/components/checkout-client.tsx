@@ -96,8 +96,20 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
-      <Panel className="order-2 lg:order-1">
+    <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_23rem] xl:items-start">
+      <Panel className="order-2 lg:order-1 lg:p-6 xl:p-7">
+        <div className="mb-5 flex flex-col gap-3 rounded-2xl bg-mint/70 p-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Thông tin giao hàng</p>
+            <h2 className="mt-1 text-xl font-bold text-ink">Hoàn tất đơn COD</h2>
+            <p className="mt-1 max-w-2xl text-sm text-slate-600">Điền đúng số điện thoại và địa chỉ để HTX liên hệ xác nhận nhanh hơn.</p>
+          </div>
+          <div className="rounded-xl bg-white/90 px-4 py-3 text-sm shadow-sm">
+            <p className="font-semibold text-slate-500">Tạm tính</p>
+            <p className="mt-1 text-lg font-bold text-leaf">{formatVnd(cartTotal(items))}</p>
+          </div>
+        </div>
+
         <form className="grid gap-3 sm:grid-cols-2" onSubmit={submit}>
           <label className="space-y-1 text-sm font-semibold">
             <span>Họ tên</span>
@@ -131,50 +143,57 @@ export function CheckoutClient() {
             <span>Ghi chú</span>
             <Textarea name="note" />
           </label>
-          <div className="rounded-md bg-mint p-3 text-sm font-semibold text-leaf sm:col-span-2">Phương thức thanh toán: COD - Thanh toán khi nhận hàng</div>
-          {error && <div data-testid="toast-error" className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700 sm:col-span-2">{error}</div>}
-          <Button data-testid="checkout-submit-button" className="sm:w-max" disabled={submitting || !items.length}>
+          <div className="rounded-xl bg-mint p-3 text-sm font-semibold text-leaf sm:col-span-2">Phương thức thanh toán: COD - Thanh toán khi nhận hàng</div>
+          {error && <div data-testid="toast-error" className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-700 sm:col-span-2">{error}</div>}
+          <Button data-testid="checkout-submit-button" className="sm:w-max sm:px-6" disabled={submitting || !items.length}>
             {submitting ? 'Đang đặt hàng' : 'Đặt hàng'}
           </Button>
         </form>
       </Panel>
-      <Panel className="order-1 h-max lg:order-2 lg:sticky lg:top-24">
+
+      <Panel className="order-1 h-max lg:order-2 lg:sticky lg:top-24 lg:p-6">
         <h2 className="text-lg font-bold">Đơn hàng</h2>
-        <p className="mt-1 text-sm text-slate-500">
-          {'Ki\u1ec3m tra l\u1ea1i s\u1ea3n ph\u1ea9m v\u00e0 t\u1ed5ng ti\u1ec1n tr\u01b0\u1edbc khi \u0111i\u1ec1n th\u00f4ng tin giao h\u00e0ng.'}
-        </p>
+        <p className="mt-1 text-sm text-slate-500">Kiểm tra lại sản phẩm và tổng tiền trước khi điền thông tin giao hàng.</p>
         {items.length ? (
           <div className="mt-3 space-y-3">
             {items.map((item) => (
-              <div key={item.productId} className="flex gap-3 rounded-md bg-slate-50 p-3 text-sm">
+              <div key={item.productId} className="flex gap-3 rounded-xl bg-slate-50 p-3 text-sm">
                 {item.imageUrl ? (
                   <PublicImage
                     src={item.imageUrl}
                     alt={item.name}
                     fallback={DEFAULT_PRODUCT_IMAGE}
                     decorative
-                    wrapperClassName="h-14 w-14 shrink-0 rounded-md"
+                    wrapperClassName="h-16 w-16 shrink-0 rounded-md"
                     className="h-full w-full object-cover"
                   />
                 ) : null}
                 <div className="min-w-0 flex-1">
-                  <div className="flex justify-between gap-3">
-                    <span className="font-semibold">{item.name}</span>
-                    <span>x{item.quantity}</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="font-semibold leading-6">{item.name}</span>
+                    <span className="rounded-full bg-white px-2 py-0.5 text-xs font-bold text-slate-600 shadow-sm">x{item.quantity}</span>
                   </div>
                   <p className="mt-1 text-slate-600">{item.cooperativeName || 'HTX'}</p>
-                  <p className="mt-1 text-slate-600">{formatVnd(item.price)} / {item.unit}</p>
+                  <p className="mt-1 font-semibold text-slate-700">
+                    {formatVnd(item.price)} <span className="font-normal text-slate-500">/ {item.unit}</span>
+                  </p>
                 </div>
               </div>
             ))}
             {new Set(items.map((item) => item.cooperativeId).filter(Boolean)).size > 1 && (
-              <p className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">
+              <p className="rounded-xl bg-amber-50 p-3 text-sm leading-6 text-amber-800">
                 Giỏ hàng có sản phẩm từ nhiều HTX. Hệ thống sẽ tách thành nhiều đơn COD riêng khi đặt hàng.
               </p>
             )}
-            <div className="flex justify-between border-t border-slate-200 pt-3 font-bold">
-              <span>Tạm tính</span>
-              <span className="text-leaf">{formatVnd(cartTotal(items))}</span>
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
+              <div className="flex justify-between text-sm font-semibold text-slate-500">
+                <span>Tạm tính</span>
+                <span>{items.reduce((sum, item) => sum + item.quantity, 0)} sản phẩm</span>
+              </div>
+              <div className="mt-1 flex justify-between text-lg font-bold">
+                <span className="text-ink">Tổng cộng</span>
+                <span className="text-leaf">{formatVnd(cartTotal(items))}</span>
+              </div>
             </div>
           </div>
         ) : (

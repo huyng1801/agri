@@ -15,7 +15,7 @@ export function PublicFooter() {
   const profile = usePublicSiteProfile();
 
   return (
-    <footer className="mt-8 bg-[#1f5f3d] pb-24 text-white lg:pb-0">
+    <footer className="mt-8 bg-[#1f5f3d] pb-[calc(7.75rem+var(--safe-bottom))] text-white lg:pb-0">
       <div className={publicContainerClass}>
         <div className="grid gap-4 border-b border-white/15 py-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>

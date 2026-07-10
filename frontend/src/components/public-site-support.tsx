@@ -34,13 +34,16 @@ export function FloatingContactClient() {
   const [showTop, setShowTop] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
+  const [mobileViewport, setMobileViewport] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
-      const mobileViewport = window.innerWidth < 1024;
-      setShowTop(window.scrollY > 500);
-      setShowFloating(!mobileViewport || window.scrollY > 320);
+      const isMobile = window.innerWidth < 1024;
+      setMobileViewport(isMobile);
+      setShowTop(window.scrollY > (isMobile ? 680 : 500));
+      setShowFloating(!isMobile || window.scrollY > 420);
     };
+
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
@@ -69,24 +72,21 @@ export function FloatingContactClient() {
     return null;
   }
 
-  const mobileViewport = typeof window !== 'undefined' ? window.innerWidth < 1024 : false;
   const showContactActions = showFloating && (!footerVisible || !mobileViewport);
+  const showHotline = showContactActions && Boolean(siteProfile.hotline);
+  const showZalo = showContactActions && Boolean(siteProfile.zaloUrl) && !mobileViewport;
 
   return (
-    <div className="fixed bottom-[calc(6rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
-      {showContactActions && siteProfile.hotline && (
-        <a
-          href={telHref(siteProfile.hotline)}
-          className="grid h-9 w-9 place-items-center rounded-full bg-leaf text-white shadow-soft md:h-10 md:w-10"
-          aria-label="Gọi hotline"
-        >
+    <div className="fixed bottom-[calc(7.35rem+var(--safe-bottom))] right-3 z-40 grid gap-2 lg:bottom-6 lg:right-4">
+      {showHotline && (
+        <a href={telHref(siteProfile.hotline)} className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
           <Phone size={16} aria-hidden="true" />
         </a>
       )}
-      {showContactActions && siteProfile.zaloUrl && (
+      {showZalo && (
         <a
           href={siteProfile.zaloUrl}
-          className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5 md:h-10 md:w-10"
+          className="grid h-10 w-10 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5"
           aria-label="Chat Zalo"
           target="_blank"
           rel="noreferrer"
@@ -106,7 +106,7 @@ export function FloatingContactClient() {
         </a>
       )}
       {showTop ? (
-        <a href="#top" className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-soft md:h-10 md:w-10" aria-label="Lên đầu trang">
+        <a href="#top" className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-soft" aria-label="Lên đầu trang">
           <ChevronUp size={16} aria-hidden="true" />
         </a>
       ) : null}

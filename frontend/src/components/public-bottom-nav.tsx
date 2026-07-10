@@ -20,7 +20,7 @@ export function PublicBottomNav() {
   return (
     <nav
       data-testid="public-bottom-nav"
-      className="fixed bottom-[calc(var(--safe-bottom)+0.35rem)] left-1/2 z-30 w-[calc(100%-0.75rem)] max-w-[26rem] -translate-x-1/2 rounded-[1.75rem] border border-white/75 bg-white/78 px-2 py-1 shadow-[0_16px_42px_rgba(23,33,27,0.12)] backdrop-blur-2xl lg:hidden"
+      className="fixed bottom-[calc(var(--safe-bottom)+0.5rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[25rem] -translate-x-1/2 rounded-[1.6rem] border border-white/80 bg-white/84 px-2 py-1.5 shadow-[0_18px_44px_rgba(23,33,27,0.14)] backdrop-blur-2xl lg:hidden"
     >
       <div className="mx-auto grid grid-cols-5 gap-1">
         {items.map((item) => {
@@ -32,7 +32,7 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[42px] flex-col items-center justify-center gap-0.5 rounded-2xl px-1 text-[9px] font-semibold transition-colors',
+                'relative flex min-h-[46px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[9px] font-semibold transition-colors',
                 active
                   ? 'bg-mint/80 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.08)]'
                   : 'text-slate-500/90'
