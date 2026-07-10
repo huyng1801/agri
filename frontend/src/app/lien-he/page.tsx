@@ -30,12 +30,12 @@ export default async function ContactPage() {
               backgroundSize: '28px 28px'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative py-14 text-center sm:py-16')}>
+          <div className={cn(publicContainerClass, 'relative py-12 text-center sm:py-16')}>
             <p className="text-sm font-semibold uppercase tracking-wide text-white/80">Liên hệ</p>
-            <h1 className="mx-auto mt-3 max-w-3xl text-3xl font-bold leading-tight text-white sm:text-4xl">
+            <h1 className="mx-auto mt-3 max-w-3xl text-[2.45rem] font-bold leading-[1.04] text-white sm:text-4xl">
               Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-white/85">
+            <p className="mx-auto mt-4 max-w-2xl text-[1.02rem] leading-7 text-white/85">
               Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.
             </p>
           </div>

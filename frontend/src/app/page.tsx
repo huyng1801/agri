@@ -44,29 +44,40 @@ export default async function HomePage() {
         <section className="relative overflow-hidden bg-white">
           <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-20" />
           <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/82 to-mint/55" />
-          <div className={cn(publicContainerClass, 'relative grid min-h-[68vh] content-center gap-8 py-10 sm:min-h-[78vh] sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center')}>
-            <div className="space-y-6">
+          <div
+            className={cn(
+              publicContainerClass,
+              'relative grid min-h-[66vh] content-center gap-8 py-8 sm:min-h-[78vh] sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
+            )}
+          >
+            <div className="space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-sm font-semibold text-leaf shadow-sm backdrop-blur">
                 <Leaf size={16} aria-hidden="true" />
                 Sàn nông sản số
               </div>
-              <h1 className="max-w-3xl text-4xl font-bold tracking-normal text-ink sm:text-5xl">HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam.</h1>
-              <p className="max-w-2xl text-lg leading-8 text-slate-700">
+              <h1 className="max-w-3xl text-[2.9rem] font-bold leading-[0.95] tracking-tight text-ink sm:text-5xl">
+                HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam.
+              </h1>
+              <p className="max-w-2xl text-[1.05rem] leading-8 text-slate-700 sm:text-lg">
                 Kết nối người mua với sản phẩm HTX có thông tin minh bạch, QR truy xuất nguồn gốc và đặt hàng COD.
               </p>
               <PublicSearch />
-              <div className="flex flex-wrap gap-3">
-                <Link href="/san-pham">
-                  <Button>
+              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link href="/san-pham" className="block sm:inline-flex">
+                  <Button className="w-full sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
-                <Link href="/htx">
-                  <Button variant="ghost">Khám phá HTX</Button>
+                <Link href="/htx" className="block sm:inline-flex">
+                  <Button variant="ghost" className="w-full sm:w-auto">
+                    Khám phá HTX
+                  </Button>
                 </Link>
-                <Link href="/lien-he">
-                  <Button variant="ghost">Liên hệ tư vấn</Button>
+                <Link href="/lien-he" className="block sm:inline-flex">
+                  <Button variant="ghost" className="w-full sm:w-auto">
+                    Liên hệ tư vấn
+                  </Button>
                 </Link>
               </div>
             </div>
@@ -103,12 +114,7 @@ export default async function HomePage() {
         </PublicSection>
 
         <PublicSection band>
-          <PublicSectionHeader
-            title="HTX nổi bật"
-            description="Hồ sơ HTX đang có sản phẩm public."
-            href="/htx"
-            linkLabel="Xem HTX"
-          />
+          <PublicSectionHeader title="HTX nổi bật" description="Hồ sơ HTX đang có sản phẩm public." href="/htx" linkLabel="Xem HTX" />
           {featuredCooperatives.length ? (
             <div className="mt-5 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {featuredCooperatives.map((cooperative, index) => (

@@ -15,7 +15,9 @@ export function FooterContactInfo() {
       <a href={telHref(profile.hotline)} className="font-semibold text-ink hover:text-leaf">
         Hotline: {profile.hotlineDisplay}
       </a>
-      <a href={`mailto:${profile.supportEmail}`} className="hover:text-leaf">{profile.supportEmail}</a>
+      <a href={`mailto:${profile.supportEmail}`} className="hover:text-leaf">
+        {profile.supportEmail}
+      </a>
       <p className="leading-6 text-slate-600">{profile.address}</p>
       {profile.zaloUrl && (
         <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-semibold text-leaf">
@@ -29,33 +31,53 @@ export function FooterContactInfo() {
 
 export function FloatingContactClient() {
   const siteProfile = usePublicSiteProfile();
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 500);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
-    <div className="fixed bottom-[calc(5.8rem+var(--safe-bottom))] right-3 z-40 grid gap-2 lg:bottom-6">
+    <div className="fixed bottom-[calc(5.9rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
       {siteProfile.hotline && (
-        <a href={telHref(siteProfile.hotline)} className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
-          <Phone size={19} aria-hidden="true" />
+        <a
+          href={telHref(siteProfile.hotline)}
+          className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft md:h-11 md:w-11"
+          aria-label="Gọi hotline"
+        >
+          <Phone size={18} aria-hidden="true" />
         </a>
       )}
       {siteProfile.zaloUrl && (
         <a
           href={siteProfile.zaloUrl}
-          className="grid h-12 w-12 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5"
+          className="grid h-10 w-10 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5 md:h-11 md:w-11"
           aria-label="Chat Zalo"
           target="_blank"
           rel="noreferrer"
         >
-          <ZaloIcon size={28} />
+          <ZaloIcon size={24} />
         </a>
       )}
       {siteProfile.messengerUrl && (
-        <a href={siteProfile.messengerUrl} className="grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-soft" aria-label="Messenger" target="_blank" rel="noreferrer">
+        <a
+          href={siteProfile.messengerUrl}
+          className="hidden h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-soft lg:grid"
+          aria-label="Messenger"
+          target="_blank"
+          rel="noreferrer"
+        >
           <MessageCircle size={19} aria-hidden="true" />
         </a>
       )}
-      <a href="#top" className="grid h-11 w-11 place-items-center rounded-full bg-white text-ink shadow-soft" aria-label="Lên đầu trang">
-        <ChevronUp size={19} aria-hidden="true" />
-      </a>
+      {showTop ? (
+        <a href="#top" className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-soft md:h-11 md:w-11" aria-label="Lên đầu trang">
+          <ChevronUp size={18} aria-hidden="true" />
+        </a>
+      ) : null}
     </div>
   );
 }
