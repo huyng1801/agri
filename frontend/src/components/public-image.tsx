@@ -45,10 +45,18 @@ export function PublicImage({
 
   useEffect(() => {
     const img = imgRef.current;
-    if (img?.complete && img.naturalWidth > 0) {
+    if (!img?.complete) return;
+    if (img.naturalWidth > 0) {
       setLoaded(true);
+      return;
     }
-  }, [currentSrc]);
+    if (currentSrc !== fallback) {
+      setCurrentSrc(fallback);
+      setLoaded(false);
+      return;
+    }
+    setLoaded(true);
+  }, [currentSrc, fallback]);
 
   return (
     <div className={cn('relative overflow-hidden bg-slate-100', wrapperClassName)}>

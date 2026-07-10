@@ -96,8 +96,8 @@ export function CheckoutClient() {
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
-      <Panel>
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+      <Panel className="order-2 lg:order-1">
         <form className="grid gap-3 sm:grid-cols-2" onSubmit={submit}>
           <label className="space-y-1 text-sm font-semibold">
             <span>Họ tên</span>
@@ -138,8 +138,9 @@ export function CheckoutClient() {
           </Button>
         </form>
       </Panel>
-      <Panel className="h-max">
+      <Panel className="order-1 h-max lg:order-2 lg:sticky lg:top-24">
         <h2 className="text-lg font-bold">Đơn hàng</h2>
+        <p className="mt-1 text-sm text-slate-500">Kiá»ƒm tra láº¡i sáº£n pháº©m vÃ  tá»•ng tiá»n trÆ°á»›c khi Ä‘iá»n thÃ´ng tin giao hÃ ng.</p>
         {items.length ? (
           <div className="mt-3 space-y-3">
             {items.map((item) => (

@@ -153,7 +153,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         {related.length > 0 && (
           <section className="mt-8">
             <h2 className="text-2xl font-bold text-ink">Bài viết liên quan</h2>
-            <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               {related.map((item) => (
                 <NewsCard key={item.id} article={item} />
               ))}
