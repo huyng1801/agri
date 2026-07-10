@@ -47,18 +47,18 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid content-center gap-4 pb-5 pt-6 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
+              'relative grid content-center gap-3 pb-4 pt-5 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
             )}
           >
-            <div className="space-y-3 sm:space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-[0.92rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+            <div className="space-y-2.5 sm:space-y-5">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-[0.84rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 Sàn nông sản số
               </div>
-              <h1 className="max-w-[11.5ch] text-[1.9rem] font-bold leading-[0.96] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+              <h1 className="max-w-[10.6ch] text-[1.78rem] font-bold leading-[0.94] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
                 HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam.
               </h1>
-              <p className="max-w-[18.5rem] text-[0.92rem] leading-6 text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[17.5rem] text-[0.9rem] leading-[1.45] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Kết nối người mua với sản phẩm HTX có thông tin minh bạch, QR truy xuất nguồn gốc và đặt hàng COD.
               </p>
               <PublicSearch />

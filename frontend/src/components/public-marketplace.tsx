@@ -83,7 +83,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div id="top" className="min-h-screen bg-transparent pb-[calc(8.8rem+var(--safe-bottom))] text-ink lg:pb-0">
+    <div id="top" className="min-h-screen bg-transparent pb-[calc(9.6rem+var(--safe-bottom))] text-ink lg:pb-0">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
@@ -108,7 +108,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-1.5 rounded-[1.45rem] border border-slate-200/80 bg-white/96 p-1.5 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-1.5 rounded-[1.3rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
@@ -116,10 +116,10 @@ export function PublicSearch({
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-10 w-full rounded-[1rem] border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl"
+          className="min-h-9.5 w-full rounded-[0.95rem] border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl"
         />
       </div>
-      <Button className="min-h-10 w-full rounded-[1rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
+      <Button className="min-h-9.5 w-full rounded-[0.95rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
     </form>
   );
 }
