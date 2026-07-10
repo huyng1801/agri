@@ -47,35 +47,35 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid min-h-[66vh] content-center gap-8 py-8 sm:min-h-[78vh] sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
+              'relative grid content-center gap-5 py-5 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
             )}
           >
-            <div className="space-y-5">
+            <div className="space-y-4 sm:space-y-5">
               <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-sm font-semibold text-leaf shadow-sm backdrop-blur">
                 <Leaf size={16} aria-hidden="true" />
                 Sàn nông sản số
               </div>
-              <h1 className="max-w-3xl text-[2.9rem] font-bold leading-[0.95] tracking-tight text-ink sm:text-5xl">
+              <h1 className="max-w-3xl text-[2.2rem] font-bold leading-[0.97] tracking-tight text-ink sm:text-5xl">
                 HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam.
               </h1>
-              <p className="max-w-2xl text-[1.05rem] leading-8 text-slate-700 sm:text-lg">
+              <p className="max-w-2xl text-[0.98rem] leading-6 text-slate-700 sm:text-lg sm:leading-8">
                 Kết nối người mua với sản phẩm HTX có thông tin minh bạch, QR truy xuất nguồn gốc và đặt hàng COD.
               </p>
               <PublicSearch />
-              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link href="/san-pham" className="block sm:inline-flex">
+              <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
+                <Link href="/san-pham" className="col-span-2 block sm:col-span-1 sm:inline-flex">
                   <Button className="w-full sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
                 <Link href="/htx" className="block sm:inline-flex">
-                  <Button variant="ghost" className="w-full sm:w-auto">
+                  <Button variant="ghost" className="w-full justify-center sm:w-auto">
                     Khám phá HTX
                   </Button>
                 </Link>
                 <Link href="/lien-he" className="block sm:inline-flex">
-                  <Button variant="ghost" className="w-full sm:w-auto">
+                  <Button variant="ghost" className="w-full justify-center sm:w-auto">
                     Liên hệ tư vấn
                   </Button>
                 </Link>

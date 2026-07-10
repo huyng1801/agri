@@ -41,25 +41,25 @@ export function FloatingContactClient() {
   }, []);
 
   return (
-    <div className="fixed bottom-[calc(5.9rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
+    <div className="fixed bottom-[calc(6.5rem+var(--safe-bottom))] right-2 z-40 grid gap-2 lg:bottom-6 lg:right-4">
       {siteProfile.hotline && (
         <a
           href={telHref(siteProfile.hotline)}
-          className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft md:h-11 md:w-11"
+          className="grid h-9 w-9 place-items-center rounded-full bg-leaf text-white shadow-soft md:h-10 md:w-10"
           aria-label="Gọi hotline"
         >
-          <Phone size={18} aria-hidden="true" />
+          <Phone size={16} aria-hidden="true" />
         </a>
       )}
       {siteProfile.zaloUrl && (
         <a
           href={siteProfile.zaloUrl}
-          className="grid h-10 w-10 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5 md:h-11 md:w-11"
+          className="grid h-9 w-9 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5 md:h-10 md:w-10"
           aria-label="Chat Zalo"
           target="_blank"
           rel="noreferrer"
         >
-          <ZaloIcon size={24} />
+          <ZaloIcon size={21} />
         </a>
       )}
       {siteProfile.messengerUrl && (
@@ -74,8 +74,8 @@ export function FloatingContactClient() {
         </a>
       )}
       {showTop ? (
-        <a href="#top" className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-soft md:h-11 md:w-11" aria-label="Lên đầu trang">
-          <ChevronUp size={18} aria-hidden="true" />
+        <a href="#top" className="grid h-9 w-9 place-items-center rounded-full bg-white text-ink shadow-soft md:h-10 md:w-10" aria-label="Lên đầu trang">
+          <ChevronUp size={16} aria-hidden="true" />
         </a>
       ) : null}
     </div>

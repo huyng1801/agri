@@ -107,12 +107,19 @@ export function PublicSearch({
   action?: string;
 }) {
   return (
-    <form className="flex flex-col gap-2 rounded-2xl border border-slate-200/80 bg-white/96 p-2 shadow-[var(--shadow-card)] sm:flex-row" action={action}>
+    <form
+      className="flex flex-col gap-1.5 rounded-[1.7rem] border border-slate-200/80 bg-white/96 p-1.5 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:p-2"
+      action={action}
+    >
       <div className="relative flex-1">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-        <input name="search" placeholder={placeholder} className="min-h-12 w-full rounded-xl border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint" />
+        <input
+          name="search"
+          placeholder={placeholder}
+          className="min-h-11 w-full rounded-[1.15rem] border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl"
+        />
       </div>
-      <Button className="w-full sm:w-auto sm:px-5">Tìm</Button>
+      <Button className="min-h-11 w-full rounded-[1.15rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
     </form>
   );
 }
