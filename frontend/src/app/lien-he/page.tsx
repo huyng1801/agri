@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Download, Mail, MapPinned, PhoneCall } from 'lucide-react';
+import { ArrowRight, Clock3, Download, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-marketplace';
@@ -99,6 +99,20 @@ export default async function ContactPage() {
                     </span>
                   </a>
                 </div>
+                <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Phản hồi</p>
+                    <p className="mt-1 text-lg font-bold text-ink">Trong ngày</p>
+                  </div>
+                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Triển khai</p>
+                    <p className="mt-1 text-lg font-bold text-ink">QR Passport</p>
+                  </div>
+                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hỗ trợ</p>
+                    <p className="mt-1 text-lg font-bold text-ink">Đơn COD</p>
+                  </div>
+                </div>
               </div>
 
               <div className="mt-5 hidden rounded-xl bg-white p-4 shadow-sm sm:block">
@@ -127,11 +141,68 @@ export default async function ContactPage() {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               ) : (
-                <div className="grid min-h-[320px] place-items-center bg-slate-50 p-6 text-center lg:min-h-[420px]">
-                  <div>
-                    <MapPinned className="mx-auto text-leaf" size={36} aria-hidden="true" />
-                    <p className="mt-3 font-bold text-ink">Bản đồ đang được cập nhật</p>
-                    <p className="mt-1 text-sm text-slate-600">{siteProfile.address}</p>
+                <div className="relative grid min-h-[320px] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(223,244,232,0.95),rgba(248,250,247,1)_60%)] p-6 lg:min-h-[420px]">
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-60"
+                    style={{
+                      backgroundImage:
+                        'linear-gradient(135deg, rgba(47,132,81,0.08) 1px, transparent 1px), linear-gradient(45deg, rgba(47,132,81,0.06) 1px, transparent 1px)',
+                      backgroundSize: '26px 26px'
+                    }}
+                  />
+                  <div className="relative flex h-full flex-col justify-between">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="inline-flex items-center gap-2 rounded-full bg-white/88 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-leaf shadow-sm">
+                          <MapPinned size={14} aria-hidden="true" />
+                          Điểm hỗ trợ
+                        </p>
+                        <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">Văn phòng hỗ trợ HTXONLINE</h3>
+                        <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
+                          Bản đồ đang được cập nhật. Bạn vẫn có thể liên hệ trước để được đội vận hành hướng dẫn đường đi hoặc hẹn lịch tư vấn phù hợp.
+                        </p>
+                      </div>
+                      <div className="hidden rounded-2xl border border-white/70 bg-white/70 p-4 text-left shadow-sm lg:block">
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
+                        <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-ink">
+                          <Clock3 size={16} aria-hidden="true" />
+                          08:00 - 17:30
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+                      <div className="rounded-2xl border border-white/80 bg-white/88 p-5 shadow-sm backdrop-blur-sm">
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ liên hệ</p>
+                        <p className="mt-2 text-lg font-bold leading-8 text-ink">{siteProfile.address}</p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          <a
+                            href={telHref(siteProfile.hotline)}
+                            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
+                          >
+                            <PhoneCall size={16} aria-hidden="true" />
+                            Gọi hotline
+                          </a>
+                          <Link
+                            href="/gioi-thieu"
+                            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf"
+                          >
+                            Xem giải pháp
+                            <ArrowRight size={16} aria-hidden="true" />
+                          </Link>
+                        </div>
+                      </div>
+
+                      <div className="rounded-2xl border border-dashed border-leaf/25 bg-white/65 p-5 shadow-sm backdrop-blur-sm">
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ưu tiên hỗ trợ</p>
+                        <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
+                          <p>Onboarding HTX mới lên sàn</p>
+                          <p>Thiết lập QR Passport và vùng trồng</p>
+                          <p>Hỗ trợ quy trình đơn hàng COD</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
