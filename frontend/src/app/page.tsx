@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Leaf, QrCode, ShoppingBag, Store, type LucideIcon } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Leaf, QrCode, ShoppingBag, Sparkles, Store, type LucideIcon } from 'lucide-react';
 import { ProductSlider } from '@/components/product-slider';
 import {
   CooperativeCard,
@@ -37,62 +37,116 @@ export default async function HomePage() {
     ['HTX đang hiển thị', catalog.cooperatives.length, Store],
     ['QR Passport', 'Truy xuất nhanh', QrCode]
   ];
+  const heroSignals = [
+    'Công khai sản phẩm và hồ sơ HTX trên cùng một nền tảng',
+    'QR Passport mở trực tiếp cho người mua không cần đăng nhập',
+    'Đặt hàng COD nhanh, HTX chủ động xác nhận và xử lý'
+  ] as const;
 
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="relative overflow-hidden bg-white">
-          <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/htxonline-hero/1800/900')] bg-cover bg-center opacity-20" />
-          <div className="absolute inset-0 bg-gradient-to-br from-white/92 via-white/82 to-mint/55" />
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f4faf3_0%,#eff8f2_42%,#ffffff_100%)]">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 opacity-90"
+            style={{
+              background:
+                'radial-gradient(circle at top left, rgba(255,255,255,0.96), transparent 32%), radial-gradient(circle at 85% 18%, rgba(47,132,81,0.16), transparent 24%), radial-gradient(circle at 18% 78%, rgba(188,230,204,0.6), transparent 28%)'
+            }}
+          />
+          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-white/70" />
           <div
             className={cn(
               publicContainerClass,
-              'relative grid content-center gap-3 pb-4 pt-5 sm:min-h-[78vh] sm:gap-8 sm:py-12 lg:grid-cols-[1.08fr_0.92fr] lg:items-center'
+              'relative grid items-center gap-6 pb-8 pt-5 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
             )}
           >
-            <div className="space-y-2.5 sm:space-y-5">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/78 px-3 py-1 text-[0.84rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+            <div className="space-y-4 sm:space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.84rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
-                Sàn nông sản số
+                Nền tảng số cho hợp tác xã
               </div>
-              <h1 className="max-w-[10.6ch] text-[1.78rem] font-bold leading-[0.94] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
-                HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam.
+              <h1 className="max-w-[10.8ch] text-[1.78rem] font-bold leading-[0.95] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+                HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.
               </h1>
-              <p className="max-w-[17.5rem] text-[0.9rem] leading-[1.45] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
-                Kết nối người mua với sản phẩm HTX có thông tin minh bạch, QR truy xuất nguồn gốc và đặt hàng COD.
+              <p className="max-w-[19rem] text-[0.95rem] leading-[1.55] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+                Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
-              <PublicSearch />
-              <div className="hidden sm:flex sm:flex-row sm:flex-wrap sm:gap-3">
-                <Link href="/san-pham" className="sm:inline-flex">
+              <div className="flex flex-wrap gap-3">
+                <Link href="/san-pham" className="inline-flex">
                   <Button className="w-full sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
-                <Link href="/htx" className="block sm:inline-flex">
+                <Link href="/htx" className="inline-flex">
                   <Button variant="ghost" className="w-full justify-center sm:w-auto">
                     Khám phá HTX
                   </Button>
                 </Link>
-                <Link href="/lien-he" className="block sm:inline-flex">
-                  <Button variant="ghost" className="w-full justify-center sm:w-auto">
-                    Liên hệ tư vấn
-                  </Button>
-                </Link>
+              </div>
+              <div className="max-w-2xl rounded-[1.6rem] border border-white/70 bg-white/82 p-2 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur">
+                <PublicSearch />
+              </div>
+              <div className="grid gap-2 sm:max-w-2xl sm:grid-cols-3">
+                {heroSignals.map((item) => (
+                  <div key={item} className="rounded-2xl border border-white/80 bg-white/74 px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm backdrop-blur">
+                    {item}
+                  </div>
+                ))}
               </div>
             </div>
-            <div className="hidden gap-4 sm:grid">
-              {stats.map(([title, value, Icon]) => (
-                <Panel key={String(title)} className="flex items-center gap-4 bg-white/88 p-5 backdrop-blur">
-                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-leaf text-white shadow-sm">
-                    <Icon size={22} aria-hidden="true" />
-                  </span>
-                  <span>
-                    <span className="block text-lg font-bold">{String(title)}</span>
-                    <span className="mt-1 block text-sm text-slate-600">{String(value)}</span>
-                  </span>
-                </Panel>
-              ))}
+
+            <div className="relative">
+              <div className="absolute -right-6 top-10 hidden h-28 w-28 rounded-full bg-mint/55 blur-3xl sm:block" aria-hidden="true" />
+              <div className="relative overflow-hidden rounded-[2rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur sm:p-5">
+                <div className="rounded-[1.7rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white sm:p-6">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/74">HTXONLINE</p>
+                      <h2 className="mt-2 max-w-xs text-2xl font-bold leading-tight sm:text-[2rem]">
+                        Một lớp trưng bày sản phẩm và truy xuất được thiết kế cho HTX.
+                      </h2>
+                    </div>
+                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
+                      <Sparkles size={20} aria-hidden="true" className="text-mint" />
+                    </span>
+                  </div>
+
+                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                    {stats.map(([title, value, Icon]) => (
+                      <div key={String(title)} className="rounded-2xl bg-white/12 p-4 ring-1 ring-white/12">
+                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/14 text-mint">
+                          <Icon size={18} aria-hidden="true" />
+                        </span>
+                        <p className="mt-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-white/72">{String(title)}</p>
+                        <p className="mt-1 text-2xl font-bold">{String(value)}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 rounded-[1.5rem] bg-black/12 p-4 ring-1 ring-white/10">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-white/84">
+                      <BadgeCheck size={16} aria-hidden="true" />
+                      Hành trình mua hàng rõ ràng hơn
+                    </div>
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                      {[
+                        ['01', 'Sản phẩm public', 'Trang hiển thị rõ giá, HTX và QR nếu có'],
+                        ['02', 'Quét QR Passport', 'Xem vùng trồng, nhật ký và chứng nhận'],
+                        ['03', 'Chốt đơn COD', 'Người mua gửi đơn, HTX chủ động xác nhận']
+                      ].map(([step, title, text]) => (
+                        <div key={title} className="rounded-2xl bg-white/10 p-4">
+                          <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/62">{step}</p>
+                          <p className="mt-2 text-base font-bold">{title}</p>
+                          <p className="mt-2 text-sm leading-6 text-white/78">{text}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
