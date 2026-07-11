@@ -75,6 +75,7 @@ type PublicPassportPageProps = {
 export default async function PublicPassportPage({ params }: PublicPassportPageProps) {
   const { code } = await params;
   const passport = await getPassport(code);
+
   if (!passport) {
     return (
       <main className="grid min-h-screen place-items-center px-4">
@@ -88,6 +89,9 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
       </main>
     );
   }
+
+  const certifications = passport.product.certifications;
+  const publicLogs = passport.product.farmingLogs;
 
   return (
     <main className="mx-auto min-h-screen max-w-[90rem] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
@@ -120,6 +124,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                 </h1>
                 <p className="mt-2 max-w-2xl text-white/85 lg:text-xl">{passport.cooperative.name}</p>
               </div>
+
               {passport.qrDataUrl && (
                 <div className="rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur">
                   <img
@@ -151,11 +156,13 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
         </div>
       </section>
 
-      <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(22rem,0.9fr)]">
+      <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(23rem,0.92fr)]">
         <div className="grid gap-3 sm:gap-4">
           <Panel>
             <h2 className="text-lg font-bold">Thông tin sản phẩm</h2>
-            <p className="mt-2 max-w-4xl leading-7 text-slate-700">{passport.product.description || 'Thông tin sản phẩm đang được HTX cập nhật.'}</p>
+            <p className="mt-2 max-w-4xl leading-7 text-slate-700">
+              {passport.product.description || 'Thông tin sản phẩm đang được HTX cập nhật.'}
+            </p>
             {passport.product.zone && (
               <div className="mt-3 rounded-md bg-mint p-3 text-sm">
                 <strong>{passport.product.zone.name}</strong>
@@ -165,11 +172,25 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
           </Panel>
 
           <Panel>
-            <h2 className="text-lg font-bold">Timeline truy xuất</h2>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <h2 className="text-lg font-bold">Timeline truy xuất</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Theo dõi các mốc canh tác công khai mà HTX đăng kèm cho QR Passport này.
+                </p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+                <p className="font-semibold text-slate-500">Mốc công khai</p>
+                <p className="mt-1 text-2xl font-bold text-ink">{publicLogs.length}</p>
+              </div>
+            </div>
+
             <div className="mt-3 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-              {passport.product.farmingLogs.map((log, index) => (
+              {publicLogs.map((log, index) => (
                 <div key={log.id} className="grid grid-cols-[28px_1fr] gap-2.5 sm:grid-cols-[32px_1fr] sm:gap-3">
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">{index + 1}</span>
+                  <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">
+                    {index + 1}
+                  </span>
                   <div className="rounded-md bg-slate-50 p-3">
                     <div className="flex flex-wrap items-center gap-2 text-sm">
                       <Badge className="bg-mint text-leaf">{log.activityType}</Badge>
@@ -202,16 +223,46 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                   </div>
                 </div>
               ))}
-              {passport.product.farmingLogs.length === 0 && <p className="text-slate-600">Chưa có nhật ký công khai.</p>}
+              {publicLogs.length === 0 && <p className="text-slate-600">Chưa có nhật ký công khai.</p>}
             </div>
           </Panel>
         </div>
 
         <div className="grid gap-3 self-start sm:gap-4 xl:sticky xl:top-6">
           <Panel>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Trust Snapshot</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+              <div className="rounded-xl bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mã QR</p>
+                <p className="mt-2 break-all font-mono text-sm font-bold text-ink">{passport.passportCode}</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận public</p>
+                <p className="mt-2 text-base font-bold text-ink">{certifications.length}</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Lượt xem</p>
+                <p className="mt-2 text-base font-bold text-ink">{passport.viewCount + 1}</p>
+              </div>
+            </div>
+          </Panel>
+
+          <Panel>
             <h2 className="text-lg font-bold">Chứng nhận</h2>
-            <div className="mt-3 grid gap-2">
-              {passport.product.certifications.map((cert) => (
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Các chứng nhận công khai liên quan tới sản phẩm được gom tóm tắt ở cột này để kiểm tra nhanh.
+            </p>
+            <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+              <div>
+                <p className="font-semibold text-slate-500">Tổng chứng nhận</p>
+                <p className="mt-1 text-lg font-bold text-ink">{certifications.length}</p>
+              </div>
+              <p className="max-w-[11rem] text-right text-xs leading-5 text-slate-500">
+                Danh sách đầy đủ vẫn hiển thị ngay bên dưới cho người mua.
+              </p>
+            </div>
+            <div className="mt-3 grid gap-2 xl:max-h-[38rem] xl:overflow-auto xl:pr-1">
+              {certifications.map((cert) => (
                 <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
                   <strong>{cert.name}</strong>
                   <span className="block text-slate-600">
@@ -224,7 +275,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                   )}
                 </div>
               ))}
-              {passport.product.certifications.length === 0 && <p className="text-slate-600">Chưa có chứng nhận công khai.</p>}
+              {certifications.length === 0 && <p className="text-slate-600">Chưa có chứng nhận công khai.</p>}
             </div>
           </Panel>
 
