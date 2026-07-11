@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Newspaper, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
 import { cn } from './ui';
 
@@ -16,11 +17,31 @@ const items = [
 
 export function PublicBottomNav() {
   const pathname = usePathname();
+  const [footerVisible, setFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const footer = document.querySelector('footer');
+    if (!footer) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setFooterVisible(entry.isIntersecting);
+      },
+      { threshold: 0.12 }
+    );
+
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <nav
       data-testid="public-bottom-nav"
-      className="fixed bottom-[calc(var(--safe-bottom)+0.5rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[25rem] -translate-x-1/2 rounded-[1.6rem] border border-white/80 bg-white/84 px-2 py-1.5 shadow-[0_18px_44px_rgba(23,33,27,0.14)] backdrop-blur-2xl lg:hidden"
+      aria-hidden={footerVisible}
+      className={cn(
+        'fixed bottom-[calc(var(--safe-bottom)+0.5rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[25rem] -translate-x-1/2 rounded-[1.6rem] border border-white/80 bg-white/84 px-2 py-1.5 shadow-[0_18px_44px_rgba(23,33,27,0.14)] backdrop-blur-2xl transition duration-200 lg:hidden',
+        footerVisible ? 'pointer-events-none translate-y-6 opacity-0' : 'opacity-100'
+      )}
     >
       <div className="mx-auto grid grid-cols-5 gap-1">
         {items.map((item) => {
