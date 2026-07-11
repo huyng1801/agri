@@ -30,12 +30,12 @@ export default async function ContactPage() {
               backgroundSize: '28px 28px'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-16 sm:text-center')}>
+          <div className={cn(publicContainerClass, 'relative py-6 text-left sm:py-16 sm:text-center')}>
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-white/75 sm:text-sm sm:tracking-wide">Liên hệ</p>
-            <h1 className="mt-2 max-w-[12.5rem] text-[1.22rem] font-bold leading-[1.12] text-white sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
+            <h1 className="mt-2 max-w-[18rem] text-[2.25rem] font-bold leading-[0.98] tracking-tight text-white sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
               Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn
             </h1>
-            <p className="mt-2 max-w-[16.5rem] text-[0.86rem] leading-5 text-white/82 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
+            <p className="mt-3 max-w-[19rem] text-[0.95rem] leading-6 text-white/82 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
               Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.
             </p>
           </div>
@@ -206,7 +206,7 @@ export default async function ContactPage() {
         </section>
 
         {siteProfile.faqs.length > 0 && (
-          <section className={cn(publicContainerClass, 'pb-12')}>
+          <section className={cn(publicContainerClass, 'pb-[calc(10.5rem+var(--safe-bottom))] sm:pb-12')}>
             <h2 className="text-2xl font-bold text-ink">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {siteProfile.faqs.map((faq) => (

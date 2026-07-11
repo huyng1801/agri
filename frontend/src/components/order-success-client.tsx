@@ -55,11 +55,14 @@ export function OrderSuccessClient() {
   const orders = result?.orders ?? [];
 
   return (
-    <Panel data-testid="order-success" className="mx-auto max-w-5xl text-center lg:px-8 lg:py-7">
-      <div className="mx-auto max-w-3xl">
-        <CheckCircle2 className="mx-auto text-leaf" size={44} aria-hidden="true" />
-        <h2 className="mt-3 text-xl font-bold sm:text-2xl">Cảm ơn bạn đã đặt hàng</h2>
-        <p className="mt-2 text-sm text-slate-600 sm:text-base">HTX hoặc bộ phận vận hành sẽ liên hệ xác nhận đơn hàng.</p>
+    <Panel data-testid="order-success" className="mx-auto max-w-5xl text-left lg:px-8 lg:py-7">
+      <div className="mx-auto max-w-3xl text-center">
+        <div className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-2 text-sm font-semibold text-leaf">
+          <CheckCircle2 className="text-leaf" size={18} aria-hidden="true" />
+          Đơn hàng đã ghi nhận
+        </div>
+        <h2 className="mt-3 text-2xl font-bold tracking-tight text-ink sm:text-[2rem]">Cảm ơn bạn đã đặt hàng</h2>
+        <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">HTX hoặc bộ phận vận hành sẽ liên hệ xác nhận đơn hàng trong thời gian sớm.</p>
       </div>
 
       {(groupCode || orders.length > 0) && (
@@ -68,7 +71,7 @@ export function OrderSuccessClient() {
             <div className="rounded-2xl bg-slate-50 p-5 text-left lg:flex lg:flex-col lg:justify-between">
               <div>
                 <p className="text-sm font-semibold uppercase tracking-[0.14em] text-slate-500">Mã nhóm đơn</p>
-                <p className="mt-2 text-[1.85rem] font-bold leading-tight text-ink">{groupCode}</p>
+                <p className="mt-2 break-all text-[1.45rem] font-bold leading-tight text-ink sm:text-[1.7rem]">{groupCode}</p>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">Dùng mã này để tra cứu tất cả đơn trong cùng lần đặt hàng.</p>
               </div>
               <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
@@ -90,8 +93,9 @@ export function OrderSuccessClient() {
                 <div key={order.orderCode} className="rounded-2xl bg-mint p-5 shadow-sm">
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                     <div className="min-w-0">
-                      <p className="text-sm text-slate-600">{order.cooperative?.name ?? 'HTX'}</p>
-                      <p className="text-[2rem] font-bold leading-tight text-leaf">{order.orderCode}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">HTX xử lý</p>
+                      <p className="mt-1 text-base font-semibold text-slate-700">{order.cooperative?.name ?? 'HTX'}</p>
+                      <p className="mt-2 text-[1.55rem] font-bold leading-tight text-leaf sm:text-[1.8rem]">{order.orderCode}</p>
                     </div>
                     <div className="rounded-xl bg-white/75 px-3 py-2 sm:min-w-[13rem]">
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Tổng tiền</p>
