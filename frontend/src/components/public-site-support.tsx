@@ -2,6 +2,7 @@
 
 import { ChevronUp, MessageCircle, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { ZaloIcon } from './zalo-icon';
@@ -30,6 +31,7 @@ export function FooterContactInfo() {
 }
 
 export function FloatingContactClient() {
+  const pathname = usePathname();
   const siteProfile = usePublicSiteProfile();
   const [showTop, setShowTop] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
@@ -71,7 +73,16 @@ export function FloatingContactClient() {
   const showContactActions = showFloating && (!footerVisible || !mobileViewport);
   const showHotline = showContactActions && Boolean(siteProfile.hotline) && !mobileViewport;
   const showZalo = showContactActions && Boolean(siteProfile.zaloUrl) && !mobileViewport;
-  const showTopButton = showTop && (!footerVisible || !mobileViewport);
+  const mobileTopButtonAllowed =
+    pathname.startsWith('/tin-tuc/') ||
+    pathname === '/ve-chung-toi' ||
+    pathname === '/gioi-thieu' ||
+    pathname === '/huong-dan-mua-hang' ||
+    pathname === '/chinh-sach-bao-mat' ||
+    pathname === '/chinh-sach-van-chuyen' ||
+    pathname === '/chinh-sach-doi-tra' ||
+    pathname === '/dieu-khoan-su-dung';
+  const showTopButton = showTop && (!footerVisible || !mobileViewport) && (!mobileViewport || mobileTopButtonAllowed);
 
   if (!showHotline && !showZalo && !showTopButton && !(showContactActions && siteProfile.messengerUrl)) {
     return null;
