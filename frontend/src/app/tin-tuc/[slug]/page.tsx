@@ -72,7 +72,22 @@ export default async function NewsDetailPage({ params }: PageProps) {
     return (
       <PublicShell>
         <PublicDetailMain className="max-w-3xl">
-          <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được publish hoặc đã được ẩn khỏi trang public." />
+          <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
+          <div className="space-y-4">
+            <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được publish hoặc đã được ẩn khỏi trang public." />
+            <Panel className="text-center">
+              <h2 className="text-lg font-bold text-ink">Tiếp tục khám phá nội dung công khai</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Bạn có thể quay về danh sách tin tức hoặc xem thêm sản phẩm đang hiển thị trên sàn.</p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <Link href="/tin-tuc" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white">
+                  Xem tin tức mới
+                </Link>
+                <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink">
+                  Xem sản phẩm public
+                </Link>
+              </div>
+            </Panel>
+          </div>
         </PublicDetailMain>
       </PublicShell>
     );

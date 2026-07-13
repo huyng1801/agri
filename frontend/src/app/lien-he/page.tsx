@@ -30,22 +30,22 @@ export default async function ContactPage() {
               backgroundSize: '28px 28px'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative py-6 text-left sm:py-16 sm:text-center')}>
+          <div className={cn(publicContainerClass, 'relative py-5 text-left sm:py-16 sm:text-center')}>
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-white/75 sm:text-sm sm:tracking-wide">Liên hệ</p>
-            <h1 className="mt-2 max-w-[18rem] text-[2.25rem] font-bold leading-[0.98] tracking-tight text-white sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
+            <h1 className="mt-2 max-w-[20.5rem] text-[1.98rem] font-bold leading-[0.96] tracking-tight text-white sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
               Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn
             </h1>
-            <p className="mt-3 max-w-[19rem] text-[0.95rem] leading-6 text-white/82 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
+            <p className="mt-3 max-w-[20.5rem] text-[0.95rem] leading-[1.7] text-white/82 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
               Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.
             </p>
           </div>
         </section>
 
         <section className={cn(publicContainerClass, 'grid gap-3 py-4 sm:hidden')}>
-          <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-2xl bg-white px-4 py-4 shadow-sm">
+          <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm">
             <span>
               <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Hotline</span>
-              <span className="mt-1 block text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</span>
+              <span className="mt-1 block text-[1.05rem] font-bold text-ink">{siteProfile.hotlineDisplay}</span>
             </span>
             <PhoneCall className="text-leaf" size={22} aria-hidden="true" />
           </a>
@@ -54,11 +54,11 @@ export default async function ContactPage() {
               href={siteProfile.zaloUrl}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center justify-between rounded-2xl bg-white px-4 py-4 shadow-sm"
+              className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm"
             >
               <span>
                 <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Chat nhanh</span>
-                <span className="mt-1 block text-lg font-bold text-ink">Zalo hỗ trợ</span>
+                <span className="mt-1 block text-[1.05rem] font-bold text-ink">Zalo hỗ trợ</span>
               </span>
               <ZaloIcon size={26} />
             </a>
