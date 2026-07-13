@@ -141,7 +141,7 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-[1.55rem] bg-leaf p-3.5 text-white shadow-sm lg:hidden">
+            <article className="rounded-[1.5rem] bg-leaf p-3 text-white shadow-sm lg:hidden">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <PublicLogo size={34} />
@@ -154,11 +154,11 @@ export default async function AboutUsPage() {
                   Live
                 </span>
               </div>
-              <div className="mt-3.5 rounded-[1.2rem] bg-white/10 p-3.5 ring-1 ring-white/10">
+              <div className="mt-3 rounded-[1.1rem] bg-white/10 p-3 ring-1 ring-white/10">
                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">QR Passport</p>
-                <p className="mt-1.5 text-[1.65rem] font-bold leading-[1.08]">Minh bạch nguồn gốc, chốt đơn gọn và quản lý tập trung.</p>
+                <p className="mt-1.5 text-[1.45rem] font-bold leading-[1.06]">Minh bạch nguồn gốc, chốt đơn nhanh và quản lý gọn.</p>
               </div>
-              <div className="mt-2.5 grid grid-cols-3 gap-2">
+              <div className="mt-2.5 grid grid-cols-3 gap-1.5">
                 {[
                   { label: 'QR', value: 'Truy xuất' },
                   { label: 'COD', value: 'Chốt nhanh' },
@@ -166,7 +166,7 @@ export default async function AboutUsPage() {
                 ].map((item) => (
                   <div key={item.label} className="rounded-[1.1rem] bg-white/10 px-2.5 py-2.5 text-center ring-1 ring-white/10">
                     <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white/65">{item.label}</p>
-                    <p className="mt-1 text-[0.82rem] font-semibold leading-tight text-white/95">{item.value}</p>
+                    <p className="mt-1 text-[0.78rem] font-semibold leading-tight text-white/95">{item.value}</p>
                   </div>
                 ))}
               </div>

@@ -72,7 +72,7 @@ export function PublicBottomNav() {
       data-testid="public-bottom-nav"
       aria-hidden={hidden}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.4rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23.5rem] -translate-x-1/2 rounded-[1.45rem] border border-white/75 bg-white/72 px-1.5 py-1 shadow-[0_14px_28px_rgba(23,33,27,0.11)] backdrop-blur-xl transition duration-200 lg:hidden',
+        'fixed bottom-[calc(var(--safe-bottom)+0.35rem)] left-1/2 z-30 w-[calc(100%-1.25rem)] max-w-[22.75rem] -translate-x-1/2 rounded-[1.35rem] border border-white/70 bg-white/68 px-1.25 py-1 shadow-[0_12px_24px_rgba(23,33,27,0.09)] backdrop-blur-xl transition duration-200 lg:hidden',
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
@@ -86,14 +86,14 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[42px] flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 text-[8px] font-semibold transition-colors',
+                'relative flex min-h-[40px] flex-col items-center justify-center gap-0 rounded-[0.95rem] px-1 text-[7px] font-semibold transition-colors',
                 active
-                  ? 'bg-mint/80 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.08)]'
+                  ? 'bg-mint/72 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.07)]'
                   : 'text-slate-500/90'
               )}
             >
               <span className="relative">
-                <Icon size={17} aria-hidden="true" />
+                <Icon size={16} aria-hidden="true" />
                 {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>
