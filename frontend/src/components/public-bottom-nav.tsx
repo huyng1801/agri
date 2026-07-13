@@ -27,7 +27,7 @@ export function PublicBottomNav() {
       ([entry]) => {
         setFooterVisible(entry.isIntersecting);
       },
-      { threshold: 0.12 }
+      { threshold: 0.18 }
     );
 
     observer.observe(footer);
@@ -39,8 +39,8 @@ export function PublicBottomNav() {
       data-testid="public-bottom-nav"
       aria-hidden={footerVisible}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.5rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[25rem] -translate-x-1/2 rounded-[1.6rem] border border-white/80 bg-white/84 px-2 py-1.5 shadow-[0_18px_44px_rgba(23,33,27,0.14)] backdrop-blur-2xl transition duration-200 lg:hidden',
-        footerVisible ? 'pointer-events-none translate-y-6 opacity-0' : 'opacity-100'
+        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[24rem] -translate-x-1/2 rounded-[1.5rem] border border-white/80 bg-white/84 px-1.5 py-1 shadow-[0_16px_36px_rgba(23,33,27,0.12)] backdrop-blur-2xl transition duration-200 lg:hidden',
+        footerVisible ? 'pointer-events-none invisible translate-y-8 opacity-0' : 'opacity-100'
       )}
     >
       <div className="mx-auto grid grid-cols-5 gap-1">
@@ -53,7 +53,7 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[46px] flex-col items-center justify-center gap-1 rounded-2xl px-1 text-[9px] font-semibold transition-colors',
+                'relative flex min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-[1.1rem] px-1 text-[8.5px] font-semibold transition-colors',
                 active
                   ? 'bg-mint/80 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.08)]'
                   : 'text-slate-500/90'

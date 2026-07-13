@@ -64,8 +64,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <PublicDetailMain>
         <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
 
-        <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
-          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[var(--shadow-card)]">
+        <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
+          <section className="overflow-hidden rounded-[1.7rem] border border-slate-200 bg-white shadow-[var(--shadow-card)]">
             <PublicImage
               src={product.thumbnail?.publicUrl}
               alt={product.name}
@@ -76,11 +76,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             />
           </section>
 
-          <section className="space-y-4">
+          <section className="space-y-3.5">
             <div>
               <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-              <h1 className="mt-2 text-[2.05rem] font-bold leading-[1.02] tracking-tight sm:text-4xl">{product.name}</h1>
-              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-3 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
+              <h1 className="mt-1.5 text-[1.82rem] font-bold leading-[1.02] tracking-tight sm:mt-2 sm:text-4xl">{product.name}</h1>
+              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-2.5 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
                 {coopAvatar && (
                   <PublicImage
                     src={product.cooperative?.avatarUrl}
@@ -95,9 +95,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </Link>
             </div>
 
-            <Panel>
+            <Panel className="p-4 sm:p-5">
               <p className="text-sm text-slate-500">Giá bán</p>
-              <p className="mt-1 text-3xl font-bold text-leaf">{formatPrice(product.price)}</p>
+              <p className="mt-1 text-[2rem] font-bold leading-none text-leaf sm:text-3xl">{formatPrice(product.price)}</p>
               <p className="text-sm text-slate-500">/{product.unit}</p>
             </Panel>
 

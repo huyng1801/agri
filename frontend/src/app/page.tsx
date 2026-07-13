@@ -60,20 +60,20 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid items-center gap-5 pb-7 pt-4 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
+              'relative grid items-center gap-4 pb-6 pt-3 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
             )}
           >
-            <div className="space-y-3.5 sm:space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.82rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+            <div className="space-y-3 sm:space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.78rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 Nền tảng số cho hợp tác xã
               </div>
 
-              <h1 className="max-w-[11.35ch] text-[1.72rem] font-bold leading-[0.96] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+              <h1 className="max-w-[11.8ch] text-[1.56rem] font-bold leading-[0.98] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
                 HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.
               </h1>
 
-              <p className="max-w-[20rem] text-[0.95rem] leading-[1.6] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[19.5rem] text-[0.92rem] leading-[1.55] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
 
@@ -91,13 +91,13 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="max-w-2xl rounded-[1.7rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
+              <div className="max-w-2xl rounded-[1.55rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
                 <PublicSearch />
               </div>
 
               <div className="grid gap-2.5 sm:max-w-2xl sm:grid-cols-3">
                 {heroSignals.map((item) => (
-                  <div key={item} className="rounded-2xl border border-white/80 bg-white/74 px-4 py-3.5 text-sm leading-[1.75] text-slate-700 shadow-sm backdrop-blur">
+                  <div key={item} className="rounded-[1.35rem] border border-white/80 bg-white/74 px-4 py-3 text-[0.95rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur">
                     {item}
                   </div>
                 ))}

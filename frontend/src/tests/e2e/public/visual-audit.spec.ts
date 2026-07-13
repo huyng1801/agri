@@ -7,8 +7,7 @@ const DEMO_FIXTURES = {
   productSlug: 'tra-xanh-shan',
   productSlugRice: 'gao-st25-huu-co',
   cooperativeCode: 'htx-lua-dong-thap',
-  cooperativeCodeTea: 'htx-tra-shan-tuyet-ha-giang',
-  newsSlug: 'st25-niem-tu-hao-gao-viet-tren-ban-an-quoc-te'
+  cooperativeCodeTea: 'htx-tra-shan-tuyet-ha-giang'
 };
 
 type AuditRoute = {
@@ -21,6 +20,7 @@ type AuditRoute = {
 
 type AuditContext = {
   passportCode: string;
+  newsSlug: string;
 };
 
 const AUDIT_ROUTES: AuditRoute[] = [
@@ -35,7 +35,7 @@ const AUDIT_ROUTES: AuditRoute[] = [
   { id: 'product-detail-rice', path: `/san-pham/${DEMO_FIXTURES.productSlugRice}`, batch: 'Chi tiết', note: 'Rice product from Đồng Tháp HTX' },
   { id: 'cooperative-detail', path: `/htx/${DEMO_FIXTURES.cooperativeCode}`, batch: 'Chi tiết', note: 'Avatar overlap, product list' },
   { id: 'cooperative-detail-tea', path: `/htx/${DEMO_FIXTURES.cooperativeCodeTea}`, batch: 'Chi tiết', note: 'Tea HTX profile' },
-  { id: 'news-detail', path: `/tin-tuc/${DEMO_FIXTURES.newsSlug}`, batch: 'Chi tiết', note: 'Article layout, related posts' },
+  { id: 'news-detail', path: (ctx) => `/tin-tuc/${ctx.newsSlug}`, batch: 'Chi tiết', note: 'Article layout, related posts' },
   { id: 'about', path: '/gioi-thieu', batch: 'Nội dung', note: 'Static intro cards' },
   { id: 'about-us', path: '/ve-chung-toi', batch: 'Nội dung', note: 'Mission / offerings' },
   { id: 'buying-guide', path: '/huong-dan-mua-hang', batch: 'Nội dung', note: 'Step-by-step guide' },
@@ -63,6 +63,7 @@ test.describe('public visual audit', () => {
   test.describe.configure({ mode: 'serial' });
 
   let passportCode = 'DEMO-PASSPORT';
+  let newsSlug = 'st25-niem-tu-hao-gao-viet-tren-ban-an-quoc-te';
 
   test.beforeAll(async ({ request }, testInfo) => {
     const viewportLabel = testInfo.project.name === 'iphone' ? 'mobile' : 'desktop';
@@ -86,6 +87,20 @@ test.describe('public visual audit', () => {
     } catch {
       // Keep fallback passport code for offline screenshot runs.
     }
+
+    try {
+      const response = await request.get(`${apiUrl}/news/public?limit=1`);
+      if (response.ok()) {
+        const body = (await response.json()) as {
+          data?: { data?: Array<{ slug?: string }> } | Array<{ slug?: string }>;
+        };
+        const list = Array.isArray(body.data) ? body.data : body.data?.data;
+        const slug = list?.find((item) => item.slug)?.slug;
+        if (slug) newsSlug = slug;
+      }
+    } catch {
+      // Keep fallback article slug for offline screenshot runs.
+    }
   });
 
   for (const route of AUDIT_ROUTES) {
@@ -97,7 +112,7 @@ test.describe('public visual audit', () => {
       }
 
       const viewportLabel = testInfo.project.name === 'iphone' ? 'mobile' : 'desktop';
-      const path = typeof route.path === 'function' ? route.path({ passportCode }) : route.path;
+      const path = typeof route.path === 'function' ? route.path({ passportCode, newsSlug }) : route.path;
 
       await preparePage(page, route.prepare);
       const response = await page.goto(path, { waitUntil: 'networkidle' });
@@ -167,6 +182,7 @@ test.describe('public visual audit', () => {
 
 Generated: ${new Date().toISOString()}
 Passport fixture: \`${passportCode}\`
+News fixture: \`${newsSlug}\`
 
 ## Summary
 
