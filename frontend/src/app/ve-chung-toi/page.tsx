@@ -116,17 +116,17 @@ export default async function AboutUsPage() {
                 'radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 36%), radial-gradient(circle at bottom right, rgba(47,132,81,0.14), transparent 34%)'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative grid items-center gap-5 py-10 sm:gap-6 sm:py-12 lg:grid-cols-[0.95fr_0.9fr_0.95fr] lg:py-16')}>
+          <div className={cn(publicContainerClass, 'relative grid items-center gap-4 py-9 sm:gap-6 sm:py-12 lg:grid-cols-[0.95fr_0.9fr_0.95fr] lg:py-16')}>
             <div>
               <p className="text-sm font-bold uppercase tracking-wide text-leaf">Về chúng tôi</p>
-              <h1 className="mt-2.5 text-[2.35rem] font-bold leading-[1.02] text-ink sm:mt-3 sm:text-5xl">
+              <h1 className="mt-2 text-[2.14rem] font-bold leading-[1.02] text-ink sm:mt-3 sm:text-5xl">
                 Chúng tôi là
                 <span className="mt-2 block text-leaf">HTXONLINE</span>
               </h1>
-              <p className="mt-3.5 max-w-md text-base leading-[1.8] text-slate-700">
+              <p className="mt-3 max-w-md text-[0.96rem] leading-[1.72] text-slate-700 sm:text-base sm:leading-[1.8]">
                 Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.
               </p>
-              <div className="mt-5 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:mt-5 sm:flex sm:flex-wrap">
                 <Link href="/lien-he">
                   <Button className="min-h-12 w-full">
                     Liên hệ tư vấn
@@ -141,32 +141,32 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-[1.75rem] bg-leaf p-4 text-white shadow-sm lg:hidden">
+            <article className="rounded-[1.55rem] bg-leaf p-3.5 text-white shadow-sm lg:hidden">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <PublicLogo size={38} />
+                  <PublicLogo size={34} />
                   <div>
-                    <p className="text-sm font-bold">HTXONLINE</p>
-                    <p className="text-xs text-white/72">Số hóa gọn hơn trên mobile</p>
+                    <p className="text-[0.82rem] font-bold">HTXONLINE</p>
+                    <p className="text-[11px] text-white/72">Số hóa gọn hơn trên mobile</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-white/14 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
+                <span className="rounded-full bg-white/14 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/80">
                   Live
                 </span>
               </div>
-              <div className="mt-4 rounded-[1.35rem] bg-white/10 p-4 ring-1 ring-white/10">
+              <div className="mt-3.5 rounded-[1.2rem] bg-white/10 p-3.5 ring-1 ring-white/10">
                 <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">QR Passport</p>
-                <p className="mt-1.5 text-xl font-bold leading-tight">Minh bạch nguồn gốc, chốt đơn gọn và quản lý tập trung.</p>
+                <p className="mt-1.5 text-[1.65rem] font-bold leading-[1.08]">Minh bạch nguồn gốc, chốt đơn gọn và quản lý tập trung.</p>
               </div>
-              <div className="mt-3 grid grid-cols-3 gap-2.5">
+              <div className="mt-2.5 grid grid-cols-3 gap-2">
                 {[
                   { label: 'QR', value: 'Truy xuất' },
                   { label: 'COD', value: 'Chốt nhanh' },
                   { label: 'Admin', value: 'Một nơi' }
                 ].map((item) => (
-                  <div key={item.label} className="rounded-2xl bg-white/10 px-3 py-3 text-center ring-1 ring-white/10">
-                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/65">{item.label}</p>
-                    <p className="mt-1.5 text-sm font-semibold text-white/95">{item.value}</p>
+                  <div key={item.label} className="rounded-[1.1rem] bg-white/10 px-2.5 py-2.5 text-center ring-1 ring-white/10">
+                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white/65">{item.label}</p>
+                    <p className="mt-1 text-[0.82rem] font-semibold leading-tight text-white/95">{item.value}</p>
                   </div>
                 ))}
               </div>
@@ -214,18 +214,18 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-2xl bg-leaf p-5 text-white shadow-sm sm:p-7">
-              <p className="text-sm font-semibold uppercase tracking-wide text-white/75">Câu chuyện thương hiệu</p>
-              <p className="mt-3.5 text-base leading-[1.8] text-white/95">
+            <article className="rounded-[1.6rem] bg-leaf p-4 text-white shadow-sm sm:p-7">
+              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
+              <p className="mt-3 text-[0.96rem] leading-[1.7] text-white/95 sm:text-base sm:leading-[1.8]">
                 HTXONLINE ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
                 QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
-              <p className="mt-3 text-sm leading-[1.75] text-white/80">
+              <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-white/80 sm:mt-3 sm:text-sm sm:leading-[1.75]">
                 Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất, truy xuất và bán hàng trên cùng một nền tảng.
               </p>
-              <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-1">
+              <div className="mt-3.5 grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {trustSignals.map((item) => (
-                  <div key={item} className="rounded-xl bg-white/10 px-3 py-2.5 text-sm leading-[1.45] text-white/92 ring-1 ring-white/10">
+                  <div key={item} className="rounded-xl bg-white/10 px-2.5 py-2 text-[0.8rem] leading-[1.4] text-white/92 ring-1 ring-white/10 sm:px-3 sm:py-2.5 sm:text-sm">
                     {item}
                   </div>
                 ))}
@@ -234,74 +234,74 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-9 sm:py-10')}>
+        <section className={cn(publicContainerClass, 'py-8 sm:py-10')}>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((item) => (
-              <article key={item.label} className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm sm:p-5">
-                <p className="text-[1.85rem] font-bold text-leaf sm:text-3xl">{item.value}</p>
-                <p className="mt-1.5 text-sm leading-[1.65] text-slate-600">{item.label}</p>
+              <article key={item.label} className="rounded-2xl border border-slate-200 bg-white p-3.5 text-center shadow-sm sm:p-5">
+                <p className="text-[1.7rem] font-bold text-leaf sm:text-3xl">{item.value}</p>
+                <p className="mt-1 text-[0.82rem] leading-[1.55] text-slate-600 sm:mt-1.5 sm:text-sm sm:leading-[1.65]">{item.label}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="bg-white py-10 sm:py-12">
+        <section className="bg-white py-9 sm:py-12">
           <div className={publicContainerClass}>
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-3xl font-bold text-ink">Thành công được tạo dựng từ giá trị khác biệt</h2>
-              <p className="mt-3 text-base leading-7 text-slate-600">
+              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Thành công được tạo dựng từ giá trị khác biệt</h2>
+              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
                 HTXONLINE giúp HTX hiện diện trên thị trường số bằng dữ liệu minh bạch, quy trình bán hàng rõ ràng và trải nghiệm mua sắm đơn giản.
               </p>
             </div>
-            <div className="mt-8 grid gap-4 md:grid-cols-2">
+            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-2 md:gap-4">
               {valuePillars.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-6 shadow-sm">
-                  <span className="grid h-12 w-12 place-items-center rounded-full bg-leaf text-white">
-                    <item.icon size={22} aria-hidden="true" />
+                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-4 shadow-sm sm:p-6">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white sm:h-12 sm:w-12">
+                    <item.icon size={20} aria-hidden="true" />
                   </span>
-                  <h3 className="mt-4 text-xl font-bold text-ink">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-slate-600">{item.description}</p>
+                  <h3 className="mt-3 text-[1.05rem] font-bold leading-tight text-ink sm:mt-4 sm:text-xl">{item.title}</h3>
+                  <p className="mt-2 text-[0.84rem] leading-[1.65] text-slate-600 sm:text-sm sm:leading-7">{item.description}</p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-10 sm:py-12')}>
+        <section className={cn(publicContainerClass, 'py-9 sm:py-12')}>
           <div className="grid items-center gap-6 lg:grid-cols-[1fr_1fr]">
-            <div className="rounded-3xl border border-slate-200 bg-[linear-gradient(180deg,#f8faf7_0%,#edf7f0_100%)] p-6 shadow-sm">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <article className="rounded-2xl bg-white p-5 shadow-sm">
-                  <p className="text-sm font-bold uppercase tracking-wide text-leaf">Tầm nhìn</p>
-                  <h3 className="mt-2 text-2xl font-bold text-ink">Trở thành nền tảng số tin cậy cho hợp tác xã nông nghiệp Việt Nam.</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-600">
+            <div className="rounded-[1.7rem] border border-slate-200 bg-[linear-gradient(180deg,#f8faf7_0%,#edf7f0_100%)] p-4 shadow-sm sm:rounded-3xl sm:p-6">
+              <div className="grid gap-3 sm:gap-4 sm:grid-cols-2">
+                <article className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+                  <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Tầm nhìn</p>
+                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] text-ink sm:text-2xl">Trở thành nền tảng số tin cậy cho hợp tác xã nông nghiệp Việt Nam.</h3>
+                  <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">
                     Mỗi HTX có thể kể câu chuyện nguồn gốc rõ ràng, mỗi người mua đều kiểm tra được sản phẩm trước khi quyết định mua.
                   </p>
                 </article>
-                <article className="rounded-2xl bg-leaf p-5 text-white shadow-sm">
-                  <p className="text-sm font-bold uppercase tracking-wide text-white/75">Sứ mệnh</p>
-                  <h3 className="mt-2 text-2xl font-bold">Số hóa bán hàng và truy xuất nguồn gốc cho HTX.</h3>
-                  <p className="mt-3 text-sm leading-7 text-white/85">
+                <article className="rounded-2xl bg-leaf p-4 text-white shadow-sm sm:p-5">
+                  <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Sứ mệnh</p>
+                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">Số hóa bán hàng và truy xuất nguồn gốc cho HTX.</h3>
+                  <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/85 sm:mt-3 sm:text-sm sm:leading-7">
                     Chúng tôi mang đến công cụ thực tế: sàn public, QR Passport, dashboard vận hành và đơn COD để HTX phát triển bền vững hơn.
                   </p>
                 </article>
               </div>
             </div>
 
-            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-wide text-leaf">Bản đồ giá trị</p>
-              <h3 className="mt-2 text-3xl font-bold text-ink">Một hành trình rõ ràng từ niềm tin đến đơn hàng.</h3>
-              <div className="mt-6 grid gap-3">
+            <div className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bản đồ giá trị</p>
+              <h3 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Một hành trình rõ ràng từ niềm tin đến đơn hàng.</h3>
+              <div className="mt-4 grid gap-2.5 sm:mt-6 sm:gap-3">
                 {journeySteps.map((step, index) => (
-                  <article key={step.title} className={cn('rounded-2xl border p-4 shadow-sm', step.accent)}>
-                    <div className="flex items-start gap-4">
-                      <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf text-white shadow-sm">
-                        <step.icon size={20} aria-hidden="true" />
+                  <article key={step.title} className={cn('rounded-2xl border p-3.5 shadow-sm sm:p-4', step.accent)}>
+                    <div className="flex items-start gap-3">
+                      <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-leaf text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
+                        <step.icon size={18} aria-hidden="true" />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-slate-500">Bước {index + 1}</p>
-                        <h4 className="mt-1 text-lg font-bold text-ink">{step.title}</h4>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">{step.description}</p>
+                        <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-slate-500 sm:text-[0.72rem] sm:tracking-[0.18em]">Bước {index + 1}</p>
+                        <h4 className="mt-1 text-[1rem] font-bold leading-tight text-ink sm:text-lg">{step.title}</h4>
+                        <p className="mt-1.5 text-[0.82rem] leading-[1.58] text-slate-600 sm:mt-2 sm:text-sm sm:leading-6">{step.description}</p>
                       </div>
                     </div>
                   </article>
@@ -311,64 +311,64 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className="bg-white py-10 sm:py-12">
+        <section className="bg-white py-9 sm:py-12">
           <div className={publicContainerClass}>
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-3xl font-bold text-ink">Giá trị cốt lõi</h2>
-              <p className="mt-3 text-base leading-7 text-slate-600">Những nguyên tắc định hướng mọi sản phẩm và dịch vụ trên HTXONLINE.</p>
+              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Giá trị cốt lõi</h2>
+              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">Những nguyên tắc định hướng mọi sản phẩm và dịch vụ trên HTXONLINE.</p>
             </div>
-            <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 lg:grid-cols-5">
               {coreValues.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-5 text-center shadow-sm">
-                  <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-leaf text-white">
-                    <item.icon size={22} aria-hidden="true" />
+                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-4 text-center shadow-sm sm:p-5">
+                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-leaf text-white sm:h-12 sm:w-12">
+                    <item.icon size={20} aria-hidden="true" />
                   </span>
-                  <h3 className="mt-4 text-base font-bold text-ink">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                  <h3 className="mt-3 text-[0.98rem] font-bold leading-tight text-ink sm:mt-4 sm:text-base">{item.title}</h3>
+                  <p className="mt-1.5 text-[0.82rem] leading-[1.58] text-slate-600 sm:mt-2 sm:text-sm sm:leading-6">{item.description}</p>
                 </article>
               ))}
             </div>
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-10 sm:py-12')}>
+        <section className={cn(publicContainerClass, 'py-9 sm:py-12')}>
           <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <article className="rounded-3xl bg-[linear-gradient(180deg,#245f3e_0%,#1b4f33_100%)] p-6 text-white shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-wide text-white/70">Đội ngũ đồng hành</p>
-              <h2 className="mt-2 max-w-lg text-3xl font-bold leading-tight">Những con người trẻ cùng đam mê tạo nên giá trị lớn cho nông sản Việt.</h2>
-              <p className="mt-4 max-w-xl text-sm leading-7 text-white/82">
+            <article className="rounded-[1.7rem] bg-[linear-gradient(180deg,#245f3e_0%,#1b4f33_100%)] p-4 text-white shadow-sm sm:rounded-3xl sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/70 sm:text-sm sm:tracking-wide">Đội ngũ đồng hành</p>
+              <h2 className="mt-2 max-w-lg text-[1.7rem] font-bold leading-[1.12] sm:text-3xl">Những con người trẻ cùng đam mê tạo nên giá trị lớn cho nông sản Việt.</h2>
+              <p className="mt-3 max-w-xl text-[0.84rem] leading-[1.66] text-white/82 sm:mt-4 sm:text-sm sm:leading-7">
                 Chúng tôi làm việc để HTX dễ hiện diện hơn trên môi trường số, còn người mua có thêm niềm tin khi chọn sản phẩm minh bạch nguồn gốc.
               </p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-white/65">Onboarding</p>
-                  <p className="mt-2 text-xl font-bold">HTX mới</p>
+              <div className="mt-4 grid gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
+                <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white/65 sm:text-[0.72rem] sm:tracking-[0.18em]">Onboarding</p>
+                  <p className="mt-1.5 text-[1.02rem] font-bold sm:mt-2 sm:text-xl">HTX mới</p>
                 </div>
-                <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-white/65">Chuẩn hóa</p>
-                  <p className="mt-2 text-xl font-bold">QR & vùng trồng</p>
+                <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white/65 sm:text-[0.72rem] sm:tracking-[0.18em]">Chuẩn hóa</p>
+                  <p className="mt-1.5 text-[1.02rem] font-bold sm:mt-2 sm:text-xl">QR & vùng trồng</p>
                 </div>
-                <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.18em] text-white/65">Vận hành</p>
-                  <p className="mt-2 text-xl font-bold">Đơn COD</p>
+                <div className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10 sm:p-4">
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-white/65 sm:text-[0.72rem] sm:tracking-[0.18em]">Vận hành</p>
+                  <p className="mt-1.5 text-[1.02rem] font-bold sm:mt-2 sm:text-xl">Đơn COD</p>
                 </div>
               </div>
             </article>
 
-            <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <p className="text-sm font-bold uppercase tracking-wide text-leaf">Đối tác & niềm tin</p>
-              <h2 className="mt-2 text-3xl font-bold text-ink">{catalog.cooperatives.length || 12}+ HTX đồng hành</h2>
-              <p className="mt-3 text-base leading-7 text-slate-600">
+            <article className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Đối tác & niềm tin</p>
+              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{catalog.cooperatives.length || 12}+ HTX đồng hành</h2>
+              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
                 Cảm ơn các hợp tác xã và người mua đã tin tưởng HTXONLINE để kết nối nông sản minh bạch trên môi trường số.
               </p>
-              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
                 {featuredCooperatives.map((coop) => (
-                  <div key={coop.id} className="rounded-xl border border-slate-200 bg-[#f8faf7] px-3 py-4 text-center">
-                    <p className="line-clamp-2 text-xs font-semibold text-slate-700">{'name' in coop ? coop.name : 'HTX'}</p>
+                  <div key={coop.id} className="rounded-xl border border-slate-200 bg-[#f8faf7] px-3 py-3 text-center">
+                    <p className="line-clamp-2 text-[11px] font-semibold leading-[1.45] text-slate-700 sm:text-xs">{'name' in coop ? coop.name : 'HTX'}</p>
                   </div>
                 ))}
               </div>
-              <Link href="/htx" className="mt-5 inline-flex items-center gap-1 text-sm font-semibold text-leaf">
+              <Link href="/htx" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-leaf sm:mt-5">
                 Xem danh sách HTX
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>
@@ -376,22 +376,22 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'pb-12 pt-4')}>
+        <section className={cn(publicContainerClass, 'pb-12 pt-3 sm:pt-4')}>
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
-            <div className="border-b border-slate-100 bg-mint/70 px-5 py-5 sm:px-8 sm:py-6">
+            <div className="border-b border-slate-100 bg-mint/70 px-4 py-4 sm:px-8 sm:py-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <p className="text-sm font-semibold uppercase tracking-wide text-leaf">Bắt đầu cùng HTXONLINE</p>
-                  <h2 className="mt-2 max-w-2xl text-3xl font-bold leading-tight text-ink">
+                  <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bắt đầu cùng HTXONLINE</p>
+                  <h2 className="mt-2 max-w-2xl text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">
                     HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?
                   </h2>
                 </div>
-                <p className="max-w-md text-sm leading-6 text-slate-600">
+                <p className="max-w-md text-[0.84rem] leading-[1.6] text-slate-600 sm:text-sm sm:leading-6">
                   Để lại thông tin, đội vận hành sẽ hỗ trợ onboarding và hướng dẫn quy trình phù hợp với HTX của bạn.
                 </p>
               </div>
             </div>
-            <div className="p-5 sm:p-8">
+            <div className="p-4 sm:p-8">
               <PublicContactForm sourcePath="/ve-chung-toi" variant="hero" />
             </div>
           </div>

@@ -103,25 +103,25 @@ export default async function HomePage() {
                 ))}
               </div>
 
-              <div className="overflow-hidden rounded-[1.9rem] border border-white/75 bg-[linear-gradient(145deg,#246d45_0%,#2f8451_100%)] p-4 text-white shadow-[0_24px_70px_rgba(25,58,40,0.15)] lg:hidden">
+              <div className="overflow-hidden rounded-[1.65rem] border border-white/75 bg-[linear-gradient(145deg,#246d45_0%,#2f8451_100%)] p-3.5 text-white shadow-[0_24px_70px_rgba(25,58,40,0.15)] lg:hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/74">QR Passport</p>
-                    <h2 className="mt-2 text-[1.45rem] font-bold leading-tight">Truy xuất nhanh và chốt đơn gọn hơn trên mobile.</h2>
+                    <h2 className="mt-1.5 text-[1.28rem] font-bold leading-[1.08]">Truy xuất nhanh và chốt đơn gọn hơn trên mobile.</h2>
                   </div>
-                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
-                    <Sparkles size={18} aria-hidden="true" className="text-mint" />
+                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[1rem] bg-white/12 ring-1 ring-white/15">
+                    <Sparkles size={16} aria-hidden="true" className="text-mint" />
                   </span>
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-2.5">
+                <div className="mt-3 grid grid-cols-3 gap-2">
                   {stats.map(([title, value, Icon]) => (
-                    <div key={String(title)} className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/14 text-mint">
-                        <Icon size={16} aria-hidden="true" />
+                    <div key={String(title)} className="rounded-[1rem] bg-white/10 p-2.5 ring-1 ring-white/10">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[0.9rem] bg-white/14 text-mint">
+                        <Icon size={15} aria-hidden="true" />
                       </span>
-                      <p className="mt-2 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/68">{String(title)}</p>
-                      <p className="mt-1 text-lg font-bold leading-tight">{String(value)}</p>
+                      <p className="mt-1.5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-white/68">{String(title)}</p>
+                      <p className="mt-0.5 text-[0.98rem] font-bold leading-tight">{String(value)}</p>
                     </div>
                   ))}
                 </div>
@@ -219,12 +219,12 @@ export default async function HomePage() {
               ['Đặt hàng COD', 'Người mua gửi đơn nhanh, HTX liên hệ xác nhận và xử lý đơn.', ShoppingBag],
               ['HTX tự vận hành', 'Sản phẩm, vùng trồng, nhật ký và đơn hàng do từng HTX tự quản lý.', BadgeCheck]
             ].map(([title, text, Icon]) => (
-              <Panel key={String(title)} className="h-full">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-mint text-leaf">
-                  <Icon size={24} aria-hidden="true" />
+              <Panel key={String(title)} className="h-full p-3.5 sm:p-5">
+                <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-mint text-leaf sm:h-12 sm:w-12 sm:rounded-2xl">
+                  <Icon size={21} aria-hidden="true" />
                 </span>
-                <h3 className="mt-3.5 text-lg font-bold text-ink">{String(title)}</h3>
-                <p className="mt-2 text-sm leading-[1.75] text-slate-600">{String(text)}</p>
+                <h3 className="mt-3 text-[1.02rem] font-bold leading-tight text-ink sm:mt-3.5 sm:text-lg">{String(title)}</h3>
+                <p className="mt-1.5 text-[0.84rem] leading-[1.62] text-slate-600 sm:mt-2 sm:text-sm sm:leading-[1.75]">{String(text)}</p>
               </Panel>
             ))}
           </div>
