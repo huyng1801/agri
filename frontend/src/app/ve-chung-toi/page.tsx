@@ -84,10 +84,10 @@ const journeySteps = [
 ] as const;
 
 const trustSignals = [
-  'Hiển thị công khai sản phẩm đã publish',
-  'Mở QR trực tiếp cho khách truy cập',
-  'Quản lý tập trung vùng trồng và nhật ký',
-  'Hỗ trợ quy trình COD theo mô hình HTX'
+  'Sản phẩm public đã publish',
+  'QR mở trực tiếp cho khách',
+  'Quản lý vùng trồng tập trung',
+  'COD theo quy trình HTX'
 ] as const;
 
 export default async function AboutUsPage() {
@@ -221,11 +221,11 @@ export default async function AboutUsPage() {
                 QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
               <p className="mt-3 text-sm leading-[1.75] text-white/80">
-                Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất - truy xuất - bán hàng - báo cáo trên cùng một nền tảng.
+                Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất, truy xuất và bán hàng trên cùng một nền tảng.
               </p>
-              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+              <div className="mt-4 grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {trustSignals.map((item) => (
-                  <div key={item} className="rounded-xl bg-white/10 px-3.5 py-2.5 text-sm leading-[1.55] text-white/92 ring-1 ring-white/10">
+                  <div key={item} className="rounded-xl bg-white/10 px-3 py-2.5 text-sm leading-[1.45] text-white/92 ring-1 ring-white/10">
                     {item}
                   </div>
                 ))}
