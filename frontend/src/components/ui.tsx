@@ -71,7 +71,7 @@ export function Badge({ children, className }: { children: React.ReactNode; clas
 
 export function Panel({ children, className, ...props }: React.HTMLAttributes<HTMLElement> & { children: React.ReactNode }) {
   return (
-    <section className={cn('rounded-2xl border border-slate-200/80 bg-white/96 p-5 shadow-[var(--shadow-card)] backdrop-blur-sm', className)} {...props}>
+    <section className={cn('rounded-2xl border border-slate-200/80 bg-white/96 p-4 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-5', className)} {...props}>
       {children}
     </section>
   );

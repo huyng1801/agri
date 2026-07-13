@@ -56,49 +56,79 @@ export default async function HomePage() {
             }}
           />
           <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-white/70" />
+
           <div
             className={cn(
               publicContainerClass,
-              'relative grid items-center gap-6 pb-8 pt-5 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
+              'relative grid items-center gap-5 pb-7 pt-4 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
             )}
           >
-            <div className="space-y-4 sm:space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.84rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+            <div className="space-y-3.5 sm:space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.82rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 Nền tảng số cho hợp tác xã
               </div>
-              <h1 className="max-w-[10.8ch] text-[1.78rem] font-bold leading-[0.95] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+
+              <h1 className="max-w-[11.35ch] text-[1.72rem] font-bold leading-[0.96] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
                 HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.
               </h1>
-              <p className="max-w-[19rem] text-[0.95rem] leading-[1.55] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+
+              <p className="max-w-[20rem] text-[0.95rem] leading-[1.6] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
-              <div className="flex flex-wrap gap-3">
+
+              <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
                 <Link href="/san-pham" className="inline-flex">
-                  <Button className="w-full sm:w-auto">
+                  <Button className="min-h-12 w-full sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
                 <Link href="/htx" className="inline-flex">
-                  <Button variant="ghost" className="w-full justify-center sm:w-auto">
+                  <Button variant="ghost" className="min-h-12 w-full justify-center sm:w-auto">
                     Khám phá HTX
                   </Button>
                 </Link>
               </div>
-              <div className="max-w-2xl rounded-[1.6rem] border border-white/70 bg-white/82 p-2 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur">
+
+              <div className="max-w-2xl rounded-[1.7rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
                 <PublicSearch />
               </div>
-              <div className="grid gap-2 sm:max-w-2xl sm:grid-cols-3">
+
+              <div className="grid gap-2.5 sm:max-w-2xl sm:grid-cols-3">
                 {heroSignals.map((item) => (
-                  <div key={item} className="rounded-2xl border border-white/80 bg-white/74 px-4 py-3 text-sm leading-6 text-slate-700 shadow-sm backdrop-blur">
+                  <div key={item} className="rounded-2xl border border-white/80 bg-white/74 px-4 py-3.5 text-sm leading-[1.75] text-slate-700 shadow-sm backdrop-blur">
                     {item}
                   </div>
                 ))}
               </div>
+
+              <div className="overflow-hidden rounded-[1.9rem] border border-white/75 bg-[linear-gradient(145deg,#246d45_0%,#2f8451_100%)] p-4 text-white shadow-[0_24px_70px_rgba(25,58,40,0.15)] lg:hidden">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/74">QR Passport</p>
+                    <h2 className="mt-2 text-[1.45rem] font-bold leading-tight">Truy xuất nhanh và chốt đơn gọn hơn trên mobile.</h2>
+                  </div>
+                  <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
+                    <Sparkles size={18} aria-hidden="true" className="text-mint" />
+                  </span>
+                </div>
+
+                <div className="mt-4 grid grid-cols-3 gap-2.5">
+                  {stats.map(([title, value, Icon]) => (
+                    <div key={String(title)} className="rounded-2xl bg-white/10 p-3 ring-1 ring-white/10">
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white/14 text-mint">
+                        <Icon size={16} aria-hidden="true" />
+                      </span>
+                      <p className="mt-2 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-white/68">{String(title)}</p>
+                      <p className="mt-1 text-lg font-bold leading-tight">{String(value)}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="relative">
+            <div className="relative hidden lg:block">
               <div className="absolute -right-6 top-10 hidden h-28 w-28 rounded-full bg-mint/55 blur-3xl sm:block" aria-hidden="true" />
               <div className="relative overflow-hidden rounded-[2rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur sm:p-5">
                 <div className="rounded-[1.7rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white sm:p-6">
@@ -193,8 +223,8 @@ export default async function HomePage() {
                 <span className="grid h-12 w-12 place-items-center rounded-2xl bg-mint text-leaf">
                   <Icon size={24} aria-hidden="true" />
                 </span>
-                <h3 className="mt-4 text-lg font-bold text-ink">{String(title)}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{String(text)}</p>
+                <h3 className="mt-3.5 text-lg font-bold text-ink">{String(title)}</h3>
+                <p className="mt-2 text-sm leading-[1.75] text-slate-600">{String(text)}</p>
               </Panel>
             ))}
           </div>

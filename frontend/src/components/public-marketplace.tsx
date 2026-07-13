@@ -108,7 +108,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-1.5 rounded-[1.3rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.45rem] border border-slate-200/80 bg-white/94 p-1.5 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
@@ -116,10 +116,10 @@ export function PublicSearch({
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-9.5 w-full rounded-[0.95rem] border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl"
+          className="min-h-11 w-full rounded-[1rem] border-0 bg-slate-50 pl-10 pr-3 text-base outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl"
         />
       </div>
-      <Button className="min-h-9.5 w-full rounded-[0.95rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
+      <Button className="min-h-11 w-full rounded-[1rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
     </form>
   );
 }
@@ -146,13 +146,14 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           </span>
         )}
       </Link>
-      <div className="flex flex-1 flex-col p-4">
+
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
         <p className="text-[11px] font-bold uppercase tracking-wide text-leaf">{product.category?.name ?? 'Nông sản'}</p>
         <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-base font-bold leading-snug text-ink hover:text-leaf">
           {product.name}
         </Link>
 
-        <div className="mt-3 border-t border-slate-100 pt-3">
+        <div className="mt-2.5 border-t border-slate-100 pt-2.5 sm:mt-3 sm:pt-3">
           <p className="text-xl font-bold text-leaf">{formatPrice(product.price)}</p>
           <p className="text-xs text-slate-500">/{product.unit}</p>
         </div>
@@ -160,7 +161,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
         {product.cooperative && (
           <Link
             href={`/htx/${product.cooperative.code}`}
-            className="mt-3 flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 transition hover:bg-mint/50"
+            className="mt-2.5 flex items-center gap-2.5 rounded-xl bg-slate-50 p-2.5 transition hover:bg-mint/50 sm:mt-3"
           >
             <PublicImage
               src={product.cooperative.avatarUrl}
@@ -177,7 +178,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           </Link>
         )}
 
-        <AddToCartButton product={product} className="mt-auto w-full pt-3" />
+        <AddToCartButton product={product} className="mt-auto w-full pt-2.5 sm:pt-3" />
       </div>
     </article>
   );
@@ -205,7 +206,8 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           <h3 className="mt-1 line-clamp-2 text-lg font-bold leading-snug">{cooperative.name}</h3>
         </div>
       </Link>
-      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+
+      <div className="flex flex-col gap-3 p-3.5 sm:flex-row sm:items-center sm:justify-between sm:p-4">
         <p className="text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
         <div className="flex shrink-0 gap-2">
           <Link href={`/htx/${cooperative.code}`}>
@@ -242,7 +244,8 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </Link>
-      <div className="flex flex-1 flex-col p-4">
+
+      <div className="flex flex-1 flex-col p-3.5 sm:p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
           {article.category?.name && <span>{article.category.name}</span>}
           {article.publishedAt && (
@@ -255,7 +258,9 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
         <Link href={`/tin-tuc/${article.slug}`} className="mt-2 line-clamp-2 text-lg font-bold leading-6 text-ink hover:text-leaf">
           {article.title}
         </Link>
-        <p className="mt-auto line-clamp-3 pt-3 text-sm leading-6 text-slate-600">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
+        <p className="mt-auto line-clamp-3 pt-2.5 text-sm leading-[1.7] text-slate-600 sm:pt-3">
+          {article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}
+        </p>
       </div>
     </article>
   );

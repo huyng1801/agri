@@ -17,19 +17,19 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
   }
 
   return (
-    <div className="relative mt-5" data-testid="product-slider">
+    <div className="relative mt-4 sm:mt-5" data-testid="product-slider">
       <div
         ref={trackRef}
         className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {products.map((product, index) => (
-          <div key={product.id} data-slider-card className="w-[min(88vw,300px)] shrink-0 snap-start sm:w-[280px] lg:w-[300px]">
+          <div key={product.id} data-slider-card className="w-[min(86vw,300px)] shrink-0 snap-start sm:w-[280px] lg:w-[300px]">
             <ProductCard product={product} priority={index < 4} />
           </div>
         ))}
       </div>
       {products.length > 1 && (
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-3 flex justify-center gap-2 sm:mt-4">
           <button
             type="button"
             onClick={() => scrollByCards(-1)}
