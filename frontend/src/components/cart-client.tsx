@@ -55,32 +55,34 @@ export function CartClient() {
     <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
       <div className="space-y-3">
         {items.map((item) => (
-          <Panel key={item.productId} className="flex flex-col gap-3 sm:flex-row sm:items-center" data-testid="cart-item">
-            <PublicImage
-              src={item.imageUrl}
-              alt={item.name}
-              fallback={DEFAULT_PRODUCT_IMAGE}
-              wrapperClassName="h-20 w-20 shrink-0 rounded-md"
-              className="h-full w-full object-cover"
-            />
-            <div className="min-w-0 flex-1">
-              <Link href={`/san-pham/${item.slug}`} className="font-bold text-ink">
-                {item.name}
-              </Link>
-              <p className="mt-1 text-sm text-slate-600">{item.cooperativeName || 'HTX đang cập nhật'}</p>
-              <p className="mt-1 text-sm font-semibold text-leaf">
-                {formatVnd(item.price)} / {item.unit}
-              </p>
+          <Panel key={item.productId} className="gap-3 p-3.5 sm:flex sm:items-center sm:gap-4 sm:p-4" data-testid="cart-item">
+            <div className="flex items-start gap-3">
+              <PublicImage
+                src={item.imageUrl}
+                alt={item.name}
+                fallback={DEFAULT_PRODUCT_IMAGE}
+                wrapperClassName="h-[5.25rem] w-[5.25rem] shrink-0 rounded-xl sm:h-20 sm:w-20"
+                className="h-full w-full object-cover"
+              />
+              <div className="min-w-0 flex-1">
+                <Link href={`/san-pham/${item.slug}`} className="line-clamp-2 text-[1.05rem] font-bold leading-[1.2] text-ink sm:text-lg">
+                  {item.name}
+                </Link>
+                <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-600">{item.cooperativeName || 'HTX đang cập nhật'}</p>
+                <p className="mt-1 text-sm font-semibold text-leaf">
+                  {formatVnd(item.price)} <span className="font-normal text-slate-500">/ {item.unit}</span>
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button type="button" variant="ghost" aria-label="Giảm số lượng" onClick={() => setQuantity(item.productId, item.quantity - 1)}>
+            <div className="grid grid-cols-4 gap-2 sm:ml-auto sm:min-w-[13.5rem]">
+              <Button type="button" variant="ghost" className="min-h-11 px-0" aria-label="Giảm số lượng" onClick={() => setQuantity(item.productId, item.quantity - 1)}>
                 <Minus size={16} aria-hidden="true" />
               </Button>
-              <span className="grid h-11 min-w-12 place-items-center rounded-md border border-slate-200 px-3 font-bold">{item.quantity}</span>
-              <Button type="button" variant="ghost" aria-label="Tăng số lượng" onClick={() => setQuantity(item.productId, item.quantity + 1)}>
+              <span className="grid min-h-11 place-items-center rounded-md border border-slate-200 px-3 font-bold">{item.quantity}</span>
+              <Button type="button" variant="ghost" className="min-h-11 px-0" aria-label="Tăng số lượng" onClick={() => setQuantity(item.productId, item.quantity + 1)}>
                 <Plus size={16} aria-hidden="true" />
               </Button>
-              <Button type="button" variant="danger" aria-label="Xóa sản phẩm" onClick={() => remove(item.productId)}>
+              <Button type="button" variant="danger" className="min-h-11 px-0" aria-label="Xóa sản phẩm" onClick={() => remove(item.productId)}>
                 <Trash2 size={16} aria-hidden="true" />
               </Button>
             </div>
