@@ -200,7 +200,7 @@ export default async function HomePage() {
         <PublicSection band>
           <PublicSectionHeader title="HTX nổi bật" description="Hồ sơ HTX đang có sản phẩm public." href="/htx" linkLabel="Xem HTX" />
           {featuredCooperatives.length ? (
-            <div className="mt-5 grid auto-rows-fr gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
               {featuredCooperatives.map((cooperative, index) => (
                 <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
               ))}

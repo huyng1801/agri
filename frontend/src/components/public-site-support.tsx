@@ -40,8 +40,8 @@ export function FloatingContactClient() {
     const onScroll = () => {
       const isMobile = window.innerWidth < 1024;
       setMobileViewport(isMobile);
-      setShowTop(window.scrollY > (isMobile ? 960 : 500));
-      setShowFloating(!isMobile || window.scrollY > 560);
+      setShowTop(window.scrollY > (isMobile ? 1320 : 500));
+      setShowFloating(!isMobile || window.scrollY > 760);
     };
 
     onScroll();
@@ -78,7 +78,7 @@ export function FloatingContactClient() {
   }
 
   return (
-    <div className="fixed bottom-[calc(7.1rem+var(--safe-bottom))] right-4 z-40 grid gap-2 lg:bottom-6 lg:right-4">
+    <div className="fixed bottom-[calc(6.4rem+var(--safe-bottom))] right-3 z-40 grid gap-2 lg:bottom-6 lg:right-4">
       {showHotline && (
         <a href={telHref(siteProfile.hotline)} className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
           <Phone size={16} aria-hidden="true" />
@@ -107,7 +107,7 @@ export function FloatingContactClient() {
         </a>
       )}
       {showTopButton ? (
-        <a href="#top" className="grid h-10 w-10 place-items-center rounded-full bg-white text-ink shadow-soft" aria-label="Lên đầu trang">
+        <a href="#top" className="grid h-9 w-9 place-items-center rounded-full bg-white/96 text-ink shadow-soft ring-1 ring-slate-200/80" aria-label="Lên đầu trang">
           <ChevronUp size={16} aria-hidden="true" />
         </a>
       ) : null}

@@ -18,6 +18,7 @@ const items = [
 export function PublicBottomNav() {
   const pathname = usePathname();
   const [footerVisible, setFooterVisible] = useState(false);
+  const [scrollHidden, setScrollHidden] = useState(false);
 
   useEffect(() => {
     const footer = document.querySelector('footer');
@@ -34,13 +35,45 @@ export function PublicBottomNav() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    let lastY = window.scrollY;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      const isMobile = window.innerWidth < 1024;
+      if (!isMobile) {
+        setScrollHidden(false);
+        lastY = y;
+        return;
+      }
+
+      if (y < 120 || y + 8 < lastY) {
+        setScrollHidden(false);
+      } else if (y > lastY + 10) {
+        setScrollHidden(true);
+      }
+
+      lastY = y;
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
+  const hidden = footerVisible || scrollHidden;
+
   return (
     <nav
       data-testid="public-bottom-nav"
-      aria-hidden={footerVisible}
+      aria-hidden={hidden}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[24rem] -translate-x-1/2 rounded-[1.5rem] border border-white/80 bg-white/84 px-1.5 py-1 shadow-[0_16px_36px_rgba(23,33,27,0.12)] backdrop-blur-2xl transition duration-200 lg:hidden',
-        footerVisible ? 'pointer-events-none invisible translate-y-8 opacity-0' : 'opacity-100'
+        'fixed bottom-[calc(var(--safe-bottom)+0.4rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23.5rem] -translate-x-1/2 rounded-[1.45rem] border border-white/75 bg-white/72 px-1.5 py-1 shadow-[0_14px_28px_rgba(23,33,27,0.11)] backdrop-blur-xl transition duration-200 lg:hidden',
+        hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
       <div className="mx-auto grid grid-cols-5 gap-1">
@@ -53,7 +86,7 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[44px] flex-col items-center justify-center gap-0.5 rounded-[1.1rem] px-1 text-[8.5px] font-semibold transition-colors',
+                'relative flex min-h-[42px] flex-col items-center justify-center gap-0.5 rounded-[1rem] px-1 text-[8px] font-semibold transition-colors',
                 active
                   ? 'bg-mint/80 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.08)]'
                   : 'text-slate-500/90'

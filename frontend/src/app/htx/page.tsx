@@ -102,7 +102,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         </div>
 
         {cooperatives.length ? (
-          <div className="mt-6 grid auto-rows-fr gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-4 md:auto-rows-fr md:grid-cols-2 lg:grid-cols-3">
             {cooperatives.map((cooperative, index) => (
               <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
             ))}
