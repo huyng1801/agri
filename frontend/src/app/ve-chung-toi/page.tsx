@@ -116,30 +116,63 @@ export default async function AboutUsPage() {
                 'radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 36%), radial-gradient(circle at bottom right, rgba(47,132,81,0.14), transparent 34%)'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative grid items-center gap-6 py-12 lg:grid-cols-[0.95fr_0.9fr_0.95fr] lg:py-16')}>
+          <div className={cn(publicContainerClass, 'relative grid items-center gap-5 py-10 sm:gap-6 sm:py-12 lg:grid-cols-[0.95fr_0.9fr_0.95fr] lg:py-16')}>
             <div>
               <p className="text-sm font-bold uppercase tracking-wide text-leaf">Về chúng tôi</p>
-              <h1 className="mt-3 text-4xl font-bold leading-tight text-ink sm:text-5xl">
+              <h1 className="mt-2.5 text-[2.35rem] font-bold leading-[1.02] text-ink sm:mt-3 sm:text-5xl">
                 Chúng tôi là
                 <span className="mt-2 block text-leaf">HTXONLINE</span>
               </h1>
-              <p className="mt-4 max-w-md text-base leading-7 text-slate-700">
+              <p className="mt-3.5 max-w-md text-base leading-[1.8] text-slate-700">
                 Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-5 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
                 <Link href="/lien-he">
-                  <Button>
+                  <Button className="min-h-12 w-full">
                     Liên hệ tư vấn
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
                 <Link href="/san-pham">
-                  <Button variant="ghost">Xem sản phẩm</Button>
+                  <Button variant="ghost" className="min-h-12 w-full">
+                    Xem sản phẩm
+                  </Button>
                 </Link>
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-sm">
+            <article className="rounded-[1.75rem] bg-leaf p-4 text-white shadow-sm lg:hidden">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <PublicLogo size={38} />
+                  <div>
+                    <p className="text-sm font-bold">HTXONLINE</p>
+                    <p className="text-xs text-white/72">Số hóa gọn hơn trên mobile</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-white/14 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/80">
+                  Live
+                </span>
+              </div>
+              <div className="mt-4 rounded-[1.35rem] bg-white/10 p-4 ring-1 ring-white/10">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">QR Passport</p>
+                <p className="mt-1.5 text-xl font-bold leading-tight">Minh bạch nguồn gốc, chốt đơn gọn và quản lý tập trung.</p>
+              </div>
+              <div className="mt-3 grid grid-cols-3 gap-2.5">
+                {[
+                  { label: 'QR', value: 'Truy xuất' },
+                  { label: 'COD', value: 'Chốt nhanh' },
+                  { label: 'Admin', value: 'Một nơi' }
+                ].map((item) => (
+                  <div key={item.label} className="rounded-2xl bg-white/10 px-3 py-3 text-center ring-1 ring-white/10">
+                    <p className="text-[0.68rem] font-bold uppercase tracking-[0.18em] text-white/65">{item.label}</p>
+                    <p className="mt-1.5 text-sm font-semibold text-white/95">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <div className="relative mx-auto hidden w-full max-w-sm lg:block">
               <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/88 p-4 shadow-[0_24px_60px_rgba(18,42,28,0.14)] backdrop-blur">
                 <div className="rounded-[1.6rem] bg-[linear-gradient(160deg,#2f8451_0%,#1f5f3d_65%,#153b28_100%)] p-5 text-white">
                   <div className="flex items-center justify-between">
@@ -181,18 +214,18 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-2xl bg-leaf p-6 text-white shadow-sm sm:p-7">
+            <article className="rounded-2xl bg-leaf p-5 text-white shadow-sm sm:p-7">
               <p className="text-sm font-semibold uppercase tracking-wide text-white/75">Câu chuyện thương hiệu</p>
-              <p className="mt-4 text-base leading-7 text-white/95">
+              <p className="mt-3.5 text-base leading-[1.8] text-white/95">
                 HTXONLINE ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
                 QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
-              <p className="mt-4 text-sm leading-6 text-white/80">
+              <p className="mt-3 text-sm leading-[1.75] text-white/80">
                 Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất - truy xuất - bán hàng - báo cáo trên cùng một nền tảng.
               </p>
-              <div className="mt-5 grid gap-2">
+              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
                 {trustSignals.map((item) => (
-                  <div key={item} className="rounded-xl bg-white/10 px-4 py-3 text-sm text-white/92 ring-1 ring-white/10">
+                  <div key={item} className="rounded-xl bg-white/10 px-3.5 py-2.5 text-sm leading-[1.55] text-white/92 ring-1 ring-white/10">
                     {item}
                   </div>
                 ))}
@@ -201,12 +234,12 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-10')}>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section className={cn(publicContainerClass, 'py-9 sm:py-10')}>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {stats.map((item) => (
-              <article key={item.label} className="rounded-2xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-                <p className="text-3xl font-bold text-leaf">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.label}</p>
+              <article key={item.label} className="rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm sm:p-5">
+                <p className="text-[1.85rem] font-bold text-leaf sm:text-3xl">{item.value}</p>
+                <p className="mt-1.5 text-sm leading-[1.65] text-slate-600">{item.label}</p>
               </article>
             ))}
           </div>

@@ -92,19 +92,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               )}
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
               {[
                 { icon: Sparkles, title: 'Kết quả hiển thị', value: `${products.length}+`, note: 'Sản phẩm public đang mở bán' },
                 { icon: QrCode, title: 'Có QR Passport', value: `${qrProducts}+`, note: 'Sản phẩm có thể truy xuất nhanh' },
                 { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+`, note: 'Tỉnh thành đang có mặt trên sàn' }
-              ].map((item) => (
-                <article key={item.title} className="rounded-2xl border border-slate-200/80 bg-white/86 p-4 shadow-sm">
-                  <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-mint text-leaf">
+              ].map((item, index) => (
+                <article key={item.title} className={`rounded-2xl border border-slate-200/80 bg-white/86 p-3.5 shadow-sm sm:p-4 ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-leaf sm:h-11 sm:w-11">
                     <item.icon size={20} aria-hidden="true" />
                   </span>
-                  <p className="mt-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">{item.title}</p>
-                  <p className="mt-1 text-2xl font-bold text-ink">{item.value}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.note}</p>
+                  <p className="mt-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:mt-3 sm:text-sm">{item.title}</p>
+                  <p className="mt-1 text-[1.85rem] font-bold text-ink sm:text-2xl">{item.value}</p>
+                  <p className="mt-1 text-sm leading-[1.6] text-slate-600">{item.note}</p>
                 </article>
               ))}
             </div>
