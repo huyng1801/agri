@@ -95,16 +95,16 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
   return (
     <main className="mx-auto min-h-screen max-w-[90rem] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
-      <header className="mb-3 flex flex-wrap items-center justify-between gap-3 rounded-md border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:px-4 lg:px-6 lg:py-4">
+      <header className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 lg:px-6 lg:py-4">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
-          <PublicLogo size={28} className="ring-1 ring-slate-200" />
+          <PublicLogo size={30} className="ring-1 ring-slate-200" />
           HTXONLINE
         </Link>
-        <div className="flex flex-wrap gap-3 text-sm font-semibold">
-          <Link href="/san-pham" className="text-slate-600 hover:text-leaf">
+        <div className="grid w-full grid-cols-2 gap-2 text-sm font-semibold sm:flex sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">
+          <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-600 transition hover:border-leaf hover:text-leaf sm:min-h-0 sm:border-0 sm:bg-transparent sm:px-0">
             Xem sản phẩm
           </Link>
-          <Link href="/" className="text-slate-600 hover:text-leaf">
+          <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-600 transition hover:border-leaf hover:text-leaf sm:min-h-0 sm:border-0 sm:bg-transparent sm:px-0">
             Trang chủ
           </Link>
         </div>
