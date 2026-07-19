@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Bold,
   Eye,
+  FileText,
   Heading2,
   Heading3,
   Image,
@@ -93,6 +94,73 @@ const editorSnippets: Array<[LucideIcon, string]> = [
   [ListOrdered, '<ol><li>Mục</li></ol>'],
   [Quote, '<blockquote>Trích dẫn</blockquote>']
 ];
+
+const articleTemplates = [
+  {
+    id: 'market-update',
+    label: 'Tin thị trường',
+    description: 'Dùng cho bài cập nhật giá, nhu cầu mua bán và xu hướng tiêu thụ.',
+    categoryHint: 'Danh mục gợi ý: Tin thị trường',
+    title: 'Cập nhật thị trường nông sản tuần này',
+    excerpt: 'Tóm tắt ngắn 2-3 ý chính để người đọc hiểu ngay điều gì đang thay đổi trên thị trường.',
+    schemaType: 'NewsArticle',
+    bodyHtml: `<h2>Tổng quan nhanh</h2>
+<p>Trong tuần này, thị trường ghi nhận các thay đổi đáng chú ý về giá bán, nhu cầu tiêu thụ và nguồn cung ở một số nhóm nông sản chủ lực.</p>
+<ul>
+  <li>Mặt hàng tăng giá:</li>
+  <li>Mặt hàng giữ giá:</li>
+  <li>Mặt hàng cần theo dõi thêm:</li>
+</ul>
+<h2>Tín hiệu từ HTX và vùng sản xuất</h2>
+<p>Chèn nhận định ngắn từ HTX, ví dụ: đơn hàng tăng, sản lượng ổn định, hoặc cần điều chỉnh kế hoạch thu hoạch.</p>
+<blockquote>Gợi ý: thêm 1 câu trích dẫn ngắn từ đại diện HTX để bài viết gần gũi hơn.</blockquote>
+<h2>Khuyến nghị cho người mua</h2>
+<p>Nêu rõ người mua nên đặt sớm, ưu tiên sản phẩm nào, hoặc cách theo dõi QR Passport để kiểm tra nguồn gốc.</p>`
+  },
+  {
+    id: 'cooperative-story',
+    label: 'Giới thiệu HTX',
+    description: 'Dùng cho bài kể câu chuyện HTX, vùng trồng, con người và sản phẩm nổi bật.',
+    categoryHint: 'Danh mục gợi ý: Câu chuyện HTX',
+    title: 'Câu chuyện từ một hợp tác xã đang chuyển đổi số cùng HTXONLINE',
+    excerpt: 'Giới thiệu ngắn về HTX, sản phẩm chủ lực và điều gì khiến đơn vị này khác biệt trên thị trường.',
+    schemaType: 'Article',
+    bodyHtml: `<h2>HTX là ai?</h2>
+<p>Giới thiệu tên HTX, địa phương, sản phẩm chính và mục tiêu phát triển trong giai đoạn hiện tại.</p>
+<h2>Điểm mạnh nổi bật</h2>
+<ul>
+  <li>Sản phẩm chủ lực:</li>
+  <li>Vùng trồng / vùng nuôi:</li>
+  <li>Quy trình truy xuất:</li>
+  <li>Cam kết chất lượng:</li>
+</ul>
+<h2>Vì sao HTX tham gia HTXONLINE?</h2>
+<p>Chia sẻ ngắn về nhu cầu minh bạch thông tin, mở rộng thị trường, hoặc quản lý đơn hàng hiệu quả hơn.</p>
+<h2>Sản phẩm nên xem ngay</h2>
+<p>Chèn liên kết hoặc mô tả 1-3 sản phẩm public mà bạn muốn đẩy traffic.</p>`
+  },
+  {
+    id: 'buyer-guide',
+    label: 'Hướng dẫn mua hàng',
+    description: 'Dùng cho bài hướng dẫn thao tác, cách đặt hàng, cách quét QR và xem thông tin công khai.',
+    categoryHint: 'Danh mục gợi ý: Hướng dẫn mua hàng',
+    title: 'Cách chọn sản phẩm và đặt hàng nhanh trên HTXONLINE',
+    excerpt: 'Bài hướng dẫn ngắn giúp người mua tìm sản phẩm, kiểm tra QR Passport và gửi đơn hàng thuận tiện.',
+    schemaType: 'BlogPosting',
+    bodyHtml: `<h2>Bước 1: Tìm đúng sản phẩm</h2>
+<p>Hướng dẫn người mua dùng ô tìm kiếm, lọc theo HTX hoặc địa phương để chọn đúng mặt hàng.</p>
+<h2>Bước 2: Kiểm tra thông tin công khai</h2>
+<ul>
+  <li>Xem mô tả sản phẩm</li>
+  <li>Xem HTX cung cấp</li>
+  <li>Quét hoặc mở QR Passport nếu có</li>
+</ul>
+<h2>Bước 3: Gửi đơn hàng</h2>
+<p>Mô tả ngắn cách thêm vào giỏ, điền thông tin liên hệ và chờ HTX xác nhận đơn COD.</p>
+<h2>Lưu ý sau khi đặt hàng</h2>
+<p>Nhắc người mua giữ điện thoại mở, kiểm tra cuộc gọi xác nhận và tra cứu đơn nếu cần.</p>`
+  }
+] as const;
 
 type UploadPlan = {
   bucket: string;
@@ -257,6 +325,23 @@ export default function NewsDashboardPage() {
     setBodyImage({ url: '', alt: '', caption: '' });
   }
 
+  function applyTemplate(templateId: string) {
+    const template = articleTemplates.find((item) => item.id === templateId);
+    if (!template) return;
+    setEditingId(null);
+    setPreview(false);
+    setForm((current) => ({
+      ...current,
+      title: current.title || template.title,
+      slug: current.slug || slugifyLocal(template.title),
+      excerpt: current.excerpt || template.excerpt,
+      bodyHtml: template.bodyHtml,
+      schemaType: template.schemaType,
+      status: 'DRAFT'
+    }));
+    window.requestAnimationFrame(() => bodyRef.current?.focus());
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -313,6 +398,35 @@ export default function NewsDashboardPage() {
           </Panel>
 
           <Panel className="space-y-3">
+            <div className="rounded-md border border-dashed border-leaf/30 bg-mint/40 p-3">
+              <div className="flex items-start gap-3">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
+                  <FileText size={18} aria-hidden="true" />
+                </span>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Mẫu bài nhanh để đăng không cần viết từ đầu</p>
+                    <p className="text-sm leading-6 text-slate-600">
+                      Chọn một mẫu bên dưới, thay lại tiêu đề, đoạn mô tả và nội dung trong HTML rồi upload ảnh là có thể publish.
+                    </p>
+                  </div>
+                  <div className="grid gap-2 md:grid-cols-3">
+                    {articleTemplates.map((template) => (
+                      <button
+                        key={template.id}
+                        type="button"
+                        className="rounded-xl border border-white/80 bg-white/90 p-3 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-leaf/40 hover:bg-white"
+                        onClick={() => applyTemplate(template.id)}
+                      >
+                        <p className="text-sm font-bold text-ink">{template.label}</p>
+                        <p className="mt-1 text-xs leading-5 text-slate-600">{template.description}</p>
+                        <p className="mt-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-leaf/80">{template.categoryHint}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div className="flex flex-wrap items-center gap-2">
               {editorSnippets.map(([Icon, snippet]) => (
                 <button
@@ -341,6 +455,11 @@ export default function NewsDashboardPage() {
                 required
               />
             </label>
+            <div className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">
+              <p className="font-semibold text-ink">Mẹo đăng bài nhanh</p>
+              <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
+              <p>Nếu chị chỉ muốn đăng bài đơn giản: chọn mẫu, sửa chữ trong từng đoạn &lt;p&gt;, giữ nguyên cấu trúc còn lại là được.</p>
+            </div>
             {preview && (
               <div className="prose max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
             )}
