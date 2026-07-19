@@ -19,9 +19,9 @@ export type PublicSiteProfile = {
 
 export const defaultPublicSiteProfile: PublicSiteProfile = {
   appName: 'HTXONLINE',
-  hotline: '0900000000',
-  hotlineDisplay: '0900 000 000',
-  supportEmail: 'support@htxonline.vn',
+  hotline: '0907001200',
+  hotlineDisplay: '0907 001 200',
+  supportEmail: 'Agripassport@gmail.com',
   address: 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
   zaloUrl: '',
   messengerUrl: '',

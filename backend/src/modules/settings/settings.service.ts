@@ -36,9 +36,9 @@ export class SettingsService {
     const systemProfile = jsonObject(systemProfileSetting?.value);
     return {
       appName: stringValue(publicProfile.appName) || 'HTXONLINE',
-      hotline: stringValue(publicProfile.hotline) || '0900000000',
-      hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0900 000 000',
-      supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'support@htxonline.vn',
+      hotline: stringValue(publicProfile.hotline) || '0907001200',
+      hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0907 001 200',
+      supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'Agripassport@gmail.com',
       address: stringValue(publicProfile.address) || 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
       zaloUrl: stringValue(publicProfile.zaloUrl),
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',

@@ -340,9 +340,9 @@ function objectToPublicForm(value: unknown) {
   const faqs = Array.isArray(object.faqs) ? object.faqs : [];
   return {
     appName: String(object.appName ?? 'HTXONLINE'),
-    hotline: String(object.hotline ?? '0900000000'),
+    hotline: String(object.hotline ?? '0907001200'),
     hotlineDisplay: String(object.hotlineDisplay ?? ''),
-    supportEmail: String(object.supportEmail ?? 'support@htxonline.vn'),
+    supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
     address: String(object.address ?? 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
     messengerUrl: String(object.messengerUrl ?? ''),
     mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed'),

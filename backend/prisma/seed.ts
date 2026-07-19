@@ -180,7 +180,7 @@ async function main() {
       key: 'system.profile',
       value: {
         appName: 'Agri Passport',
-        supportEmail: 'support@htxonline.vn',
+        supportEmail: 'Agripassport@gmail.com',
         manualPaymentEnabled: true,
         r2UploadEnabled: true
       },
@@ -199,9 +199,9 @@ async function main() {
       key: 'public.siteProfile',
       value: {
         appName: 'HTXONLINE',
-        hotline: '0900000000',
-        hotlineDisplay: '0900 000 000',
-        supportEmail: 'support@htxonline.vn',
+        hotline: '0907001200',
+        hotlineDisplay: '0907 001 200',
+        supportEmail: 'Agripassport@gmail.com',
         address: siteAddress,
         zaloUrl: '',
         messengerUrl: '',
@@ -231,11 +231,24 @@ async function main() {
     const current = existingSiteProfile.value as Record<string, unknown>;
     const nextValue: Prisma.InputJsonObject = {
       ...current,
+      hotline:
+        typeof current.hotline === 'string' && current.hotline.trim() && current.hotline !== '0900000000' ? current.hotline : '0907001200',
+      hotlineDisplay:
+        typeof current.hotlineDisplay === 'string' && current.hotlineDisplay.trim() && current.hotlineDisplay !== '0900 000 000'
+          ? current.hotlineDisplay
+          : '0907 001 200',
+      supportEmail:
+        typeof current.supportEmail === 'string' && current.supportEmail.trim() && current.supportEmail !== 'support@htxonline.vn'
+          ? current.supportEmail
+          : 'Agripassport@gmail.com',
       address: siteAddress,
       mapEmbedUrl: typeof current.mapEmbedUrl === 'string' && current.mapEmbedUrl.trim() ? current.mapEmbedUrl : siteMapEmbedUrl,
       zaloUrl: typeof current.zaloUrl === 'string' ? (current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl) : ''
     };
     if (
+      current.hotline !== nextValue.hotline ||
+      current.hotlineDisplay !== nextValue.hotlineDisplay ||
+      current.supportEmail !== nextValue.supportEmail ||
       current.address !== nextValue.address ||
       current.mapEmbedUrl !== nextValue.mapEmbedUrl ||
       current.zaloUrl !== nextValue.zaloUrl

@@ -143,21 +143,21 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-[1.5rem] bg-leaf p-3 text-white shadow-sm lg:hidden">
+            <article className="rounded-[1.5rem] border border-white/85 bg-white/92 p-3 text-ink shadow-[0_20px_50px_rgba(148,163,184,0.14)] lg:hidden">
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <PublicLogo size={34} />
                   <div>
                     <p className="text-[0.82rem] font-bold">HTXONLINE</p>
-                    <p className="text-[11px] text-white/72">Số hóa gọn hơn trên mobile</p>
+                    <p className="text-[11px] text-slate-500">Số hóa gọn hơn trên mobile</p>
                   </div>
                 </div>
-                <span className="rounded-full bg-white/14 px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-white/80">
+                <span className="rounded-full bg-mint px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-leaf">
                   Live
                 </span>
               </div>
-              <div className="mt-3 rounded-[1.1rem] bg-white/10 p-3 ring-1 ring-white/10">
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">QR Passport</p>
+              <div className="mt-3 rounded-[1.1rem] bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-3 ring-1 ring-mint/70">
+                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf/70">QR Passport</p>
                 <p className="mt-1.5 text-[1.45rem] font-bold leading-[1.06]">Minh bạch nguồn gốc, chốt đơn nhanh và quản lý gọn.</p>
               </div>
               <div className="mt-2.5 grid grid-cols-3 gap-1.5">
@@ -166,9 +166,9 @@ export default async function AboutUsPage() {
                   { label: 'COD', value: 'Chốt nhanh' },
                   { label: 'Admin', value: 'Một nơi' }
                 ].map((item) => (
-                  <div key={item.label} className="rounded-[1.1rem] bg-white/10 px-2.5 py-2.5 text-center ring-1 ring-white/10">
-                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-white/65">{item.label}</p>
-                    <p className="mt-1 text-[0.78rem] font-semibold leading-tight text-white/95">{item.value}</p>
+                  <div key={item.label} className="rounded-[1.1rem] bg-[#f8faf7] px-2.5 py-2.5 text-center ring-1 ring-mint/65">
+                    <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-leaf/65">{item.label}</p>
+                    <p className="mt-1 text-[0.78rem] font-semibold leading-tight text-ink">{item.value}</p>
                   </div>
                 ))}
               </div>
@@ -216,18 +216,18 @@ export default async function AboutUsPage() {
               </div>
             </div>
 
-            <article className="rounded-[1.6rem] bg-leaf p-4 text-white shadow-sm sm:p-7">
-              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
-              <p className="mt-3 text-[0.96rem] leading-[1.7] text-white/95 sm:text-base sm:leading-[1.8]">
+            <article className="rounded-[1.6rem] border border-slate-200 bg-white p-4 text-ink shadow-sm sm:p-7">
+              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf/80 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
+              <p className="mt-3 text-[0.96rem] leading-[1.7] text-slate-700 sm:text-base sm:leading-[1.8]">
                 HTXONLINE ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
                 QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
-              <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-white/80 sm:mt-3 sm:text-sm sm:leading-[1.75]">
+              <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-slate-600 sm:mt-3 sm:text-sm sm:leading-[1.75]">
                 Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất, truy xuất và bán hàng trên cùng một nền tảng.
               </p>
               <div className="mt-3.5 grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {trustSignals.map((item) => (
-                  <div key={item} className="rounded-xl bg-white/10 px-2.5 py-2 text-[0.8rem] leading-[1.4] text-white/92 ring-1 ring-white/10 sm:px-3 sm:py-2.5 sm:text-sm">
+                  <div key={item} className="rounded-xl bg-[#f8faf7] px-2.5 py-2 text-[0.8rem] leading-[1.4] text-slate-700 ring-1 ring-mint/60 sm:px-3 sm:py-2.5 sm:text-sm">
                     {item}
                   </div>
                 ))}
