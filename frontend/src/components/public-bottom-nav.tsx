@@ -19,6 +19,7 @@ export function PublicBottomNav() {
   const pathname = usePathname();
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
+  const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
   useEffect(() => {
     const footer = document.querySelector('footer');
@@ -47,7 +48,9 @@ export function PublicBottomNav() {
         return;
       }
 
-      if (y < 120 || y + 8 < lastY) {
+      if (y < revealThreshold) {
+        setScrollHidden(true);
+      } else if (y + 8 < lastY) {
         setScrollHidden(false);
       } else if (y > lastY + 10) {
         setScrollHidden(true);
@@ -72,7 +75,7 @@ export function PublicBottomNav() {
       data-testid="public-bottom-nav"
       aria-hidden={hidden}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.35rem)] left-1/2 z-30 w-[calc(100%-1.25rem)] max-w-[22.75rem] -translate-x-1/2 rounded-[1.35rem] border border-white/70 bg-white/68 px-1.25 py-1 shadow-[0_12px_24px_rgba(23,33,27,0.09)] backdrop-blur-xl transition duration-200 lg:hidden',
+        'fixed bottom-[calc(var(--safe-bottom)+0.25rem)] left-1/2 z-30 w-[calc(100%-1.45rem)] max-w-[22rem] -translate-x-1/2 rounded-[1.3rem] border border-white/72 bg-white/64 px-1 py-0.75 shadow-[0_10px_22px_rgba(23,33,27,0.08)] backdrop-blur-xl transition duration-200 lg:hidden',
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
@@ -86,14 +89,14 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[40px] flex-col items-center justify-center gap-0 rounded-[0.95rem] px-1 text-[7px] font-semibold transition-colors',
+                'relative flex min-h-[38px] flex-col items-center justify-center gap-0 rounded-[0.9rem] px-1 text-[6.5px] font-semibold transition-colors',
                 active
                   ? 'bg-mint/72 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.07)]'
                   : 'text-slate-500/90'
               )}
             >
               <span className="relative">
-                <Icon size={16} aria-hidden="true" />
+                <Icon size={15} aria-hidden="true" />
                 {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>
