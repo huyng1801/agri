@@ -27,6 +27,9 @@ bash scripts/harden-postgres.sh
 echo "Build and restart containers..."
 docker compose -f docker-compose.prod.yml --env-file .env.production up -d --build
 
+echo "Reload nginx configuration..."
+docker exec agri_nginx nginx -s reload
+
 echo "Run migrations..."
 docker exec agri_backend npx prisma migrate deploy
 
