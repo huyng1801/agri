@@ -69,11 +69,11 @@ export default async function HomePage() {
                 Nền tảng số cho hợp tác xã
               </div>
 
-              <h1 className="max-w-[13.4ch] text-[1.58rem] font-bold leading-[1] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+              <h1 className="max-w-[15.6ch] text-[1.66rem] font-bold leading-[0.98] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
                 HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.
               </h1>
 
-              <p className="max-w-[21.5rem] text-[0.92rem] leading-[1.58] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[22.5rem] text-[0.92rem] leading-[1.62] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
 
