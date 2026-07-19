@@ -18,6 +18,8 @@ import { PublicShell } from '@/components/public-marketplace';
 import { publicContainerClass } from '@/components/public-layout';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
+import { legalEntityProfile } from '@/lib/legal-entity';
+import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
   title: 'Về chúng tôi',
@@ -91,7 +93,7 @@ const trustSignals = [
 ] as const;
 
 export default async function AboutUsPage() {
-  const catalog = await fetchPublicCatalog(100);
+  const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile()]);
   const stats = [
     { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX đang hiển thị trên sàn' },
     { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm public đang bán' },
@@ -242,6 +244,65 @@ export default async function AboutUsPage() {
                 <p className="mt-1 text-[0.82rem] leading-[1.55] text-slate-600 sm:mt-1.5 sm:text-sm sm:leading-[1.65]">{item.label}</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section className={cn(publicContainerClass, 'pb-3 sm:pb-4')}>
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <article className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin pháp lý</p>
+              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
+              <p className="mt-2 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
+                Hồ sơ pháp lý trên giấy chứng nhận được tách rõ với thông tin liên hệ công khai trên website để người xem dễ đối chiếu khi cần xác minh.
+              </p>
+              <div className="mt-4 grid gap-3 sm:mt-5 sm:grid-cols-2">
+                <div className="rounded-2xl bg-[#f8faf7] p-4">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Giấy chứng nhận</p>
+                  <p className="mt-2 text-base font-bold text-ink">{legalEntityProfile.certificateTitle}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
+                </div>
+                <div className="rounded-2xl bg-[#f8faf7] p-4">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Mã số tổ hợp tác</p>
+                  <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ và người đại diện theo hồ sơ</p>
+                  <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Người đại diện: {legalEntityProfile.representative}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                    Email hồ sơ: {legalEntityProfile.legalEmail} · Điện thoại hồ sơ: {legalEntityProfile.legalPhone}
+                  </p>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-[1.7rem] bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-4 shadow-sm sm:rounded-3xl sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin công khai trên HTXONLINE</p>
+              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Kênh liên hệ dành cho khách hàng và HTX</h2>
+              <p className="mt-2.5 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
+                Bộ thông tin này đang được dùng đồng nhất ở footer, liên hệ và các trang chính sách theo nội dung bạn cung cấp trong tài liệu cập nhật.
+              </p>
+              <div className="mt-4 grid gap-3 sm:mt-5">
+                <div className="rounded-2xl bg-white p-4 shadow-sm">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ công khai</p>
+                  <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{siteProfile.address}</p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl bg-white p-4 shadow-sm">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline</p>
+                    <p className="mt-2 text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</p>
+                  </div>
+                  <div className="rounded-2xl bg-white p-4 shadow-sm">
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email hỗ trợ</p>
+                    <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
+                  </div>
+                </div>
+                <p className="text-sm leading-6 text-slate-600">
+                  Khi cần đối chiếu hồ sơ, người dùng có thể xem phần thông tin pháp lý ở cùng trang này hoặc liên hệ trực tiếp qua trang liên hệ.
+                </p>
+              </div>
+            </article>
           </div>
         </section>
 

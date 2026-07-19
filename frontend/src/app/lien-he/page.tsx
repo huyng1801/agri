@@ -6,6 +6,7 @@ import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-marketplace';
 import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
 import { cn } from '@/components/ui';
+import { legalEntityProfile } from '@/lib/legal-entity';
 import { getPublicSiteProfile, telHref } from '@/lib/public-site';
 
 export const metadata: Metadata = {
@@ -253,6 +254,51 @@ export default async function ContactPage() {
                 <span className="mt-1 block break-all font-bold">{siteProfile.supportEmail}</span>
               </span>
             </a>
+          </div>
+        </section>
+
+        <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin pháp lý đối chiếu</p>
+              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl bg-[#f8faf7] p-4">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Mã số tổ hợp tác</p>
+                  <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
+                </div>
+                <div className="rounded-2xl bg-[#f8faf7] p-4">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Người đại diện</p>
+                  <p className="mt-2 text-lg font-bold text-ink">{legalEntityProfile.representative}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
+                </div>
+                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ và liên hệ trên hồ sơ</p>
+                  <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Điện thoại: {legalEntityProfile.legalPhone}</p>
+                  <p className="text-sm leading-6 text-slate-600">Email: {legalEntityProfile.legalEmail}</p>
+                </div>
+              </div>
+            </article>
+
+            <article className="rounded-2xl bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-5 shadow-sm sm:p-6">
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Lưu ý khi liên hệ</p>
+              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">Kênh hỗ trợ công khai và hồ sơ pháp lý được tách rõ</h2>
+              <div className="mt-4 grid gap-3">
+                <div className="rounded-2xl bg-white p-4 shadow-sm">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline công khai trên website</p>
+                  <p className="mt-2 text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</p>
+                </div>
+                <div className="rounded-2xl bg-white p-4 shadow-sm">
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email hỗ trợ trên website</p>
+                  <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
+                </div>
+                <p className="text-sm leading-6 text-slate-600">
+                  Thông tin công khai đang phục vụ tư vấn và hỗ trợ người dùng trên HTXONLINE. Khi cần xác minh pháp lý, bạn có thể đối chiếu thêm với bộ hồ sơ ở cột bên cạnh.
+                </p>
+              </div>
+            </article>
           </div>
         </section>
 
