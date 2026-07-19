@@ -345,7 +345,7 @@ function objectToPublicForm(value: unknown) {
     supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
     address: String(object.address ?? 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
     messengerUrl: String(object.messengerUrl ?? ''),
-    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed'),
+    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://maps.google.com/maps?hl=vi&q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&z=16&output=embed'),
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as any).question}|${(item as any).answer}`).join('\n')
   };
