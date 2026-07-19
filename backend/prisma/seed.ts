@@ -1,4 +1,4 @@
-import { PrismaClient, RoleSlug } from '@prisma/client';
+import { Prisma, PrismaClient, RoleSlug } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -229,11 +229,11 @@ async function main() {
   const existingSiteProfile = await prisma.setting.findUnique({ where: { key: 'public.siteProfile' } });
   if (existingSiteProfile?.value && typeof existingSiteProfile.value === 'object' && !Array.isArray(existingSiteProfile.value)) {
     const current = existingSiteProfile.value as Record<string, unknown>;
-    const nextValue = {
+    const nextValue: Prisma.InputJsonObject = {
       ...current,
       address: siteAddress,
       mapEmbedUrl: typeof current.mapEmbedUrl === 'string' && current.mapEmbedUrl.trim() ? current.mapEmbedUrl : siteMapEmbedUrl,
-      zaloUrl: current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl
+      zaloUrl: typeof current.zaloUrl === 'string' ? (current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl) : ''
     };
     if (
       current.address !== nextValue.address ||
