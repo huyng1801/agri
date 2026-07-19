@@ -5,7 +5,6 @@ import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-marketplace';
 import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
-import { ZaloIcon } from '@/components/zalo-icon';
 import { cn } from '@/components/ui';
 import { getPublicSiteProfile, telHref } from '@/lib/public-site';
 
@@ -49,20 +48,13 @@ export default async function ContactPage() {
             </span>
             <PhoneCall className="text-leaf" size={22} aria-hidden="true" />
           </a>
-          {siteProfile.zaloUrl ? (
-            <a
-              href={siteProfile.zaloUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm"
-            >
-              <span>
-                <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Chat nhanh</span>
-                <span className="mt-1 block text-[1.05rem] font-bold text-ink">Zalo hỗ trợ</span>
-              </span>
-              <ZaloIcon size={26} />
-            </a>
-          ) : null}
+          <a href={`mailto:${siteProfile.supportEmail}`} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm">
+            <span>
+              <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Email</span>
+              <span className="mt-1 block text-[1.05rem] font-bold text-ink">{siteProfile.supportEmail}</span>
+            </span>
+            <Mail className="text-leaf" size={22} aria-hidden="true" />
+          </a>
         </section>
 
         <section className={cn(publicContainerClass, 'py-8 sm:py-10')}>
@@ -234,25 +226,13 @@ export default async function ContactPage() {
 
         <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
           <div className="grid gap-3 rounded-2xl bg-leaf p-4 text-white shadow-sm sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/20 sm:p-0">
-            {siteProfile.zaloUrl ? (
-              <a
-                href={siteProfile.zaloUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 transition hover:bg-white/10 sm:rounded-none sm:rounded-l-2xl"
-              >
-                <ZaloIcon size={28} />
-                <span>
-                  <span className="block text-xs font-semibold uppercase tracking-wide text-white/70">Chat nhanh</span>
-                  <span className="mt-1 block font-bold">Zalo hỗ trợ</span>
-                </span>
-              </a>
-            ) : (
-              <div className="flex items-center justify-center gap-3 px-4 py-4">
-                <ZaloIcon size={28} />
-                <span className="font-bold">Zalo hỗ trợ</span>
-              </div>
-            )}
+            <div className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 sm:rounded-none sm:rounded-l-2xl">
+              <MapPinned size={22} aria-hidden="true" />
+              <span>
+                <span className="block text-xs font-semibold uppercase tracking-wide text-white/70">Địa chỉ</span>
+                <span className="mt-1 block font-bold">Văn phòng hỗ trợ</span>
+              </span>
+            </div>
             <a
               href={telHref(siteProfile.hotline)}
               className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 transition hover:bg-white/10 sm:rounded-none"

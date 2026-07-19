@@ -16,6 +16,7 @@ const PUBLIC_MARKETPLACE_PATHS = [
   '/chinh-sach-bao-mat',
   '/dieu-khoan-su-dung',
   '/chinh-sach-doi-tra',
+  '/chinh-sach-van-hanh',
   '/chinh-sach-van-chuyen',
   '/huong-dan-mua-hang'
 ];

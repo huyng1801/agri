@@ -77,15 +77,18 @@ export default async function HomePage() {
                 Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
 
-              <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-wrap">
+              <div className="grid grid-cols-2 gap-2 rounded-[1.35rem] border border-white/78 bg-white/64 p-1.5 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:flex sm:flex-wrap sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-0">
                 <Link href="/san-pham" className="inline-flex">
-                  <Button className="min-h-12 w-full sm:w-auto">
+                  <Button className="min-h-[3.2rem] w-full rounded-2xl shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto">
                     Xem sản phẩm
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
                 <Link href="/htx" className="inline-flex">
-                  <Button variant="ghost" className="min-h-12 w-full justify-center sm:w-auto">
+                  <Button
+                    variant="ghost"
+                    className="min-h-[3.2rem] w-full justify-center rounded-2xl border-white/90 bg-white text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto"
+                  >
                     Khám phá HTX
                   </Button>
                 </Link>

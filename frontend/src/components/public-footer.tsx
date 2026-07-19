@@ -7,7 +7,6 @@ import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
-import { ZaloIcon } from './zalo-icon';
 
 const footerLinkClass = 'text-sm text-white/90 transition hover:text-white';
 
@@ -47,8 +46,10 @@ export function PublicFooter() {
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-white">Dịch vụ HTXONLINE</p>
             <div className="mt-4 grid gap-2">
+              <Link href="/" className={footerLinkClass}>Trang chủ</Link>
               <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
               <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
+              <Link href="/tin-tuc" className={footerLinkClass}>Tin tức HTXONLINE</Link>
               <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
               <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
@@ -70,7 +71,7 @@ export function PublicFooter() {
               <Link href="/dieu-khoan-su-dung" className={footerLinkClass}>Điều khoản sử dụng</Link>
               <Link href="/chinh-sach-bao-mat" className={footerLinkClass}>Chính sách bảo mật</Link>
               <Link href="/chinh-sach-doi-tra" className={footerLinkClass}>Chính sách đổi trả</Link>
-              <Link href="/chinh-sach-van-chuyen" className={footerLinkClass}>Chính sách vận chuyển</Link>
+              <Link href="/chinh-sach-van-hanh" className={footerLinkClass}>Chính sách vận hành</Link>
               <Link href="/lien-he" className={footerLinkClass}>Liên hệ</Link>
             </div>
           </div>
@@ -93,12 +94,6 @@ export function PublicFooter() {
                   <Mail size={18} aria-hidden="true" />
                   <span>{profile.supportEmail}</span>
                 </a>
-                {profile.zaloUrl && (
-                  <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold transition hover:bg-white/25">
-                    <ZaloIcon size={22} />
-                    Zalo hỗ trợ
-                  </a>
-                )}
               </div>
             </div>
 
@@ -115,7 +110,7 @@ export function PublicFooter() {
             ) : (
               <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
                 <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
-                <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc HTX địa phương.</p>
+                <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc hẹn lịch tư vấn phù hợp.</p>
                 <Link href="/lien-he" className="mt-3 font-semibold text-white underline-offset-2 hover:underline">
                   Xem thông tin liên hệ
                 </Link>
@@ -128,7 +123,7 @@ export function PublicFooter() {
                 <p className="mt-2 leading-6">HTXONLINE hỗ trợ hợp tác xã số hóa sản phẩm, vùng trồng, nhật ký canh tác và QR Passport để người mua tin tưởng nguồn gốc.</p>
               </div>
               <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
-              <p className="text-xs text-white/60">Được thiết kế và Vận Hành bởi THT Agri PassPort</p>
+              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi HTXONLINE</p>
             </div>
           </div>
         </div>

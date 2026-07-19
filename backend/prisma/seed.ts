@@ -189,7 +189,9 @@ async function main() {
     update: {}
   });
 
-  const siteAddress = 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp';
+  const siteAddress = 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam';
+  const siteMapEmbedUrl =
+    'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed';
 
   await prisma.setting.upsert({
     where: { key: 'public.siteProfile' },
@@ -201,9 +203,9 @@ async function main() {
         hotlineDisplay: '0900 000 000',
         supportEmail: 'support@htxonline.vn',
         address: siteAddress,
-        zaloUrl: 'https://zalo.me',
+        zaloUrl: '',
         messengerUrl: '',
-        mapEmbedUrl: '',
+        mapEmbedUrl: siteMapEmbedUrl,
         faqs: [
           {
             question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
@@ -227,10 +229,20 @@ async function main() {
   const existingSiteProfile = await prisma.setting.findUnique({ where: { key: 'public.siteProfile' } });
   if (existingSiteProfile?.value && typeof existingSiteProfile.value === 'object' && !Array.isArray(existingSiteProfile.value)) {
     const current = existingSiteProfile.value as Record<string, unknown>;
-    if (current.address !== siteAddress) {
+    const nextValue = {
+      ...current,
+      address: siteAddress,
+      mapEmbedUrl: typeof current.mapEmbedUrl === 'string' && current.mapEmbedUrl.trim() ? current.mapEmbedUrl : siteMapEmbedUrl,
+      zaloUrl: current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl
+    };
+    if (
+      current.address !== nextValue.address ||
+      current.mapEmbedUrl !== nextValue.mapEmbedUrl ||
+      current.zaloUrl !== nextValue.zaloUrl
+    ) {
       await prisma.setting.update({
         where: { key: 'public.siteProfile' },
-        data: { value: { ...current, address: siteAddress } }
+        data: { value: nextValue }
       });
     }
   }

@@ -4,7 +4,9 @@ import Link from 'next/link';
 import { CheckCircle2, Phone } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { LAST_ORDER_STORAGE_KEY, formatVnd } from '@/lib/cart';
+import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { Button, Panel } from './ui';
 
 type OrderItem = {
@@ -35,6 +37,7 @@ type CheckoutResult = {
 export function OrderSuccessClient() {
   const searchParams = useSearchParams();
   const [result, setResult] = useState<CheckoutResult | null>(null);
+  const [siteProfile, setSiteProfile] = useState<PublicSiteProfile>(defaultPublicSiteProfile);
 
   useEffect(() => {
     const value = window.localStorage.getItem(LAST_ORDER_STORAGE_KEY);
@@ -51,17 +54,38 @@ export function OrderSuccessClient() {
     }
   }, []);
 
+  useEffect(() => {
+    let active = true;
+
+    async function loadSiteProfile() {
+      try {
+        const response = await fetch(`${API_URL}/settings/public/site-profile`, { cache: 'no-store' });
+        if (!response.ok) return;
+        const body = (await response.json()) as ApiEnvelope<Partial<PublicSiteProfile>>;
+        if (!active) return;
+        setSiteProfile(normalizePublicSiteProfile(body.data));
+      } catch {
+        // Keep default public profile when API is unavailable.
+      }
+    }
+
+    void loadSiteProfile();
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const groupCode = result?.groupCode || searchParams.get('groupCode');
   const orders = result?.orders ?? [];
 
   return (
-    <Panel data-testid="order-success" className="mx-auto max-w-5xl text-left p-4 sm:p-5 lg:px-8 lg:py-7">
+    <Panel data-testid="order-success" className="mx-auto max-w-5xl p-4 text-left sm:p-5 lg:px-8 lg:py-7">
       <div className="mx-auto max-w-3xl text-center">
         <div className="inline-flex items-center gap-2 rounded-full bg-mint px-3 py-2 text-sm font-semibold text-leaf">
           <CheckCircle2 className="text-leaf" size={18} aria-hidden="true" />
           Đơn hàng đã ghi nhận
         </div>
-        <h2 className="mt-3 text-[2rem] font-bold tracking-tight leading-[1.02] text-ink sm:text-[2rem]">Cảm ơn bạn đã đặt hàng</h2>
+        <h2 className="mt-3 text-[2rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-[2rem]">Cảm ơn bạn đã đặt hàng</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">HTX hoặc bộ phận vận hành sẽ liên hệ xác nhận đơn hàng trong thời gian sớm.</p>
       </div>
 
@@ -129,9 +153,9 @@ export function OrderSuccessClient() {
       )}
 
       <div className="mt-4 flex flex-col gap-2 sm:mt-5 sm:flex-row sm:flex-wrap sm:justify-center lg:mt-6">
-        <a href="tel:0900000000" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink sm:w-auto">
+        <a href={telHref(siteProfile.hotline)} className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink sm:w-auto">
           <Phone size={18} aria-hidden="true" />
-          Gọi hotline
+          Gọi {siteProfile.hotlineDisplay}
         </a>
         <Link href="/tra-cuu-don-hang">
           <Button variant="ghost" className="w-full sm:w-auto">

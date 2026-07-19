@@ -41,8 +41,8 @@ export default function BuyingGuidePage() {
         <Panel className="text-sm leading-7 text-slate-700">
           <p>
             Cần hỗ trợ thêm? Xem{' '}
-            <Link href="/chinh-sach-van-chuyen" className="font-semibold text-leaf">
-              chính sách vận chuyển
+            <Link href="/chinh-sach-van-hanh" className="font-semibold text-leaf">
+              chính sách vận hành
             </Link>{' '}
             hoặc{' '}
             <Link href="/lien-he" className="font-semibold text-leaf">

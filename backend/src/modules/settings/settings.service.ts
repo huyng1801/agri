@@ -7,6 +7,8 @@ import { FilesService } from '../files/files.service';
 import { PrismaService } from '../prisma/prisma.service';
 
 const SECRET_KEYS = new Set(['system.r2', 'system.email', 'system.security']);
+const DEFAULT_MAP_EMBED_URL =
+  'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed';
 
 @Injectable()
 export class SettingsService {
@@ -37,10 +39,10 @@ export class SettingsService {
       hotline: stringValue(publicProfile.hotline) || '0900000000',
       hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0900 000 000',
       supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'support@htxonline.vn',
-      address: stringValue(publicProfile.address) || 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp',
-      zaloUrl: stringValue(publicProfile.zaloUrl) || 'https://zalo.me',
+      address: stringValue(publicProfile.address) || 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
+      zaloUrl: stringValue(publicProfile.zaloUrl),
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
-      mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || '',
+      mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || DEFAULT_MAP_EMBED_URL,
       logoUrl: stringValue(publicProfile.logoUrl) || '',
       faqs: faqItems(publicProfile.faqs)
     };

@@ -1,12 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Save, ServerCog, Upload } from 'lucide-react';
+import { ExternalLink, Save, ServerCog, Upload } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { API_URL, apiFetch } from '@/lib/api';
+import { apiFetch } from '@/lib/api';
 import { Button, Input, Panel, Textarea, cn } from '@/components/ui';
 
 type SettingRecord = { key: string; value: unknown; description?: string | null };
@@ -18,7 +19,6 @@ const publicProfileSchema = z.object({
   hotlineDisplay: z.string().optional(),
   supportEmail: z.string().email(),
   address: z.string().min(1),
-  zaloUrl: z.string().url().or(z.literal('')),
   messengerUrl: z.string().optional(),
   mapEmbedUrl: z.string().optional(),
   logoUrl: z.string().optional(),
@@ -162,40 +162,69 @@ export default function SettingsPage() {
       )}
 
       {tab === 'public' && (
-        <Panel>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={publicForm.handleSubmit((values) => {
-            const faqs = (values.faqText || '').split('\n').map((line) => line.trim()).filter(Boolean).map((line) => {
-              const [question, answer] = line.split('|');
-              return { question: question?.trim() ?? '', answer: answer?.trim() ?? '' };
-            }).filter((item) => item.question && item.answer);
-            saveMutation.mutate({
-              key: 'public.siteProfile',
-              value: { ...values, faqs },
-              description: 'Thông tin public sàn'
-            });
-          })}>
-            <Field label="Tên hiển thị"><Input {...publicForm.register('appName')} /></Field>
-            <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
-            <Field label="Hotline hiển thị"><Input {...publicForm.register('hotlineDisplay')} /></Field>
-            <Field label="Email liên hệ"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
-            <Field label="Địa chỉ"><Input {...publicForm.register('address')} /></Field>
-            <Field label="Zalo URL"><Input {...publicForm.register('zaloUrl')} /></Field>
-            <Field label="Logo URL" className="sm:col-span-2">
-              <div className="flex gap-2">
-                <Input {...publicForm.register('logoUrl')} />
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
-                  <Upload size={16} />
-                  Upload
-                  <input type="file" accept="image/*" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadLogo(file); }} />
-                </label>
-              </div>
-            </Field>
-            <Field label="FAQ (question|answer mỗi dòng)" className="sm:col-span-2">
-              <Textarea rows={5} {...publicForm.register('faqText')} />
-            </Field>
-            <SaveButton pending={saveMutation.isPending} />
-          </form>
-        </Panel>
+        <div className="space-y-4">
+          <Panel className="space-y-3 border-mint/70 bg-mint/40">
+            <h2 className="text-lg font-bold text-ink">Cập nhật nội dung mà không cần sửa code</h2>
+            <p className="text-sm leading-6 text-slate-700">
+              Tab này dùng để sửa logo, hotline, email, địa chỉ, bản đồ và FAQ public. Hồ sơ HTX/sản phẩm sửa trong dashboard HTX, còn bài blog public sửa tại khu vực Tin tức của Super Admin.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <Link href="/dashboard/news" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
+                Soạn blog nhanh
+                <ExternalLink size={16} aria-hidden="true" />
+              </Link>
+              <Link href="/dashboard/cooperatives" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
+                Sửa hồ sơ HTX
+                <ExternalLink size={16} aria-hidden="true" />
+              </Link>
+              <Link href="/dashboard/products" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
+                Sửa sản phẩm
+                <ExternalLink size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          </Panel>
+
+          <Panel>
+            <form className="grid gap-3 sm:grid-cols-2" onSubmit={publicForm.handleSubmit((values) => {
+              const faqs = (values.faqText || '')
+                .split('\n')
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .map((line) => {
+                  const [question, answer] = line.split('|');
+                  return { question: question?.trim() ?? '', answer: answer?.trim() ?? '' };
+                })
+                .filter((item) => item.question && item.answer);
+              saveMutation.mutate({
+                key: 'public.siteProfile',
+                value: { ...values, faqs, zaloUrl: '' },
+                description: 'Thông tin public sàn'
+              });
+            })}>
+              <Field label="Tên hiển thị"><Input {...publicForm.register('appName')} /></Field>
+              <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
+              <Field label="Hotline hiển thị"><Input {...publicForm.register('hotlineDisplay')} /></Field>
+              <Field label="Email liên hệ"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
+              <Field label="Địa chỉ"><Input {...publicForm.register('address')} /></Field>
+              <Field label="Mã nhúng bản đồ (Google Maps embed URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
+              <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
+              <Field label="Logo URL" className="sm:col-span-2">
+                <div className="flex gap-2">
+                  <Input {...publicForm.register('logoUrl')} />
+                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
+                    <Upload size={16} />
+                    Upload
+                    <input type="file" accept="image/*" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadLogo(file); }} />
+                  </label>
+                </div>
+              </Field>
+              <Field label="FAQ (question|answer mỗi dòng)" className="sm:col-span-2">
+                <Textarea rows={5} {...publicForm.register('faqText')} />
+              </Field>
+              <SaveButton pending={saveMutation.isPending} />
+            </form>
+          </Panel>
+        </div>
       )}
 
       {tab === 'email' && (
@@ -314,10 +343,9 @@ function objectToPublicForm(value: unknown) {
     hotline: String(object.hotline ?? '0900000000'),
     hotlineDisplay: String(object.hotlineDisplay ?? ''),
     supportEmail: String(object.supportEmail ?? 'support@htxonline.vn'),
-    address: String(object.address ?? 'số 322 Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng tháp'),
-    zaloUrl: String(object.zaloUrl ?? 'https://zalo.me'),
+    address: String(object.address ?? 'Số 322 Ấp Mỹ Xuân, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
     messengerUrl: String(object.messengerUrl ?? ''),
-    mapEmbedUrl: String(object.mapEmbedUrl ?? ''),
+    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed'),
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as any).question}|${(item as any).answer}`).join('\n')
   };

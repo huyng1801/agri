@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
 import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
-import { ZaloIcon } from './zalo-icon';
 
 export function FooterContactInfo() {
   const profile = usePublicSiteProfile();
@@ -20,12 +19,6 @@ export function FooterContactInfo() {
         {profile.supportEmail}
       </a>
       <p className="leading-6 text-slate-600">{profile.address}</p>
-      {profile.zaloUrl && (
-        <a href={profile.zaloUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 font-semibold text-leaf">
-          <ZaloIcon size={20} />
-          Zalo hỗ trợ
-        </a>
-      )}
     </div>
   );
 }
@@ -72,19 +65,18 @@ export function FloatingContactClient() {
 
   const showContactActions = showFloating && (!footerVisible || !mobileViewport);
   const showHotline = showContactActions && Boolean(siteProfile.hotline) && !mobileViewport;
-  const showZalo = showContactActions && Boolean(siteProfile.zaloUrl) && !mobileViewport;
   const mobileTopButtonAllowed =
     pathname.startsWith('/tin-tuc/') ||
     pathname === '/ve-chung-toi' ||
     pathname === '/gioi-thieu' ||
     pathname === '/huong-dan-mua-hang' ||
     pathname === '/chinh-sach-bao-mat' ||
-    pathname === '/chinh-sach-van-chuyen' ||
+    pathname === '/chinh-sach-van-hanh' ||
     pathname === '/chinh-sach-doi-tra' ||
     pathname === '/dieu-khoan-su-dung';
   const showTopButton = showTop && (!footerVisible || !mobileViewport) && (!mobileViewport || mobileTopButtonAllowed);
 
-  if (!showHotline && !showZalo && !showTopButton && !(showContactActions && siteProfile.messengerUrl)) {
+  if (!showHotline && !showTopButton && !(showContactActions && siteProfile.messengerUrl)) {
     return null;
   }
 
@@ -93,17 +85,6 @@ export function FloatingContactClient() {
       {showHotline && (
         <a href={telHref(siteProfile.hotline)} className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
           <Phone size={16} aria-hidden="true" />
-        </a>
-      )}
-      {showZalo && (
-        <a
-          href={siteProfile.zaloUrl}
-          className="grid h-10 w-10 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200 transition hover:-translate-y-0.5"
-          aria-label="Chat Zalo"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <ZaloIcon size={21} />
         </a>
       )}
       {showContactActions && siteProfile.messengerUrl && (
