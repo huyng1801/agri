@@ -697,15 +697,26 @@ export default function NewsDashboardPage() {
   async function handleVisualPaste(event: ClipboardEvent<HTMLDivElement>) {
     const items = Array.from(event.clipboardData?.items ?? []);
     const imageItem = items.find((item) => item.type.startsWith('image/'));
-    if (!imageItem) return;
-    const file = imageItem.getAsFile();
-    if (!file) return;
+    if (imageItem) {
+      const file = imageItem.getAsFile();
+      if (!file) return;
+
+      event.preventDefault();
+      const url = await uploadFile(file, 'body');
+      if (!url) return;
+      const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+      insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
+      return;
+    }
+
+    const html = event.clipboardData?.getData('text/html') || '';
+    const text = event.clipboardData?.getData('text/plain') || '';
+    if (!html && !text.trim()) return;
 
     event.preventDefault();
-    const url = await uploadFile(file, 'body');
-    if (!url) return;
-    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-    insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
+    const cleaned = html ? sanitizeImportedHtml(html) : plainTextToEditorHtml(text);
+    if (!cleaned.trim()) return;
+    insertHtmlIntoVisualEditor(cleaned);
   }
 
   async function handleDroppedFiles(fileList: FileList | null) {
@@ -889,6 +900,17 @@ export default function NewsDashboardPage() {
     const fallbackExcerpt = trimText(stripHtml(form.bodyHtml), 180);
     if (!fallbackExcerpt) return;
     update('excerpt', fallbackExcerpt);
+  }
+
+  function cleanPastedContent() {
+    const cleaned = sanitizeImportedHtml(form.bodyHtml);
+    if (!cleaned.trim()) return;
+    update('bodyHtml', cleaned);
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual' && visualEditorRef.current) {
+        visualEditorRef.current.innerHTML = cleaned;
+      }
+    });
   }
 
   async function copyPermalink() {
@@ -1310,6 +1332,10 @@ export default function NewsDashboardPage() {
                 <Target size={18} aria-hidden="true" />
                 Đồng bộ social
               </Button>
+              <Button type="button" variant="ghost" onClick={cleanPastedContent}>
+                <RefreshCcw size={18} aria-hidden="true" />
+                Làm sạch nội dung dán
+              </Button>
               <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
                 <Eye size={18} aria-hidden="true" />
                 Preview
@@ -1321,6 +1347,7 @@ export default function NewsDashboardPage() {
                 <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
                   <span className="rounded-full bg-white px-3 py-1 text-leaf">Chế độ dễ dùng</span>
                   <span>Dán ảnh từ clipboard: `Ctrl+V`</span>
+                  <span>Dán nội dung từ Word/Docs: hệ thống tự làm sạch</span>
                   <span>Bấm toolbar để tạo H2, H3, danh sách, link</span>
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
                 </div>
@@ -1395,6 +1422,7 @@ export default function NewsDashboardPage() {
               <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
               <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
               <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
+              <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
               <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
             </div>
 
@@ -2710,6 +2738,67 @@ function buildContentOutlinePreview(form: NewsForm): ContentOutlinePreview {
     internalLinks: countMatches(form.bodyHtml, /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/gi),
     estimatedMinutes: Math.max(1, Math.ceil(words / 180))
   };
+}
+
+function sanitizeImportedHtml(input: string) {
+  if (!input.trim()) return '';
+
+  let html = input
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/\s(?:class|style|lang|width|height|align|valign|data-[\w-]+|xmlns(:\w+)?)="[^"]*"/gi, '')
+    .replace(/\s(?:class|style|lang|width|height|align|valign|data-[\w-]+|xmlns(:\w+)?)='[^']*'/gi, '')
+    .replace(/<o:p>\s*<\/o:p>/gi, '')
+    .replace(/<o:p>[\s\S]*?<\/o:p>/gi, '')
+    .replace(/<\/?(span|font|meta|link|xml|st1:[^>]+|w:[^>]+|v:[^>]+)[^>]*>/gi, '')
+    .replace(/<div\b[^>]*>/gi, '<p>')
+    .replace(/<\/div>/gi, '</p>')
+    .replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '</p><p>')
+    .replace(/<p>\s*<\/p>/gi, '')
+    .replace(/<p>\s*(<(h[1-6]|ul|ol|li|blockquote|figure)\b)/gi, '$1')
+    .replace(/(<\/(h[1-6]|ul|ol|li|blockquote|figure)>)\s*<\/p>/gi, '$1');
+
+  html = html.replace(/<img\b([^>]*)>/gi, (full, attrs: string) => {
+    const srcMatch = attrs.match(/\bsrc=(?:"([^"]+)"|'([^']+)')/i);
+    if (!srcMatch) return '';
+    const src = srcMatch[1] || srcMatch[2] || '';
+    const altMatch = attrs.match(/\balt=(?:"([^"]*)"|'([^']*)')/i);
+    const alt = escapeHtml((altMatch?.[1] || altMatch?.[2] || 'Ảnh minh họa').trim() || 'Ảnh minh họa');
+    return `<img src="${src}" alt="${alt}" loading="lazy" />`;
+  });
+
+  html = html
+    .replace(/<(h1)\b[^>]*>/gi, '<h2>')
+    .replace(/<\/h1>/gi, '</h2>')
+    .replace(/<(h[2-6])\b[^>]*>/gi, (_, tag: string) => `<${tag.toLowerCase()}>`)
+    .replace(/<\/(h[2-6])>/gi, (_, tag: string) => `</${tag.toLowerCase()}>`)
+    .replace(/<a\b([^>]*)>/gi, (full, attrs: string) => {
+      const hrefMatch = attrs.match(/\bhref=(?:"([^"]+)"|'([^']+)')/i);
+      if (!hrefMatch) return '<a>';
+      const href = escapeHtml((hrefMatch[1] || hrefMatch[2] || '').trim());
+      return `<a href="${href}">`;
+    })
+    .replace(/<p>\s*(<img\b[^>]*>)\s*<\/p>/gi, '<figure>$1</figure>')
+    .replace(/(<figure>\s*<img\b[^>]*>\s*)(?!<figcaption>)(<\/figure>)/gi, '$1$2')
+    .replace(/\n+/g, '')
+    .replace(/>\s+</g, '><')
+    .trim();
+
+  if (!/<[a-z][\s\S]*>/i.test(html)) {
+    return plainTextToEditorHtml(stripHtml(html));
+  }
+
+  return html;
+}
+
+function plainTextToEditorHtml(text: string) {
+  return text
+    .split(/\r?\n\r?\n/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean)
+    .map((paragraph) => `<p>${escapeHtml(paragraph).replace(/\r?\n/g, '<br />')}</p>`)
+    .join('');
 }
 
 function publishReadinessClass(ratio: number) {
