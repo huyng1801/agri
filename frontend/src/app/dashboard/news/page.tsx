@@ -156,6 +156,13 @@ type ContentOutlinePreview = {
   estimatedMinutes: number;
 };
 
+type CorePublishItem = {
+  id: 'title' | 'content' | 'cover';
+  label: string;
+  ok: boolean;
+  hint: string;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -358,6 +365,9 @@ export default function NewsDashboardPage() {
   const preparedDiffs = useMemo(() => buildPreparedDiffs(form, preparedPreview), [form, preparedPreview]);
   const resolvedMetaPreview = useMemo(() => buildResolvedMetaPreview(preparedPreview), [preparedPreview]);
   const contentOutlinePreview = useMemo(() => buildContentOutlinePreview(preparedPreview), [preparedPreview]);
+  const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
+  const corePublishReady = corePublishItems.filter((item) => item.ok).length;
+  const canQuickPublish = corePublishItems.every((item) => item.ok);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
@@ -1111,6 +1121,39 @@ export default function NewsDashboardPage() {
                   </div>
                 ))}
               </div>
+              <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Muc toi thieu de bam Dang 1 cham</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Nguoi moi chi can du 3 muc ben duoi. Slug, meta, social, tag va khung bai co the de editor tu xu ly.</p>
+                  </div>
+                  <span
+                    className={cn(
+                      'rounded-full px-3 py-1 text-xs font-bold',
+                      canQuickPublish ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
+                    )}
+                  >
+                    {corePublishReady}/3 san sang
+                  </span>
+                </div>
+                <div className="mt-3 grid gap-2 md:grid-cols-3">
+                  {corePublishItems.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
+                      className={cn(
+                        'rounded-xl border p-3 text-left transition',
+                        item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-950 hover:border-leaf'
+                      )}
+                    >
+                      <p className="text-xs font-bold uppercase tracking-[0.14em]">{item.ok ? 'Da xong' : 'Can bo sung'}</p>
+                      <p className="mt-1 text-sm font-bold">{item.label}</p>
+                      <p className="mt-1 text-sm leading-5 opacity-90">{item.hint}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
@@ -1757,11 +1800,15 @@ export default function NewsDashboardPage() {
           )}
 
           <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
+            <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
+              <Sparkles size={18} aria-hidden="true" />
+              {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham (khuyen dung)'}
+            </Button>
             <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
               <Save size={18} aria-hidden="true" />
               Lưu nháp
             </Button>
-            <Button data-testid="news-publish-button" type="button" onClick={() => saveArticle.mutate('PUBLISHED')} disabled={saveArticle.isPending}>
+            <Button data-testid="news-publish-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('PUBLISHED')} disabled={saveArticle.isPending}>
               <Save size={18} aria-hidden="true" />
               Đăng ngay
             </Button>
@@ -2738,6 +2785,29 @@ function buildContentOutlinePreview(form: NewsForm): ContentOutlinePreview {
     internalLinks: countMatches(form.bodyHtml, /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/gi),
     estimatedMinutes: Math.max(1, Math.ceil(words / 180))
   };
+}
+
+function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
+  return [
+    {
+      id: 'title',
+      label: 'Tieu de ro rang',
+      ok: form.title.trim().length >= 12,
+      hint: form.title.trim() ? 'Da co tieu de, co the bam de xem lai neu can.' : 'Nhap tieu de de he thong tao slug, keyword va preview SEO.'
+    },
+    {
+      id: 'content',
+      label: 'Noi dung bai viet',
+      ok: stripHtml(form.bodyHtml).trim().length >= 80,
+      hint: stripHtml(form.bodyHtml).trim() ? 'Da co noi dung, co the bo sung them H2 hoac anh neu muon.' : 'Dan noi dung hoac go truc tiep vao editor nhu soan Word.'
+    },
+    {
+      id: 'cover',
+      label: 'Anh bia',
+      ok: Boolean(form.coverImageUrl.trim()),
+      hint: form.coverImageUrl.trim() ? 'Da co anh bia, social preview se dep hon.' : 'Dan, tha hoac upload 1 anh ngang lam cover de bai de tin hon.'
+    }
+  ];
 }
 
 function sanitizeImportedHtml(input: string) {
