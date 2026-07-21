@@ -889,6 +889,20 @@ export default function NewsDashboardPage() {
     }));
   }
 
+  function optimizeImportedArticle() {
+    const cleanedBody = sanitizeImportedHtml(form.bodyHtml || '');
+    const nextForm = buildPreparedNewsForm({
+      ...form,
+      bodyHtml: cleanedBody || form.bodyHtml || '<p></p>'
+    });
+    setForm(nextForm);
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual' && visualEditorRef.current) {
+        visualEditorRef.current.innerHTML = nextForm.bodyHtml || '<p></p>';
+      }
+    });
+  }
+
   function preparePostForPublish() {
     setForm((current) => buildPreparedNewsForm(current));
   }
@@ -1156,6 +1170,10 @@ export default function NewsDashboardPage() {
                   <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
                     <Save size={18} aria-hidden="true" />
                     {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm'}
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Toi uu bai vua dan
                   </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
                     <Target size={18} aria-hidden="true" />
@@ -1512,6 +1530,10 @@ export default function NewsDashboardPage() {
                 <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
                   Đăng nhanh: chỉ cần tiêu đề, nội dung, ảnh và bấm &quot;Đăng 1 chạm&quot;. Các mục SEO, social và lịch đăng chỉ cần mở khi thật sự cần và có thể bổ sung sau.
                 </p>
+                <div className="rounded-xl border border-dashed border-leaf/30 bg-white/90 px-3 py-3 text-sm text-slate-700">
+                  <p className="font-bold text-ink">Neu ban vua paste bai tu Word hoac Google Docs</p>
+                  <p className="mt-1 leading-6">Bam &quot;Toi uu bai vua dan&quot; de he thong lam sach HTML, bo sung mo bai co tu khoa, heading co ban, internal link, meta va social preview trong mot lan.</p>
+                </div>
                 <div
                   ref={visualEditorRef}
                   data-testid="news-content-editor"
