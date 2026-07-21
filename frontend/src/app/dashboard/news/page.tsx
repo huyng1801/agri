@@ -710,6 +710,43 @@ export default function NewsDashboardPage() {
     }));
   }
 
+  function preparePostForPublish() {
+    const bodyText = stripHtml(form.bodyHtml);
+    const canonicalSlug = form.slug || slugifyLocal(form.title);
+    const fallbackExcerpt = form.excerpt || trimText(bodyText, 180);
+    const fallbackDescription = trimText(fallbackExcerpt || bodyText, 155);
+    const seoTitle = trimText(form.seoTitle || form.title, 65);
+    const socialTitle = trimText(form.ogTitle || form.twitterTitle || seoTitle || form.title, 70);
+    const suggestedTags = suggestTags(form);
+
+    setForm((current) => {
+      const currentTags = current.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      const mergedTags = Array.from(new Set([...currentTags, ...suggestedTags])).slice(0, 8);
+
+      return {
+        ...current,
+        slug: current.slug || canonicalSlug,
+        excerpt: current.excerpt || fallbackExcerpt,
+        focusKeyword: current.focusKeyword || current.title.trim(),
+        seoTitle: current.seoTitle || seoTitle,
+        seoDescription: current.seoDescription || fallbackDescription,
+        canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+        ogTitle: current.ogTitle || socialTitle,
+        ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
+        ogImageUrl: current.ogImageUrl || current.coverImageUrl,
+        twitterTitle: current.twitterTitle || socialTitle,
+        twitterDescription: current.twitterDescription || current.seoDescription || fallbackDescription,
+        twitterImageUrl: current.twitterImageUrl || current.coverImageUrl,
+        coverImageAlt: current.coverImageAlt || current.focusKeyword || current.title,
+        tags: mergedTags.join(', '),
+        status: current.status === 'ARCHIVED' ? 'DRAFT' : current.status
+      };
+    });
+  }
+
   function fillExcerptFromBody() {
     const fallbackExcerpt = trimText(stripHtml(form.bodyHtml), 180);
     if (!fallbackExcerpt) return;
@@ -783,6 +820,42 @@ export default function NewsDashboardPage() {
           }}
         >
           <Panel className="space-y-4">
+            <div className="rounded-2xl border border-leaf/20 bg-[linear-gradient(135deg,#f7fbf8_0%,#eef8f1_100%)] p-4">
+              <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                <div className="max-w-2xl">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Dang bai cuc nhanh</p>
+                  <h2 className="mt-1 text-lg font-bold text-ink">Chi can tieu de, noi dung, anh bia va bam chuan bi publish</h2>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">
+                    Day la luong dang bai don gian nhat cho nguoi moi. He thong se tu dien slug, mo ta, SEO title, social image, canonical va tag neu ban chua nhap.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={preparePostForPublish}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Chuan bi publish
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Target size={18} aria-hidden="true" />
+                    Va SEO nhanh
+                  </Button>
+                </div>
+              </div>
+              <div className="mt-4 grid gap-2 md:grid-cols-4">
+                {[
+                  ['1', 'Nhap tieu de', 'He thong tu goi y slug va keyword.'],
+                  ['2', 'Dan noi dung', 'Co the paste text va anh truc tiep vao editor.'],
+                  ['3', 'Them cover', 'Dan, tha hoac upload anh bia nhanh.'],
+                  ['4', 'Kiem tra roi publish', 'Checklist ben phai se bao muc nao con thieu.']
+                ].map(([step, title, text]) => (
+                  <div key={step} className="rounded-xl border border-white/80 bg-white/88 p-3 shadow-sm">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
+                    <p className="mt-1 text-sm font-bold text-ink">{title}</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">{text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>Tiêu đề</span>
