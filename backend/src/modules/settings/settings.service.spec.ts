@@ -15,8 +15,8 @@ describe('SettingsService', () => {
     const profile = await service.publicSiteProfile();
 
     expect(profile.appName).toBe('HTXONLINE');
-    expect(profile.hotline).toBe('0900000000');
-    expect(profile.supportEmail).toBe('support@htxonline.vn');
+    expect(profile.hotline).toBe('0907001200');
+    expect(profile.supportEmail).toBe('Agripassport@gmail.com');
     expect(profile.faqs.length).toBeGreaterThan(0);
   });
 

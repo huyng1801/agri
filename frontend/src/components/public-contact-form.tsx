@@ -133,7 +133,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               required
               inputMode="tel"
               className="bg-white"
-              placeholder="0900 000 000"
+              placeholder="0907 001 200"
             />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">

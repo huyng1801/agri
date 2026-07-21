@@ -353,12 +353,12 @@ function objectToPublicForm(value: unknown) {
 
 function objectToProfileForm(value: unknown) {
   const object = asObject(value);
-  return { appName: String(object.appName ?? 'HTXONLINE'), supportEmail: String(object.supportEmail ?? 'support@htxonline.vn'), timezone: String(object.timezone ?? 'Asia/Ho_Chi_Minh') };
+  return { appName: String(object.appName ?? 'HTXONLINE'), supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'), timezone: String(object.timezone ?? 'Asia/Ho_Chi_Minh') };
 }
 
 function objectToEmailForm(value: unknown) {
   const object = asObject(value);
-  return { fromName: String(object.fromName ?? 'HTXONLINE'), fromEmail: String(object.fromEmail ?? 'support@htxonline.vn'), smtpHost: String(object.smtpHost ?? ''), smtpPort: String(object.smtpPort ?? '587') };
+  return { fromName: String(object.fromName ?? 'HTXONLINE'), fromEmail: String(object.fromEmail ?? 'Agripassport@gmail.com'), smtpHost: String(object.smtpHost ?? ''), smtpPort: String(object.smtpPort ?? '587') };
 }
 
 function objectToR2Form(value: unknown) {

@@ -19,6 +19,10 @@ vi.mock('next/navigation', () => ({
   useRouter: () => ({ replace: vi.fn() })
 }));
 
+vi.mock('@/components/public-footer', () => ({
+  PublicFooter: () => <div data-testid="public-footer" />
+}));
+
 describe('Button', () => {
   it('renders accessible button text', () => {
     render(<Button>Lưu</Button>);
@@ -121,13 +125,13 @@ describe('CooperativeDetailPage', () => {
             message: 'OK',
             data: {
               appName: 'HTXONLINE',
-              hotline: '0900000000',
-              hotlineDisplay: '0900 000 000',
-              supportEmail: 'support@htxonline.vn',
+              hotline: '0907001200',
+              hotlineDisplay: '0907 001 200',
+              supportEmail: 'Agripassport@gmail.com',
               address: 'Dong Thap',
-              zaloUrl: 'https://zalo.me',
+              zaloUrl: '',
               messengerUrl: '',
-              mapEmbedUrl: '',
+              mapEmbedUrl: 'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718',
               faqs: []
             }
           })
