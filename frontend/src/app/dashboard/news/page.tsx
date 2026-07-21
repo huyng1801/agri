@@ -91,9 +91,16 @@ type SeoScoreResult = {
     images: number;
     internalLinks: number;
     keywordMatches: number;
+    keywordDensity: number;
     titleLength: number;
     descriptionLength: number;
   };
+};
+
+type InternalLinkSuggestion = {
+  label: string;
+  href: string;
+  description: string;
 };
 
 type EditorMode = 'visual' | 'html';
@@ -211,6 +218,14 @@ const articleTemplates = [
   }
 ] as const;
 
+const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
+  { label: 'Trang sản phẩm', href: '/san-pham', description: 'Kéo traffic về danh sách sản phẩm public.' },
+  { label: 'Danh sách HTX', href: '/htx', description: 'Dẫn người đọc sang trang hợp tác xã công khai.' },
+  { label: 'Liên hệ tư vấn', href: '/lien-he', description: 'Gắn CTA khi bài cần chốt lead nhanh.' },
+  { label: 'Giới thiệu nền tảng', href: '/gioi-thieu', description: 'Phù hợp bài giải thích mô hình HTXONLINE.' },
+  { label: 'Tin tức HTXONLINE', href: '/tin-tuc', description: 'Dùng để liên kết lại hub nội dung chính.' }
+];
+
 export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
@@ -245,6 +260,7 @@ export default function NewsDashboardPage() {
   const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
   const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
+  const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -570,6 +586,20 @@ export default function NewsDashboardPage() {
     else insertHtml(imageHtml);
   }
 
+  async function handleCoverFiles(fileList: FileList | null) {
+    const file = Array.from(fileList ?? []).find((item) => item.type.startsWith('image/'));
+    if (!file) return;
+    await handleCoverFile(file);
+  }
+
+  async function handleCoverFile(file: File) {
+    await uploadFile(file, 'cover');
+    setForm((current) => ({
+      ...current,
+      coverImageAlt: current.coverImageAlt || current.focusKeyword || current.title || file.name.replace(/\.[^.]+$/, '')
+    }));
+  }
+
   function fillSuggestedTags() {
     const suggested = suggestTags(form);
     if (!suggested.length) {
@@ -585,6 +615,41 @@ export default function NewsDashboardPage() {
       return {
         ...current,
         tags: merged.join(', ')
+      };
+    });
+  }
+
+  function applyQuickSeoFixes() {
+    const bodyText = stripHtml(form.bodyHtml);
+    const canonicalSlug = form.slug || slugifyLocal(form.title);
+    const fallbackExcerpt = form.excerpt || trimText(bodyText, 180);
+    const fallbackDescription = trimText(fallbackExcerpt || bodyText, 155);
+    const title = trimText(form.seoTitle || form.title, 65);
+    const suggestedTags = suggestTags(form);
+
+    setForm((current) => {
+      const currentTags = current.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      const mergedTags = Array.from(new Set([...currentTags, ...suggestedTags])).slice(0, 8);
+
+      return {
+        ...current,
+        slug: current.slug || canonicalSlug,
+        excerpt: current.excerpt || fallbackExcerpt,
+        focusKeyword: current.focusKeyword || current.title.trim(),
+        seoTitle: current.seoTitle || title,
+        seoDescription: current.seoDescription || fallbackDescription,
+        canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+        ogTitle: current.ogTitle || title,
+        ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
+        ogImageUrl: current.ogImageUrl || current.coverImageUrl,
+        twitterTitle: current.twitterTitle || title,
+        twitterDescription: current.twitterDescription || current.seoDescription || fallbackDescription,
+        twitterImageUrl: current.twitterImageUrl || current.coverImageUrl,
+        coverImageAlt: current.coverImageAlt || current.title || current.focusKeyword,
+        tags: mergedTags.join(', ')
       };
     });
   }
@@ -658,6 +723,12 @@ export default function NewsDashboardPage() {
     } catch {
       window.alert('Không thể copy permalink trên trình duyệt này.');
     }
+  }
+
+  function insertInternalLink(suggestion: InternalLinkSuggestion) {
+    const snippet = `<p><a href="${suggestion.href}">${escapeHtml(suggestion.label)}</a></p>`;
+    if (editorMode === 'visual') insertHtmlIntoVisualEditor(snippet);
+    else insertHtml(snippet);
   }
 
   return (
@@ -749,6 +820,10 @@ export default function NewsDashboardPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
                 <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Sửa nhanh SEO
+                  </Button>
                   <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
                     <Sparkles size={18} aria-hidden="true" />
                     Tự điền SEO
@@ -860,6 +935,10 @@ export default function NewsDashboardPage() {
                 <Sparkles size={18} aria-hidden="true" />
                 Tự điền SEO
               </Button>
+              <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                <Target size={18} aria-hidden="true" />
+                Vá lỗi SEO nhanh
+              </Button>
               <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
                 <Target size={18} aria-hidden="true" />
                 Đồng bộ social
@@ -946,6 +1025,7 @@ export default function NewsDashboardPage() {
               <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
               <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
               <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
+              <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
             </div>
 
             {preview && (
@@ -973,6 +1053,26 @@ export default function NewsDashboardPage() {
                 <span>Upload cover</span>
                 <Input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'cover')} />
               </label>
+            </div>
+            <div
+              tabIndex={0}
+              onPaste={(event) => {
+                const file = Array.from(event.clipboardData?.items ?? [])
+                  .find((item) => item.type.startsWith('image/'))
+                  ?.getAsFile();
+                if (!file) return;
+                event.preventDefault();
+                void handleCoverFile(file);
+              }}
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault();
+                void handleCoverFiles(event.dataTransfer.files);
+              }}
+              className="rounded-xl border border-dashed border-leaf/30 bg-mint/40 px-4 py-3 text-sm text-slate-700 outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            >
+              <p className="font-semibold text-ink">Dán hoặc thả ảnh bìa trực tiếp</p>
+              <p className="mt-1">Click vào khung này rồi bấm `Ctrl+V`, hoặc kéo ảnh vào đây để tự upload ảnh cover.</p>
             </div>
             {form.coverImageUrl && (
               <img
@@ -1197,6 +1297,10 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.keywordMatches}</p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-slate-500">Keyword density</p>
+                <p className="mt-1 text-lg font-bold text-ink">{seo.stats.keywordDensity}%</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
                 <p className="text-slate-500">Heading</p>
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.headings}</p>
               </div>
@@ -1254,6 +1358,35 @@ export default function NewsDashboardPage() {
                   </ul>
                 </div>
               )}
+            </div>
+          </Panel>
+
+          <Panel className="space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-ink">Gợi ý internal link</h2>
+                <p className="text-sm text-slate-600">Một cú bấm để chèn link nội bộ, tăng điều hướng và hỗ trợ SEO on-page.</p>
+              </div>
+              <Button type="button" variant="ghost" onClick={() => insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0])}>
+                <LinkIcon size={18} aria-hidden="true" />
+                Chèn nhanh
+              </Button>
+            </div>
+            <div className="space-y-2">
+              {internalLinkSuggestions.map((suggestion) => (
+                <div key={`${suggestion.href}-${suggestion.label}`} className="rounded-xl border border-slate-200 bg-white p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="font-semibold text-ink">{suggestion.label}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{suggestion.description}</p>
+                      <p className="mt-1 text-xs font-semibold text-emerald-700">{suggestion.href}</p>
+                    </div>
+                    <Button type="button" variant="ghost" onClick={() => insertInternalLink(suggestion)}>
+                      Chèn link
+                    </Button>
+                  </div>
+                </div>
+              ))}
             </div>
           </Panel>
 
@@ -1370,6 +1503,7 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
   const images = countMatches(form.bodyHtml, /<img\b/gi);
   const internalLinks = countMatches(form.bodyHtml, /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/gi);
   const keywordMatches = keyword ? countOccurrences(normalizedBody, keyword) : 0;
+  const keywordDensity = words ? Number(((keywordMatches / words) * 100).toFixed(1)) : 0;
   const titleLength = (form.seoTitle || form.title).trim().length;
   const descriptionLength = form.seoDescription.trim().length;
 
@@ -1398,6 +1532,11 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
       label: 'Keyword trong mở bài',
       ok: Boolean(keyword) && introText.includes(keyword),
       detail: 'Từ khóa nên xuất hiện sớm trong đoạn đầu để Google và người đọc hiểu chủ đề nhanh hơn.'
+    },
+    {
+      label: 'Mật độ từ khóa',
+      ok: !keyword || (keywordDensity >= 0.5 && keywordDensity <= 2.5),
+      detail: keyword ? `Mật độ hiện tại khoảng ${keywordDensity}%. Nên giữ tự nhiên, thường trong khoảng 0.5% - 2.5%.` : 'Chưa có từ khóa chính để theo dõi mật độ.'
     },
     {
       label: 'Độ dài nội dung',
@@ -1432,11 +1571,12 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
   if (checks[2]?.ok) score += 10;
   if (checks[3]?.ok) score += 15;
   if (checks[4]?.ok) score += 10;
-  if (checks[5]?.ok) score += 10;
-  if (checks[6]?.ok) score += 5;
+  if (checks[5]?.ok) score += 5;
+  if (checks[6]?.ok) score += 10;
   if (checks[7]?.ok) score += 5;
   if (checks[8]?.ok) score += 5;
-  if (checks[9]?.ok) score += 10;
+  if (checks[9]?.ok) score += 5;
+  if (checks[10]?.ok) score += 10;
 
   const notes = checks.filter((check) => !check.ok).map((check) => check.detail);
   const strengths = checks.filter((check) => check.ok).map((check) => `${check.label}: ${check.detail}`);
@@ -1464,6 +1604,7 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
       images,
       internalLinks,
       keywordMatches,
+      keywordDensity,
       titleLength,
       descriptionLength
     }
@@ -1611,6 +1752,28 @@ function suggestTags(form: NewsForm) {
     .filter(Boolean);
 
   return Array.from(new Set(suggestions)).slice(0, 6);
+}
+
+function buildInternalLinkSuggestions(form: NewsForm) {
+  const dynamicSuggestions: InternalLinkSuggestion[] = [];
+
+  if (form.focusKeyword.trim()) {
+    dynamicSuggestions.push({
+      label: `Sản phẩm liên quan "${form.focusKeyword.trim()}"`,
+      href: `/san-pham?search=${encodeURIComponent(form.focusKeyword.trim())}`,
+      description: 'Tăng khả năng điều hướng từ bài viết sang khu vực sản phẩm đúng chủ đề.'
+    });
+  }
+
+  if (form.categoryId) {
+    dynamicSuggestions.push({
+      label: 'Xem thêm tin cùng chuyên mục',
+      href: '/tin-tuc',
+      description: 'Đưa người đọc quay lại hub nội dung để đọc thêm các bài liên quan.'
+    });
+  }
+
+  return [...dynamicSuggestions, ...defaultInternalLinkSuggestions].slice(0, 6);
 }
 
 function normalizeTag(value: string) {
