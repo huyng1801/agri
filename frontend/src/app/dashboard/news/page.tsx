@@ -77,6 +77,8 @@ type SeoCheck = {
   label: string;
   detail: string;
   ok: boolean;
+  actionId?: 'seo-defaults' | 'focus-keyword' | 'content' | 'cover' | 'internal-link';
+  actionLabel?: string;
 };
 
 type SeoScoreResult = {
@@ -836,6 +838,30 @@ export default function NewsDashboardPage() {
     }
   }
 
+  function runSeoCheckAction(actionId?: SeoCheck['actionId']) {
+    if (!actionId) return;
+    if (actionId === 'seo-defaults') {
+      applyQuickSeoFixes();
+      return;
+    }
+    if (actionId === 'focus-keyword') {
+      document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]')?.focus();
+      return;
+    }
+    if (actionId === 'content') {
+      if (editorMode === 'visual') focusVisualEditor();
+      else bodyRef.current?.focus();
+      return;
+    }
+    if (actionId === 'cover') {
+      document.querySelector<HTMLInputElement>('[data-testid="news-cover-image-input"]')?.focus();
+      return;
+    }
+    if (actionId === 'internal-link') {
+      insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0]);
+    }
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1549,6 +1575,11 @@ export default function NewsDashboardPage() {
                     <div key={check.label} className={cn('rounded-xl border px-3 py-2 text-sm', check.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900')}>
                       <p className="font-semibold">{check.label}</p>
                       <p className="mt-1 leading-5">{check.detail}</p>
+                      {!check.ok && check.actionId && check.actionLabel && (
+                        <Button type="button" variant="ghost" className="mt-2" onClick={() => runSeoCheckAction(check.actionId)}>
+                          {check.actionLabel}
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1728,57 +1759,79 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
     {
       label: 'Title SEO',
       ok: titleLength >= 35 && titleLength <= 65,
-      detail: titleLength ? `Hiện tại ${titleLength} ký tự. Nên trong khoảng 35-65 ký tự.` : 'Chưa có title SEO.'
+      detail: titleLength ? `Hiện tại ${titleLength} ký tự. Nên trong khoảng 35-65 ký tự.` : 'Chưa có title SEO.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Điền SEO nhanh'
     },
     {
       label: 'Meta description',
       ok: descriptionLength >= 120 && descriptionLength <= 160,
-      detail: descriptionLength ? `Hiện tại ${descriptionLength} ký tự. Nên trong khoảng 120-160 ký tự.` : 'Chưa có meta description.'
+      detail: descriptionLength ? `Hiện tại ${descriptionLength} ký tự. Nên trong khoảng 120-160 ký tự.` : 'Chưa có meta description.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Tạo mô tả SEO'
     },
     {
       label: 'Focus keyword',
       ok: Boolean(keyword),
-      detail: keyword ? `Đang theo dõi từ khóa: "${form.focusKeyword.trim()}".` : 'Nên nhập 1 từ khóa chính cho bài viết.'
+      detail: keyword ? `Đang theo dõi từ khóa: "${form.focusKeyword.trim()}".` : 'Nên nhập 1 từ khóa chính cho bài viết.',
+      actionId: 'focus-keyword',
+      actionLabel: 'Nhập từ khóa'
     },
     {
       label: 'Keyword trong title / slug / mô tả',
       ok: Boolean(keyword) && `${form.title} ${form.seoTitle}`.toLowerCase().includes(keyword) && form.slug.includes(slugifyLocal(keyword)) && form.seoDescription.toLowerCase().includes(keyword),
-      detail: 'Từ khóa chính nên xuất hiện trong title, slug và meta description.'
+      detail: 'Từ khóa chính nên xuất hiện trong title, slug và meta description.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Vá SEO nhanh'
     },
     {
       label: 'Keyword trong mở bài',
       ok: Boolean(keyword) && introText.includes(keyword),
-      detail: 'Từ khóa nên xuất hiện sớm trong đoạn đầu để Google và người đọc hiểu chủ đề nhanh hơn.'
+      detail: 'Từ khóa nên xuất hiện sớm trong đoạn đầu để Google và người đọc hiểu chủ đề nhanh hơn.',
+      actionId: 'content',
+      actionLabel: 'Sửa mở bài'
     },
     {
       label: 'Mật độ từ khóa',
       ok: !keyword || (keywordDensity >= 0.5 && keywordDensity <= 2.5),
-      detail: keyword ? `Mật độ hiện tại khoảng ${keywordDensity}%. Nên giữ tự nhiên, thường trong khoảng 0.5% - 2.5%.` : 'Chưa có từ khóa chính để theo dõi mật độ.'
+      detail: keyword ? `Mật độ hiện tại khoảng ${keywordDensity}%. Nên giữ tự nhiên, thường trong khoảng 0.5% - 2.5%.` : 'Chưa có từ khóa chính để theo dõi mật độ.',
+      actionId: 'content',
+      actionLabel: 'Chỉnh nội dung'
     },
     {
       label: 'Độ dài nội dung',
       ok: words >= 300,
-      detail: `Bài hiện có ${words} từ. Bài public nên có ít nhất 300 từ để đủ chiều sâu SEO.`
+      detail: `Bài hiện có ${words} từ. Bài public nên có ít nhất 300 từ để đủ chiều sâu SEO.`,
+      actionId: 'content',
+      actionLabel: 'Viết thêm nội dung'
     },
     {
       label: 'Cấu trúc heading',
       ok: headings >= 2,
-      detail: `Hiện có ${headings} heading H2/H3. Nên có ít nhất 2 heading để dễ quét nội dung.`
+      detail: `Hiện có ${headings} heading H2/H3. Nên có ít nhất 2 heading để dễ quét nội dung.`,
+      actionId: 'content',
+      actionLabel: 'Thêm heading'
     },
     {
       label: 'Hình ảnh và alt text',
       ok: Boolean(form.coverImageUrl) && Boolean(form.coverImageAlt),
-      detail: form.coverImageUrl ? 'Đã có ảnh đại diện. Hãy chắc alt text mô tả đúng nội dung ảnh.' : 'Nên thêm ảnh đại diện và alt text.'
+      detail: form.coverImageUrl ? 'Đã có ảnh đại diện. Hãy chắc alt text mô tả đúng nội dung ảnh.' : 'Nên thêm ảnh đại diện và alt text.',
+      actionId: 'cover',
+      actionLabel: 'Thêm ảnh bìa'
     },
     {
       label: 'Liên kết nội bộ',
       ok: internalLinks >= 1,
-      detail: `Hiện có ${internalLinks} liên kết nội bộ. Nên có ít nhất 1 link về sản phẩm, HTX hoặc trang liên quan.`
+      detail: `Hiện có ${internalLinks} liên kết nội bộ. Nên có ít nhất 1 link về sản phẩm, HTX hoặc trang liên quan.`,
+      actionId: 'internal-link',
+      actionLabel: 'Chèn link nội bộ'
     },
     {
       label: 'Canonical và social',
       ok: Boolean(form.canonicalUrl) && Boolean(form.ogTitle || form.twitterTitle) && Boolean(form.ogDescription || form.twitterDescription),
-      detail: 'Canonical, OG và Twitter giúp bài hiển thị đúng khi index và chia sẻ mạng xã hội.'
+      detail: 'Canonical, OG và Twitter giúp bài hiển thị đúng khi index và chia sẻ mạng xã hội.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Điền social/SEO'
     }
   ];
 
