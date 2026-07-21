@@ -124,6 +124,13 @@ type AutofillItem = {
   label: string;
 };
 
+type PreparedDiffItem = {
+  id: 'slug' | 'excerpt' | 'keyword' | 'seoTitle' | 'seoDescription' | 'canonical' | 'coverAlt' | 'body' | 'tags';
+  label: string;
+  before: string;
+  after: string;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -322,6 +329,8 @@ export default function NewsDashboardPage() {
   const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
   const quickWins = useMemo(() => buildQuickWins(form, seo, focusKeywordSuggestions), [form, seo, focusKeywordSuggestions]);
   const autofillPlan = useMemo(() => buildAutofillPlan(form, seo), [form, seo]);
+  const preparedPreview = useMemo(() => buildPreparedNewsForm(form), [form]);
+  const preparedDiffs = useMemo(() => buildPreparedDiffs(form, preparedPreview), [form, preparedPreview]);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
@@ -1142,6 +1151,28 @@ export default function NewsDashboardPage() {
                         <span key={item.id} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
                           {item.label}
                         </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {preparedDiffs.length > 0 && (
+                  <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem truoc sau khi chuan bi publish</p>
+                    <div className="mt-3 space-y-2">
+                      {preparedDiffs.map((item) => (
+                        <div key={item.id} className="rounded-xl border border-slate-100 bg-slate-50/80 p-3">
+                          <p className="text-sm font-semibold text-ink">{item.label}</p>
+                          <div className="mt-2 grid gap-2 md:grid-cols-2">
+                            <div>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Hien tai</p>
+                              <p className="mt-1 text-sm leading-6 text-slate-600">{item.before}</p>
+                            </div>
+                            <div>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">Sau khi tu bo sung</p>
+                              <p className="mt-1 text-sm leading-6 text-emerald-800">{item.after}</p>
+                            </div>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -2469,6 +2500,40 @@ function buildAutofillPlan(form: NewsForm, seo: SeoScoreResult): AutofillItem[] 
   if (!form.tags.trim() && seo.stats.words >= 120) items.push({ id: 'tags', label: 'Tags goi y' });
 
   return items.slice(0, 8);
+}
+
+function buildPreparedDiffs(form: NewsForm, prepared: NewsForm): PreparedDiffItem[] {
+  const diffs: PreparedDiffItem[] = [];
+
+  const addDiff = (id: PreparedDiffItem['id'], label: string, before: string, after: string) => {
+    const cleanBefore = before.trim() || 'Chưa có';
+    const cleanAfter = after.trim() || 'Chưa có';
+    if (cleanBefore === cleanAfter) return;
+    diffs.push({ id, label, before: cleanBefore, after: cleanAfter });
+  };
+
+  addDiff('slug', 'Slug', form.slug, prepared.slug);
+  addDiff('excerpt', 'Mô tả ngắn', form.excerpt, prepared.excerpt);
+  addDiff('keyword', 'Từ khóa chính', form.focusKeyword, prepared.focusKeyword);
+  addDiff('seoTitle', 'SEO title', form.seoTitle, prepared.seoTitle);
+  addDiff('seoDescription', 'Meta description', form.seoDescription, prepared.seoDescription);
+  addDiff('canonical', 'Canonical URL', form.canonicalUrl, prepared.canonicalUrl);
+  addDiff('coverAlt', 'Alt ảnh bìa', form.coverImageAlt, prepared.coverImageAlt);
+  addDiff('tags', 'Tags', form.tags, prepared.tags);
+
+  const beforeBodySignals = [
+    /<h[23][^>]*>/i.test(form.bodyHtml) ? 'Đã có heading' : 'Chưa có heading',
+    /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/i.test(form.bodyHtml) ? 'Đã có internal link' : 'Chưa có internal link',
+    stripHtml(form.bodyHtml).slice(0, 180)
+  ].join(' · ');
+  const afterBodySignals = [
+    /<h[23][^>]*>/i.test(prepared.bodyHtml) ? 'Đã có heading' : 'Chưa có heading',
+    /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/i.test(prepared.bodyHtml) ? 'Đã có internal link' : 'Chưa có internal link',
+    stripHtml(prepared.bodyHtml).slice(0, 180)
+  ].join(' · ');
+  addDiff('body', 'Khung nội dung', beforeBodySignals, afterBodySignals);
+
+  return diffs.slice(0, 6);
 }
 
 function publishReadinessClass(ratio: number) {
