@@ -1550,6 +1550,7 @@ export default function NewsDashboardPage() {
             )}
           </Panel>
 
+          {isAdvancedMode && (
           <Panel className="space-y-3">
             <div className="grid gap-3 md:grid-cols-3">
               <label className="space-y-1 text-sm font-semibold">
@@ -1577,6 +1578,7 @@ export default function NewsDashboardPage() {
               </label>
             </div>
           </Panel>
+          )}
 
           {isAdvancedMode ? (
             <>
@@ -2128,7 +2130,7 @@ export default function NewsDashboardPage() {
               )}
             </div>
           </Panel>
-
+          {isAdvancedMode && (
           <Panel className="space-y-3">
             <div className="flex items-center justify-between gap-3">
               <div>
@@ -2157,7 +2159,9 @@ export default function NewsDashboardPage() {
               ))}
             </div>
           </Panel>
+          )}
 
+          {isAdvancedMode && (
           <Panel className="space-y-3">
             <h2 className="text-lg font-bold">Danh mục</h2>
             <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
@@ -2172,6 +2176,7 @@ export default function NewsDashboardPage() {
               ))}
             </div>
           </Panel>
+          )}
 
           <Panel className="space-y-3">
             <div className="relative">
