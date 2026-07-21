@@ -243,7 +243,8 @@ const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
 ];
 
 function buildPreparedNewsForm(form: NewsForm): NewsForm {
-  const bodyText = stripHtml(form.bodyHtml);
+  const preparedBodyHtml = buildPreparedBodyHtml(form);
+  const bodyText = stripHtml(preparedBodyHtml);
   const canonicalSlug = form.slug || slugifyLocal(form.title);
   const fallbackExcerpt = form.excerpt || trimText(bodyText, 180);
   const fallbackDescription = trimText(fallbackExcerpt || bodyText, 155);
@@ -258,6 +259,7 @@ function buildPreparedNewsForm(form: NewsForm): NewsForm {
 
   return {
     ...form,
+    bodyHtml: preparedBodyHtml,
     slug: form.slug || canonicalSlug,
     excerpt: form.excerpt || fallbackExcerpt,
     focusKeyword: form.focusKeyword || form.title.trim(),
@@ -2173,6 +2175,29 @@ function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
 }
 
+function buildPreparedBodyHtml(form: NewsForm) {
+  let bodyHtml = form.bodyHtml || '<p></p>';
+  const keyword = (form.focusKeyword || form.title).trim();
+  const stripped = stripHtml(bodyHtml);
+
+  if (keyword && !stripped.slice(0, 180).toLowerCase().includes(keyword.toLowerCase())) {
+    const introParagraph = `<p><strong>${escapeHtml(keyword)}</strong> la noi dung trong tam cua bai viet nay. Duoi day la nhung thong tin quan trong de nguoi doc va Google hieu nhanh chu de ban dang dang.</p>`;
+    bodyHtml = `${introParagraph}${bodyHtml}`;
+  }
+
+  if (stripped.split(/\s+/).filter(Boolean).length >= 120 && !/<h[23][^>]*>/i.test(bodyHtml)) {
+    const headingBlock = '<h2>Thong tin chinh</h2><p>Bo sung y chinh quan trong tai day.</p><h2>Noi dung can biet</h2><p>Mo rong them chi tiet, loi ich hoac huong dan cu the.</p>';
+    bodyHtml = `${headingBlock}${bodyHtml}`;
+  }
+
+  if (!/<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/i.test(bodyHtml)) {
+    const internalLink = suggestPrimaryInternalLink(form);
+    bodyHtml = `${bodyHtml}<p><a href="${internalLink.href}">${escapeHtml(internalLink.label)}</a></p>`;
+  }
+
+  return bodyHtml;
+}
+
 function trimText(value: string, max: number) {
   const clean = value.replace(/\s+/g, ' ').trim();
   if (clean.length <= max) return clean;
@@ -2433,6 +2458,19 @@ function suggestFocusKeywords(form: NewsForm) {
     .filter((value) => !/^(tin tuc|cap nhat|huong dan|htxonline)$/i.test(slugifyLocal(value)));
 
   return Array.from(new Set(suggested)).slice(0, 4);
+}
+
+function suggestPrimaryInternalLink(form: NewsForm) {
+  if (form.focusKeyword.trim()) {
+    return {
+      label: `Xem them san pham lien quan "${form.focusKeyword.trim()}"`,
+      href: `/san-pham?search=${encodeURIComponent(form.focusKeyword.trim())}`
+    };
+  }
+  return {
+    label: 'Kham pha them san pham va hop tac xa tren HTXONLINE',
+    href: '/san-pham'
+  };
 }
 
 function buildInternalLinkSuggestions(form: NewsForm) {
