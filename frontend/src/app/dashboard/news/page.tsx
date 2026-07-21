@@ -112,6 +112,13 @@ type NextStepSuggestion = {
   actionLabel: string;
 };
 
+type QuickWinSuggestion = {
+  id: 'title' | 'excerpt' | 'keyword' | 'intro' | 'cover-alt' | 'tags';
+  title: string;
+  detail: string;
+  actionLabel: string;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -304,12 +311,13 @@ export default function NewsDashboardPage() {
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
   const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
   const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
+  const focusKeywordSuggestions = useMemo(() => suggestFocusKeywords(form), [form]);
   const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
+  const quickWins = useMemo(() => buildQuickWins(form, seo, focusKeywordSuggestions), [form, seo, focusKeywordSuggestions]);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
   const seoDescriptionLength = form.seoDescription.trim().length;
-  const focusKeywordSuggestions = useMemo(() => suggestFocusKeywords(form), [form]);
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -866,6 +874,36 @@ export default function NewsDashboardPage() {
     }
     if (stepId === 'links') {
       insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0]);
+    }
+  }
+
+  function runQuickWin(winId: QuickWinSuggestion['id']) {
+    if (winId === 'title') {
+      document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]')?.focus();
+      return;
+    }
+    if (winId === 'excerpt') {
+      fillExcerptFromBody();
+      return;
+    }
+    if (winId === 'keyword') {
+      if (focusKeywordSuggestions[0]) {
+        applyFocusKeywordSuggestion(focusKeywordSuggestions[0]);
+        return;
+      }
+      document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]')?.focus();
+      return;
+    }
+    if (winId === 'intro') {
+      ensureKeywordInIntro();
+      return;
+    }
+    if (winId === 'cover-alt') {
+      update('coverImageAlt', form.coverImageAlt || form.focusKeyword || form.title);
+      return;
+    }
+    if (winId === 'tags') {
+      fillSuggestedTags();
     }
   }
 
@@ -1576,6 +1614,23 @@ export default function NewsDashboardPage() {
 
         <aside className="space-y-4">
           <Panel className="space-y-3">
+            {quickWins.length > 0 && (
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-900">Sua nhanh trong 1 phut</p>
+                <p className="mt-1 text-lg font-bold text-ink">Chi can xu ly 2-4 viec nho ben duoi la bai se dep va chuan hon rat nhieu.</p>
+                <div className="mt-3 space-y-2">
+                  {quickWins.map((item) => (
+                    <div key={item.id} className="rounded-xl border border-white/90 bg-white/90 p-3">
+                      <p className="font-semibold text-ink">{item.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</p>
+                      <Button type="button" variant="ghost" className="mt-2" onClick={() => runQuickWin(item.id)}>
+                        {item.actionLabel}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Việc nên làm tiếp</p>
               <p className="mt-1 text-lg font-bold text-ink">Editor sẽ gợi ý đúng thao tác tiếp theo để bài nhanh đủ chuẩn.</p>
@@ -2236,6 +2291,70 @@ function buildNextStepSuggestions(form: NewsForm, seo: SeoScoreResult): NextStep
     });
   }
   return suggestions.slice(0, 4);
+}
+
+function buildQuickWins(form: NewsForm, seo: SeoScoreResult, focusKeywordSuggestions: string[]): QuickWinSuggestion[] {
+  const wins: QuickWinSuggestion[] = [];
+  const keyword = form.focusKeyword.trim();
+  const introHasKeyword = keyword && stripHtml(form.bodyHtml).slice(0, 180).toLowerCase().includes(keyword.toLowerCase());
+
+  if (!form.title.trim()) {
+    wins.push({
+      id: 'title',
+      title: 'Viết tiêu đề rõ ràng',
+      detail: 'Tiêu đề là điểm xuất phát cho slug, từ khóa, SEO title và preview chia sẻ.',
+      actionLabel: 'Nhập tiêu đề'
+    });
+  }
+
+  if (form.excerpt.trim().length < 80 && stripHtml(form.bodyHtml)) {
+    wins.push({
+      id: 'excerpt',
+      title: 'Tạo mô tả ngắn từ nội dung',
+      detail: 'Mô tả ngắn giúp danh sách tin tức và meta description rõ ràng hơn ngay lập tức.',
+      actionLabel: 'Tạo mô tả'
+    });
+  }
+
+  if (!keyword) {
+    wins.push({
+      id: 'keyword',
+      title: 'Chọn 1 từ khóa chính',
+      detail: focusKeywordSuggestions[0]
+        ? `Hệ thống đã gợi ý sẵn "${focusKeywordSuggestions[0]}" để bạn dùng nhanh.`
+        : 'Chỉ cần 1 cụm từ khóa chính là đủ để editor chấm bài chính xác hơn.',
+      actionLabel: focusKeywordSuggestions[0] ? 'Dùng từ khóa gợi ý' : 'Nhập từ khóa'
+    });
+  }
+
+  if (keyword && !introHasKeyword) {
+    wins.push({
+      id: 'intro',
+      title: 'Đưa từ khóa vào mở bài',
+      detail: 'Chỉ cần thêm 1 đoạn mở đầu có từ khóa là điểm SEO thường tăng ngay và người đọc hiểu chủ đề nhanh hơn.',
+      actionLabel: 'Chèn mở bài'
+    });
+  }
+
+  if (form.coverImageUrl.trim() && !form.coverImageAlt.trim()) {
+    wins.push({
+      id: 'cover-alt',
+      title: 'Điền alt text cho ảnh bìa',
+      detail: 'Alt text giúp ảnh rõ nghĩa hơn cho SEO và chia sẻ. Có thể lấy theo tiêu đề hoặc từ khóa chính.',
+      actionLabel: 'Điền alt ngay'
+    });
+  }
+
+  if (seo.stats.words >= 120 && !form.tags.trim()) {
+    wins.push({
+      id: 'tags',
+      title: 'Tạo tag gợi ý cho bài',
+      detail: 'Tag giúp nhóm bài cùng chủ đề và hỗ trợ điều hướng tốt hơn trong kho nội dung.',
+      actionLabel: 'Gợi ý tags'
+    });
+  }
+
+  return wins.slice(0, 4);
 }
 
 function publishReadinessClass(ratio: number) {
