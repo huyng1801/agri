@@ -3197,6 +3197,7 @@ function suggestTags(form: NewsForm) {
     ...form.title.split(/[,:;|/-]+/),
     ...bodyText.split(/[.!?]+/).slice(0, 2)
   ]
+    .map((value) => (typeof value === 'string' ? value : ''))
     .map((value) => value.trim())
     .map((value) => normalizeTag(value))
     .filter(Boolean);
@@ -3215,6 +3216,7 @@ function suggestFocusKeywords(form: NewsForm) {
     titleParts[1],
     ...suggestTags(form).slice(0, 4)
   ]
+    .map((value) => (typeof value === 'string' ? value : ''))
     .map((value) => value.trim())
     .filter(Boolean)
     .filter((value) => value.length >= 4)
