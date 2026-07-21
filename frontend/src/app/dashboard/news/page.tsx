@@ -77,7 +77,7 @@ type SeoCheck = {
   label: string;
   detail: string;
   ok: boolean;
-  actionId?: 'seo-defaults' | 'focus-keyword' | 'content' | 'cover' | 'internal-link';
+  actionId?: 'seo-defaults' | 'focus-keyword' | 'content' | 'cover' | 'internal-link' | 'intro-keyword';
   actionLabel?: string;
 };
 
@@ -309,6 +309,7 @@ export default function NewsDashboardPage() {
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
   const seoDescriptionLength = form.seoDescription.trim().length;
+  const focusKeywordSuggestions = useMemo(() => suggestFocusKeywords(form), [form]);
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -794,6 +795,32 @@ export default function NewsDashboardPage() {
     setForm((current) => buildPreparedNewsForm(current));
   }
 
+  function applyFocusKeywordSuggestion(keyword: string) {
+    if (!keyword.trim()) return;
+    setForm((current) => ({
+      ...current,
+      focusKeyword: keyword,
+      coverImageAlt: current.coverImageAlt || keyword
+    }));
+  }
+
+  function ensureKeywordInIntro() {
+    const keyword = form.focusKeyword.trim() || form.title.trim();
+    if (!keyword) return;
+    const bodyText = stripHtml(form.bodyHtml).toLowerCase();
+    if (bodyText.slice(0, 180).includes(keyword.toLowerCase())) return;
+
+    const introParagraph = `<p><strong>${escapeHtml(keyword)}</strong> la noi dung trong tam cua bai viet nay. Duoi day la nhung thong tin quan trong de nguoi doc va Google hieu nhanh chu de ban dang dang.</p>`;
+    if (editorMode === 'visual') {
+      update('bodyHtml', `${introParagraph}${form.bodyHtml}`);
+      window.requestAnimationFrame(() => {
+        if (visualEditorRef.current) visualEditorRef.current.innerHTML = `${introParagraph}${form.bodyHtml}`;
+      });
+      return;
+    }
+    update('bodyHtml', `${introParagraph}${form.bodyHtml}`);
+  }
+
   function fillExcerptFromBody() {
     const fallbackExcerpt = trimText(stripHtml(form.bodyHtml), 180);
     if (!fallbackExcerpt) return;
@@ -855,6 +882,10 @@ export default function NewsDashboardPage() {
     if (actionId === 'content') {
       if (editorMode === 'visual') focusVisualEditor();
       else bodyRef.current?.focus();
+      return;
+    }
+    if (actionId === 'intro-keyword') {
+      ensureKeywordInIntro();
       return;
     }
     if (actionId === 'cover') {
@@ -1350,6 +1381,25 @@ export default function NewsDashboardPage() {
                     <span className="text-xs font-semibold text-slate-500">
                       {form.focusKeyword.trim() ? 'Chọn 1 cụm từ khóa chính để hệ thống chấm title, mô tả, mật độ và phần mở bài.' : 'Nên chọn 1 cụm từ khóa chính, không cần nhồi nhiều từ khóa.'}
                     </span>
+                    {focusKeywordSuggestions.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {focusKeywordSuggestions.map((keyword) => (
+                          <button
+                            key={keyword}
+                            type="button"
+                            className={cn(
+                              'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                              form.focusKeyword.trim().toLowerCase() === keyword.toLowerCase()
+                                ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+                                : 'border-slate-200 bg-white text-slate-700 hover:border-leaf hover:text-leaf'
+                            )}
+                            onClick={() => applyFocusKeywordSuggestion(keyword)}
+                          >
+                            Dùng: {keyword}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
                     <span>SEO title</span>
@@ -1608,6 +1658,24 @@ export default function NewsDashboardPage() {
                     ? 'Bài đã có nền tốt, nhưng nên xử lý thêm vài mục cảnh báo màu vàng để tăng khả năng hiển thị.'
                     : 'Bài còn thiếu vài thành phần quan trọng. Hãy dùng checklist bên dưới hoặc nút vá nhanh để hoàn thiện nhanh hơn.'}
               </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {!form.focusKeyword.trim() && focusKeywordSuggestions[0] && (
+                  <Button type="button" variant="ghost" onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}>
+                    <Target size={18} aria-hidden="true" />
+                    Chọn từ khóa gợi ý
+                  </Button>
+                )}
+                {form.focusKeyword.trim() && !stripHtml(form.bodyHtml).slice(0, 180).toLowerCase().includes(form.focusKeyword.trim().toLowerCase()) && (
+                  <Button type="button" variant="ghost" onClick={ensureKeywordInIntro}>
+                    <FileText size={18} aria-hidden="true" />
+                    Chèn mở bài có từ khóa
+                  </Button>
+                )}
+                <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                  <Sparkles size={18} aria-hidden="true" />
+                  Hoàn thiện SEO cơ bản
+                </Button>
+              </div>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
@@ -1868,8 +1936,8 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
       label: 'Keyword trong mở bài',
       ok: Boolean(keyword) && introText.includes(keyword),
       detail: 'Từ khóa nên xuất hiện sớm trong đoạn đầu để Google và người đọc hiểu chủ đề nhanh hơn.',
-      actionId: 'content',
-      actionLabel: 'Sửa mở bài'
+      actionId: 'intro-keyword',
+      actionLabel: 'Chèn mở bài chuẩn SEO'
     },
     {
       label: 'Mật độ từ khóa',
@@ -2188,6 +2256,26 @@ function suggestTags(form: NewsForm) {
     .filter(Boolean);
 
   return Array.from(new Set(suggestions)).slice(0, 6);
+}
+
+function suggestFocusKeywords(form: NewsForm) {
+  const titleParts = form.title
+    .split(/[:;|,()/-]+/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+  const suggested = [
+    form.focusKeyword,
+    titleParts[0],
+    titleParts[1],
+    ...suggestTags(form).slice(0, 4)
+  ]
+    .map((value) => value.trim())
+    .filter(Boolean)
+    .filter((value) => value.length >= 4)
+    .map((value) => value.replace(/\s+/g, ' '))
+    .filter((value) => !/^(tin tuc|cap nhat|huong dan|htxonline)$/i.test(slugifyLocal(value)));
+
+  return Array.from(new Set(suggested)).slice(0, 4);
 }
 
 function buildInternalLinkSuggestions(form: NewsForm) {
