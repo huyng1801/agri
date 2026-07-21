@@ -427,6 +427,10 @@ export default function NewsDashboardPage() {
   const articleLibraryOpen = isAdvancedMode || Boolean(search.trim()) || Boolean(editingId);
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
+  const preparePreviewOpen = isAdvancedMode;
+  const simpleSeoBoardOpen = isAdvancedMode || seoMustFixCount > 0;
+  const templateLibraryOpen = isAdvancedMode;
+  const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1336,9 +1340,15 @@ export default function NewsDashboardPage() {
                   </div>
                 )}
                 {preparedDiffs.length > 0 && (
-                  <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem truoc sau khi chuan bi publish</p>
-                    <div className="mt-3 space-y-2">
+                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={preparePreviewOpen}>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem truoc sau khi chuan bi publish</p>
+                        <p className="mt-1 text-sm text-slate-600">{preparedDiffs.length} muc se duoc tu bo sung neu ban bam chuan bi publish.</p>
+                      </div>
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{preparedDiffs.length} muc</span>
+                    </summary>
+                    <div className="space-y-2 border-t border-slate-100 px-3 py-3">
                       {preparedDiffs.map((item) => (
                         <div key={item.id} className="rounded-xl border border-slate-100 bg-slate-50/80 p-3">
                           <p className="text-sm font-semibold text-ink">{item.label}</p>
@@ -1355,25 +1365,25 @@ export default function NewsDashboardPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </details>
                 )}
                 {!isAdvancedMode && (
-                  <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
+                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={simpleSeoBoardOpen}>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den SEO dang WordPress</p>
-                        <p className="mt-1 text-sm font-bold text-ink">Xanh la on, vang la con viec nen xu ly ngay truoc khi dang</p>
+                        <p className="mt-1 text-sm font-bold text-ink">Xanh la on, vang la con viec nen xu ly truoc khi dang.</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
                           {seoSignals.filter((item) => item.ok).length}/{seoSignals.length} tin hieu xanh
                         </span>
                         <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
-                          {seoSignals.filter((item) => !item.ok && item.priority === 'must').length} muc can xu ly truoc
+                          {seoSignals.filter((item) => !item.ok && item.priority === 'must').length} muc gap
                         </span>
                       </div>
-                    </div>
-                    <div className="mt-3 grid gap-2">
+                    </summary>
+                    <div className="grid gap-2 border-t border-slate-100 px-3 py-3">
                       {seoSignals.map((signal) => (
                         <div
                           key={signal.id}
@@ -1414,7 +1424,7 @@ export default function NewsDashboardPage() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </details>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
@@ -1442,11 +1452,20 @@ export default function NewsDashboardPage() {
         </Panel>
 
           <Panel className="space-y-4">
-            <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/40 p-3">
-              <div className="flex items-start gap-3">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
-                  <FileText size={18} aria-hidden="true" />
-                </span>
+            <details className="group rounded-2xl border border-dashed border-leaf/30 bg-mint/40" open={templateLibraryOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
+                <div className="flex items-start gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
+                    <FileText size={18} aria-hidden="true" />
+                  </span>
+                  <div>
+                    <p className="text-sm font-bold text-ink">Mẫu bài nhanh và hướng dẫn 3 bước</p>
+                    <p className="text-sm leading-6 text-slate-600">Mở khi bạn muốn lấy khung bài có sẵn hoặc xem lại workflow nhanh.</p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mẫu</span>
+              </summary>
+              <div className="space-y-4 border-t border-white/70 px-3 py-3">
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-bold text-ink">Mẫu bài nhanh để đăng mà không cần viết từ đầu</p>
@@ -1469,26 +1488,26 @@ export default function NewsDashboardPage() {
                     ))}
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 1</p>
-                <p className="mt-1 text-sm font-bold text-ink">Nhập tiêu đề và mô tả</p>
-                <p className="mt-1 text-sm leading-6 text-slate-600">Hệ thống tự gợi ý slug, title SEO và mô tả nếu bạn chưa nhập.</p>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 1</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Nhập tiêu đề và mô tả</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Hệ thống tự gợi ý slug, title SEO và mô tả nếu bạn chưa nhập.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Soạn trực quan như WordPress</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Chế độ trực quan là mặc định. Có thể dán ảnh trực tiếp, bôi đậm, tạo heading và chèn link ngay trên editor.</p>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Xem điểm SEO rồi publish</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Checklist bên phải sẽ chấm title, keyword, heading, ảnh, liên kết và độ dễ đọc.</p>
+                  </div>
+                </div>
               </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
-                <p className="mt-1 text-sm font-bold text-ink">Soạn trực quan như WordPress</p>
-                <p className="mt-1 text-sm leading-6 text-slate-600">Chế độ trực quan là mặc định. Có thể dán ảnh trực tiếp, bôi đậm, tạo heading và chèn link ngay trên editor.</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
-                <p className="mt-1 text-sm font-bold text-ink">Xem điểm SEO rồi publish</p>
-                <p className="mt-1 text-sm leading-6 text-slate-600">Checklist bên phải sẽ chấm title, keyword, heading, ảnh, liên kết và độ dễ đọc.</p>
-              </div>
-            </div>
+            </details>
 
             <div className="flex flex-wrap items-center gap-2">
               {editorSnippets.map(([Icon, snippet]) => (
@@ -1635,14 +1654,16 @@ export default function NewsDashboardPage() {
               </label>
             )}
 
-            <div className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">
-              <p className="font-semibold text-ink">Mẹo đăng bài nhanh</p>
-              <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
-              <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
-              <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
-              <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
-              <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
-            </div>
+            <details className="rounded-md border border-slate-200 bg-slate-50" open={editorTipsOpen}>
+              <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Mẹo đăng bài nhanh</summary>
+              <div className="space-y-2 border-t border-slate-200 px-3 py-3 text-sm leading-6 text-slate-600">
+                <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
+                <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
+                <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
+                <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
+                <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
+              </div>
+            </details>
 
             {preview && (
               <div className="prose max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
