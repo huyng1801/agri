@@ -230,6 +230,10 @@ export default function NewsDashboardPage() {
   const seo = useMemo(() => clientSeoScore(form), [form]);
   const articleItems = articles.data?.data.data ?? [];
   const categoryItems = categories.data?.data ?? [];
+  const permalink = form.canonicalUrl || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`;
+  const excerptLength = form.excerpt.trim().length;
+  const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
+  const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -535,6 +539,21 @@ export default function NewsDashboardPage() {
     }));
   }
 
+  function fillExcerptFromBody() {
+    const fallbackExcerpt = trimText(stripHtml(form.bodyHtml), 180);
+    if (!fallbackExcerpt) return;
+    update('excerpt', fallbackExcerpt);
+  }
+
+  async function copyPermalink() {
+    try {
+      await navigator.clipboard.writeText(permalink);
+      window.alert('Đã copy permalink bài viết.');
+    } catch {
+      window.alert('Không thể copy permalink trên trình duyệt này.');
+    }
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -593,6 +612,44 @@ export default function NewsDashboardPage() {
                 <span>Mô tả ngắn</span>
                 <Textarea data-testid="news-excerpt-input" value={form.excerpt} onChange={(event) => update('excerpt', event.target.value)} />
               </label>
+            </div>
+            <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
+                <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Tự điền SEO
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                    <FileText size={18} aria-hidden="true" />
+                    Tạo mô tả ngắn
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                    <LinkIcon size={18} aria-hidden="true" />
+                    Copy link
+                  </Button>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="rounded-xl border border-white bg-white p-3">
+                  <p className="text-slate-500">Độ dài tiêu đề</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
+                </div>
+                <div className="rounded-xl border border-white bg-white p-3">
+                  <p className="text-slate-500">Mô tả ngắn</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
+                </div>
+                <div className="rounded-xl border border-white bg-white p-3">
+                  <p className="text-slate-500">Thời gian đọc</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phút</p>
+                </div>
+                <div className="rounded-xl border border-white bg-white p-3">
+                  <p className="text-slate-500">Sẵn sàng publish</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
+                </div>
+              </div>
             </div>
           </Panel>
 
@@ -919,6 +976,28 @@ export default function NewsDashboardPage() {
         </form>
 
         <aside className="space-y-4">
+          <Panel className="space-y-3">
+            <div className={cn('rounded-2xl border px-4 py-3', publishReadinessClass(publishReadiness.ratio))}>
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Trạng thái xuất bản</p>
+              <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
+              <p className="mt-1 text-sm leading-6 text-slate-700">{publishReadiness.detail}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              {publishReadiness.items.map((item) => (
+                <div
+                  key={item.label}
+                  className={cn(
+                    'rounded-xl border px-3 py-2',
+                    item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900'
+                  )}
+                >
+                  <p className="font-semibold">{item.label}</p>
+                  <p className="mt-1 text-xs leading-5">{item.ok ? 'Đã sẵn sàng' : 'Cần bổ sung'}</p>
+                </div>
+              ))}
+            </div>
+          </Panel>
+
           <Panel>
             <div className="grid grid-cols-2 gap-3">
               <div data-testid="news-seo-score" className={cn('rounded-md p-3 text-center', seoScoreClass(seo.score))}>
@@ -1275,4 +1354,52 @@ function dateInputValue(value?: string | null) {
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Không thể xử lý yêu cầu';
+}
+
+function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
+  const items = [
+    { label: 'Tiêu đề', ok: Boolean(form.title.trim()) },
+    { label: 'Mô tả ngắn', ok: form.excerpt.trim().length >= 80 },
+    { label: 'Ảnh đại diện', ok: Boolean(form.coverImageUrl.trim()) },
+    { label: 'Từ khóa', ok: Boolean(form.focusKeyword.trim()) },
+    { label: 'Nội dung', ok: seo.stats.words >= 180 },
+    { label: 'Slug', ok: Boolean(form.slug.trim()) }
+  ];
+  const completed = items.filter((item) => item.ok).length;
+  const total = items.length;
+  const ratio = completed / total;
+  if (ratio === 1) {
+    return {
+      items,
+      completed,
+      total,
+      ratio,
+      label: 'Có thể publish ngay',
+      detail: 'Bài viết đã đủ các thành phần cốt lõi để lên trang public và tiếp tục tối ưu SEO chi tiết.'
+    };
+  }
+  if (ratio >= 0.67) {
+    return {
+      items,
+      completed,
+      total,
+      ratio,
+      label: 'Gần sẵn sàng',
+      detail: 'Khung bài đã khá đầy đủ. Chỉ cần bổ sung vài trường còn thiếu trước khi publish.'
+    };
+  }
+  return {
+    items,
+    completed,
+    total,
+    ratio,
+    label: 'Cần bổ sung thêm',
+    detail: 'Nên hoàn thiện tiêu đề, mô tả, ảnh và nội dung trước khi đưa bài viết lên public.'
+  };
+}
+
+function publishReadinessClass(ratio: number) {
+  if (ratio === 1) return 'border-emerald-200 bg-emerald-50';
+  if (ratio >= 0.67) return 'border-amber-200 bg-amber-50';
+  return 'border-rose-200 bg-rose-50';
 }
