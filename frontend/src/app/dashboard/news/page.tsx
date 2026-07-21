@@ -423,6 +423,8 @@ export default function NewsDashboardPage() {
   const detailHelpersOpen = isAdvancedMode || quickWinCount > 0 || nextStepCount > 0;
   const seoReviewOpen = isAdvancedMode || seo.score < 80 || seoMustFixCount > 0;
   const outlineReviewOpen = isAdvancedMode || contentOutlinePreview.headings.length === 0 || contentOutlinePreview.imagesMissingAlt > 0;
+  const bodyUploadActive = uploading === 'body';
+  const coverUploadActive = uploading === 'cover';
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1562,6 +1564,12 @@ export default function NewsDashboardPage() {
                     </div>
                   </div>
                 )}
+                {bodyUploadActive && (
+                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                    <p className="font-bold text-ink">Dang upload anh vao noi dung bai viet</p>
+                    <p className="mt-1 leading-6">Ban co the tiep tuc go noi dung. Anh se duoc chen vao editor ngay sau khi upload xong.</p>
+                  </div>
+                )}
                 <div
                   ref={visualEditorRef}
                   data-testid="news-content-editor"
@@ -1680,6 +1688,12 @@ export default function NewsDashboardPage() {
               <p className="font-semibold text-ink">Dán hoặc thả ảnh bìa trực tiếp</p>
               <p className="mt-1">Click vào khung này rồi bấm `Ctrl+V`, hoặc kéo ảnh vào đây để tự upload ảnh cover.</p>
             </div>
+            {coverUploadActive && (
+              <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                <p className="font-bold text-ink">Dang upload anh bia</p>
+                <p className="mt-1 leading-6">Anh bia se tu dong cap nhat vao cover, Open Graph va Twitter image neu cac truong nay dang de trong.</p>
+              </div>
+            )}
             {form.coverImageUrl && (
               <img
                 data-testid="news-cover-image-preview"
@@ -2065,6 +2079,7 @@ export default function NewsDashboardPage() {
                 </div>
               </div>
             )}
+            {false && (
             <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Việc nên làm tiếp</p>
               <p className="mt-1 text-lg font-bold text-ink">Editor sẽ gợi ý đúng thao tác tiếp theo để bài nhanh đủ chuẩn.</p>
@@ -2080,6 +2095,7 @@ export default function NewsDashboardPage() {
                 </Button>
               </div>
             </div>
+            )}
             <div className="space-y-2">
               {nextStepSuggestions.map((step) => (
                 <div key={step.id} className="rounded-xl border border-slate-200 bg-white p-3">
