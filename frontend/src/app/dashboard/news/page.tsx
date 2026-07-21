@@ -431,6 +431,7 @@ export default function NewsDashboardPage() {
   const simpleSeoBoardOpen = isAdvancedMode || seoMustFixCount > 0;
   const templateLibraryOpen = isAdvancedMode;
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
+  const quickStartGuideOpen = isAdvancedMode;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1199,20 +1200,6 @@ export default function NewsDashboardPage() {
                   </Button>
                 </div>
               </div>
-              <div className="mt-4 grid gap-2 md:grid-cols-4">
-                {[
-                  ['1', 'Nhap tieu de', 'He thong tu goi y slug va keyword.'],
-                  ['2', 'Dan noi dung', 'Co the paste text va anh truc tiep vao editor.'],
-                  ['3', 'Them cover', 'Dan, tha hoac upload anh bia nhanh.'],
-                  ['4', 'Kiem tra roi publish', 'Checklist ben phai se bao muc nao con thieu.']
-                ].map(([step, title, text]) => (
-                  <div key={step} className="rounded-xl border border-white/80 bg-white/88 p-3 shadow-sm">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
-                    <p className="mt-1 text-sm font-bold text-ink">{title}</p>
-                    <p className="mt-1 text-sm leading-5 text-slate-600">{text}</p>
-                  </div>
-                ))}
-              </div>
               <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
@@ -1246,6 +1233,29 @@ export default function NewsDashboardPage() {
                   ))}
                 </div>
               </div>
+              <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 shadow-sm" open={quickStartGuideOpen}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Huong dan 4 buoc dang nhanh</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Mo khi can xem lai luong dang bai cho nguoi moi.</p>
+                  </div>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">4 buoc</span>
+                </summary>
+                <div className="grid gap-2 border-t border-slate-100 px-3 py-3 md:grid-cols-4">
+                  {[
+                    ['1', 'Nhap tieu de', 'He thong tu goi y slug va keyword.'],
+                    ['2', 'Dan noi dung', 'Co the paste text va anh truc tiep vao editor.'],
+                    ['3', 'Them cover', 'Dan, tha hoac upload anh bia nhanh.'],
+                    ['4', 'Kiem tra roi publish', 'Checklist ben phai se bao muc nao con thieu.']
+                  ].map(([step, title, text]) => (
+                    <div key={step} className="rounded-xl border border-white/80 bg-white/88 p-3 shadow-sm">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
+                      <p className="mt-1 text-sm font-bold text-ink">{title}</p>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">{text}</p>
+                    </div>
+                  ))}
+                </div>
+              </details>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
