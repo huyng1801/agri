@@ -1292,8 +1292,17 @@ export default function NewsDashboardPage() {
             </div>
           </Panel>
 
-          <Panel className="space-y-4">
-            <div className="grid gap-3 md:grid-cols-2">
+          <Panel className="p-0">
+            <details className="group" open={Boolean(form.tags || form.publishedAt || form.scheduledAt || form.isFeatured || form.showOnHome)}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                <div>
+                  <p className="text-sm font-bold text-ink">Lich dang, tags va tuy chon hien thi</p>
+                  <p className="text-sm text-slate-600">Chi mo muc nay khi can len lich, them tag hoac day bai ra trang chu.</p>
+                </div>
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+              </summary>
+              <div className="border-t border-slate-100 px-4 pb-4 pt-4">
+                <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>Tags</span>
                 <Input value={form.tags} onChange={(event) => update('tags', event.target.value)} placeholder="tag 1, tag 2" />
@@ -1322,7 +1331,9 @@ export default function NewsDashboardPage() {
                   Hiển thị trang chủ
                 </label>
               </div>
-            </div>
+                </div>
+              </div>
+            </details>
           </Panel>
 
           {(saveArticle.isError || archiveArticle.isError || quickPublishArticle.isError) && (

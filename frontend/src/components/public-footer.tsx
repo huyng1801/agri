@@ -17,20 +17,20 @@ export async function PublicFooter() {
         <div className="grid gap-4 border-b border-white/15 py-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">HTXONLINE</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight">Dua san pham HTX len san voi trai nghiem ro rang, dang tin va de chot don.</h2>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <a
               href={telHref(profile.hotline)}
               className="inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-5 text-sm font-bold text-leaf transition hover:-translate-y-0.5"
             >
-              Goi hotline
+              Gọi hotline
             </a>
             <Link
               href="/lien-he"
               className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/25 px-5 text-sm font-bold text-white transition hover:bg-white/10"
             >
-              Nhan tu van
+              Nhận tư vấn
             </Link>
           </div>
         </div>
@@ -41,42 +41,42 @@ export async function PublicFooter() {
               <PublicLogo size={40} className="ring-2 ring-white/30" />
               HTXONLINE
             </div>
-            <p className="mt-3 text-sm font-bold uppercase tracking-wide text-white/95">San nong san so cho hop tac xa</p>
+            <p className="mt-3 text-sm font-bold uppercase tracking-wide text-white/95">Sàn nông sản số cho hợp tác xã</p>
             <p className="mt-3 max-w-sm text-sm leading-6 text-white/85">
-              Ket noi nguoi mua voi san pham HTX minh bach, QR truy xuat nguon goc va dat hang COD tren mot nen tang thong nhat.
+              Kết nối người mua với sản phẩm HTX minh bạch, QR truy xuất nguồn gốc và đặt hàng COD trên một nền tảng thống nhất.
             </p>
           </div>
 
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-white">Dich vu HTXONLINE</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-white">Dịch vụ HTXONLINE</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/" className={footerLinkClass}>Trang chu</Link>
-              <Link href="/san-pham" className={footerLinkClass}>San pham nong san</Link>
-              <Link href="/htx" className={footerLinkClass}>Danh sach HTX</Link>
-              <Link href="/tin-tuc" className={footerLinkClass}>Tin tuc HTXONLINE</Link>
-              <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuat</Link>
-              <Link href="/thanh-toan" className={footerLinkClass}>Dat hang COD</Link>
+              <Link href="/" className={footerLinkClass}>Trang chủ</Link>
+              <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
+              <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
+              <Link href="/tin-tuc" className={footerLinkClass}>Tin tức HTXONLINE</Link>
+              <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
+              <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
           </div>
 
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-white">Giai phap va quy trinh</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-white">Giải pháp và quy trình</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/ve-chung-toi" className={footerLinkClass}>Ve chung toi</Link>
-              <Link href="/gioi-thieu" className={footerLinkClass}>Gioi thieu nen tang</Link>
-              <Link href="/huong-dan-mua-hang" className={footerLinkClass}>Huong dan mua hang</Link>
-              <Link href="/tra-cuu-don-hang" className={footerLinkClass}>Tra cuu don hang</Link>
+              <Link href="/ve-chung-toi" className={footerLinkClass}>Về chúng tôi</Link>
+              <Link href="/gioi-thieu" className={footerLinkClass}>Giới thiệu nền tảng</Link>
+              <Link href="/huong-dan-mua-hang" className={footerLinkClass}>Hướng dẫn mua hàng</Link>
+              <Link href="/tra-cuu-don-hang" className={footerLinkClass}>Tra cứu đơn hàng</Link>
             </div>
           </div>
 
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-white">Ho tro khach hang</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-white">Hỗ trợ khách hàng</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/dieu-khoan-su-dung" className={footerLinkClass}>Dieu khoan su dung</Link>
-              <Link href="/chinh-sach-bao-mat" className={footerLinkClass}>Chinh sach bao mat</Link>
-              <Link href="/chinh-sach-doi-tra" className={footerLinkClass}>Chinh sach doi tra</Link>
-              <Link href="/chinh-sach-van-hanh" className={footerLinkClass}>Chinh sach van hanh</Link>
-              <Link href="/lien-he" className={footerLinkClass}>Lien he</Link>
+              <Link href="/dieu-khoan-su-dung" className={footerLinkClass}>Điều khoản sử dụng</Link>
+              <Link href="/chinh-sach-bao-mat" className={footerLinkClass}>Chính sách bảo mật</Link>
+              <Link href="/chinh-sach-doi-tra" className={footerLinkClass}>Chính sách đổi trả</Link>
+              <Link href="/chinh-sach-van-hanh" className={footerLinkClass}>Chính sách vận hành</Link>
+              <Link href="/lien-he" className={footerLinkClass}>Liên hệ</Link>
             </div>
           </div>
         </div>
@@ -105,8 +105,8 @@ export async function PublicFooter() {
               <div className="overflow-hidden rounded-2xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.08))] shadow-[0_18px_48px_rgba(15,23,42,0.16)]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3">
                   <div>
-                    <p className="text-sm font-semibold text-white/90">Ban do van phong ho tro</p>
-                    <p className="mt-1 text-xs text-white/70">Neu ban do nhung tai cham hoac tile bi trang, hay mo nhanh bang nut Google Maps.</p>
+                    <p className="text-sm font-semibold text-white/90">Bản đồ văn phòng hỗ trợ</p>
+                    <p className="mt-1 text-xs text-white/70">Nếu bản đồ nhúng tải chậm hoặc tile bị trắng, hãy mở nhanh bằng Google Maps.</p>
                   </div>
                   <a
                     href={mapSearchUrl}
@@ -114,16 +114,16 @@ export async function PublicFooter() {
                     rel="noreferrer"
                     className="inline-flex min-h-10 items-center justify-center rounded-xl bg-white px-3.5 text-xs font-semibold text-leaf transition hover:-translate-y-0.5"
                   >
-                    Mo Google Maps
+                    Mở Google Maps
                   </a>
                 </div>
                 <div className="relative min-h-[18rem] bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),rgba(255,255,255,0.04)_62%)]">
                   <div className="pointer-events-none absolute inset-x-4 top-4 z-10 rounded-2xl border border-white/15 bg-[#1f5f3d]/88 px-4 py-3 shadow-lg backdrop-blur">
-                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Dia chi ho tro</p>
+                    <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Địa chỉ hỗ trợ</p>
                     <p className="mt-1 text-sm font-semibold leading-6 text-white">{profile.address}</p>
                   </div>
                   <iframe
-                    title="Ban do HTXONLINE"
+                    title="Bản đồ HTXONLINE"
                     src={profile.mapEmbedUrl}
                     className={cn('h-72 w-full border-0 bg-white/5 lg:h-[300px]')}
                     loading="eager"
@@ -137,35 +137,35 @@ export async function PublicFooter() {
                     rel="noreferrer"
                     className="inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5"
                   >
-                    Mo tren Google Maps
+                    Mở trên Google Maps
                   </a>
                   <Link
                     href="/lien-he"
                     className="inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 px-4 text-sm font-semibold text-white transition hover:bg-white/10"
                   >
-                    Xem trang lien he day du
+                    Xem trang liên hệ đầy đủ
                   </Link>
                 </div>
               </div>
             ) : (
               <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
                 <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
-                <p>Lien he HTXONLINE de duoc ho tro tim duong den van phong hoac hen lich tu van phu hop.</p>
+                <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc hẹn lịch tư vấn phù hợp.</p>
                 <Link href="/lien-he" className="mt-3 font-semibold text-white underline-offset-2 hover:underline">
-                  Xem thong tin lien he
+                  Xem thông tin liên hệ
                 </Link>
               </div>
             )}
 
             <div className="flex flex-col justify-between gap-4 text-sm text-white/85">
               <div>
-                <p className="font-semibold text-white">Cam ket minh bach</p>
+                <p className="font-semibold text-white">Cam kết minh bạch</p>
                 <p className="mt-2 leading-6">
-                  HTXONLINE ho tro hop tac xa so hoa san pham, vung trong, nhat ky canh tac va QR Passport de nguoi mua tin tuong nguon goc.
+                  HTXONLINE hỗ trợ hợp tác xã số hóa sản phẩm, vùng trồng, nhật ký canh tác và QR Passport để người mua tin tưởng nguồn gốc.
                 </p>
               </div>
-              <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. San nong san so cho hop tac xa Viet Nam.</p>
-              <p className="text-xs text-white/60">Duoc thiet ke va van hanh boi HTXONLINE</p>
+              <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
+              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi HTXONLINE</p>
             </div>
           </div>
         </div>
