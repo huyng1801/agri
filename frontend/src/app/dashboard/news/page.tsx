@@ -432,6 +432,7 @@ export default function NewsDashboardPage() {
   const templateLibraryOpen = isAdvancedMode;
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
   const quickStartGuideOpen = isAdvancedMode;
+  const editorToolsOpen = isAdvancedMode || needsImportedOptimization || editorMode === 'html';
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1519,6 +1520,62 @@ export default function NewsDashboardPage() {
               </div>
             </details>
 
+            {!isAdvancedMode && (
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
+                    <FileText size={18} aria-hidden="true" />
+                    Soan truc quan
+                  </Button>
+                  <Button type="button" variant={editorMode === 'html' ? 'primary' : 'ghost'} onClick={() => setEditorMode('html')}>
+                    <Code2 size={18} aria-hidden="true" />
+                    HTML
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
+                    <Eye size={18} aria-hidden="true" />
+                    Preview
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Target size={18} aria-hidden="true" />
+                    Va SEO nhanh
+                  </Button>
+                </div>
+                <details className="rounded-xl border border-slate-200 bg-slate-50" open={editorToolsOpen}>
+                  <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Dinh dang va cong cu them</summary>
+                  <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 px-3 py-3">
+                    {editorSnippets.map(([Icon, snippet]) => (
+                      <button
+                        key={`simple-${snippet}`}
+                        type="button"
+                        className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
+                        onClick={() => insertHtml(snippet)}
+                        title="Chen dinh dang"
+                      >
+                        <Icon size={18} aria-hidden="true" />
+                      </button>
+                    ))}
+                    <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                      <Sparkles size={18} aria-hidden="true" />
+                      Tu dien SEO
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                      <Sparkles size={18} aria-hidden="true" />
+                      Toi uu bai vua dan
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
+                      <Target size={18} aria-hidden="true" />
+                      Dong bo social
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={cleanPastedContent}>
+                      <RefreshCcw size={18} aria-hidden="true" />
+                      Lam sach noi dung dan
+                    </Button>
+                  </div>
+                </details>
+              </div>
+            )}
+
+            {isAdvancedMode && (
             <div className="flex flex-wrap items-center gap-2">
               {editorSnippets.map(([Icon, snippet]) => (
                 <button
@@ -1564,6 +1621,7 @@ export default function NewsDashboardPage() {
                 Preview
               </Button>
             </div>
+            )}
 
             {editorMode === 'visual' ? (
               <div className="space-y-2">
