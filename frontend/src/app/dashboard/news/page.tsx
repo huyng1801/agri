@@ -156,6 +156,27 @@ type ContentOutlinePreview = {
   estimatedMinutes: number;
 };
 
+type SeoSignalAction = QuickWinSuggestion['id'] | 'seo-defaults';
+
+type SeoSignal = {
+  id:
+    | 'keyword-title'
+    | 'keyword-slug'
+    | 'keyword-intro'
+    | 'meta-description'
+    | 'cover-alt'
+    | 'heading-structure'
+    | 'internal-link'
+    | 'social-preview'
+    | 'readability';
+  label: string;
+  detail: string;
+  ok: boolean;
+  priority: 'must' | 'should';
+  actionId?: SeoSignalAction;
+  actionLabel?: string;
+};
+
 type CorePublishItem = {
   id: 'title' | 'content' | 'cover';
   label: string;
@@ -367,6 +388,7 @@ export default function NewsDashboardPage() {
   const preparedDiffs = useMemo(() => buildPreparedDiffs(form, preparedPreview), [form, preparedPreview]);
   const resolvedMetaPreview = useMemo(() => buildResolvedMetaPreview(preparedPreview), [preparedPreview]);
   const contentOutlinePreview = useMemo(() => buildContentOutlinePreview(preparedPreview), [preparedPreview]);
+  const seoSignals = useMemo(() => buildSeoSignals(form, seo), [form, seo]);
   const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
   const canQuickPublish = corePublishItems.every((item) => item.ok);
@@ -1034,6 +1056,15 @@ export default function NewsDashboardPage() {
     }
   }
 
+  function runSeoSignalAction(actionId?: SeoSignalAction) {
+    if (!actionId) return;
+    if (actionId === 'seo-defaults') {
+      applyQuickSeoFixes();
+      return;
+    }
+    runQuickWin(actionId);
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -1288,6 +1319,65 @@ export default function NewsDashboardPage() {
                               <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">Sau khi tu bo sung</p>
                               <p className="mt-1 text-sm leading-6 text-emerald-800">{item.after}</p>
                             </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {!isAdvancedMode && (
+                  <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-3">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den SEO dang WordPress</p>
+                        <p className="mt-1 text-sm font-bold text-ink">Xanh la on, vang la con viec nen xu ly ngay truoc khi dang</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
+                          {seoSignals.filter((item) => item.ok).length}/{seoSignals.length} tin hieu xanh
+                        </span>
+                        <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-900">
+                          {seoSignals.filter((item) => !item.ok && item.priority === 'must').length} muc can xu ly truoc
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {seoSignals.map((signal) => (
+                        <div
+                          key={signal.id}
+                          className={cn(
+                            'rounded-xl border p-3',
+                            signal.ok
+                              ? 'border-emerald-200 bg-emerald-50/80'
+                              : signal.priority === 'must'
+                                ? 'border-amber-200 bg-amber-50/90'
+                                : 'border-slate-200 bg-slate-50'
+                          )}
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span
+                                  className={cn(
+                                    'rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.14em]',
+                                    signal.ok
+                                      ? 'bg-emerald-100 text-emerald-800'
+                                      : signal.priority === 'must'
+                                        ? 'bg-amber-100 text-amber-900'
+                                        : 'bg-slate-200 text-slate-700'
+                                  )}
+                                >
+                                  {signal.ok ? 'Xanh' : signal.priority === 'must' ? 'Can lam ngay' : 'Nen bo sung'}
+                                </span>
+                                <span className="text-sm font-bold text-ink">{signal.label}</span>
+                              </div>
+                              <p className="mt-2 text-sm leading-6 text-slate-700">{signal.detail}</p>
+                            </div>
+                            {!signal.ok && signal.actionId && signal.actionLabel && (
+                              <Button type="button" variant="ghost" onClick={() => runSeoSignalAction(signal.actionId)}>
+                                {signal.actionLabel}
+                              </Button>
+                            )}
                           </div>
                         </div>
                       ))}
@@ -2807,6 +2897,130 @@ function buildResolvedMetaPreview(form: NewsForm): ResolvedMetaPreview {
     twitterDescription,
     twitterImage
   };
+}
+
+function buildSeoSignals(form: NewsForm, seo: SeoScoreResult): SeoSignal[] {
+  const keyword = (form.focusKeyword || form.title).trim().toLowerCase();
+  const title = (form.title || form.seoTitle).trim().toLowerCase();
+  const slug = form.slug.trim().toLowerCase();
+  const intro = stripHtml(form.bodyHtml).slice(0, 180).toLowerCase();
+  const socialReady = Boolean((form.ogTitle || form.twitterTitle).trim()) && Boolean((form.ogDescription || form.twitterDescription).trim());
+
+  return [
+    {
+      id: 'keyword-title',
+      label: 'Từ khóa có trong tiêu đề',
+      ok: !keyword || title.includes(keyword),
+      priority: 'must',
+      detail: keyword
+        ? title.includes(keyword)
+          ? 'Tiêu đề đã nhắc đúng từ khóa chính, đây là tín hiệu mạnh cho SEO và người đọc.'
+          : 'Từ khóa chính chưa xuất hiện rõ trong tiêu đề. Nên đưa cụm từ khóa vào tiêu đề chính.'
+        : 'Chưa chọn từ khóa chính. Bạn nên nhập hoặc dùng từ khóa gợi ý để hệ thống chấm chuẩn hơn.',
+      actionId: keyword ? undefined : 'keyword',
+      actionLabel: keyword ? undefined : 'Chon tu khoa'
+    },
+    {
+      id: 'keyword-slug',
+      label: 'Từ khóa có trong slug',
+      ok: !keyword || slug.includes(slugifyLocal(keyword)),
+      priority: 'should',
+      detail: keyword
+        ? slug.includes(slugifyLocal(keyword))
+          ? 'Slug đã chứa từ khóa chính và đang khá dễ đọc khi chia sẻ.'
+          : 'Slug chưa phản ánh rõ từ khóa chính. Nên để slug ngắn và bám sát chủ đề bài.'
+        : 'Slug sẽ tốt hơn khi có từ khóa chính.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Sua slug nhanh'
+    },
+    {
+      id: 'keyword-intro',
+      label: 'Từ khóa có trong mở bài',
+      ok: !keyword || intro.includes(keyword),
+      priority: 'must',
+      detail: keyword
+        ? intro.includes(keyword)
+          ? 'Mở bài đã nhắc từ khóa nên Google và người đọc hiểu chủ đề nhanh hơn.'
+          : 'Đoạn mở đầu chưa có từ khóa chính. Chỉ cần thêm một câu mở bài là điểm SEO thường tăng ngay.'
+        : 'Khi có từ khóa, bạn nên cho nó vào 1-2 câu đầu bài.',
+      actionId: keyword ? 'intro' : 'keyword',
+      actionLabel: keyword ? 'Chen mo bai' : 'Them tu khoa'
+    },
+    {
+      id: 'meta-description',
+      label: 'Meta description đủ rõ',
+      ok: seo.stats.descriptionLength >= 80 && seo.stats.descriptionLength <= 160,
+      priority: 'must',
+      detail:
+        seo.stats.descriptionLength >= 80 && seo.stats.descriptionLength <= 160
+          ? 'Meta description đang nằm trong vùng đẹp để hiển thị trên kết quả tìm kiếm.'
+          : `Meta description hiện có ${seo.stats.descriptionLength} ký tự. Nên giữ khoảng 80-160 ký tự để dễ hiển thị đủ ý.`,
+      actionId: 'excerpt',
+      actionLabel: 'Tao mo ta nhanh'
+    },
+    {
+      id: 'cover-alt',
+      label: 'Ảnh bìa và alt text',
+      ok: Boolean(form.coverImageUrl.trim()) && Boolean(form.coverImageAlt.trim()),
+      priority: 'must',
+      detail: form.coverImageUrl.trim()
+        ? form.coverImageAlt.trim()
+          ? 'Ảnh bìa đã có alt text, tốt cho chia sẻ và SEO hình ảnh.'
+          : 'Ảnh bìa đã có nhưng alt text còn trống. Bạn nên điền alt theo tiêu đề hoặc từ khóa.'
+        : 'Bài viết chưa có ảnh bìa. Nên thêm ảnh bìa để preview chia sẻ và danh sách tin tức đẹp hơn.',
+      actionId: form.coverImageUrl.trim() ? 'cover-alt' : undefined,
+      actionLabel: form.coverImageUrl.trim() ? 'Dien alt anh' : undefined
+    },
+    {
+      id: 'heading-structure',
+      label: 'Cấu trúc heading dễ quét',
+      ok: seo.stats.headings >= 2,
+      priority: 'must',
+      detail:
+        seo.stats.headings >= 2
+          ? `Bài đã có ${seo.stats.headings} heading H2/H3 nên khá dễ đọc và dễ quét nội dung.`
+          : `Hiện mới có ${seo.stats.headings} heading H2/H3. Nên có ít nhất 2 heading để chia ý rõ ràng.`,
+      actionId: 'heading',
+      actionLabel: 'Chen heading'
+    },
+    {
+      id: 'internal-link',
+      label: 'Có ít nhất 1 internal link',
+      ok: seo.stats.internalLinks >= 1,
+      priority: 'should',
+      detail:
+        seo.stats.internalLinks >= 1
+          ? 'Bài đã có internal link dẫn sang trang liên quan trong hệ thống.'
+          : 'Bài chưa có internal link. Nên chèn ít nhất 1 link về sản phẩm, HTX hoặc trang liên hệ.',
+      actionId: 'link',
+      actionLabel: 'Chen link'
+    },
+    {
+      id: 'social-preview',
+      label: 'Preview mạng xã hội đã sẵn',
+      ok: socialReady,
+      priority: 'should',
+      detail: socialReady
+        ? 'OG/Twitter title và description đã sẵn sàng để chia sẻ lên mạng xã hội.'
+        : 'Thiếu dữ liệu social preview. Có thể bấm vá nhanh để editor tự điền từ tiêu đề, mô tả và ảnh bìa.',
+      actionId: 'seo-defaults',
+      actionLabel: 'Tu dien social'
+    },
+    {
+      id: 'readability',
+      label: 'Độ dễ đọc ổn',
+      ok: seo.readability >= 60,
+      priority: 'should',
+      detail:
+        seo.readability >= 80
+          ? 'Câu chữ đang khá gọn, dễ đọc trên mobile.'
+          : seo.readability >= 60
+            ? 'Độ dễ đọc đang ổn, có thể rút thêm vài câu dài nếu muốn tăng điểm.'
+            : 'Bài đang hơi dày hoặc câu dài. Nên tách đoạn ngắn hơn để người đọc trên mobile đỡ mệt.',
+      actionId: 'heading',
+      actionLabel: 'To chuc lai bai'
+    }
+  ];
 }
 
 function buildContentOutlinePreview(form: NewsForm): ContentOutlinePreview {
