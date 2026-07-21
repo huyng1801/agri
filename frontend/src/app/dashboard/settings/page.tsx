@@ -542,7 +542,7 @@ function objectToPublicForm(value: unknown) {
     hotline: String(object.hotline ?? '0907001200'),
     hotlineDisplay: String(object.hotlineDisplay ?? ''),
     supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
-    address: String(object.address ?? 'So 130, To 8, Ap My Xuong, Xa My Tho, Tinh Dong Thap'),
+    address: String(object.address ?? 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
     messengerUrl: String(object.messengerUrl ?? ''),
     mapEmbedUrl: String(object.mapEmbedUrl ?? defaultMapEmbedUrl),
     logoUrl: String(object.logoUrl ?? ''),

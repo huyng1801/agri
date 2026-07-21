@@ -295,6 +295,22 @@ export default function NewsDashboardPage() {
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
   const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
   const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
+  const seoAdvancedOpen = Boolean(
+    form.focusKeyword.trim() ||
+      form.seoTitle.trim() ||
+      form.seoDescription.trim() ||
+      form.canonicalUrl.trim() ||
+      form.robotsNoIndex ||
+      form.robotsNoFollow
+  );
+  const socialAdvancedOpen = Boolean(
+    form.ogTitle.trim() ||
+      form.ogDescription.trim() ||
+      form.ogImageUrl.trim() ||
+      form.twitterTitle.trim() ||
+      form.twitterDescription.trim() ||
+      form.twitterImageUrl.trim()
+  );
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1209,90 +1225,115 @@ export default function NewsDashboardPage() {
             </div>
           </Panel>
 
-          <Panel className="space-y-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-ink">SEO cơ bản</p>
-                <p className="text-sm text-slate-600">Thiết lập title, keyword, canonical và robots giống WordPress nhưng thao tác ngắn hơn.</p>
+          <Panel className="p-0">
+            <details className="group" open={seoAdvancedOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                <div>
+                  <p className="text-sm font-bold text-ink">SEO cơ bản</p>
+                  <p className="text-sm text-slate-600">Giống WordPress: có điểm, checklist và meta đầy đủ, nhưng có thể bỏ qua nếu đăng bài nhanh.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
+                </div>
+              </summary>
+              <div className="border-t border-slate-100 px-4 pb-4 pt-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm text-slate-600">Thiết lập title, keyword, canonical và robots cho bài viết khi cần tối ưu sâu hơn.</p>
+                  <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Gợi ý nhanh
+                  </Button>
+                </div>
+                <p className="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-600">
+                  Nếu đăng nhanh, bạn có thể bỏ qua mục này. Hệ thống vẫn sẽ ưu tiên lấy social preview từ SEO và ảnh bìa khi có thể.
+                </p>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Focus keyword</span>
+                    <Input data-testid="news-focus-keyword-input" value={form.focusKeyword} onChange={(event) => update('focusKeyword', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>SEO title</span>
+                    <Input data-testid="news-seo-title-input" value={form.seoTitle} onChange={(event) => update('seoTitle', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold md:col-span-2">
+                    <span>Meta description</span>
+                    <Textarea data-testid="news-seo-description-input" value={form.seoDescription} onChange={(event) => update('seoDescription', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Canonical URL</span>
+                    <Input data-testid="news-canonical-url-input" value={form.canonicalUrl} onChange={(event) => update('canonicalUrl', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Schema type</span>
+                    <Select data-testid="news-schema-type-select" value={form.schemaType} onChange={(event) => update('schemaType', event.target.value)}>
+                      <option value="Article">Article</option>
+                      <option value="NewsArticle">NewsArticle</option>
+                      <option value="BlogPosting">BlogPosting</option>
+                    </Select>
+                  </label>
+                  <label className="flex items-center gap-2 text-sm font-semibold">
+                    <input data-testid="news-noindex-switch" type="checkbox" checked={form.robotsNoIndex} onChange={(event) => update('robotsNoIndex', event.target.checked)} />
+                    Noindex
+                  </label>
+                  <label className="flex items-center gap-2 text-sm font-semibold">
+                    <input data-testid="news-nofollow-switch" type="checkbox" checked={form.robotsNoFollow} onChange={(event) => update('robotsNoFollow', event.target.checked)} />
+                    Nofollow
+                  </label>
+                </div>
               </div>
-              <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
-                <Sparkles size={18} aria-hidden="true" />
-                Gợi ý nhanh
-              </Button>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Focus keyword</span>
-                <Input data-testid="news-focus-keyword-input" value={form.focusKeyword} onChange={(event) => update('focusKeyword', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>SEO title</span>
-                <Input data-testid="news-seo-title-input" value={form.seoTitle} onChange={(event) => update('seoTitle', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                <span>Meta description</span>
-                <Textarea data-testid="news-seo-description-input" value={form.seoDescription} onChange={(event) => update('seoDescription', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Canonical URL</span>
-                <Input data-testid="news-canonical-url-input" value={form.canonicalUrl} onChange={(event) => update('canonicalUrl', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Schema type</span>
-                <Select data-testid="news-schema-type-select" value={form.schemaType} onChange={(event) => update('schemaType', event.target.value)}>
-                  <option value="Article">Article</option>
-                  <option value="NewsArticle">NewsArticle</option>
-                  <option value="BlogPosting">BlogPosting</option>
-                </Select>
-              </label>
-              <label className="flex items-center gap-2 text-sm font-semibold">
-                <input data-testid="news-noindex-switch" type="checkbox" checked={form.robotsNoIndex} onChange={(event) => update('robotsNoIndex', event.target.checked)} />
-                Noindex
-              </label>
-              <label className="flex items-center gap-2 text-sm font-semibold">
-                <input data-testid="news-nofollow-switch" type="checkbox" checked={form.robotsNoFollow} onChange={(event) => update('robotsNoFollow', event.target.checked)} />
-                Nofollow
-              </label>
-            </div>
+            </details>
           </Panel>
 
-          <Panel className="space-y-4">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-ink">Mạng xã hội</p>
-                <p className="text-sm text-slate-600">Preview chia sẻ Facebook/Twitter sẽ lấy từ các trường này.</p>
+          <Panel className="p-0">
+            <details className="group" open={socialAdvancedOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                <div>
+                  <p className="text-sm font-bold text-ink">Mạng xã hội</p>
+                  <p className="text-sm text-slate-600">Nếu bỏ trống, hệ thống ưu tiên lấy preview từ SEO title, mô tả và ảnh bìa.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{socialAdvancedOpen ? 'Đã tùy biến' : 'Tự động theo SEO'}</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
+                </div>
+              </summary>
+              <div className="border-t border-slate-100 px-4 pb-4 pt-4">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm text-slate-600">Preview chia sẻ Facebook và Twitter sẽ lấy từ các trường này khi bạn cần tùy biến.</p>
+                  <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
+                    <Target size={18} aria-hidden="true" />
+                    Lấy từ SEO
+                  </Button>
+                </div>
+                <div className="mt-3 grid gap-3 md:grid-cols-2">
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>OG title</span>
+                    <Input data-testid="news-og-title-input" value={form.ogTitle} onChange={(event) => update('ogTitle', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>OG image</span>
+                    <Input data-testid="news-og-image-input" value={form.ogImageUrl} onChange={(event) => update('ogImageUrl', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold md:col-span-2">
+                    <span>OG description</span>
+                    <Textarea data-testid="news-og-description-input" value={form.ogDescription} onChange={(event) => update('ogDescription', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Twitter title</span>
+                    <Input data-testid="news-twitter-title-input" value={form.twitterTitle} onChange={(event) => update('twitterTitle', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Twitter image</span>
+                    <Input data-testid="news-twitter-image-input" value={form.twitterImageUrl} onChange={(event) => update('twitterImageUrl', event.target.value)} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold md:col-span-2">
+                    <span>Twitter description</span>
+                    <Textarea data-testid="news-twitter-description-input" value={form.twitterDescription} onChange={(event) => update('twitterDescription', event.target.value)} />
+                  </label>
+                </div>
               </div>
-              <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
-                <Target size={18} aria-hidden="true" />
-                Lấy từ SEO
-              </Button>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <label className="space-y-1 text-sm font-semibold">
-                <span>OG title</span>
-                <Input data-testid="news-og-title-input" value={form.ogTitle} onChange={(event) => update('ogTitle', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>OG image</span>
-                <Input data-testid="news-og-image-input" value={form.ogImageUrl} onChange={(event) => update('ogImageUrl', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                <span>OG description</span>
-                <Textarea data-testid="news-og-description-input" value={form.ogDescription} onChange={(event) => update('ogDescription', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Twitter title</span>
-                <Input data-testid="news-twitter-title-input" value={form.twitterTitle} onChange={(event) => update('twitterTitle', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Twitter image</span>
-                <Input data-testid="news-twitter-image-input" value={form.twitterImageUrl} onChange={(event) => update('twitterImageUrl', event.target.value)} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                <span>Twitter description</span>
-                <Textarea data-testid="news-twitter-description-input" value={form.twitterDescription} onChange={(event) => update('twitterDescription', event.target.value)} />
-              </label>
-            </div>
+            </details>
           </Panel>
 
           <Panel className="p-0">
