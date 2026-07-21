@@ -433,7 +433,7 @@ export default function NewsDashboardPage() {
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
   const quickStartGuideOpen = isAdvancedMode;
   const editorToolsOpen = isAdvancedMode || needsImportedOptimization || editorMode === 'html';
-  const coverPanelOpen = isAdvancedMode || !form.coverImageUrl || coverUploadActive;
+  const coverPanelOpen = isAdvancedMode || coverUploadActive;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -2152,25 +2152,51 @@ export default function NewsDashboardPage() {
 
         <aside className="space-y-4">
           <Panel className="space-y-3">
-            <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Viec nen lam tiep</p>
-              <p className="mt-1 text-lg font-bold text-ink">Editor se goi y buoc ke tiep de bai nhanh dep va de publish hon.</p>
-              <p className="mt-1 text-sm leading-6 text-slate-700">
-                {quickWinCount > 0
-                  ? `Dang co ${quickWinCount} sua nhanh nen xu ly truoc.`
-                  : 'Khung co ban da on, ban co the bam tu dong hoan thien de ra bai nhanh hon.'}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Button type="button" onClick={preparePostForPublish}>
-                  <Sparkles size={18} aria-hidden="true" />
-                  Tu hoan thien co ban
-                </Button>
-                <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                  <Target size={18} aria-hidden="true" />
-                  Va SEO nhanh
-                </Button>
+            {isAdvancedMode ? (
+              <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Viec nen lam tiep</p>
+                <p className="mt-1 text-lg font-bold text-ink">Editor se goi y buoc ke tiep de bai nhanh dep va de publish hon.</p>
+                <p className="mt-1 text-sm leading-6 text-slate-700">
+                  {quickWinCount > 0
+                    ? `Dang co ${quickWinCount} sua nhanh nen xu ly truoc.`
+                    : 'Khung co ban da on, ban co the bam tu dong hoan thien de ra bai nhanh hon.'}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" onClick={preparePostForPublish}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Tu hoan thien co ban
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Target size={18} aria-hidden="true" />
+                    Va SEO nhanh
+                  </Button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="rounded-2xl border border-sky-200 bg-sky/30 px-4 py-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Viec nen lam tiep</p>
+                    <p className="mt-1 text-sm font-bold text-ink">
+                      {quickWinCount > 0 ? `${quickWinCount} viec nen xu ly truoc khi dang.` : 'Co the bam tu hoan thien de di nhanh hon.'}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                    {quickWinCount > 0 ? `${quickWinCount} viec gap` : 'Da co khung'}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" onClick={preparePostForPublish}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Tu hoan thien
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Target size={18} aria-hidden="true" />
+                    Va SEO
+                  </Button>
+                </div>
+              </div>
+            )}
             <details className="group rounded-2xl border border-slate-200 bg-white/95" open={detailHelpersOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
