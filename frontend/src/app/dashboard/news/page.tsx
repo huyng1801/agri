@@ -420,9 +420,11 @@ export default function NewsDashboardPage() {
   const nextStepCount = nextStepSuggestions.length;
   const seoMustFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'must').length;
   const seoShouldFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'should').length;
-  const detailHelpersOpen = isAdvancedMode || quickWinCount > 0 || nextStepCount > 0;
-  const seoReviewOpen = isAdvancedMode || seo.score < 80 || seoMustFixCount > 0;
-  const outlineReviewOpen = isAdvancedMode || contentOutlinePreview.headings.length === 0 || contentOutlinePreview.imagesMissingAlt > 0;
+  const detailHelpersOpen = isAdvancedMode;
+  const publishChecklistOpen = isAdvancedMode;
+  const seoReviewOpen = isAdvancedMode;
+  const outlineReviewOpen = isAdvancedMode;
+  const articleLibraryOpen = isAdvancedMode || Boolean(search.trim()) || Boolean(editingId);
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
 
@@ -2117,7 +2119,7 @@ export default function NewsDashboardPage() {
               <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
               <p className="mt-1 text-sm leading-6 text-slate-700">{publishReadiness.detail}</p>
             </div>
-            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={!isSimpleMode || publishChecklistIssues > 0}>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={publishChecklistOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
                   <p className="text-sm font-bold text-ink">Checklist xuat ban</p>
@@ -2412,30 +2414,47 @@ export default function NewsDashboardPage() {
           )}
 
           <Panel className="space-y-3">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-              <Input className="pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm bài viết" />
-            </div>
-            {articles.isLoading && <p className="text-sm text-slate-600">Đang tải...</p>}
-            <div className="space-y-2">
-              {articleItems.map((article) => (
-                <div key={article.id} className={cn('rounded-md border border-slate-200 p-3', editingId === article.id && 'border-leaf bg-mint')}>
-                  <button type="button" className="block w-full text-left font-bold text-ink" onClick={() => edit(article)}>
-                    {article.title}
-                  </button>
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <Badge className={statusClass(article.status)}>{statusLabel(article.status)}</Badge>
-                    <span>{formatDate(article.publishedAt || article.createdAt)}</span>
-                    <span>Điểm SEO {article.seoScore}</span>
-                  </div>
-                  <div className="mt-2 flex gap-2">
-                    <Button type="button" variant="ghost" onClick={() => edit(article)}>Sửa</Button>
-                    <Button type="button" variant="danger" onClick={() => archiveArticle.mutate(article.id)}>Ẩn</Button>
-                  </div>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={articleLibraryOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Kho bài viết</p>
+                  <p className="text-sm text-slate-600">
+                    {articleItems.length > 0
+                      ? `${articleItems.length} bài để xem lại, sửa hoặc ẩn.`
+                      : 'Nơi xem lại các bài đã tạo sau khi hoàn tất bài mới.'}
+                  </p>
                 </div>
-              ))}
-              {!articles.isLoading && articleItems.length === 0 && <p className="text-sm text-slate-600">Chưa có bài viết.</p>}
-            </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                  {articleItems.length} bài
+                </span>
+              </summary>
+              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
+                <div className="relative">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                  <Input className="pl-10" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm bài viết" />
+                </div>
+                {articles.isLoading && <p className="text-sm text-slate-600">Đang tải...</p>}
+                <div className="space-y-2">
+                  {articleItems.map((article) => (
+                    <div key={article.id} className={cn('rounded-md border border-slate-200 p-3', editingId === article.id && 'border-leaf bg-mint')}>
+                      <button type="button" className="block w-full text-left font-bold text-ink" onClick={() => edit(article)}>
+                        {article.title}
+                      </button>
+                      <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                        <Badge className={statusClass(article.status)}>{statusLabel(article.status)}</Badge>
+                        <span>{formatDate(article.publishedAt || article.createdAt)}</span>
+                        <span>Điểm SEO {article.seoScore}</span>
+                      </div>
+                      <div className="mt-2 flex gap-2">
+                        <Button type="button" variant="ghost" onClick={() => edit(article)}>Sửa</Button>
+                        <Button type="button" variant="danger" onClick={() => archiveArticle.mutate(article.id)}>Ẩn</Button>
+                      </div>
+                    </div>
+                  ))}
+                  {!articles.isLoading && articleItems.length === 0 && <p className="text-sm text-slate-600">Chưa có bài viết.</p>}
+                </div>
+              </div>
+            </details>
           </Panel>
         </aside>
       </div>
