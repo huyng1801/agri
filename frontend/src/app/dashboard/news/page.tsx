@@ -1052,7 +1052,7 @@ export default function NewsDashboardPage() {
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
                 </div>
                 <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
-                  Dang nhanh: chi can tieu de, noi dung, anh va bam &quot;Publish 1 cham&quot;. Cac muc SEO, social va lich dang co the bo sung sau.
+                  Dang nhanh: chi can tieu de, noi dung, anh va bam &quot;Publish 1 cham&quot;. Cac muc SEO, social va lich dang chi can mo khi that su can va co the bo sung sau.
                 </p>
                 <div
                   ref={visualEditorRef}
