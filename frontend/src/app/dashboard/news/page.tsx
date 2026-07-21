@@ -103,6 +103,13 @@ type InternalLinkSuggestion = {
   description: string;
 };
 
+type NextStepSuggestion = {
+  id: 'title' | 'content' | 'cover' | 'excerpt' | 'seo' | 'links';
+  title: string;
+  detail: string;
+  actionLabel: string;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -295,6 +302,7 @@ export default function NewsDashboardPage() {
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
   const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
   const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
+  const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -799,6 +807,33 @@ export default function NewsDashboardPage() {
     const snippet = `<p><a href="${suggestion.href}">${escapeHtml(suggestion.label)}</a></p>`;
     if (editorMode === 'visual') insertHtmlIntoVisualEditor(snippet);
     else insertHtml(snippet);
+  }
+
+  function runNextStepSuggestion(stepId: NextStepSuggestion['id']) {
+    if (stepId === 'title') {
+      document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]')?.focus();
+      return;
+    }
+    if (stepId === 'content') {
+      if (editorMode === 'visual') focusVisualEditor();
+      else bodyRef.current?.focus();
+      return;
+    }
+    if (stepId === 'cover') {
+      document.querySelector<HTMLInputElement>('[data-testid="news-cover-image-input"]')?.focus();
+      return;
+    }
+    if (stepId === 'excerpt') {
+      fillExcerptFromBody();
+      return;
+    }
+    if (stepId === 'seo') {
+      applyQuickSeoFixes();
+      return;
+    }
+    if (stepId === 'links') {
+      insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0]);
+    }
   }
 
   return (
@@ -1407,6 +1442,35 @@ export default function NewsDashboardPage() {
 
         <aside className="space-y-4">
           <Panel className="space-y-3">
+            <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Việc nên làm tiếp</p>
+              <p className="mt-1 text-lg font-bold text-ink">Editor sẽ gợi ý đúng thao tác tiếp theo để bài nhanh đủ chuẩn.</p>
+              <p className="mt-1 text-sm leading-6 text-slate-700">Nếu muốn đi nhanh nhất, bấm nút bên dưới để hệ thống tự điền những phần cơ bản còn thiếu trước.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button type="button" onClick={preparePostForPublish}>
+                  <Sparkles size={18} aria-hidden="true" />
+                  Tự hoàn thiện cơ bản
+                </Button>
+                <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                  <Target size={18} aria-hidden="true" />
+                  Vá SEO nhanh
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {nextStepSuggestions.map((step) => (
+                <div key={step.id} className="rounded-xl border border-slate-200 bg-white p-3">
+                  <p className="font-semibold text-ink">{step.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{step.detail}</p>
+                  <Button type="button" variant="ghost" className="mt-2" onClick={() => runNextStepSuggestion(step.id)}>
+                    {step.actionLabel}
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </Panel>
+
+          <Panel className="space-y-3">
             <div className={cn('rounded-2xl border px-4 py-3', publishReadinessClass(publishReadiness.ratio))}>
               <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Trạng thái xuất bản</p>
               <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
@@ -1885,6 +1949,59 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
     label: 'Cần bổ sung thêm',
     detail: 'Nên hoàn thiện tiêu đề, mô tả, ảnh và nội dung trước khi đưa bài viết lên public.'
   };
+}
+
+function buildNextStepSuggestions(form: NewsForm, seo: SeoScoreResult): NextStepSuggestion[] {
+  const suggestions: NextStepSuggestion[] = [];
+  if (!form.title.trim()) {
+    suggestions.push({
+      id: 'title',
+      title: 'Thêm tiêu đề rõ ràng',
+      detail: 'Tiêu đề là nền cho slug, keyword và toàn bộ preview SEO/social. Hãy viết ngắn gọn, đúng ý chính của bài.',
+      actionLabel: 'Nhập tiêu đề'
+    });
+  }
+  if (seo.stats.words < 180) {
+    suggestions.push({
+      id: 'content',
+      title: 'Bổ sung nội dung chính',
+      detail: 'Bài đang còn ngắn. Hãy thêm các đoạn mô tả, lợi ích, quy trình hoặc thông tin truy xuất để bài dễ lên chuẩn hơn.',
+      actionLabel: 'Soạn nội dung'
+    });
+  }
+  if (!form.coverImageUrl.trim()) {
+    suggestions.push({
+      id: 'cover',
+      title: 'Thêm ảnh bìa cho bài',
+      detail: 'Ảnh bìa giúp bài đẹp hơn trên trang tin tức và là nguồn mặc định cho social preview nếu bạn chưa tùy biến.',
+      actionLabel: 'Thêm ảnh bìa'
+    });
+  }
+  if (form.excerpt.trim().length < 80) {
+    suggestions.push({
+      id: 'excerpt',
+      title: 'Tạo mô tả ngắn dễ đọc',
+      detail: 'Mô tả ngắn đang còn thiếu hoặc quá ngắn. Hệ thống có thể tự rút gọn từ nội dung để bạn chỉnh lại nhanh.',
+      actionLabel: 'Tạo mô tả'
+    });
+  }
+  if (!form.focusKeyword.trim() || !form.seoTitle.trim() || !form.seoDescription.trim()) {
+    suggestions.push({
+      id: 'seo',
+      title: 'Điền nhanh SEO cơ bản',
+      detail: 'Bài chưa đủ keyword, SEO title hoặc meta description. Một cú bấm có thể tự vá những phần cơ bản còn thiếu.',
+      actionLabel: 'Vá SEO nhanh'
+    });
+  }
+  if (seo.stats.internalLinks === 0) {
+    suggestions.push({
+      id: 'links',
+      title: 'Chèn ít nhất một internal link',
+      detail: 'Link nội bộ giúp người đọc đi tiếp sang sản phẩm, HTX hoặc trang liên hệ, đồng thời cải thiện SEO on-page.',
+      actionLabel: 'Chèn link nội bộ'
+    });
+  }
+  return suggestions.slice(0, 4);
 }
 
 function publishReadinessClass(ratio: number) {
