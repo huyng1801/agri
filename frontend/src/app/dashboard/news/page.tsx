@@ -1641,7 +1641,7 @@ export default function NewsDashboardPage() {
           <Panel className="space-y-3">
             <h2 className="text-lg font-bold">Danh mục</h2>
             <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
-            <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="slug" />
+            <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="Đường dẫn danh mục" />
             <Button type="button" onClick={() => createCategory.mutate()} disabled={!categoryDraft.name || createCategory.isPending}>
               <Plus size={18} aria-hidden="true" />
               Thêm danh mục
@@ -1666,9 +1666,9 @@ export default function NewsDashboardPage() {
                     {article.title}
                   </button>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                    <Badge className={statusClass(article.status)}>{article.status}</Badge>
+                    <Badge className={statusClass(article.status)}>{statusLabel(article.status)}</Badge>
                     <span>{formatDate(article.publishedAt || article.createdAt)}</span>
-                    <span>SEO {article.seoScore}</span>
+                    <span>Điểm SEO {article.seoScore}</span>
                   </div>
                   <div className="mt-2 flex gap-2">
                     <Button type="button" variant="ghost" onClick={() => edit(article)}>Sửa</Button>
@@ -1885,6 +1885,14 @@ function statusClass(status: string) {
   if (status === 'PUBLISHED') return 'bg-mint text-leaf';
   if (status === 'DRAFT') return 'bg-sky text-slate-700';
   return 'bg-stone-100 text-stone-700';
+}
+
+function statusLabel(status: string) {
+  if (status === 'PUBLISHED') return 'Đã đăng';
+  if (status === 'DRAFT') return 'Nháp';
+  if (status === 'SCHEDULED') return 'Hẹn giờ';
+  if (status === 'ARCHIVED') return 'Lưu trữ';
+  return status;
 }
 
 function seoScoreClass(score: number) {

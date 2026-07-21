@@ -490,14 +490,25 @@ export default function SettingsPage() {
         </Panel>
       )}
 
-      <div className="grid gap-3 md:grid-cols-2">
-        {(settings.data?.data ?? []).map((setting) => (
-          <Panel key={setting.key}>
-            <h2 className="font-bold">{setting.key}</h2>
-            <pre className="mt-2 overflow-auto rounded-md bg-slate-50 p-3 text-xs">{JSON.stringify(setting.value, null, 2)}</pre>
-          </Panel>
-        ))}
-      </div>
+      <Panel className="p-0">
+        <details className="group">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+            <div>
+              <p className="text-sm font-bold text-ink">Dữ liệu nâng cao</p>
+              <p className="text-sm text-slate-600">Chỉ mở mục này khi cần kiểm tra dữ liệu hệ thống đã lưu sau khi bấm Lưu.</p>
+            </div>
+            <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
+          </summary>
+          <div className="grid gap-3 border-t border-slate-100 px-4 pb-4 pt-4 md:grid-cols-2">
+            {(settings.data?.data ?? []).map((setting) => (
+              <Panel key={setting.key}>
+                <h2 className="font-bold">{setting.key}</h2>
+                <pre className="mt-2 overflow-auto rounded-md bg-slate-50 p-3 text-xs">{JSON.stringify(setting.value, null, 2)}</pre>
+              </Panel>
+            ))}
+          </div>
+        </details>
+      </Panel>
     </div>
   );
 }
