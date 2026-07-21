@@ -164,6 +164,7 @@ type CorePublishItem = {
 };
 
 type EditorMode = 'visual' | 'html';
+type AuthorMode = 'simple' | 'advanced';
 
 type LocalDraftPayload = {
   savedAt: string;
@@ -332,6 +333,7 @@ export default function NewsDashboardPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
   const [editorMode, setEditorMode] = useState<EditorMode>('visual');
+  const [authorMode, setAuthorMode] = useState<AuthorMode>('simple');
   const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [bodyImage, setBodyImage] = useState({ url: '', alt: '', caption: '' });
   const [uploading, setUploading] = useState('');
@@ -372,6 +374,7 @@ export default function NewsDashboardPage() {
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
   const seoDescriptionLength = form.seoDescription.trim().length;
+  const isAdvancedMode = authorMode === 'advanced';
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -1038,7 +1041,29 @@ export default function NewsDashboardPage() {
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tin tức</h1>
           <p className="text-sm text-slate-600">Đăng bài public cho htxonline.vn/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1">
+            <button
+              type="button"
+              onClick={() => setAuthorMode('simple')}
+              className={cn(
+                'rounded-lg px-3 py-2 text-sm font-semibold transition',
+                !isAdvancedMode ? 'bg-leaf text-white shadow-sm' : 'text-slate-600 hover:text-ink'
+              )}
+            >
+              Che do don gian
+            </button>
+            <button
+              type="button"
+              onClick={() => setAuthorMode('advanced')}
+              className={cn(
+                'rounded-lg px-3 py-2 text-sm font-semibold transition',
+                isAdvancedMode ? 'bg-ink text-white shadow-sm' : 'text-slate-600 hover:text-ink'
+              )}
+            >
+              Nang cao
+            </button>
+          </div>
           <Button type="button" variant="ghost" onClick={() => articles.refetch()} aria-label="Tải lại">
             <RefreshCcw size={18} aria-hidden="true" />
           </Button>
@@ -1553,6 +1578,8 @@ export default function NewsDashboardPage() {
             </div>
           </Panel>
 
+          {isAdvancedMode ? (
+            <>
           <Panel className="p-0">
             <details className="group" open={seoAdvancedOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
@@ -1792,6 +1819,27 @@ export default function NewsDashboardPage() {
               </div>
             </details>
           </Panel>
+            </>
+          ) : (
+            <Panel className="border-slate-200 bg-slate-50/90">
+              <div className="space-y-3">
+                <p className="text-sm font-bold text-ink">Che do don gian dang bat</p>
+                <p className="text-sm leading-6 text-slate-600">
+                  Cac muc schema, canonical, robots, Open Graph, Twitter, lich dang va tuy chon hien thi dang duoc an bot de de thao tac hon.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Tu dien SEO co ban
+                  </Button>
+                  <Button type="button" onClick={() => setAuthorMode('advanced')}>
+                    <Target size={18} aria-hidden="true" />
+                    Mo che do nang cao
+                  </Button>
+                </div>
+              </div>
+            </Panel>
+          )}
 
           {(saveArticle.isError || archiveArticle.isError || quickPublishArticle.isError) && (
             <Panel data-testid="toast-error" className="text-sm font-semibold text-rose-700">
