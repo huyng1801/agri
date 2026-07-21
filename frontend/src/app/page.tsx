@@ -65,23 +65,23 @@ export default async function HomePage() {
             )}
           >
             <div className="space-y-4 sm:space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.78rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/88 px-3 py-1.5 text-[0.76rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 {siteProfile.pageContent.homeBadge}
               </div>
 
-              <h1 className="max-w-[13.5ch] text-[1.82rem] font-bold leading-[0.97] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+              <h1 className="max-w-[15.2ch] text-[1.68rem] font-bold leading-[1.01] tracking-[-0.03em] text-ink sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
                 {siteProfile.pageContent.homeTitle}
               </h1>
 
-              <p className="max-w-[23.75rem] text-[0.96rem] leading-[1.68] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[24.5rem] text-[0.95rem] leading-[1.72] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 {siteProfile.pageContent.homeDescription}
               </p>
 
-              <div className="max-w-md rounded-[1.55rem] border border-white/80 bg-white/72 p-2 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="grid gap-2.5 sm:flex sm:flex-wrap">
+              <div className="max-w-[24.5rem] rounded-[1.55rem] border border-white/80 bg-white/76 p-2.5 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+                <div className="grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap">
                   <Link href="/san-pham" className="inline-flex sm:w-auto">
-                    <Button className="min-h-[3.25rem] w-full rounded-2xl px-5 shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto">
+                    <Button className="min-h-[3.4rem] w-full rounded-2xl px-4 text-[0.96rem] shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto sm:px-5">
                       Xem san pham
                       <ArrowRight size={18} aria-hidden="true" />
                     </Button>
@@ -89,7 +89,7 @@ export default async function HomePage() {
                   <Link href="/htx" className="inline-flex sm:w-auto">
                     <Button
                       variant="ghost"
-                      className="min-h-[3.25rem] w-full justify-center rounded-2xl border-white/90 bg-white text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto"
+                      className="min-h-[3.4rem] w-full justify-center rounded-2xl border-white/90 bg-white/96 px-4 text-[0.96rem] text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto sm:px-5"
                     >
                       Kham pha HTX
                     </Button>
@@ -103,7 +103,7 @@ export default async function HomePage() {
 
               <div className="grid gap-2.5 sm:max-w-2xl sm:grid-cols-3">
                 {heroSignals.map((item) => (
-                  <div key={item} className="rounded-[1.35rem] border border-white/80 bg-white/74 px-4 py-3 text-[0.95rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur">
+                  <div key={item} className="rounded-[1.35rem] border border-white/80 bg-white/80 px-4 py-3.5 text-[0.9rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur sm:text-[0.95rem]">
                     {item}
                   </div>
                 ))}

@@ -226,6 +226,40 @@ const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
   { label: 'Tin tức HTXONLINE', href: '/tin-tuc', description: 'Dùng để liên kết lại hub nội dung chính.' }
 ];
 
+function buildPreparedNewsForm(form: NewsForm): NewsForm {
+  const bodyText = stripHtml(form.bodyHtml);
+  const canonicalSlug = form.slug || slugifyLocal(form.title);
+  const fallbackExcerpt = form.excerpt || trimText(bodyText, 180);
+  const fallbackDescription = trimText(fallbackExcerpt || bodyText, 155);
+  const seoTitle = trimText(form.seoTitle || form.title, 65);
+  const socialTitle = trimText(form.ogTitle || form.twitterTitle || seoTitle || form.title, 70);
+  const suggestedTags = suggestTags(form);
+  const currentTags = form.tags
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+  const mergedTags = Array.from(new Set([...currentTags, ...suggestedTags])).slice(0, 8);
+
+  return {
+    ...form,
+    slug: form.slug || canonicalSlug,
+    excerpt: form.excerpt || fallbackExcerpt,
+    focusKeyword: form.focusKeyword || form.title.trim(),
+    seoTitle: form.seoTitle || seoTitle,
+    seoDescription: form.seoDescription || fallbackDescription,
+    canonicalUrl: form.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+    ogTitle: form.ogTitle || socialTitle,
+    ogDescription: form.ogDescription || form.seoDescription || fallbackDescription,
+    ogImageUrl: form.ogImageUrl || form.coverImageUrl,
+    twitterTitle: form.twitterTitle || socialTitle,
+    twitterDescription: form.twitterDescription || form.seoDescription || fallbackDescription,
+    twitterImageUrl: form.twitterImageUrl || form.coverImageUrl,
+    coverImageAlt: form.coverImageAlt || form.focusKeyword || form.title,
+    tags: mergedTags.join(', '),
+    status: form.status === 'ARCHIVED' ? 'DRAFT' : form.status
+  };
+}
+
 export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
@@ -316,6 +350,22 @@ export default function NewsDashboardPage() {
   const saveArticle = useMutation({
     mutationFn: (statusOverride?: NewsForm['status']) => {
       const payload = formPayload({ ...form, status: statusOverride ?? form.status });
+      return editingId
+        ? apiFetch<NewsArticle>(`/news/${editingId}`, { method: 'PATCH', body: JSON.stringify(payload) })
+        : apiFetch<NewsArticle>('/news', { method: 'POST', body: JSON.stringify(payload) });
+    },
+    onSuccess: (result) => {
+      setEditingId(result.data.id);
+      setForm(fromArticle(result.data));
+      clearLocalDraft();
+      queryClient.invalidateQueries({ queryKey: ['news'] });
+    }
+  });
+
+  const quickPublishArticle = useMutation({
+    mutationFn: () => {
+      const prepared = buildPreparedNewsForm({ ...form, status: 'PUBLISHED' });
+      const payload = formPayload(prepared);
       return editingId
         ? apiFetch<NewsArticle>(`/news/${editingId}`, { method: 'PATCH', body: JSON.stringify(payload) })
         : apiFetch<NewsArticle>('/news', { method: 'POST', body: JSON.stringify(payload) });
@@ -711,40 +761,7 @@ export default function NewsDashboardPage() {
   }
 
   function preparePostForPublish() {
-    const bodyText = stripHtml(form.bodyHtml);
-    const canonicalSlug = form.slug || slugifyLocal(form.title);
-    const fallbackExcerpt = form.excerpt || trimText(bodyText, 180);
-    const fallbackDescription = trimText(fallbackExcerpt || bodyText, 155);
-    const seoTitle = trimText(form.seoTitle || form.title, 65);
-    const socialTitle = trimText(form.ogTitle || form.twitterTitle || seoTitle || form.title, 70);
-    const suggestedTags = suggestTags(form);
-
-    setForm((current) => {
-      const currentTags = current.tags
-        .split(',')
-        .map((tag) => tag.trim())
-        .filter(Boolean);
-      const mergedTags = Array.from(new Set([...currentTags, ...suggestedTags])).slice(0, 8);
-
-      return {
-        ...current,
-        slug: current.slug || canonicalSlug,
-        excerpt: current.excerpt || fallbackExcerpt,
-        focusKeyword: current.focusKeyword || current.title.trim(),
-        seoTitle: current.seoTitle || seoTitle,
-        seoDescription: current.seoDescription || fallbackDescription,
-        canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
-        ogTitle: current.ogTitle || socialTitle,
-        ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
-        ogImageUrl: current.ogImageUrl || current.coverImageUrl,
-        twitterTitle: current.twitterTitle || socialTitle,
-        twitterDescription: current.twitterDescription || current.seoDescription || fallbackDescription,
-        twitterImageUrl: current.twitterImageUrl || current.coverImageUrl,
-        coverImageAlt: current.coverImageAlt || current.focusKeyword || current.title,
-        tags: mergedTags.join(', '),
-        status: current.status === 'ARCHIVED' ? 'DRAFT' : current.status
-      };
-    });
+    setForm((current) => buildPreparedNewsForm(current));
   }
 
   function fillExcerptFromBody() {
@@ -833,6 +850,10 @@ export default function NewsDashboardPage() {
                   <Button type="button" variant="ghost" onClick={preparePostForPublish}>
                     <Sparkles size={18} aria-hidden="true" />
                     Chuan bi publish
+                  </Button>
+                  <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
+                    <Save size={18} aria-hidden="true" />
+                    {quickPublishArticle.isPending ? 'Dang publish' : 'Publish 1 cham'}
                   </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
                     <Target size={18} aria-hidden="true" />
@@ -1304,9 +1325,9 @@ export default function NewsDashboardPage() {
             </div>
           </Panel>
 
-          {(saveArticle.isError || archiveArticle.isError) && (
+          {(saveArticle.isError || archiveArticle.isError || quickPublishArticle.isError) && (
             <Panel data-testid="toast-error" className="text-sm font-semibold text-rose-700">
-              {errorMessage(saveArticle.error ?? archiveArticle.error)}
+              {errorMessage(saveArticle.error ?? quickPublishArticle.error ?? archiveArticle.error)}
             </Panel>
           )}
 
@@ -1318,6 +1339,10 @@ export default function NewsDashboardPage() {
             <Button data-testid="news-publish-button" type="button" onClick={() => saveArticle.mutate('PUBLISHED')} disabled={saveArticle.isPending}>
               <Save size={18} aria-hidden="true" />
               Publish
+            </Button>
+            <Button type="button" variant="ghost" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
+              <Sparkles size={18} aria-hidden="true" />
+              Publish 1 cham
             </Button>
             <Button type="submit" disabled={saveArticle.isPending}>
               {saveArticle.isPending ? 'Đang lưu' : 'Lưu'}
