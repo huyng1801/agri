@@ -39,7 +39,7 @@ export default async function HomePage() {
   ];
   const heroSignals = [
     'Công khai sản phẩm và hồ sơ HTX trên cùng một nền tảng',
-    'QR Passport mở trực tiếp cho người mua không cần đăng nhập',
+    'QR Passport mở trực tiếp cho người mua mà không cần đăng nhập',
     'Đặt hàng COD nhanh, HTX chủ động xác nhận và xử lý'
   ] as const;
 
@@ -60,38 +60,40 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid items-center gap-4 pb-6 pt-3 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
+              'relative grid items-center gap-5 pb-7 pt-4 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
             )}
           >
-            <div className="space-y-3 sm:space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/82 px-3 py-1.5 text-[0.78rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 Nền tảng số cho hợp tác xã
               </div>
 
-              <h1 className="max-w-[15.6ch] text-[1.66rem] font-bold leading-[0.98] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
+              <h1 className="max-w-[13.5ch] text-[1.82rem] font-bold leading-[0.97] tracking-tight text-ink sm:max-w-3xl sm:text-5xl">
                 HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.
               </h1>
 
-              <p className="max-w-[22.5rem] text-[0.92rem] leading-[1.62] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[23.75rem] text-[0.96rem] leading-[1.68] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.
               </p>
 
-              <div className="grid grid-cols-2 gap-2 rounded-[1.35rem] border border-white/78 bg-white/64 p-1.5 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:flex sm:flex-wrap sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-0">
-                <Link href="/san-pham" className="inline-flex">
-                  <Button className="min-h-[3.2rem] w-full rounded-2xl shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto">
-                    Xem sản phẩm
-                    <ArrowRight size={18} aria-hidden="true" />
-                  </Button>
-                </Link>
-                <Link href="/htx" className="inline-flex">
-                  <Button
-                    variant="ghost"
-                    className="min-h-[3.2rem] w-full justify-center rounded-2xl border-white/90 bg-white text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto"
-                  >
-                    Khám phá HTX
-                  </Button>
-                </Link>
+              <div className="max-w-md rounded-[1.55rem] border border-white/80 bg-white/72 p-2 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-0">
+                <div className="grid gap-2.5 sm:flex sm:flex-wrap">
+                  <Link href="/san-pham" className="inline-flex sm:w-auto">
+                    <Button className="min-h-[3.25rem] w-full rounded-2xl px-5 shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto">
+                      Xem sản phẩm
+                      <ArrowRight size={18} aria-hidden="true" />
+                    </Button>
+                  </Link>
+                  <Link href="/htx" className="inline-flex sm:w-auto">
+                    <Button
+                      variant="ghost"
+                      className="min-h-[3.25rem] w-full justify-center rounded-2xl border-white/90 bg-white text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto"
+                    >
+                      Khám phá HTX
+                    </Button>
+                  </Link>
+                </div>
               </div>
 
               <div className="max-w-2xl rounded-[1.55rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
@@ -100,7 +102,10 @@ export default async function HomePage() {
 
               <div className="grid gap-2.5 sm:max-w-2xl sm:grid-cols-3">
                 {heroSignals.map((item) => (
-                  <div key={item} className="rounded-[1.35rem] border border-white/80 bg-white/74 px-4 py-3 text-[0.95rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur">
+                  <div
+                    key={item}
+                    className="rounded-[1.35rem] border border-white/80 bg-white/74 px-4 py-3 text-[0.95rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur"
+                  >
                     {item}
                   </div>
                 ))}

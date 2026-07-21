@@ -191,7 +191,7 @@ async function main() {
 
   const siteAddress = 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam';
   const siteMapEmbedUrl =
-    'https://maps.google.com/maps?hl=vi&q=S%E1%BB%91%20130%2C%20T%E1%BB%95%208%2C%20%E1%BA%A4p%20M%E1%BB%B9%20X%C6%B0%C6%A1ng%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&z=16&output=embed';
+    'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
   await prisma.setting.upsert({
     where: { key: 'public.siteProfile' },
@@ -232,6 +232,8 @@ async function main() {
     const currentMapEmbedUrl = typeof current.mapEmbedUrl === 'string' ? current.mapEmbedUrl.trim() : '';
     const isLegacyMapEmbedUrl =
       !currentMapEmbedUrl ||
+      currentMapEmbedUrl.includes('google.com/maps') ||
+      currentMapEmbedUrl.includes('maps.google.com/maps') ||
       currentMapEmbedUrl ===
         'https://www.google.com/maps?q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&output=embed' ||
       currentMapEmbedUrl ===

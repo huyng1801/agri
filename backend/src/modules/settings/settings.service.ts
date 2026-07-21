@@ -8,7 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 const SECRET_KEYS = new Set(['system.r2', 'system.email', 'system.security']);
 const DEFAULT_MAP_EMBED_URL =
-  'https://maps.google.com/maps?hl=vi&q=S%E1%BB%91%20130%2C%20T%E1%BB%95%208%2C%20%E1%BA%A4p%20M%E1%BB%B9%20X%C6%B0%C6%A1ng%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&z=16&output=embed';
+  'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
 @Injectable()
 export class SettingsService {

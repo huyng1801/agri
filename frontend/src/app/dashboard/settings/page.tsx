@@ -206,7 +206,7 @@ export default function SettingsPage() {
               <Field label="Hotline hiển thị"><Input {...publicForm.register('hotlineDisplay')} /></Field>
               <Field label="Email liên hệ"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
               <Field label="Địa chỉ"><Input {...publicForm.register('address')} /></Field>
-              <Field label="Mã nhúng bản đồ (Google Maps embed URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
+              <Field label="Mã nhúng bản đồ (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
               <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
               <Field label="Logo URL" className="sm:col-span-2">
                 <div className="flex gap-2">
@@ -345,7 +345,7 @@ function objectToPublicForm(value: unknown) {
     supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
     address: String(object.address ?? 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
     messengerUrl: String(object.messengerUrl ?? ''),
-    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://maps.google.com/maps?hl=vi&q=S%E1%BB%91%20130%2C%20T%E1%BB%95%208%2C%20%E1%BA%A4p%20M%E1%BB%B9%20X%C6%B0%C6%A1ng%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&z=16&output=embed'),
+    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718'),
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as any).question}|${(item as any).answer}`).join('\n')
   };
