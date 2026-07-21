@@ -157,16 +157,6 @@ export default function ContactsPage() {
                 <Button type="button" onClick={() => saveContact.mutate({ id: contact.id, status: draft.status, note: draft.note })} disabled={saveContact.isPending}>
                   Lưu xử lý
                 </Button>
-                {contact.phone && (
-                  <a
-                    href={`https://zalo.me/${contact.phone.replace(/[^0-9]/g, '')}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint"
-                  >
-                    Zalo
-                  </a>
-                )}
               </div>
             </article>
           );

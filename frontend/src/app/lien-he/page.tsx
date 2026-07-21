@@ -130,7 +130,7 @@ export default async function ContactPage() {
                   title="Bản đồ HTXONLINE"
                   src={siteProfile.mapEmbedUrl}
                   className="h-full min-h-[320px] w-full border-0 lg:min-h-[420px]"
-                  loading="lazy"
+                  loading="eager"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               ) : (

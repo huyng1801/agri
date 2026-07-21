@@ -35,10 +35,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = articleDescription(article);
   const canonical = article.canonicalUrl || `https://htxonline.vn/tin-tuc/${article.slug}`;
   const image = articleImage(article);
+  const keywords = article.tagsJson?.length
+    ? article.tagsJson
+    : [article.focusKeyword, article.category?.name, 'tin tức HTXONLINE'].filter((value): value is string => Boolean(value));
 
   return {
     title: `${title} | HTXONLINE`,
     description,
+    keywords,
     alternates: { canonical },
     robots: {
       index: !article.robotsNoIndex,
@@ -61,7 +65,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: article.twitterTitle || article.ogTitle || title,
       description: article.twitterDescription || article.ogDescription || description,
       images: [article.twitterImageUrl || article.ogImageUrl || image]
-    }
+    },
+    category: article.category?.name
   };
 }
 
@@ -102,6 +107,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
     headline: article.title,
     description: articleDescription(article),
     image: [image],
+    keywords: article.tagsJson?.join(', ') || article.focusKeyword || undefined,
+    articleSection: article.category?.name || undefined,
     datePublished: article.publishedAt || article.createdAt,
     dateModified: article.updatedAt,
     mainEntityOfPage: canonical,

@@ -109,10 +109,11 @@ export async function PublicFooter() {
                   title="Bản đồ HTXONLINE"
                   src={profile.mapEmbedUrl}
                   className="h-64 w-full border-0 lg:h-[260px]"
-                  loading="lazy"
+                  loading="eager"
                   referrerPolicy="no-referrer-when-downgrade"
                 />
                 <div className="border-t border-white/15 px-4 py-3">
+                  <p className="mb-3 text-xs text-white/75">Nếu trình duyệt chặn bản đồ nhúng, hãy bấm mở trực tiếp trên Google Maps.</p>
                   <a
                     href={mapSearchUrl}
                     target="_blank"

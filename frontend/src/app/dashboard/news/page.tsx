@@ -226,6 +226,7 @@ export default function NewsDashboardPage() {
   const [uploading, setUploading] = useState('');
   const [draftSavedAt, setDraftSavedAt] = useState('');
   const [localDraft, setLocalDraft] = useState<LocalDraftPayload | null>(null);
+  const [draggingEditor, setDraggingEditor] = useState(false);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -558,6 +559,36 @@ export default function NewsDashboardPage() {
     insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
   }
 
+  async function handleDroppedFiles(fileList: FileList | null) {
+    const file = Array.from(fileList ?? []).find((item) => item.type.startsWith('image/'));
+    if (!file) return;
+    const url = await uploadFile(file, 'body');
+    if (!url) return;
+    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+    const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
+    if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
+    else insertHtml(imageHtml);
+  }
+
+  function fillSuggestedTags() {
+    const suggested = suggestTags(form);
+    if (!suggested.length) {
+      window.alert('Chưa đủ dữ liệu để gợi ý tag. Hãy nhập tiêu đề hoặc từ khóa trước.');
+      return;
+    }
+    setForm((current) => {
+      const currentTags = current.tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      const merged = Array.from(new Set([...currentTags, ...suggested]));
+      return {
+        ...current,
+        tags: merged.join(', ')
+      };
+    });
+  }
+
   function applyTemplate(templateId: string) {
     const template = articleTemplates.find((item) => item.id === templateId);
     if (!template) return;
@@ -737,16 +768,16 @@ export default function NewsDashboardPage() {
                   <p className="text-slate-500">Độ dài tiêu đề</p>
                   <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
                 </div>
-                <div className="rounded-xl border border-white bg-white p-3">
-                  <p className="text-slate-500">Mô tả ngắn</p>
-                  <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
-                </div>
               <div className="rounded-xl border border-white bg-white p-3">
+                <p className="text-slate-500">Mô tả ngắn</p>
+                <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
+              </div>
+                <div className="rounded-xl border border-white bg-white p-3">
                 <p className="text-slate-500">Thời gian đọc</p>
                 <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phút</p>
               </div>
               <div className="rounded-xl border border-white bg-white p-3">
-                  <p className="text-slate-500">Sẵn sàng publish</p>
+                <p className="text-slate-500">Sẵn sàng publish</p>
                 <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
               </div>
             </div>
@@ -852,11 +883,37 @@ export default function NewsDashboardPage() {
                   data-testid="news-content-editor"
                   contentEditable
                   suppressContentEditableWarning
+                  onDragEnter={(event) => {
+                    event.preventDefault();
+                    setDraggingEditor(true);
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setDraggingEditor(true);
+                  }}
+                  onDragLeave={(event) => {
+                    event.preventDefault();
+                    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+                    setDraggingEditor(false);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    setDraggingEditor(false);
+                    void handleDroppedFiles(event.dataTransfer.files);
+                  }}
                   onInput={syncVisualEditor}
                   onBlur={syncVisualEditor}
                   onPaste={(event) => void handleVisualPaste(event)}
-                  className="min-h-[320px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal"
+                  className={cn(
+                    'min-h-[320px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                    draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
+                  )}
                 />
+                {draggingEditor && (
+                  <div className="pointer-events-none rounded-xl border border-dashed border-leaf/40 bg-mint/60 px-4 py-3 text-sm font-semibold text-leaf">
+                    Thả ảnh vào đây để tự upload và chèn vào bài.
+                  </div>
+                )}
               </div>
             ) : (
               <label className="block space-y-1 text-sm font-semibold">
@@ -867,9 +924,20 @@ export default function NewsDashboardPage() {
                   value={form.bodyHtml}
                   onChange={(event) => update('bodyHtml', event.target.value)}
                   onPaste={(event) => void handleBodyPaste(event)}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setDraggingEditor(true);
+                  }}
+                  onDragLeave={() => setDraggingEditor(false)}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    setDraggingEditor(false);
+                    void handleDroppedFiles(event.dataTransfer.files);
+                  }}
                   className="min-h-[320px] font-mono text-sm"
                   required
                 />
+                {draggingEditor && <span className="text-xs font-semibold text-leaf">Thả ảnh vào đây để tự upload và chèn HTML.</span>}
               </label>
             )}
 
@@ -1036,6 +1104,12 @@ export default function NewsDashboardPage() {
                 <span>Tags</span>
                 <Input value={form.tags} onChange={(event) => update('tags', event.target.value)} placeholder="tag 1, tag 2" />
               </label>
+              <div className="flex items-end">
+                <Button type="button" variant="ghost" onClick={fillSuggestedTags}>
+                  <Sparkles size={18} aria-hidden="true" />
+                  Gợi ý tags
+                </Button>
+              </div>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Ngày publish</span>
                 <Input type="datetime-local" value={form.publishedAt} onChange={(event) => update('publishedAt', event.target.value)} />
@@ -1523,4 +1597,29 @@ function publishReadinessClass(ratio: number) {
   if (ratio === 1) return 'border-emerald-200 bg-emerald-50';
   if (ratio >= 0.67) return 'border-amber-200 bg-amber-50';
   return 'border-rose-200 bg-rose-50';
+}
+
+function suggestTags(form: NewsForm) {
+  const bodyText = stripHtml(form.bodyHtml);
+  const suggestions = [
+    form.focusKeyword,
+    ...form.title.split(/[,:;|/-]+/),
+    ...bodyText.split(/[.!?]+/).slice(0, 2)
+  ]
+    .map((value) => value.trim())
+    .map((value) => normalizeTag(value))
+    .filter(Boolean);
+
+  return Array.from(new Set(suggestions)).slice(0, 6);
+}
+
+function normalizeTag(value: string) {
+  const clean = value
+    .replace(/\s+/g, ' ')
+    .replace(/^[^A-Za-z0-9À-ỹ]+|[^A-Za-z0-9À-ỹ]+$/g, '')
+    .trim();
+  if (!clean) return '';
+  if (clean.length < 3 || clean.length > 40) return '';
+  if (/^(va|voi|cho|cua|cac|nhung|tren|duoc|mot|nhieu)$/i.test(slugifyLocal(clean))) return '';
+  return clean;
 }
