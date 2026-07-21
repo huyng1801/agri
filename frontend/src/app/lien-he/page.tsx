@@ -46,7 +46,7 @@ export default async function ContactPage() {
           <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm">
             <span>
               <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Hotline</span>
-              <span className="mt-1 block text-[1.05rem] font-bold text-ink">{siteProfile.hotlineDisplay}</span>
+              <span className="mt-1 block text-[1.05rem] font-medium text-ink">{siteProfile.hotlineDisplay}</span>
             </span>
             <PhoneCall className="text-leaf" size={22} aria-hidden="true" />
           </a>
@@ -82,7 +82,7 @@ export default async function ContactPage() {
                     <PhoneCall className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
                     <span>
                       <span className="block text-xs font-bold uppercase tracking-wide text-slate-500">Hotline</span>
-                      <span className="mt-1 block font-bold text-ink">{siteProfile.hotlineDisplay}</span>
+                      <span className="mt-1 block font-medium text-ink">{siteProfile.hotlineDisplay}</span>
                     </span>
                   </a>
                   <a href={`mailto:${siteProfile.supportEmail}`} className="flex items-start gap-3 transition hover:text-leaf">
@@ -240,7 +240,7 @@ export default async function ContactPage() {
               <PhoneCall size={22} aria-hidden="true" />
               <span>
                 <span className="block text-xs font-semibold uppercase tracking-wide text-white/70">Hotline</span>
-                <span className="mt-1 block font-bold">{siteProfile.hotlineDisplay}</span>
+                <span className="mt-1 block font-medium">{siteProfile.hotlineDisplay}</span>
               </span>
             </a>
             <a href={`mailto:${siteProfile.supportEmail}`} className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 transition hover:bg-white/10 sm:rounded-none sm:rounded-r-2xl">
@@ -284,7 +284,7 @@ export default async function ContactPage() {
               <div className="mt-4 grid gap-3">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline cong khai tren website</p>
-                  <p className="mt-2 text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</p>
+                  <p className="mt-2 text-lg font-medium text-ink">{siteProfile.hotlineDisplay}</p>
                 </div>
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email ho tro tren website</p>

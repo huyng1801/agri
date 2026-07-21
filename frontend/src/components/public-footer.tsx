@@ -51,10 +51,9 @@ export async function PublicFooter() {
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-white">Dịch vụ HTXONLINE</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/" className={footerLinkClass}>Trang chủ</Link>
               <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
               <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
-              <Link href="/tin-tuc" className={footerLinkClass}>Tin tức HTXONLINE</Link>
+              <Link href="/tin-tuc" className={footerLinkClass}>Tin tức</Link>
               <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
               <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
@@ -77,7 +76,6 @@ export async function PublicFooter() {
               <Link href="/chinh-sach-bao-mat" className={footerLinkClass}>Chính sách bảo mật</Link>
               <Link href="/chinh-sach-doi-tra" className={footerLinkClass}>Chính sách đổi trả</Link>
               <Link href="/chinh-sach-van-hanh" className={footerLinkClass}>Chính sách vận hành</Link>
-              <Link href="/lien-he" className={footerLinkClass}>Liên hệ</Link>
             </div>
           </div>
         </div>
@@ -92,8 +90,8 @@ export async function PublicFooter() {
                   <span>{profile.address}</span>
                 </p>
                 <a href={telHref(profile.hotline)} className="flex items-center gap-2 transition hover:text-white">
-                  <Phone size={18} aria-hidden="true" />
-                  <span className="font-semibold">{profile.hotlineDisplay}</span>
+                  <Phone size={18} className="text-white" aria-hidden="true" />
+                  <span>{profile.hotlineDisplay}</span>
                 </a>
                 <a href={`mailto:${profile.supportEmail}`} className="flex items-center gap-2 transition hover:text-white">
                   <Mail size={18} aria-hidden="true" />
@@ -107,7 +105,7 @@ export async function PublicFooter() {
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3">
                   <div>
                     <p className="text-sm font-semibold text-white/90">Điểm hỗ trợ và bản đồ</p>
-                    <p className="mt-1 text-xs text-white/70">Footer giữ preview địa điểm ổn định. Bản đồ tương tác đầy đủ có sẵn ở trang liên hệ.</p>
+                    <p className="mt-1 text-xs text-white/70">Footer giữ preview địa điểm ổn định. Bản đồ tương tác đầy đủ có sẵn ở trang liên hệ để bạn xem đường đi rõ hơn.</p>
                   </div>
                   <a
                     href={mapSearchUrl}
@@ -195,7 +193,7 @@ export async function PublicFooter() {
                 </p>
               </div>
               <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
-              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi HTXONLINE</p>
+              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi Agripassport</p>
             </div>
           </div>
         </div>

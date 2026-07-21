@@ -91,6 +91,9 @@ export function OrderLookupClient() {
             {loading ? 'Đang tra cứu' : 'Tra cứu'}
           </Button>
         </form>
+        <p className="mt-3 text-sm leading-6 text-slate-600">
+          Nếu tra cứu chưa ra kết quả, bạn có thể kiểm tra lại mã đơn, số điện thoại hoặc liên hệ bộ phận hỗ trợ để được kiểm tra nhanh hơn.
+        </p>
         {error && <div data-testid="toast-error" className="mt-3 rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
       </Panel>
 
