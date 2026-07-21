@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Leaf, QrCode, ShieldCheck, ShoppingBag, Sparkles, Store, Target, Users } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
+import { PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-marketplace';
 import { publicContainerClass } from '@/components/public-layout';
@@ -84,7 +85,14 @@ export default async function AboutUsPage() {
             </div>
 
             <article className="rounded-[1.5rem] border border-white/85 bg-white/92 p-3 text-ink shadow-[0_20px_50px_rgba(148,163,184,0.14)] lg:hidden">
-              <div className="flex items-center justify-between gap-3">
+              <PublicImage
+                src={siteProfile.pageContent.aboutImageUrl}
+                alt={siteProfile.pageContent.aboutImageAlt || siteProfile.pageContent.aboutTitle}
+                wrapperClassName="aspect-[16/10] rounded-[1.15rem]"
+                className="h-full w-full object-cover"
+                priority
+              />
+              <div className="mt-3 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <PublicLogo size={34} />
                   <div>
@@ -102,6 +110,15 @@ export default async function AboutUsPage() {
 
             <div className="relative mx-auto hidden w-full max-w-sm lg:block">
               <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/88 p-4 shadow-[0_24px_60px_rgba(18,42,28,0.14)] backdrop-blur">
+                <div className="mb-4 overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/75 p-2">
+                  <PublicImage
+                    src={siteProfile.pageContent.aboutImageUrl}
+                    alt={siteProfile.pageContent.aboutImageAlt || siteProfile.pageContent.aboutTitle}
+                    wrapperClassName="aspect-[16/10] rounded-[1.1rem]"
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                </div>
                 <div className="rounded-[1.6rem] bg-[linear-gradient(160deg,#2f8451_0%,#1f5f3d_65%,#153b28_100%)] p-5 text-white">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">

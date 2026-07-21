@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Clock3, Download, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
+import { PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-marketplace';
 import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
@@ -109,17 +110,26 @@ export default async function ContactPage() {
               </div>
 
               <div className="mt-5 hidden rounded-xl bg-white p-4 shadow-sm sm:block">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-lg bg-mint text-leaf">
-                    <Download size={18} aria-hidden="true" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-bold text-ink">Gioi thieu HTXONLINE</p>
-                    <p className="text-xs text-slate-500">Xem giai phap san + QR Passport cho HTX</p>
+                <div className="overflow-hidden rounded-xl border border-slate-100 bg-white">
+                  <PublicImage
+                    src={siteProfile.pageContent.contactImageUrl}
+                    alt={siteProfile.pageContent.contactImageAlt || siteProfile.pageContent.contactTitle}
+                    wrapperClassName="aspect-[16/9]"
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                  <div className="flex items-center gap-3 p-4">
+                    <span className="grid h-10 w-10 place-items-center rounded-lg bg-mint text-leaf">
+                      <Download size={18} aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-ink">Gioi thieu HTXONLINE</p>
+                      <p className="text-xs text-slate-500">Xem giai phap san + QR Passport cho HTX</p>
+                    </div>
+                    <Link href="/gioi-thieu" className="shrink-0 text-sm font-semibold text-leaf hover:underline">
+                      Xem ngay
+                    </Link>
                   </div>
-                  <Link href="/gioi-thieu" className="shrink-0 text-sm font-semibold text-leaf hover:underline">
-                    Xem ngay
-                  </Link>
                 </div>
               </div>
             </article>

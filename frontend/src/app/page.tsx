@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Leaf, QrCode, ShoppingBag, Sparkles, Store, type LucideIcon } from 'lucide-react';
 import { ProductSlider } from '@/components/product-slider';
 import { CooperativeCard, EmptyPublicState, NewsCard, PublicSearch, PublicShell } from '@/components/public-marketplace';
+import { PublicImage } from '@/components/public-image';
 import { PublicSection, PublicSectionHeader, publicContainerClass } from '@/components/public-layout';
 import { Button, Panel, cn } from '@/components/ui';
 import { fetchPublicNews } from '@/lib/news';
@@ -108,6 +109,16 @@ export default async function HomePage() {
                 ))}
               </div>
 
+              <div className="overflow-hidden rounded-[1.65rem] border border-white/75 bg-white/78 p-2 shadow-[0_22px_60px_rgba(15,23,42,0.08)] lg:hidden">
+                <PublicImage
+                  src={siteProfile.pageContent.homeImageUrl}
+                  alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+                  wrapperClassName="aspect-[16/10] rounded-[1.15rem]"
+                  className="h-full w-full object-cover"
+                  priority
+                />
+              </div>
+
               <div className="overflow-hidden rounded-[1.65rem] border border-white/75 bg-[linear-gradient(145deg,#246d45_0%,#2f8451_100%)] p-3.5 text-white shadow-[0_24px_70px_rgba(25,58,40,0.15)] lg:hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -136,6 +147,15 @@ export default async function HomePage() {
             <div className="relative hidden lg:block">
               <div className="absolute -right-6 top-10 hidden h-28 w-28 rounded-full bg-mint/55 blur-3xl sm:block" aria-hidden="true" />
               <div className="relative overflow-hidden rounded-[2rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur sm:p-5">
+                <div className="mb-4 overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/70 p-2">
+                  <PublicImage
+                    src={siteProfile.pageContent.homeImageUrl}
+                    alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+                    wrapperClassName="aspect-[16/10] rounded-[1.1rem]"
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                </div>
                 <div className="rounded-[1.7rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white sm:p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div>

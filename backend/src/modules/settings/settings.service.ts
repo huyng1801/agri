@@ -133,15 +133,31 @@ function pageContentItems(value: unknown) {
     homeDescription:
       stringValue(object.homeDescription) ||
       'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
+    homeImageUrl:
+      stringValue(object.homeImageUrl) ||
+      'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+    homeImageAlt: stringValue(object.homeImageAlt) || 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
     introTitle: stringValue(object.introTitle) || 'Giới thiệu HTXONLINE',
     introDescription: stringValue(object.introDescription) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    introImageUrl:
+      stringValue(object.introImageUrl) ||
+      'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+    introImageAlt: stringValue(object.introImageAlt) || 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
     aboutTitle: stringValue(object.aboutTitle) || 'Chúng tôi là HTXONLINE',
     aboutDescription:
       stringValue(object.aboutDescription) ||
       'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
+    aboutImageUrl:
+      stringValue(object.aboutImageUrl) ||
+      'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+    aboutImageAlt: stringValue(object.aboutImageAlt) || 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
     contactTitle: stringValue(object.contactTitle) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
     contactDescription:
       stringValue(object.contactDescription) ||
-      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.'
+      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
+    contactImageUrl:
+      stringValue(object.contactImageUrl) ||
+      'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+    contactImageAlt: stringValue(object.contactImageAlt) || 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
   };
 }

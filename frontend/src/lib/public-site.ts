@@ -9,12 +9,20 @@ export type PublicPageContent = {
   homeBadge: string;
   homeTitle: string;
   homeDescription: string;
+  homeImageUrl: string;
+  homeImageAlt: string;
   introTitle: string;
   introDescription: string;
+  introImageUrl: string;
+  introImageAlt: string;
   aboutTitle: string;
   aboutDescription: string;
+  aboutImageUrl: string;
+  aboutImageAlt: string;
   contactTitle: string;
   contactDescription: string;
+  contactImageUrl: string;
+  contactImageAlt: string;
 };
 
 export type PublicSiteProfile = {
@@ -57,14 +65,26 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
     homeTitle: 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
     homeDescription:
       'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
+    homeImageUrl:
+      'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+    homeImageAlt: 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
     introTitle: 'Giới thiệu HTXONLINE',
     introDescription: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    introImageUrl:
+      'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+    introImageAlt: 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
     aboutTitle: 'Chúng tôi là HTXONLINE',
     aboutDescription:
       'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
+    aboutImageUrl:
+      'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+    aboutImageAlt: 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
     contactTitle: 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
     contactDescription:
-      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.'
+      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
+    contactImageUrl:
+      'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+    contactImageAlt: 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
   }
 };
 
@@ -118,12 +138,20 @@ function pageContentItems(value: unknown): PublicPageContent {
     homeBadge: stringValue(object.homeBadge) || defaultPublicSiteProfile.pageContent.homeBadge,
     homeTitle: stringValue(object.homeTitle) || defaultPublicSiteProfile.pageContent.homeTitle,
     homeDescription: stringValue(object.homeDescription) || defaultPublicSiteProfile.pageContent.homeDescription,
+    homeImageUrl: stringValue(object.homeImageUrl) || defaultPublicSiteProfile.pageContent.homeImageUrl,
+    homeImageAlt: stringValue(object.homeImageAlt) || defaultPublicSiteProfile.pageContent.homeImageAlt,
     introTitle: stringValue(object.introTitle) || defaultPublicSiteProfile.pageContent.introTitle,
     introDescription: stringValue(object.introDescription) || defaultPublicSiteProfile.pageContent.introDescription,
+    introImageUrl: stringValue(object.introImageUrl) || defaultPublicSiteProfile.pageContent.introImageUrl,
+    introImageAlt: stringValue(object.introImageAlt) || defaultPublicSiteProfile.pageContent.introImageAlt,
     aboutTitle: stringValue(object.aboutTitle) || defaultPublicSiteProfile.pageContent.aboutTitle,
     aboutDescription: stringValue(object.aboutDescription) || defaultPublicSiteProfile.pageContent.aboutDescription,
+    aboutImageUrl: stringValue(object.aboutImageUrl) || defaultPublicSiteProfile.pageContent.aboutImageUrl,
+    aboutImageAlt: stringValue(object.aboutImageAlt) || defaultPublicSiteProfile.pageContent.aboutImageAlt,
     contactTitle: stringValue(object.contactTitle) || defaultPublicSiteProfile.pageContent.contactTitle,
-    contactDescription: stringValue(object.contactDescription) || defaultPublicSiteProfile.pageContent.contactDescription
+    contactDescription: stringValue(object.contactDescription) || defaultPublicSiteProfile.pageContent.contactDescription,
+    contactImageUrl: stringValue(object.contactImageUrl) || defaultPublicSiteProfile.pageContent.contactImageUrl,
+    contactImageAlt: stringValue(object.contactImageAlt) || defaultPublicSiteProfile.pageContent.contactImageAlt
   };
 }
 

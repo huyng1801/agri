@@ -30,12 +30,20 @@ const publicProfileSchema = z.object({
   homeBadge: z.string().min(1),
   homeTitle: z.string().min(1),
   homeDescription: z.string().min(1),
+  homeImageUrl: z.string().optional(),
+  homeImageAlt: z.string().optional(),
   introTitle: z.string().min(1),
   introDescription: z.string().min(1),
+  introImageUrl: z.string().optional(),
+  introImageAlt: z.string().optional(),
   aboutTitle: z.string().min(1),
   aboutDescription: z.string().min(1),
+  aboutImageUrl: z.string().optional(),
+  aboutImageAlt: z.string().optional(),
   contactTitle: z.string().min(1),
-  contactDescription: z.string().min(1)
+  contactDescription: z.string().min(1),
+  contactImageUrl: z.string().optional(),
+  contactImageAlt: z.string().optional()
 });
 
 const systemProfileSchema = z.object({
@@ -146,6 +154,25 @@ export default function SettingsPage() {
     publicForm.setValue('logoUrl', confirmed.data.publicUrl ?? presign.data.publicUrl ?? '');
   }
 
+  async function uploadPublicImage(file: File, field: keyof z.infer<typeof publicProfileSchema>) {
+    const presign = await apiFetch<{ uploadUrl: string; publicUrl?: string; objectKey: string }>('/files/presign-upload', {
+      method: 'POST',
+      body: JSON.stringify({ fileName: file.name, mimeType: file.type, sizeBytes: file.size, visibility: 'PUBLIC' })
+    });
+    await fetch(presign.data.uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
+    const confirmed = await apiFetch<{ publicUrl?: string }>('/files/confirm-upload', {
+      method: 'POST',
+      body: JSON.stringify({
+        objectKey: presign.data.objectKey,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        visibility: 'PUBLIC',
+        publicUrl: presign.data.publicUrl
+      })
+    });
+    publicForm.setValue(field, confirmed.data.publicUrl ?? presign.data.publicUrl ?? '');
+  }
+
   return (
     <div className="space-y-5">
       <h1 className="text-2xl font-bold">Cai dat he thong</h1>
@@ -234,12 +261,20 @@ export default function SettingsPage() {
                       homeBadge: values.homeBadge,
                       homeTitle: values.homeTitle,
                       homeDescription: values.homeDescription,
+                      homeImageUrl: values.homeImageUrl,
+                      homeImageAlt: values.homeImageAlt,
                       introTitle: values.introTitle,
                       introDescription: values.introDescription,
+                      introImageUrl: values.introImageUrl,
+                      introImageAlt: values.introImageAlt,
                       aboutTitle: values.aboutTitle,
                       aboutDescription: values.aboutDescription,
+                      aboutImageUrl: values.aboutImageUrl,
+                      aboutImageAlt: values.aboutImageAlt,
                       contactTitle: values.contactTitle,
-                      contactDescription: values.contactDescription
+                      contactDescription: values.contactDescription,
+                      contactImageUrl: values.contactImageUrl,
+                      contactImageAlt: values.contactImageAlt
                     }
                   },
                   description: 'Thong tin public san'
@@ -279,18 +314,50 @@ export default function SettingsPage() {
               <Field label="Mo ta trang chu" className="sm:col-span-2">
                 <Textarea rows={3} {...publicForm.register('homeDescription')} />
               </Field>
+              <ImageField
+                label="Anh trang chu"
+                urlValue={publicForm.watch('homeImageUrl')}
+                altValue={publicForm.watch('homeImageAlt')}
+                onUrlChange={(value) => publicForm.setValue('homeImageUrl', value)}
+                onAltChange={(value) => publicForm.setValue('homeImageAlt', value)}
+                onUpload={(file) => void uploadPublicImage(file, 'homeImageUrl')}
+              />
               <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} /></Field>
               <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
                 <Textarea rows={3} {...publicForm.register('introDescription')} />
               </Field>
+              <ImageField
+                label="Anh trang gioi thieu"
+                urlValue={publicForm.watch('introImageUrl')}
+                altValue={publicForm.watch('introImageAlt')}
+                onUrlChange={(value) => publicForm.setValue('introImageUrl', value)}
+                onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
+                onUpload={(file) => void uploadPublicImage(file, 'introImageUrl')}
+              />
               <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} /></Field>
               <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
                 <Textarea rows={3} {...publicForm.register('aboutDescription')} />
               </Field>
+              <ImageField
+                label="Anh trang ve chung toi"
+                urlValue={publicForm.watch('aboutImageUrl')}
+                altValue={publicForm.watch('aboutImageAlt')}
+                onUrlChange={(value) => publicForm.setValue('aboutImageUrl', value)}
+                onAltChange={(value) => publicForm.setValue('aboutImageAlt', value)}
+                onUpload={(file) => void uploadPublicImage(file, 'aboutImageUrl')}
+              />
               <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} /></Field>
               <Field label="Mo ta trang lien he" className="sm:col-span-2">
                 <Textarea rows={3} {...publicForm.register('contactDescription')} />
               </Field>
+              <ImageField
+                label="Anh trang lien he"
+                urlValue={publicForm.watch('contactImageUrl')}
+                altValue={publicForm.watch('contactImageAlt')}
+                onUrlChange={(value) => publicForm.setValue('contactImageUrl', value)}
+                onAltChange={(value) => publicForm.setValue('contactImageAlt', value)}
+                onUpload={(file) => void uploadPublicImage(file, 'contactImageUrl')}
+              />
               <SaveButton pending={saveMutation.isPending} />
             </form>
           </Panel>
@@ -420,6 +487,48 @@ function SaveButton({ pending }: { pending: boolean }) {
   );
 }
 
+function ImageField({
+  label,
+  urlValue,
+  altValue,
+  onUrlChange,
+  onAltChange,
+  onUpload
+}: {
+  label: string;
+  urlValue: string;
+  altValue: string;
+  onUrlChange: (value: string) => void;
+  onAltChange: (value: string) => void;
+  onUpload: (file: File) => void;
+}) {
+  return (
+    <div className="grid gap-3 sm:col-span-2 sm:grid-cols-[1.2fr_0.8fr]">
+      <Field label={`${label} URL`}>
+        <div className="flex gap-2">
+          <Input value={urlValue} onChange={(event) => onUrlChange(event.target.value)} />
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
+            <Upload size={16} />
+            Upload
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(event) => {
+                const file = event.target.files?.[0];
+                if (file) onUpload(file);
+              }}
+            />
+          </label>
+        </div>
+      </Field>
+      <Field label={`${label} alt`}>
+        <Input value={altValue} onChange={(event) => onAltChange(event.target.value)} />
+      </Field>
+    </div>
+  );
+}
+
 function asObject(value: unknown) {
   return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 }
@@ -443,12 +552,20 @@ function objectToPublicForm(value: unknown) {
     homeDescription: String(
       pageContent.homeDescription ?? 'Cong khai san pham, mo QR Passport cho nguoi mua va van hanh quy trinh don COD tren cung mot he thong gon, ro va de tin tuong.'
     ),
+    homeImageUrl: String(pageContent.homeImageUrl ?? ''),
+    homeImageAlt: String(pageContent.homeImageAlt ?? ''),
     introTitle: String(pageContent.introTitle ?? 'Gioi thieu HTXONLINE'),
     introDescription: String(pageContent.introDescription ?? 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.'),
+    introImageUrl: String(pageContent.introImageUrl ?? ''),
+    introImageAlt: String(pageContent.introImageAlt ?? ''),
     aboutTitle: String(pageContent.aboutTitle ?? 'Chung toi la HTXONLINE'),
     aboutDescription: String(pageContent.aboutDescription ?? 'San nong san so giup hop tac xa ket noi thi truong, minh bach nguon goc va ban hang COD hieu qua.'),
+    aboutImageUrl: String(pageContent.aboutImageUrl ?? ''),
+    aboutImageAlt: String(pageContent.aboutImageAlt ?? ''),
     contactTitle: String(pageContent.contactTitle ?? 'Hay de HTXONLINE ket noi va dong hanh cung hop tac xa cua ban'),
-    contactDescription: String(pageContent.contactDescription ?? 'Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX.')
+    contactDescription: String(pageContent.contactDescription ?? 'Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX.'),
+    contactImageUrl: String(pageContent.contactImageUrl ?? ''),
+    contactImageAlt: String(pageContent.contactImageAlt ?? '')
   };
 }
 

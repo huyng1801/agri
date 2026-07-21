@@ -15,7 +15,12 @@ export default async function AboutPage() {
   const siteProfile = await getPublicSiteProfile();
 
   return (
-    <PublicStaticPage title={siteProfile.pageContent.introTitle} description={siteProfile.pageContent.introDescription}>
+    <PublicStaticPage
+      title={siteProfile.pageContent.introTitle}
+      description={siteProfile.pageContent.introDescription}
+      heroImageUrl={siteProfile.pageContent.introImageUrl}
+      heroImageAlt={siteProfile.pageContent.introImageAlt}
+    >
       <div className="grid gap-4 md:grid-cols-3">
         {[
           { title: 'Ket noi HTX voi nguoi mua', icon: Store, text: 'HTX co the publish san pham, ho so va ban hang COD ma khong can xay website rieng.' },
