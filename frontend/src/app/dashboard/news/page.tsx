@@ -424,7 +424,7 @@ export default function NewsDashboardPage() {
   const publishChecklistOpen = isAdvancedMode;
   const seoReviewOpen = isAdvancedMode;
   const outlineReviewOpen = isAdvancedMode;
-  const articleLibraryOpen = isAdvancedMode || Boolean(search.trim()) || Boolean(editingId);
+  const articleLibraryOpen = isAdvancedMode || Boolean(search.trim());
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
   const preparePreviewOpen = isAdvancedMode;
