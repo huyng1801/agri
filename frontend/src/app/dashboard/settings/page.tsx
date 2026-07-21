@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import type { ClipboardEvent, DragEvent, ReactNode } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -85,7 +85,7 @@ const backupSchema = z.object({
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();
-  const [tab, setTab] = useState<TabId>('profile');
+  const [tab, setTab] = useState<TabId>('public');
   const [r2Message, setR2Message] = useState('');
 
   const settings = useQuery({ queryKey: ['settings'], queryFn: () => apiFetch<SettingRecord[]>('/settings') });
@@ -135,7 +135,7 @@ export default function SettingsPage() {
     onSuccess: (result) => setR2Message(result.data.message)
   });
 
-  async function uploadLogo(file: File) {
+  async function uploadPublicAsset(file: File) {
     const presign = await apiFetch<{ uploadUrl: string; publicUrl?: string; objectKey: string }>('/files/presign-upload', {
       method: 'POST',
       body: JSON.stringify({ fileName: file.name, mimeType: file.type, sizeBytes: file.size, visibility: 'PUBLIC' })
@@ -151,26 +151,15 @@ export default function SettingsPage() {
         publicUrl: presign.data.publicUrl
       })
     });
-    publicForm.setValue('logoUrl', confirmed.data.publicUrl ?? presign.data.publicUrl ?? '');
+    return confirmed.data.publicUrl ?? presign.data.publicUrl ?? '';
+  }
+
+  async function uploadLogo(file: File) {
+    publicForm.setValue('logoUrl', await uploadPublicAsset(file));
   }
 
   async function uploadPublicImage(file: File, field: keyof z.infer<typeof publicProfileSchema>) {
-    const presign = await apiFetch<{ uploadUrl: string; publicUrl?: string; objectKey: string }>('/files/presign-upload', {
-      method: 'POST',
-      body: JSON.stringify({ fileName: file.name, mimeType: file.type, sizeBytes: file.size, visibility: 'PUBLIC' })
-    });
-    await fetch(presign.data.uploadUrl, { method: 'PUT', headers: { 'Content-Type': file.type }, body: file });
-    const confirmed = await apiFetch<{ publicUrl?: string }>('/files/confirm-upload', {
-      method: 'POST',
-      body: JSON.stringify({
-        objectKey: presign.data.objectKey,
-        mimeType: file.type,
-        sizeBytes: file.size,
-        visibility: 'PUBLIC',
-        publicUrl: presign.data.publicUrl
-      })
-    });
-    publicForm.setValue(field, confirmed.data.publicUrl ?? presign.data.publicUrl ?? '');
+    publicForm.setValue(field, await uploadPublicAsset(file));
   }
 
   return (
@@ -281,83 +270,137 @@ export default function SettingsPage() {
                 });
               })}
             >
-              <Field label="Ten hien thi"><Input {...publicForm.register('appName')} /></Field>
-              <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
-              <Field label="Hotline hien thi"><Input {...publicForm.register('hotlineDisplay')} /></Field>
-              <Field label="Email lien he"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
-              <Field label="Dia chi"><Input {...publicForm.register('address')} /></Field>
-              <Field label="Ma nhung ban do (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
-              <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
-              <Field label="Logo URL" className="sm:col-span-2">
-                <div className="flex gap-2">
-                  <Input {...publicForm.register('logoUrl')} />
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
-                    <Upload size={16} />
-                    Upload
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(event) => {
-                        const file = event.target.files?.[0];
-                        if (file) void uploadLogo(file);
-                      }}
-                    />
-                  </label>
+              <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Thông tin liên hệ và footer</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Đây là nơi chỉnh hotline, email, địa chỉ, logo, FAQ và phần bản đồ hiển thị trên footer/trang liên hệ.</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Link href="/" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem trang chủ</Link>
+                    <Link href="/lien-he" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem trang liên hệ</Link>
+                  </div>
                 </div>
-              </Field>
-              <Field label="FAQ (question|answer moi dong)" className="sm:col-span-2">
-                <Textarea rows={5} {...publicForm.register('faqText')} />
-              </Field>
-              <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} /></Field>
-              <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} /></Field>
-              <Field label="Mo ta trang chu" className="sm:col-span-2">
-                <Textarea rows={3} {...publicForm.register('homeDescription')} />
-              </Field>
-              <ImageField
-                label="Anh trang chu"
-                urlValue={publicForm.watch('homeImageUrl')}
-                altValue={publicForm.watch('homeImageAlt')}
-                onUrlChange={(value) => publicForm.setValue('homeImageUrl', value)}
-                onAltChange={(value) => publicForm.setValue('homeImageAlt', value)}
-                onUpload={(file) => void uploadPublicImage(file, 'homeImageUrl')}
-              />
-              <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} /></Field>
-              <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
-                <Textarea rows={3} {...publicForm.register('introDescription')} />
-              </Field>
-              <ImageField
-                label="Anh trang gioi thieu"
-                urlValue={publicForm.watch('introImageUrl')}
-                altValue={publicForm.watch('introImageAlt')}
-                onUrlChange={(value) => publicForm.setValue('introImageUrl', value)}
-                onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
-                onUpload={(file) => void uploadPublicImage(file, 'introImageUrl')}
-              />
-              <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} /></Field>
-              <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
-                <Textarea rows={3} {...publicForm.register('aboutDescription')} />
-              </Field>
-              <ImageField
-                label="Anh trang ve chung toi"
-                urlValue={publicForm.watch('aboutImageUrl')}
-                altValue={publicForm.watch('aboutImageAlt')}
-                onUrlChange={(value) => publicForm.setValue('aboutImageUrl', value)}
-                onAltChange={(value) => publicForm.setValue('aboutImageAlt', value)}
-                onUpload={(file) => void uploadPublicImage(file, 'aboutImageUrl')}
-              />
-              <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} /></Field>
-              <Field label="Mo ta trang lien he" className="sm:col-span-2">
-                <Textarea rows={3} {...publicForm.register('contactDescription')} />
-              </Field>
-              <ImageField
-                label="Anh trang lien he"
-                urlValue={publicForm.watch('contactImageUrl')}
-                altValue={publicForm.watch('contactImageAlt')}
-                onUrlChange={(value) => publicForm.setValue('contactImageUrl', value)}
-                onAltChange={(value) => publicForm.setValue('contactImageAlt', value)}
-                onUpload={(file) => void uploadPublicImage(file, 'contactImageUrl')}
-              />
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <Field label="Ten hien thi"><Input {...publicForm.register('appName')} /></Field>
+                  <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
+                  <Field label="Hotline hien thi"><Input {...publicForm.register('hotlineDisplay')} /></Field>
+                  <Field label="Email lien he"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
+                  <Field label="Dia chi" className="sm:col-span-2"><Input {...publicForm.register('address')} /></Field>
+                  <Field label="Ma nhung ban do (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
+                  <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
+                  <Field label="Logo URL" className="sm:col-span-2">
+                    <div className="flex gap-2">
+                      <Input {...publicForm.register('logoUrl')} />
+                      <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
+                        <Upload size={16} />
+                        Upload
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            if (file) void uploadLogo(file);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </Field>
+                  <Field label="FAQ (question|answer moi dong)" className="sm:col-span-2">
+                    <Textarea rows={5} {...publicForm.register('faqText')} />
+                  </Field>
+                </div>
+              </div>
+
+              <details className="group sm:col-span-2" open>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Trang chủ</p>
+                    <p className="mt-1 text-sm text-slate-600">Sửa badge, tiêu đề, mô tả và ảnh hero của trang đầu tiên người mua nhìn thấy.</p>
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                </summary>
+                <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
+                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} /></Field>
+                  <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} /></Field>
+                  <Field label="Mo ta trang chu" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('homeDescription')} />
+                  </Field>
+                  <ImageField
+                    label="Anh trang chu"
+                    urlValue={publicForm.watch('homeImageUrl')}
+                    altValue={publicForm.watch('homeImageAlt')}
+                    onUrlChange={(value) => publicForm.setValue('homeImageUrl', value)}
+                    onAltChange={(value) => publicForm.setValue('homeImageAlt', value)}
+                    onUpload={(file) => uploadPublicImage(file, 'homeImageUrl')}
+                  />
+                </div>
+              </details>
+
+              <details className="group sm:col-span-2" open>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Trang giới thiệu và Về chúng tôi</p>
+                    <p className="mt-1 text-sm text-slate-600">Hai trang này dùng để kể câu chuyện thương hiệu, năng lực và định hướng của HTXONLINE.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Gioi thieu</Link>
+                    <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Ve chung toi</Link>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                  </div>
+                </summary>
+                <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
+                  <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} /></Field>
+                  <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('introDescription')} />
+                  </Field>
+                  <ImageField
+                    label="Anh trang gioi thieu"
+                    urlValue={publicForm.watch('introImageUrl')}
+                    altValue={publicForm.watch('introImageAlt')}
+                    onUrlChange={(value) => publicForm.setValue('introImageUrl', value)}
+                    onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
+                    onUpload={(file) => uploadPublicImage(file, 'introImageUrl')}
+                  />
+                  <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} /></Field>
+                  <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('aboutDescription')} />
+                  </Field>
+                  <ImageField
+                    label="Anh trang ve chung toi"
+                    urlValue={publicForm.watch('aboutImageUrl')}
+                    altValue={publicForm.watch('aboutImageAlt')}
+                    onUrlChange={(value) => publicForm.setValue('aboutImageUrl', value)}
+                    onAltChange={(value) => publicForm.setValue('aboutImageAlt', value)}
+                    onUpload={(file) => uploadPublicImage(file, 'aboutImageUrl')}
+                  />
+                </div>
+              </details>
+
+              <details className="group sm:col-span-2" open>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Trang liên hệ</p>
+                    <p className="mt-1 text-sm text-slate-600">Sửa lời kêu gọi, mô tả hỗ trợ và ảnh minh họa của trang liên hệ.</p>
+                  </div>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                </summary>
+                <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
+                  <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} /></Field>
+                  <Field label="Mo ta trang lien he" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('contactDescription')} />
+                  </Field>
+                  <ImageField
+                    label="Anh trang lien he"
+                    urlValue={publicForm.watch('contactImageUrl')}
+                    altValue={publicForm.watch('contactImageAlt')}
+                    onUrlChange={(value) => publicForm.setValue('contactImageUrl', value)}
+                    onAltChange={(value) => publicForm.setValue('contactImageAlt', value)}
+                    onUpload={(file) => uploadPublicImage(file, 'contactImageUrl')}
+                  />
+                </div>
+              </details>
               <SaveButton pending={saveMutation.isPending} />
             </form>
           </Panel>
@@ -500,23 +543,63 @@ function ImageField({
   altValue: string;
   onUrlChange: (value: string) => void;
   onAltChange: (value: string) => void;
-  onUpload: (file: File) => void;
+  onUpload: (file: File) => Promise<void> | void;
 }) {
+  const [isUploading, setIsUploading] = useState(false);
+
+  async function handleFile(file: File) {
+    setIsUploading(true);
+    try {
+      await onUpload(file);
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handlePaste(event: ClipboardEvent<HTMLDivElement>) {
+    const file = Array.from(event.clipboardData?.items ?? [])
+      .find((item) => item.type.startsWith('image/'))
+      ?.getAsFile();
+    if (!file) return;
+    event.preventDefault();
+    await handleFile(file);
+  }
+
+  async function handleDrop(event: DragEvent<HTMLDivElement>) {
+    event.preventDefault();
+    const file = Array.from(event.dataTransfer.files ?? []).find((item) => item.type.startsWith('image/'));
+    if (!file) return;
+    await handleFile(file);
+  }
+
   return (
-    <div className="grid gap-3 sm:col-span-2 sm:grid-cols-[1.2fr_0.8fr]">
+    <div className="grid gap-3 sm:col-span-2">
+      <div
+        tabIndex={0}
+        onPaste={(event) => void handlePaste(event)}
+        onDragOver={(event) => event.preventDefault()}
+        onDrop={(event) => void handleDrop(event)}
+        className="rounded-2xl border border-dashed border-leaf/30 bg-mint/40 px-4 py-3 text-sm text-slate-700 outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+      >
+        <p className="font-semibold text-ink">{label}</p>
+        <p className="mt-1 leading-6">
+          Dán ảnh trực tiếp bằng <span className="font-semibold">Ctrl+V</span>, hoặc kéo ảnh vào đây để tự upload. {isUploading ? 'Đang upload ảnh...' : 'Ảnh mới sẽ cập nhật ngay vào ô URL bên dưới.'}
+        </p>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-[1.2fr_0.8fr]">
       <Field label={`${label} URL`}>
         <div className="flex gap-2">
           <Input value={urlValue} onChange={(event) => onUrlChange(event.target.value)} />
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
             <Upload size={16} />
-            Upload
+            {isUploading ? 'Dang upload' : 'Upload'}
             <input
               type="file"
               accept="image/*"
               className="hidden"
               onChange={(event) => {
                 const file = event.target.files?.[0];
-                if (file) onUpload(file);
+                if (file) void handleFile(file);
               }}
             />
           </label>
@@ -525,6 +608,12 @@ function ImageField({
       <Field label={`${label} alt`}>
         <Input value={altValue} onChange={(event) => onAltChange(event.target.value)} />
       </Field>
+      </div>
+      {urlValue && (
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-2 sm:max-w-md">
+          <img src={urlValue} alt={altValue || label} className="aspect-[16/10] w-full rounded-xl object-cover" />
+        </div>
+      )}
     </div>
   );
 }
