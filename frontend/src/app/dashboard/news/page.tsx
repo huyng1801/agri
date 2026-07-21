@@ -428,6 +428,7 @@ export default function NewsDashboardPage() {
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
   const preparePreviewOpen = isAdvancedMode;
+  const autofillPlanOpen = isAdvancedMode;
   const simpleSeoBoardOpen = isAdvancedMode;
   const templateLibraryOpen = isAdvancedMode;
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
@@ -1340,16 +1341,22 @@ export default function NewsDashboardPage() {
                   </Button>
                 </div>
                 {autofillPlan.length > 0 && (
-                  <div className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90 p-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Dang 1 cham se tu bo sung</p>
-                    <div className="mt-2 flex flex-wrap gap-2">
+                  <details className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90" open={autofillPlanOpen}>
+                    <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Dang 1 cham se tu bo sung</p>
+                        <p className="mt-1 text-sm text-slate-600">{autofillPlan.length} muc se duoc them neu ban de trong.</p>
+                      </div>
+                      <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">{autofillPlan.length} muc</span>
+                    </summary>
+                    <div className="flex flex-wrap gap-2 border-t border-emerald-100 px-3 py-3">
                       {autofillPlan.map((item) => (
                         <span key={item.id} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
                           {item.label}
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </details>
                 )}
                 {preparedDiffs.length > 0 && (
                   <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={preparePreviewOpen}>
