@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Bold,
+  Code2,
   Eye,
   FileText,
   Heading2,
@@ -22,7 +23,7 @@ import {
   Upload
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useMemo, useRef, useState, type ClipboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react';
 import { API_URL, apiFetch } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import type { NewsArticle, NewsCategory, NewsList } from '@/lib/news';
@@ -94,6 +95,8 @@ type SeoScoreResult = {
     descriptionLength: number;
   };
 };
+
+type EditorMode = 'visual' | 'html';
 
 const emptyForm: NewsForm = {
   categoryId: '',
@@ -205,10 +208,12 @@ const articleTemplates = [
 export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
+  const visualEditorRef = useRef<HTMLDivElement | null>(null);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState<NewsForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
+  const [editorMode, setEditorMode] = useState<EditorMode>('visual');
   const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [bodyImage, setBodyImage] = useState({ url: '', alt: '', caption: '' });
   const [uploading, setUploading] = useState('');
@@ -225,6 +230,14 @@ export default function NewsDashboardPage() {
   const seo = useMemo(() => clientSeoScore(form), [form]);
   const articleItems = articles.data?.data.data ?? [];
   const categoryItems = categories.data?.data ?? [];
+
+  useEffect(() => {
+    const editor = visualEditorRef.current;
+    if (!editor || editorMode !== 'visual') return;
+    if (editor.innerHTML !== form.bodyHtml) {
+      editor.innerHTML = form.bodyHtml || '<p></p>';
+    }
+  }, [editorMode, form.bodyHtml, editingId]);
 
   const saveArticle = useMutation({
     mutationFn: (statusOverride?: NewsForm['status']) => {
@@ -268,6 +281,20 @@ export default function NewsDashboardPage() {
     }));
   }
 
+  function updateVisualEditorHtml(nextHtml: string) {
+    update('bodyHtml', nextHtml || '<p></p>');
+  }
+
+  function syncVisualEditor() {
+    const editor = visualEditorRef.current;
+    if (!editor) return;
+    updateVisualEditorHtml(editor.innerHTML);
+  }
+
+  function focusVisualEditor() {
+    visualEditorRef.current?.focus();
+  }
+
   function edit(article: NewsArticle) {
     setEditingId(article.id);
     setForm(fromArticle(article));
@@ -282,6 +309,10 @@ export default function NewsDashboardPage() {
   }
 
   function insertHtml(snippet: string) {
+    if (editorMode === 'visual') {
+      insertVisualSnippet(snippet);
+      return;
+    }
     insertHtmlAtSelection(snippet);
   }
 
@@ -297,6 +328,66 @@ export default function NewsDashboardPage() {
       const cursor = start + snippet.length;
       field.setSelectionRange(cursor, cursor);
     });
+  }
+
+  function insertHtmlIntoVisualEditor(html: string) {
+    focusVisualEditor();
+    document.execCommand('insertHTML', false, html);
+    syncVisualEditor();
+  }
+
+  function insertVisualSnippet(snippet: string) {
+    if (snippet.startsWith('<h2')) {
+      focusVisualEditor();
+      document.execCommand('formatBlock', false, 'h2');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<h3')) {
+      focusVisualEditor();
+      document.execCommand('formatBlock', false, 'h3');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<strong')) {
+      focusVisualEditor();
+      document.execCommand('bold');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<em')) {
+      focusVisualEditor();
+      document.execCommand('italic');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<a ')) {
+      const url = window.prompt('Nhập liên kết cần chèn', 'https://htxonline.vn');
+      if (!url) return;
+      focusVisualEditor();
+      document.execCommand('createLink', false, url);
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<ul')) {
+      focusVisualEditor();
+      document.execCommand('insertUnorderedList');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<ol')) {
+      focusVisualEditor();
+      document.execCommand('insertOrderedList');
+      syncVisualEditor();
+      return;
+    }
+    if (snippet.startsWith('<blockquote')) {
+      focusVisualEditor();
+      document.execCommand('formatBlock', false, 'blockquote');
+      syncVisualEditor();
+      return;
+    }
+    insertHtmlIntoVisualEditor(snippet);
   }
 
   async function uploadFile(file: File, target: 'cover' | 'body'): Promise<string | null> {
@@ -350,7 +441,9 @@ export default function NewsDashboardPage() {
     if (!bodyImage.url) return;
     const alt = escapeHtml(bodyImage.alt || 'Ảnh minh họa');
     const caption = bodyImage.caption ? `<figcaption>${escapeHtml(bodyImage.caption)}</figcaption>` : '';
-    insertHtml(`<figure><img src="${bodyImage.url}" alt="${alt}" loading="lazy" />${caption}</figure>`);
+    const imageHtml = `<figure><img src="${bodyImage.url}" alt="${alt}" loading="lazy" />${caption}</figure>`;
+    if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
+    else insertHtml(imageHtml);
     setBodyImage({ url: '', alt: '', caption: '' });
   }
 
@@ -372,6 +465,20 @@ export default function NewsDashboardPage() {
     insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
   }
 
+  async function handleVisualPaste(event: ClipboardEvent<HTMLDivElement>) {
+    const items = Array.from(event.clipboardData?.items ?? []);
+    const imageItem = items.find((item) => item.type.startsWith('image/'));
+    if (!imageItem) return;
+    const file = imageItem.getAsFile();
+    if (!file) return;
+
+    event.preventDefault();
+    const url = await uploadFile(file, 'body');
+    if (!url) return;
+    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+    insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
+  }
+
   function applyTemplate(templateId: string) {
     const template = articleTemplates.find((item) => item.id === templateId);
     if (!template) return;
@@ -386,7 +493,10 @@ export default function NewsDashboardPage() {
       schemaType: template.schemaType,
       status: 'DRAFT'
     }));
-    window.requestAnimationFrame(() => bodyRef.current?.focus());
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual') focusVisualEditor();
+      else bodyRef.current?.focus();
+    });
   }
 
   function fillSeoDefaults() {
@@ -525,8 +635,8 @@ export default function NewsDashboardPage() {
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
-                <p className="mt-1 text-sm font-bold text-ink">Dán nội dung và ảnh trực tiếp</p>
-                <p className="mt-1 text-sm leading-6 text-slate-600">Có thể dán ảnh từ clipboard ngay trong ô nội dung, ảnh sẽ tự upload và chèn vào bài.</p>
+                <p className="mt-1 text-sm font-bold text-ink">Soạn trực quan như WordPress</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Chế độ trực quan là mặc định. Có thể dán ảnh trực tiếp, bôi đậm, tạo heading và chèn link ngay trên editor.</p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
@@ -547,6 +657,14 @@ export default function NewsDashboardPage() {
                   <Icon size={18} aria-hidden="true" />
                 </button>
               ))}
+              <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
+                <FileText size={18} aria-hidden="true" />
+                Soạn trực quan
+              </Button>
+              <Button type="button" variant={editorMode === 'html' ? 'primary' : 'ghost'} onClick={() => setEditorMode('html')}>
+                <Code2 size={18} aria-hidden="true" />
+                HTML
+              </Button>
               <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
                 <Sparkles size={18} aria-hidden="true" />
                 Tự điền SEO
@@ -561,24 +679,45 @@ export default function NewsDashboardPage() {
               </Button>
             </div>
 
-            <label className="block space-y-1 text-sm font-semibold">
-              <span>Nội dung HTML</span>
-              <Textarea
-                ref={bodyRef}
-                data-testid="news-content-editor"
-                value={form.bodyHtml}
-                onChange={(event) => update('bodyHtml', event.target.value)}
-                onPaste={(event) => void handleBodyPaste(event)}
-                className="min-h-[320px] font-mono text-sm"
-                required
-              />
-            </label>
+            {editorMode === 'visual' ? (
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
+                  <span className="rounded-full bg-white px-3 py-1 text-leaf">Chế độ dễ dùng</span>
+                  <span>Dán ảnh từ clipboard: `Ctrl+V`</span>
+                  <span>Bấm toolbar để tạo H2, H3, danh sách, link</span>
+                  <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
+                </div>
+                <div
+                  ref={visualEditorRef}
+                  data-testid="news-content-editor"
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={syncVisualEditor}
+                  onBlur={syncVisualEditor}
+                  onPaste={(event) => void handleVisualPaste(event)}
+                  className="min-h-[320px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal"
+                />
+              </div>
+            ) : (
+              <label className="block space-y-1 text-sm font-semibold">
+                <span>Nội dung HTML</span>
+                <Textarea
+                  ref={bodyRef}
+                  data-testid="news-content-editor"
+                  value={form.bodyHtml}
+                  onChange={(event) => update('bodyHtml', event.target.value)}
+                  onPaste={(event) => void handleBodyPaste(event)}
+                  className="min-h-[320px] font-mono text-sm"
+                  required
+                />
+              </label>
+            )}
 
             <div className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">
               <p className="font-semibold text-ink">Mẹo đăng bài nhanh</p>
               <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
-              <p>Nếu chỉ muốn đăng bài đơn giản: chọn mẫu, sửa chữ trong từng đoạn `&lt;p&gt;`, giữ nguyên cấu trúc còn lại là được.</p>
-              <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào ô nội dung rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
+              <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
+              <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
             </div>
 
             {preview && (
