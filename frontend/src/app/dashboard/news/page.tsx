@@ -398,6 +398,7 @@ export default function NewsDashboardPage() {
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
   const seoDescriptionLength = form.seoDescription.trim().length;
   const isAdvancedMode = authorMode === 'advanced';
+  const isSimpleMode = authorMode === 'simple';
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -414,6 +415,14 @@ export default function NewsDashboardPage() {
       form.twitterDescription.trim() ||
       form.twitterImageUrl.trim()
   );
+  const publishChecklistIssues = publishReadiness.items.filter((item) => !item.ok).length;
+  const quickWinCount = quickWins.length;
+  const nextStepCount = nextStepSuggestions.length;
+  const seoMustFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'must').length;
+  const seoShouldFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'should').length;
+  const detailHelpersOpen = isAdvancedMode || quickWinCount > 0 || nextStepCount > 0;
+  const seoReviewOpen = isAdvancedMode || seo.score < 80 || seoMustFixCount > 0;
+  const outlineReviewOpen = isAdvancedMode || contentOutlinePreview.headings.length === 0 || contentOutlinePreview.imagesMissingAlt > 0;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -2005,6 +2014,40 @@ export default function NewsDashboardPage() {
 
         <aside className="space-y-4">
           <Panel className="space-y-3">
+            <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Viec nen lam tiep</p>
+              <p className="mt-1 text-lg font-bold text-ink">Editor se goi y buoc ke tiep de bai nhanh dep va de publish hon.</p>
+              <p className="mt-1 text-sm leading-6 text-slate-700">
+                {quickWinCount > 0
+                  ? `Dang co ${quickWinCount} sua nhanh nen xu ly truoc.`
+                  : 'Khung co ban da on, ban co the bam tu dong hoan thien de ra bai nhanh hon.'}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button type="button" onClick={preparePostForPublish}>
+                  <Sparkles size={18} aria-hidden="true" />
+                  Tu hoan thien co ban
+                </Button>
+                <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                  <Target size={18} aria-hidden="true" />
+                  Va SEO nhanh
+                </Button>
+              </div>
+            </div>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={detailHelpersOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Tro ly thao tac nhanh</p>
+                  <p className="text-sm text-slate-600">
+                    {quickWinCount > 0
+                      ? `${quickWinCount} sua nhanh va ${nextStepCount} buoc tiep theo.`
+                      : `${nextStepCount} buoc tiep theo de hoan thien bai viet.`}
+                  </p>
+                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                  {quickWinCount > 0 ? `${quickWinCount} viec gap` : 'Xem goi y'}
+                </span>
+              </summary>
+              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
             {quickWins.length > 0 && (
               <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-900">Sua nhanh trong 1 phut</p>
@@ -2048,6 +2091,8 @@ export default function NewsDashboardPage() {
                 </div>
               ))}
             </div>
+              </div>
+            </details>
           </Panel>
 
           <Panel className="space-y-3">
@@ -2056,6 +2101,26 @@ export default function NewsDashboardPage() {
               <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
               <p className="mt-1 text-sm leading-6 text-slate-700">{publishReadiness.detail}</p>
             </div>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={!isSimpleMode || publishChecklistIssues > 0}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Checklist xuat ban</p>
+                  <p className="text-sm text-slate-600">
+                    {publishChecklistIssues > 0
+                      ? `Con ${publishChecklistIssues} muc can bo sung truoc khi dang.`
+                      : 'Da du cac muc cot loi de co the publish.'}
+                  </p>
+                </div>
+                <span
+                  className={cn(
+                    'rounded-full px-3 py-1 text-xs font-bold',
+                    publishChecklistIssues > 0 ? 'bg-amber-100 text-amber-900' : 'bg-emerald-100 text-emerald-800'
+                  )}
+                >
+                  {publishChecklistIssues > 0 ? `${publishChecklistIssues} muc thieu` : 'Da san sang'}
+                </span>
+              </summary>
+              <div className="border-t border-slate-100 px-4 py-3">
             <div className="grid grid-cols-2 gap-2 text-sm">
               {publishReadiness.items.map((item) => (
                 <div
@@ -2070,6 +2135,8 @@ export default function NewsDashboardPage() {
                 </div>
               ))}
             </div>
+              </div>
+            </details>
           </Panel>
 
           <Panel>
@@ -2124,7 +2191,24 @@ export default function NewsDashboardPage() {
               </div>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+            <details className="mt-4 rounded-2xl border border-slate-200 bg-white/95" open={seoReviewOpen}>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Xem checklist va preview SEO</p>
+                  <p className="text-sm text-slate-600">
+                    {seoMustFixCount > 0
+                      ? `${seoMustFixCount} muc can xu ly truoc va ${seoShouldFixCount} muc nen toi uu them.`
+                      : seoShouldFixCount > 0
+                        ? `${seoShouldFixCount} muc nen toi uu them de dep hon.`
+                        : 'Diem so va preview dang o trang thai on de xuat ban.'}
+                  </p>
+                </div>
+                <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>
+                  SEO {seo.score}/100
+                </span>
+              </summary>
+              <div className="space-y-4 border-t border-slate-100 px-4 py-3">
+            <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="rounded-xl border border-slate-200 bg-white p-3">
                 <p className="text-slate-500">Số từ</p>
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.words}</p>
@@ -2260,6 +2344,8 @@ export default function NewsDashboardPage() {
                 </div>
               )}
             </div>
+              </div>
+            </details>
           </Panel>
           {isAdvancedMode && (
           <Panel className="space-y-3">
