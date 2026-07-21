@@ -433,6 +433,7 @@ export default function NewsDashboardPage() {
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
   const quickStartGuideOpen = isAdvancedMode;
   const editorToolsOpen = isAdvancedMode || needsImportedOptimization || editorMode === 'html';
+  const coverPanelOpen = isAdvancedMode || !form.coverImageUrl || coverUploadActive;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -2094,6 +2095,7 @@ export default function NewsDashboardPage() {
             </Panel>
           )}
 
+          {isAdvancedMode ? (
           <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
             <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
               <Sparkles size={18} aria-hidden="true" />
@@ -2115,6 +2117,18 @@ export default function NewsDashboardPage() {
               {saveArticle.isPending ? 'Đang lưu' : 'Lưu'}
             </Button>
           </div>
+          ) : (
+            <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
+              <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
+                <Sparkles size={18} aria-hidden="true" />
+                {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
+              </Button>
+              <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
+                <Save size={18} aria-hidden="true" />
+                {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+              </Button>
+            </div>
+          )}
         </form>
 
         <aside className="space-y-4">
