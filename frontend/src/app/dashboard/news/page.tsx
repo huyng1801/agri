@@ -119,6 +119,11 @@ type QuickWinSuggestion = {
   actionLabel: string;
 };
 
+type AutofillItem = {
+  id: 'slug' | 'excerpt' | 'keyword' | 'seoTitle' | 'seoDescription' | 'canonical' | 'social' | 'coverAlt' | 'intro' | 'heading' | 'link' | 'tags';
+  label: string;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -316,6 +321,7 @@ export default function NewsDashboardPage() {
   const focusKeywordSuggestions = useMemo(() => suggestFocusKeywords(form), [form]);
   const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
   const quickWins = useMemo(() => buildQuickWins(form, seo, focusKeywordSuggestions), [form, seo, focusKeywordSuggestions]);
+  const autofillPlan = useMemo(() => buildAutofillPlan(form, seo), [form, seo]);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
@@ -1128,6 +1134,18 @@ export default function NewsDashboardPage() {
                     Copy link
                   </Button>
                 </div>
+                {autofillPlan.length > 0 && (
+                  <div className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Dang 1 cham se tu bo sung</p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {autofillPlan.map((item) => (
+                        <span key={item.id} className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
+                          {item.label}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div className="rounded-xl border border-white bg-white p-3">
@@ -1792,6 +1810,15 @@ export default function NewsDashboardPage() {
               </div>
             </div>
 
+            <div data-testid="news-preview-twitter" className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white">
+              <div className="border-b border-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Preview X / Twitter</div>
+              <div className="aspect-[16/8] bg-slate-100 bg-cover bg-center" style={{ backgroundImage: form.twitterImageUrl || form.coverImageUrl ? `url('${form.twitterImageUrl || form.coverImageUrl}')` : undefined }} />
+              <div className="p-3">
+                <p className="font-bold text-ink">{form.twitterTitle || form.title || 'Tiêu đề Twitter'}</p>
+                <p className="mt-1 text-sm text-slate-600">{form.twitterDescription || form.excerpt || 'Mô tả Twitter'}</p>
+              </div>
+            </div>
+
             <div className="mt-4 space-y-3">
               <div>
                 <p className="text-sm font-bold text-ink">Checklist xuất bản</p>
@@ -2418,6 +2445,30 @@ function buildQuickWins(form: NewsForm, seo: SeoScoreResult, focusKeywordSuggest
   }
 
   return wins.slice(0, 4);
+}
+
+function buildAutofillPlan(form: NewsForm, seo: SeoScoreResult): AutofillItem[] {
+  const items: AutofillItem[] = [];
+  const bodyText = stripHtml(form.bodyHtml);
+  const keyword = (form.focusKeyword || form.title).trim();
+  const introHasKeyword = keyword && bodyText.slice(0, 180).toLowerCase().includes(keyword.toLowerCase());
+
+  if (!form.slug.trim() && form.title.trim()) items.push({ id: 'slug', label: 'Slug tu tieu de' });
+  if (!form.excerpt.trim() && bodyText) items.push({ id: 'excerpt', label: 'Mo ta ngan tu noi dung' });
+  if (!form.focusKeyword.trim() && form.title.trim()) items.push({ id: 'keyword', label: 'Tu khoa chinh' });
+  if (!form.seoTitle.trim() && form.title.trim()) items.push({ id: 'seoTitle', label: 'SEO title' });
+  if (!form.seoDescription.trim() && (form.excerpt.trim() || bodyText)) items.push({ id: 'seoDescription', label: 'Meta description' });
+  if (!form.canonicalUrl.trim() && (form.slug.trim() || form.title.trim())) items.push({ id: 'canonical', label: 'Canonical URL' });
+  if ((!form.ogTitle.trim() && !form.twitterTitle.trim()) || (!form.ogDescription.trim() && !form.twitterDescription.trim()) || (!form.ogImageUrl.trim() && !form.twitterImageUrl.trim())) {
+    items.push({ id: 'social', label: 'Preview social' });
+  }
+  if (!form.coverImageAlt.trim() && (form.coverImageUrl.trim() || form.title.trim())) items.push({ id: 'coverAlt', label: 'Alt anh bia' });
+  if (keyword && !introHasKeyword) items.push({ id: 'intro', label: 'Mo bai co tu khoa' });
+  if (seo.stats.words >= 120 && seo.stats.headings === 0) items.push({ id: 'heading', label: 'Khung H2/H3 co ban' });
+  if (seo.stats.internalLinks === 0) items.push({ id: 'link', label: '1 internal link phu hop' });
+  if (!form.tags.trim() && seo.stats.words >= 120) items.push({ id: 'tags', label: 'Tags goi y' });
+
+  return items.slice(0, 8);
 }
 
 function publishReadinessClass(ratio: number) {
