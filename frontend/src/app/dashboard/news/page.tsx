@@ -17,10 +17,12 @@ import {
   RefreshCcw,
   Save,
   Search,
+  Sparkles,
+  Target,
   Upload
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState, type ClipboardEvent } from 'react';
 import { API_URL, apiFetch } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import type { NewsArticle, NewsCategory, NewsList } from '@/lib/news';
@@ -53,6 +55,44 @@ type NewsForm = {
   tags: string;
   publishedAt: string;
   scheduledAt: string;
+};
+
+type UploadPlan = {
+  bucket: string;
+  objectKey: string;
+  uploadUrl: string;
+  method: string;
+  headers: Record<string, string>;
+  publicUrl?: string;
+};
+
+type FileAsset = {
+  id: string;
+  publicUrl?: string | null;
+  objectKey: string;
+};
+
+type SeoCheck = {
+  label: string;
+  detail: string;
+  ok: boolean;
+};
+
+type SeoScoreResult = {
+  score: number;
+  readability: number;
+  notes: string[];
+  strengths: string[];
+  checks: SeoCheck[];
+  stats: {
+    words: number;
+    headings: number;
+    images: number;
+    internalLinks: number;
+    keywordMatches: number;
+    titleLength: number;
+    descriptionLength: number;
+  };
 };
 
 const emptyForm: NewsForm = {
@@ -112,7 +152,7 @@ const articleTemplates = [
   <li>Mặt hàng cần theo dõi thêm:</li>
 </ul>
 <h2>Tín hiệu từ HTX và vùng sản xuất</h2>
-<p>Chèn nhận định ngắn từ HTX, ví dụ: đơn hàng tăng, sản lượng ổn định, hoặc cần điều chỉnh kế hoạch thu hoạch.</p>
+<p>Chèn nhận định ngắn từ HTX, ví dụ: đơn hàng tăng, sản lượng ổn định hoặc cần điều chỉnh kế hoạch thu hoạch.</p>
 <blockquote>Gợi ý: thêm 1 câu trích dẫn ngắn từ đại diện HTX để bài viết gần gũi hơn.</blockquote>
 <h2>Khuyến nghị cho người mua</h2>
 <p>Nêu rõ người mua nên đặt sớm, ưu tiên sản phẩm nào, hoặc cách theo dõi QR Passport để kiểm tra nguồn gốc.</p>`
@@ -135,7 +175,7 @@ const articleTemplates = [
   <li>Cam kết chất lượng:</li>
 </ul>
 <h2>Vì sao HTX tham gia HTXONLINE?</h2>
-<p>Chia sẻ ngắn về nhu cầu minh bạch thông tin, mở rộng thị trường, hoặc quản lý đơn hàng hiệu quả hơn.</p>
+<p>Chia sẻ ngắn về nhu cầu minh bạch thông tin, mở rộng thị trường hoặc quản lý đơn hàng hiệu quả hơn.</p>
 <h2>Sản phẩm nên xem ngay</h2>
 <p>Chèn liên kết hoặc mô tả 1-3 sản phẩm public mà bạn muốn đẩy traffic.</p>`
   },
@@ -161,21 +201,6 @@ const articleTemplates = [
 <p>Nhắc người mua giữ điện thoại mở, kiểm tra cuộc gọi xác nhận và tra cứu đơn nếu cần.</p>`
   }
 ] as const;
-
-type UploadPlan = {
-  bucket: string;
-  objectKey: string;
-  uploadUrl: string;
-  method: string;
-  headers: Record<string, string>;
-  publicUrl?: string;
-};
-
-type FileAsset = {
-  id: string;
-  publicUrl?: string | null;
-  objectKey: string;
-};
 
 export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
@@ -257,22 +282,24 @@ export default function NewsDashboardPage() {
   }
 
   function insertHtml(snippet: string) {
+    insertHtmlAtSelection(snippet);
+  }
+
+  function insertHtmlAtSelection(snippet: string, selection?: { start: number; end: number }) {
     const field = bodyRef.current;
-    if (!field) {
-      update('bodyHtml', `${form.bodyHtml}\n${snippet}`);
-      return;
-    }
-    const start = field.selectionStart;
-    const end = field.selectionEnd;
+    const start = selection?.start ?? field?.selectionStart ?? form.bodyHtml.length;
+    const end = selection?.end ?? field?.selectionEnd ?? form.bodyHtml.length;
     const next = `${form.bodyHtml.slice(0, start)}${snippet}${form.bodyHtml.slice(end)}`;
     update('bodyHtml', next);
     window.requestAnimationFrame(() => {
+      if (!field) return;
       field.focus();
-      field.setSelectionRange(start + snippet.length, start + snippet.length);
+      const cursor = start + snippet.length;
+      field.setSelectionRange(cursor, cursor);
     });
   }
 
-  async function uploadFile(file: File, target: 'cover' | 'body') {
+  async function uploadFile(file: File, target: 'cover' | 'body'): Promise<string | null> {
     setUploading(target);
     try {
       const plan = await apiFetch<UploadPlan>('/files/presign-upload', {
@@ -310,8 +337,10 @@ export default function NewsDashboardPage() {
       } else {
         setBodyImage((current) => ({ ...current, url }));
       }
+      return url;
     } catch (error) {
       window.alert(error instanceof Error ? error.message : 'Upload thất bại');
+      return null;
     } finally {
       setUploading('');
     }
@@ -323,6 +352,24 @@ export default function NewsDashboardPage() {
     const caption = bodyImage.caption ? `<figcaption>${escapeHtml(bodyImage.caption)}</figcaption>` : '';
     insertHtml(`<figure><img src="${bodyImage.url}" alt="${alt}" loading="lazy" />${caption}</figure>`);
     setBodyImage({ url: '', alt: '', caption: '' });
+  }
+
+  async function handleBodyPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
+    const items = Array.from(event.clipboardData?.items ?? []);
+    const imageItem = items.find((item) => item.type.startsWith('image/'));
+    if (!imageItem) return;
+    const file = imageItem.getAsFile();
+    if (!file) return;
+
+    event.preventDefault();
+    const selection = {
+      start: event.currentTarget.selectionStart,
+      end: event.currentTarget.selectionEnd
+    };
+    const url = await uploadFile(file, 'body');
+    if (!url) return;
+    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+    insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
   }
 
   function applyTemplate(templateId: string) {
@@ -342,12 +389,48 @@ export default function NewsDashboardPage() {
     window.requestAnimationFrame(() => bodyRef.current?.focus());
   }
 
+  function fillSeoDefaults() {
+    const bodyText = stripHtml(form.bodyHtml);
+    const canonicalSlug = form.slug || slugifyLocal(form.title);
+    const fallbackDescription = trimText(form.excerpt || bodyText, 155);
+    const seoTitle = trimText(form.seoTitle || form.title, 65);
+    const socialTitle = trimText(form.ogTitle || form.twitterTitle || seoTitle || form.title, 70);
+
+    setForm((current) => ({
+      ...current,
+      slug: current.slug || canonicalSlug,
+      focusKeyword: current.focusKeyword || current.title.trim(),
+      seoTitle,
+      seoDescription: current.seoDescription || fallbackDescription,
+      canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+      ogTitle: current.ogTitle || socialTitle,
+      ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
+      ogImageUrl: current.ogImageUrl || current.coverImageUrl,
+      twitterTitle: current.twitterTitle || socialTitle,
+      twitterDescription: current.twitterDescription || current.seoDescription || fallbackDescription,
+      twitterImageUrl: current.twitterImageUrl || current.coverImageUrl,
+      coverImageAlt: current.coverImageAlt || current.title
+    }));
+  }
+
+  function syncSocialFromSeo() {
+    setForm((current) => ({
+      ...current,
+      ogTitle: current.seoTitle || current.title,
+      ogDescription: current.seoDescription || current.excerpt,
+      ogImageUrl: current.ogImageUrl || current.coverImageUrl,
+      twitterTitle: current.seoTitle || current.title,
+      twitterDescription: current.seoDescription || current.excerpt,
+      twitterImageUrl: current.twitterImageUrl || current.coverImageUrl
+    }));
+  }
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tin tức</h1>
-          <p className="text-sm text-slate-600">Bài viết public cho htxonline.vn/tin-tuc</p>
+          <p className="text-sm text-slate-600">Đăng bài public cho htxonline.vn/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => articles.refetch()} aria-label="Tải lại">
@@ -361,7 +444,13 @@ export default function NewsDashboardPage() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
-        <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); saveArticle.mutate(undefined); }}>
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            saveArticle.mutate(undefined);
+          }}
+        >
           <Panel className="space-y-4">
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
@@ -397,17 +486,17 @@ export default function NewsDashboardPage() {
             </div>
           </Panel>
 
-          <Panel className="space-y-3">
-            <div className="rounded-md border border-dashed border-leaf/30 bg-mint/40 p-3">
+          <Panel className="space-y-4">
+            <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/40 p-3">
               <div className="flex items-start gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
                   <FileText size={18} aria-hidden="true" />
                 </span>
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm font-bold text-ink">Mẫu bài nhanh để đăng không cần viết từ đầu</p>
+                    <p className="text-sm font-bold text-ink">Mẫu bài nhanh để đăng mà không cần viết từ đầu</p>
                     <p className="text-sm leading-6 text-slate-600">
-                      Chọn một mẫu bên dưới, thay lại tiêu đề, đoạn mô tả và nội dung trong HTML rồi upload ảnh là có thể publish.
+                      Chọn một mẫu bên dưới, sửa tiêu đề, mô tả, nội dung và thêm ảnh là có thể publish.
                     </p>
                   </div>
                   <div className="grid gap-2 md:grid-cols-3">
@@ -427,23 +516,51 @@ export default function NewsDashboardPage() {
                 </div>
               </div>
             </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 1</p>
+                <p className="mt-1 text-sm font-bold text-ink">Nhập tiêu đề và mô tả</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Hệ thống tự gợi ý slug, title SEO và mô tả nếu bạn chưa nhập.</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
+                <p className="mt-1 text-sm font-bold text-ink">Dán nội dung và ảnh trực tiếp</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Có thể dán ảnh từ clipboard ngay trong ô nội dung, ảnh sẽ tự upload và chèn vào bài.</p>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
+                <p className="mt-1 text-sm font-bold text-ink">Xem điểm SEO rồi publish</p>
+                <p className="mt-1 text-sm leading-6 text-slate-600">Checklist bên phải sẽ chấm title, keyword, heading, ảnh, liên kết và độ dễ đọc.</p>
+              </div>
+            </div>
+
             <div className="flex flex-wrap items-center gap-2">
               {editorSnippets.map(([Icon, snippet]) => (
                 <button
-                  key={String(snippet)}
+                  key={snippet}
                   type="button"
                   className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
-                  onClick={() => insertHtml(String(snippet))}
+                  onClick={() => insertHtml(snippet)}
                   title="Chèn định dạng"
                 >
                   <Icon size={18} aria-hidden="true" />
                 </button>
               ))}
+              <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                <Sparkles size={18} aria-hidden="true" />
+                Tự điền SEO
+              </Button>
+              <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
+                <Target size={18} aria-hidden="true" />
+                Đồng bộ social
+              </Button>
               <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
                 <Eye size={18} aria-hidden="true" />
                 Preview
               </Button>
             </div>
+
             <label className="block space-y-1 text-sm font-semibold">
               <span>Nội dung HTML</span>
               <Textarea
@@ -451,21 +568,31 @@ export default function NewsDashboardPage() {
                 data-testid="news-content-editor"
                 value={form.bodyHtml}
                 onChange={(event) => update('bodyHtml', event.target.value)}
+                onPaste={(event) => void handleBodyPaste(event)}
                 className="min-h-[320px] font-mono text-sm"
                 required
               />
             </label>
+
             <div className="rounded-md bg-slate-50 p-3 text-sm leading-6 text-slate-600">
               <p className="font-semibold text-ink">Mẹo đăng bài nhanh</p>
               <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
-              <p>Nếu chị chỉ muốn đăng bài đơn giản: chọn mẫu, sửa chữ trong từng đoạn &lt;p&gt;, giữ nguyên cấu trúc còn lại là được.</p>
+              <p>Nếu chỉ muốn đăng bài đơn giản: chọn mẫu, sửa chữ trong từng đoạn `&lt;p&gt;`, giữ nguyên cấu trúc còn lại là được.</p>
+              <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào ô nội dung rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
             </div>
+
             {preview && (
               <div className="prose max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
             )}
           </Panel>
 
           <Panel className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-ink">Ảnh đại diện</p>
+                <p className="text-sm text-slate-600">Dùng ảnh ngang sáng, rõ và có alt text để cải thiện SEO.</p>
+              </div>
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>Cover image URL</span>
@@ -477,10 +604,17 @@ export default function NewsDashboardPage() {
               </label>
               <label className="space-y-1 text-sm font-semibold md:col-span-2">
                 <span>Upload cover</span>
-                <Input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && uploadFile(event.target.files[0], 'cover')} />
+                <Input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'cover')} />
               </label>
             </div>
-            {form.coverImageUrl && <img data-testid="news-cover-image-preview" src={form.coverImageUrl} alt={form.coverImageAlt || ''} className="aspect-[16/7] w-full rounded-md object-cover" />}
+            {form.coverImageUrl && (
+              <img
+                data-testid="news-cover-image-preview"
+                src={form.coverImageUrl}
+                alt={form.coverImageAlt || ''}
+                className="aspect-[16/7] w-full rounded-md object-cover"
+              />
+            )}
           </Panel>
 
           <Panel className="space-y-3">
@@ -506,12 +640,22 @@ export default function NewsDashboardPage() {
               <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                 <Upload size={18} aria-hidden="true" />
                 {uploading === 'body' ? 'Đang upload' : 'Upload ảnh body'}
-                <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && uploadFile(event.target.files[0], 'body')} />
+                <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'body')} />
               </label>
             </div>
           </Panel>
 
           <Panel className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-ink">SEO cơ bản</p>
+                <p className="text-sm text-slate-600">Thiết lập title, keyword, canonical và robots giống WordPress nhưng thao tác ngắn hơn.</p>
+              </div>
+              <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                <Sparkles size={18} aria-hidden="true" />
+                Gợi ý nhanh
+              </Button>
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>Focus keyword</span>
@@ -549,6 +693,16 @@ export default function NewsDashboardPage() {
           </Panel>
 
           <Panel className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-bold text-ink">Mạng xã hội</p>
+                <p className="text-sm text-slate-600">Preview chia sẻ Facebook/Twitter sẽ lấy từ các trường này.</p>
+              </div>
+              <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
+                <Target size={18} aria-hidden="true" />
+                Lấy từ SEO
+              </Button>
+            </div>
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>OG title</span>
@@ -609,6 +763,7 @@ export default function NewsDashboardPage() {
               {errorMessage(saveArticle.error ?? archiveArticle.error)}
             </Panel>
           )}
+
           <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
             <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
               <Save size={18} aria-hidden="true" />
@@ -627,20 +782,41 @@ export default function NewsDashboardPage() {
         <aside className="space-y-4">
           <Panel>
             <div className="grid grid-cols-2 gap-3">
-              <div data-testid="news-seo-score" className="rounded-md bg-mint p-3 text-center">
+              <div data-testid="news-seo-score" className={cn('rounded-md p-3 text-center', seoScoreClass(seo.score))}>
                 <p className="text-sm text-slate-600">SEO score</p>
                 <p className="text-2xl font-bold text-leaf">{seo.score}</p>
               </div>
-              <div data-testid="news-readability-score" className="rounded-md bg-sky p-3 text-center">
+              <div data-testid="news-readability-score" className={cn('rounded-md p-3 text-center', readabilityClass(seo.readability))}>
                 <p className="text-sm text-slate-600">Readability</p>
                 <p className="text-2xl font-bold text-ink">{seo.readability}</p>
               </div>
             </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-slate-500">Số từ</p>
+                <p className="mt-1 text-lg font-bold text-ink">{seo.stats.words}</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-slate-500">Keyword match</p>
+                <p className="mt-1 text-lg font-bold text-ink">{seo.stats.keywordMatches}</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-slate-500">Heading</p>
+                <p className="mt-1 text-lg font-bold text-ink">{seo.stats.headings}</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-3">
+                <p className="text-slate-500">Ảnh / link nội bộ</p>
+                <p className="mt-1 text-lg font-bold text-ink">{seo.stats.images} / {seo.stats.internalLinks}</p>
+              </div>
+            </div>
+
             <div data-testid="news-preview-google" className="mt-4 rounded-md border border-slate-200 p-3">
               <p className="truncate text-lg text-blue-700">{form.seoTitle || form.title || 'Tiêu đề SEO'}</p>
               <p className="truncate text-sm text-emerald-700">{form.canonicalUrl || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`}</p>
               <p className="mt-1 text-sm text-slate-600">{form.seoDescription || form.excerpt || 'Meta description'}</p>
             </div>
+
             <div data-testid="news-preview-facebook" className="mt-3 overflow-hidden rounded-md border border-slate-200">
               <div className="aspect-[16/8] bg-slate-100 bg-cover bg-center" style={{ backgroundImage: form.ogImageUrl || form.coverImageUrl ? `url('${form.ogImageUrl || form.coverImageUrl}')` : undefined }} />
               <div className="p-3">
@@ -648,11 +824,42 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-sm text-slate-600">{form.ogDescription || form.excerpt || 'Mô tả chia sẻ'}</p>
               </div>
             </div>
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              {seo.notes.map((note) => (
-                <li key={note}>{note}</li>
-              ))}
-            </ul>
+
+            <div className="mt-4 space-y-3">
+              <div>
+                <p className="text-sm font-bold text-ink">Checklist xuất bản</p>
+                <div className="mt-2 space-y-2">
+                  {seo.checks.map((check) => (
+                    <div key={check.label} className={cn('rounded-xl border px-3 py-2 text-sm', check.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900')}>
+                      <p className="font-semibold">{check.label}</p>
+                      <p className="mt-1 leading-5">{check.detail}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {seo.strengths.length > 0 && (
+                <div>
+                  <p className="text-sm font-bold text-ink">Điểm tốt</p>
+                  <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                    {seo.strengths.map((note) => (
+                      <li key={note}>{note}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {seo.notes.length > 0 && (
+                <div>
+                  <p className="text-sm font-bold text-ink">Nên cải thiện</p>
+                  <ul className="mt-2 space-y-2 text-sm text-slate-600">
+                    {seo.notes.map((note) => (
+                      <li key={note}>{note}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
           </Panel>
 
           <Panel className="space-y-3">
@@ -756,38 +963,134 @@ function fromArticle(article: NewsArticle): NewsForm {
   };
 }
 
-function clientSeoScore(form: NewsForm) {
-  const notes: string[] = [];
-  let score = 0;
-  if (form.seoTitle.length >= 30 && form.seoTitle.length <= 70) score += 20;
-  else notes.push('SEO title nên dài 30-70 ký tự.');
-  if (form.seoDescription.length >= 120 && form.seoDescription.length <= 170) score += 20;
-  else notes.push('Meta description nên dài 120-170 ký tự.');
+function clientSeoScore(form: NewsForm): SeoScoreResult {
+  const bodyText = stripHtml(form.bodyHtml);
+  const normalizedBody = bodyText.toLowerCase();
   const keyword = form.focusKeyword.trim().toLowerCase();
-  if (keyword) {
-    if (`${form.title} ${form.seoTitle}`.toLowerCase().includes(keyword)) score += 15;
-    else notes.push('Keyword nên xuất hiện trong title.');
-    if (form.slug.includes(slugifyLocal(keyword))) score += 15;
-    else notes.push('Keyword nên xuất hiện trong slug.');
-    if (form.seoDescription.toLowerCase().includes(keyword)) score += 15;
-    else notes.push('Keyword nên xuất hiện trong meta description.');
-    if (stripHtml(form.bodyHtml).toLowerCase().includes(keyword)) score += 10;
-  } else {
-    notes.push('Nên nhập focus keyword.');
-  }
-  if (form.coverImageAlt) score += 5;
-  else notes.push('Ảnh đại diện nên có alt text.');
-  const words = stripHtml(form.bodyHtml).split(/\s+/).filter(Boolean).length;
-  const sentences = Math.max(stripHtml(form.bodyHtml).split(/[.!?]+/).filter(Boolean).length, 1);
-  const avg = words / sentences;
-  const readability = words ? (avg <= 18 ? 90 : avg <= 28 ? 75 : avg <= 40 ? 55 : 35) : 0;
-  return { score: Math.min(score, 100), readability, notes };
+  const introText = bodyText.slice(0, 180).toLowerCase();
+  const words = bodyText.split(/\s+/).filter(Boolean).length;
+  const sentenceCount = Math.max(bodyText.split(/[.!?]+/).filter(Boolean).length, 1);
+  const avgSentenceWords = words / sentenceCount;
+  const headings = countMatches(form.bodyHtml, /<h[23][^>]*>/gi);
+  const images = countMatches(form.bodyHtml, /<img\b/gi);
+  const internalLinks = countMatches(form.bodyHtml, /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/gi);
+  const keywordMatches = keyword ? countOccurrences(normalizedBody, keyword) : 0;
+  const titleLength = (form.seoTitle || form.title).trim().length;
+  const descriptionLength = form.seoDescription.trim().length;
+
+  const checks: SeoCheck[] = [
+    {
+      label: 'Title SEO',
+      ok: titleLength >= 35 && titleLength <= 65,
+      detail: titleLength ? `Hiện tại ${titleLength} ký tự. Nên trong khoảng 35-65 ký tự.` : 'Chưa có title SEO.'
+    },
+    {
+      label: 'Meta description',
+      ok: descriptionLength >= 120 && descriptionLength <= 160,
+      detail: descriptionLength ? `Hiện tại ${descriptionLength} ký tự. Nên trong khoảng 120-160 ký tự.` : 'Chưa có meta description.'
+    },
+    {
+      label: 'Focus keyword',
+      ok: Boolean(keyword),
+      detail: keyword ? `Đang theo dõi từ khóa: "${form.focusKeyword.trim()}".` : 'Nên nhập 1 từ khóa chính cho bài viết.'
+    },
+    {
+      label: 'Keyword trong title / slug / mô tả',
+      ok: Boolean(keyword) && `${form.title} ${form.seoTitle}`.toLowerCase().includes(keyword) && form.slug.includes(slugifyLocal(keyword)) && form.seoDescription.toLowerCase().includes(keyword),
+      detail: 'Từ khóa chính nên xuất hiện trong title, slug và meta description.'
+    },
+    {
+      label: 'Keyword trong mở bài',
+      ok: Boolean(keyword) && introText.includes(keyword),
+      detail: 'Từ khóa nên xuất hiện sớm trong đoạn đầu để Google và người đọc hiểu chủ đề nhanh hơn.'
+    },
+    {
+      label: 'Độ dài nội dung',
+      ok: words >= 300,
+      detail: `Bài hiện có ${words} từ. Bài public nên có ít nhất 300 từ để đủ chiều sâu SEO.`
+    },
+    {
+      label: 'Cấu trúc heading',
+      ok: headings >= 2,
+      detail: `Hiện có ${headings} heading H2/H3. Nên có ít nhất 2 heading để dễ quét nội dung.`
+    },
+    {
+      label: 'Hình ảnh và alt text',
+      ok: Boolean(form.coverImageUrl) && Boolean(form.coverImageAlt),
+      detail: form.coverImageUrl ? 'Đã có ảnh đại diện. Hãy chắc alt text mô tả đúng nội dung ảnh.' : 'Nên thêm ảnh đại diện và alt text.'
+    },
+    {
+      label: 'Liên kết nội bộ',
+      ok: internalLinks >= 1,
+      detail: `Hiện có ${internalLinks} liên kết nội bộ. Nên có ít nhất 1 link về sản phẩm, HTX hoặc trang liên quan.`
+    },
+    {
+      label: 'Canonical và social',
+      ok: Boolean(form.canonicalUrl) && Boolean(form.ogTitle || form.twitterTitle) && Boolean(form.ogDescription || form.twitterDescription),
+      detail: 'Canonical, OG và Twitter giúp bài hiển thị đúng khi index và chia sẻ mạng xã hội.'
+    }
+  ];
+
+  let score = 0;
+  if (checks[0]?.ok) score += 15;
+  if (checks[1]?.ok) score += 15;
+  if (checks[2]?.ok) score += 10;
+  if (checks[3]?.ok) score += 15;
+  if (checks[4]?.ok) score += 10;
+  if (checks[5]?.ok) score += 10;
+  if (checks[6]?.ok) score += 5;
+  if (checks[7]?.ok) score += 5;
+  if (checks[8]?.ok) score += 5;
+  if (checks[9]?.ok) score += 10;
+
+  const notes = checks.filter((check) => !check.ok).map((check) => check.detail);
+  const strengths = checks.filter((check) => check.ok).map((check) => `${check.label}: ${check.detail}`);
+  const readability = words
+    ? avgSentenceWords <= 18
+      ? 92
+      : avgSentenceWords <= 25
+        ? 80
+        : avgSentenceWords <= 32
+          ? 65
+          : avgSentenceWords <= 40
+            ? 48
+            : 32
+    : 0;
+
+  return {
+    score: Math.min(score, 100),
+    readability,
+    notes,
+    strengths,
+    checks,
+    stats: {
+      words,
+      headings,
+      images,
+      internalLinks,
+      keywordMatches,
+      titleLength,
+      descriptionLength
+    }
+  };
 }
 
 function statusClass(status: string) {
   if (status === 'PUBLISHED') return 'bg-mint text-leaf';
   if (status === 'DRAFT') return 'bg-sky text-slate-700';
   return 'bg-stone-100 text-stone-700';
+}
+
+function seoScoreClass(score: number) {
+  if (score >= 80) return 'bg-emerald-100';
+  if (score >= 60) return 'bg-amber-100';
+  return 'bg-rose-100';
+}
+
+function readabilityClass(score: number) {
+  if (score >= 80) return 'bg-sky';
+  if (score >= 60) return 'bg-amber-100';
+  return 'bg-slate-100';
 }
 
 function slugifyLocal(input: string) {
@@ -806,6 +1109,22 @@ function stripHtml(value: string) {
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
+}
+
+function trimText(value: string, max: number) {
+  const clean = value.replace(/\s+/g, ' ').trim();
+  if (clean.length <= max) return clean;
+  return clean.slice(0, max - 1).trimEnd() + '…';
+}
+
+function countMatches(value: string, pattern: RegExp) {
+  return value.match(pattern)?.length ?? 0;
+}
+
+function countOccurrences(text: string, keyword: string) {
+  if (!keyword) return 0;
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.match(new RegExp(escaped, 'gi'))?.length ?? 0;
 }
 
 function dateInputValue(value?: string | null) {
