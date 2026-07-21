@@ -904,7 +904,7 @@ export default function NewsDashboardPage() {
                   </Button>
                   <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
                     <Save size={18} aria-hidden="true" />
-                    {quickPublishArticle.isPending ? 'Dang publish' : 'Publish 1 cham'}
+                    {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm'}
                   </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
                     <Target size={18} aria-hidden="true" />
@@ -949,10 +949,10 @@ export default function NewsDashboardPage() {
               <label className="space-y-1 text-sm font-semibold">
                 <span>Trạng thái</span>
                 <Select data-testid="news-status-select" value={form.status} onChange={(event) => update('status', event.target.value as NewsForm['status'])}>
-                  <option value="DRAFT">Draft</option>
-                  <option value="PUBLISHED">Published</option>
-                  <option value="SCHEDULED">Scheduled</option>
-                  <option value="ARCHIVED">Archived</option>
+                  <option value="DRAFT">Nháp</option>
+                  <option value="PUBLISHED">Đã đăng</option>
+                  <option value="SCHEDULED">Hẹn giờ</option>
+                  <option value="ARCHIVED">Lưu trữ</option>
                 </Select>
               </label>
               <label className="space-y-1 text-sm font-semibold md:col-span-2">
@@ -1103,7 +1103,7 @@ export default function NewsDashboardPage() {
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
                 </div>
                 <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
-                  Dang nhanh: chi can tieu de, noi dung, anh va bam &quot;Publish 1 cham&quot;. Cac muc SEO, social va lich dang chi can mo khi that su can va co the bo sung sau.
+                  Đăng nhanh: chỉ cần tiêu đề, nội dung, ảnh và bấm &quot;Đăng 1 chạm&quot;. Các mục SEO, social và lịch đăng chỉ cần mở khi thật sự cần và có thể bổ sung sau.
                 </p>
                 <div
                   ref={visualEditorRef}
@@ -1301,7 +1301,7 @@ export default function NewsDashboardPage() {
                     <Input data-testid="news-canonical-url-input" value={form.canonicalUrl} onChange={(event) => update('canonicalUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Schema type</span>
+                    <span>Loại schema</span>
                     <Select data-testid="news-schema-type-select" value={form.schemaType} onChange={(event) => update('schemaType', event.target.value)}>
                       <option value="Article">Article</option>
                       <option value="NewsArticle">NewsArticle</option>
@@ -1310,11 +1310,11 @@ export default function NewsDashboardPage() {
                   </label>
                   <label className="flex items-center gap-2 text-sm font-semibold">
                     <input data-testid="news-noindex-switch" type="checkbox" checked={form.robotsNoIndex} onChange={(event) => update('robotsNoIndex', event.target.checked)} />
-                    Noindex
+                    Không index
                   </label>
                   <label className="flex items-center gap-2 text-sm font-semibold">
                     <input data-testid="news-nofollow-switch" type="checkbox" checked={form.robotsNoFollow} onChange={(event) => update('robotsNoFollow', event.target.checked)} />
-                    Nofollow
+                    Không theo link
                   </label>
                 </div>
               </div>
@@ -1343,11 +1343,11 @@ export default function NewsDashboardPage() {
                 </div>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>OG title</span>
+                    <span>Tiêu đề OG</span>
                     <Input data-testid="news-og-title-input" value={form.ogTitle} onChange={(event) => update('ogTitle', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>OG image</span>
+                    <span>Ảnh OG</span>
                     <Input data-testid="news-og-image-input" value={form.ogImageUrl} onChange={(event) => update('ogImageUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
@@ -1355,11 +1355,11 @@ export default function NewsDashboardPage() {
                     <Textarea data-testid="news-og-description-input" value={form.ogDescription} onChange={(event) => update('ogDescription', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Twitter title</span>
+                    <span>Tiêu đề Twitter</span>
                     <Input data-testid="news-twitter-title-input" value={form.twitterTitle} onChange={(event) => update('twitterTitle', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Twitter image</span>
+                    <span>Ảnh Twitter</span>
                     <Input data-testid="news-twitter-image-input" value={form.twitterImageUrl} onChange={(event) => update('twitterImageUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
@@ -1428,11 +1428,11 @@ export default function NewsDashboardPage() {
             </Button>
             <Button data-testid="news-publish-button" type="button" onClick={() => saveArticle.mutate('PUBLISHED')} disabled={saveArticle.isPending}>
               <Save size={18} aria-hidden="true" />
-              Publish
+              Đăng ngay
             </Button>
             <Button type="button" variant="ghost" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
               <Sparkles size={18} aria-hidden="true" />
-              Publish 1 cham
+              Đăng 1 chạm
             </Button>
             <Button type="submit" disabled={saveArticle.isPending}>
               {saveArticle.isPending ? 'Đang lưu' : 'Lưu'}
@@ -1495,11 +1495,11 @@ export default function NewsDashboardPage() {
           <Panel>
             <div className="grid grid-cols-2 gap-3">
               <div data-testid="news-seo-score" className={cn('rounded-md p-3 text-center', seoScoreClass(seo.score))}>
-                <p className="text-sm text-slate-600">SEO score</p>
+                <p className="text-sm text-slate-600">Điểm SEO</p>
                 <p className="text-2xl font-bold text-leaf">{seo.score}</p>
               </div>
               <div data-testid="news-readability-score" className={cn('rounded-md p-3 text-center', readabilityClass(seo.readability))}>
-                <p className="text-sm text-slate-600">Readability</p>
+                <p className="text-sm text-slate-600">Độ dễ đọc</p>
                 <p className="text-2xl font-bold text-ink">{seo.readability}</p>
               </div>
             </div>
@@ -1510,15 +1510,15 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.words}</p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-slate-500">Keyword match</p>
+                <p className="text-slate-500">Khớp từ khóa</p>
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.keywordMatches}</p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-slate-500">Keyword density</p>
+                <p className="text-slate-500">Mật độ từ khóa</p>
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.keywordDensity}%</p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-3">
-                <p className="text-slate-500">Heading</p>
+                <p className="text-slate-500">Số heading</p>
                 <p className="mt-1 text-lg font-bold text-ink">{seo.stats.headings}</p>
               </div>
               <div className="rounded-xl border border-slate-200 bg-white p-3">
