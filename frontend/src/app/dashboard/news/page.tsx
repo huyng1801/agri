@@ -98,6 +98,12 @@ type SeoScoreResult = {
 
 type EditorMode = 'visual' | 'html';
 
+type LocalDraftPayload = {
+  savedAt: string;
+  form: NewsForm;
+  editingId: string | null;
+};
+
 const emptyForm: NewsForm = {
   categoryId: '',
   title: '',
@@ -209,6 +215,7 @@ export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
   const visualEditorRef = useRef<HTMLDivElement | null>(null);
+  const skipAutosaveRef = useRef(false);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState<NewsForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -217,6 +224,8 @@ export default function NewsDashboardPage() {
   const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [bodyImage, setBodyImage] = useState({ url: '', alt: '', caption: '' });
   const [uploading, setUploading] = useState('');
+  const [draftSavedAt, setDraftSavedAt] = useState('');
+  const [localDraft, setLocalDraft] = useState<LocalDraftPayload | null>(null);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -234,6 +243,7 @@ export default function NewsDashboardPage() {
   const excerptLength = form.excerpt.trim().length;
   const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
+  const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -242,6 +252,49 @@ export default function NewsDashboardPage() {
       editor.innerHTML = form.bodyHtml || '<p></p>';
     }
   }, [editorMode, form.bodyHtml, editingId]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    try {
+      const raw = window.localStorage.getItem(localDraftStorageKey);
+      if (!raw) {
+        setLocalDraft(null);
+        return;
+      }
+      const parsed = JSON.parse(raw) as LocalDraftPayload;
+      if (!parsed?.form || !parsed.savedAt) {
+        setLocalDraft(null);
+        return;
+      }
+      setLocalDraft(parsed);
+    } catch {
+      setLocalDraft(null);
+    }
+  }, [localDraftStorageKey]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (skipAutosaveRef.current) {
+      skipAutosaveRef.current = false;
+      return;
+    }
+    if (!hasMeaningfulDraft(form)) {
+      window.localStorage.removeItem(localDraftStorageKey);
+      setDraftSavedAt('');
+      return;
+    }
+    const timeoutId = window.setTimeout(() => {
+      const payload: LocalDraftPayload = {
+        savedAt: new Date().toISOString(),
+        form,
+        editingId
+      };
+      window.localStorage.setItem(localDraftStorageKey, JSON.stringify(payload));
+      setDraftSavedAt(payload.savedAt);
+      setLocalDraft(payload);
+    }, 500);
+    return () => window.clearTimeout(timeoutId);
+  }, [editingId, form, localDraftStorageKey]);
 
   const saveArticle = useMutation({
     mutationFn: (statusOverride?: NewsForm['status']) => {
@@ -253,6 +306,7 @@ export default function NewsDashboardPage() {
     onSuccess: (result) => {
       setEditingId(result.data.id);
       setForm(fromArticle(result.data));
+      clearLocalDraft();
       queryClient.invalidateQueries({ queryKey: ['news'] });
     }
   });
@@ -310,6 +364,27 @@ export default function NewsDashboardPage() {
     setEditingId(null);
     setForm(emptyForm);
     setPreview(false);
+  }
+
+  function restoreLocalDraft() {
+    if (!localDraft) return;
+    skipAutosaveRef.current = true;
+    setEditingId(localDraft.editingId);
+    setForm(localDraft.form);
+    setDraftSavedAt(localDraft.savedAt);
+    setPreview(false);
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual') focusVisualEditor();
+      else bodyRef.current?.focus();
+    });
+  }
+
+  function clearLocalDraft() {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(localDraftStorageKey);
+    }
+    setLocalDraft(null);
+    setDraftSavedAt('');
   }
 
   function insertHtml(snippet: string) {
@@ -572,6 +647,31 @@ export default function NewsDashboardPage() {
         </div>
       </div>
 
+      {(localDraft || draftSavedAt) && (
+        <Panel className="border-amber-200 bg-amber-50/90">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-bold text-ink">Nháp cục bộ trong trình duyệt</p>
+              <p className="text-sm leading-6 text-slate-700">
+                {localDraft
+                  ? `Có bản nháp đã lưu lúc ${formatDateTime(localDraft.savedAt)}. Bạn có thể phục hồi nếu vừa reload hoặc thoát khỏi trang.`
+                  : `Đang tự lưu nháp cục bộ. Lần lưu gần nhất: ${formatDateTime(draftSavedAt)}.`}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {localDraft && (
+                <Button type="button" variant="ghost" onClick={restoreLocalDraft}>
+                  Phục hồi nháp
+                </Button>
+              )}
+              <Button type="button" variant="ghost" onClick={clearLocalDraft}>
+                Xóa nháp cục bộ
+              </Button>
+            </div>
+          </div>
+        </Panel>
+      )}
+
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
         <form
           className="space-y-4"
@@ -641,17 +741,20 @@ export default function NewsDashboardPage() {
                   <p className="text-slate-500">Mô tả ngắn</p>
                   <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
                 </div>
-                <div className="rounded-xl border border-white bg-white p-3">
-                  <p className="text-slate-500">Thời gian đọc</p>
-                  <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phút</p>
-                </div>
-                <div className="rounded-xl border border-white bg-white p-3">
+              <div className="rounded-xl border border-white bg-white p-3">
+                <p className="text-slate-500">Thời gian đọc</p>
+                <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phút</p>
+              </div>
+              <div className="rounded-xl border border-white bg-white p-3">
                   <p className="text-slate-500">Sẵn sàng publish</p>
-                  <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
-                </div>
+                <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
               </div>
             </div>
-          </Panel>
+          </div>
+          {draftSavedAt && (
+            <p className="text-xs font-semibold text-slate-500">Tự lưu nháp cục bộ lần cuối: {formatDateTime(draftSavedAt)}</p>
+          )}
+        </Panel>
 
           <Panel className="space-y-4">
             <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/40 p-3">
@@ -1354,6 +1457,24 @@ function dateInputValue(value?: string | null) {
 
 function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Không thể xử lý yêu cầu';
+}
+
+function hasMeaningfulDraft(form: NewsForm) {
+  return Boolean(
+    form.title.trim() ||
+    form.slug.trim() ||
+    form.excerpt.trim() ||
+    stripHtml(form.bodyHtml) ||
+    form.coverImageUrl.trim() ||
+    form.focusKeyword.trim()
+  );
+}
+
+function formatDateTime(value?: string) {
+  if (!value) return 'chưa có';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'chưa có';
+  return date.toLocaleString('vi-VN');
 }
 
 function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
