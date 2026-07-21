@@ -21,6 +21,7 @@ const ROUTE_RULES: RouteRule[] = [
   { prefix: '/dashboard/invoices', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/invoices', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/news', areas: ['admin'], roles: ['SUPER_ADMIN'] },
+  { prefix: '/dashboard/news', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/orders', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/contacts', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/orders', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX'] },

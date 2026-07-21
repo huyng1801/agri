@@ -50,7 +50,8 @@ const permissions = {
     'reports.snapshots',
     'files.*',
     'notifications.*',
-    'orders.*'
+    'orders.*',
+    'news.*'
   ],
   MEMBER_HTX: [
     'products.read',
