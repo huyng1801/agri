@@ -1218,20 +1218,33 @@ export default function NewsDashboardPage() {
                     {corePublishReady}/3 san sang
                   </span>
                 </div>
-                <div className="mt-3 grid gap-2 md:grid-cols-3">
+                <div className={cn('mt-3 gap-2', isAdvancedMode ? 'grid md:grid-cols-3' : 'space-y-2')}>
                   {corePublishItems.map((item) => (
                     <button
                       key={item.id}
                       type="button"
                       onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
                       className={cn(
-                        'rounded-xl border p-3 text-left transition',
-                        item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-950 hover:border-leaf'
+                        'rounded-xl border text-left transition',
+                        item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-950 hover:border-leaf',
+                        isAdvancedMode ? 'p-3' : 'w-full px-3 py-2.5'
                       )}
                     >
-                      <p className="text-xs font-bold uppercase tracking-[0.14em]">{item.ok ? 'Da xong' : 'Can bo sung'}</p>
-                      <p className="mt-1 text-sm font-bold">{item.label}</p>
-                      <p className="mt-1 text-sm leading-5 opacity-90">{item.hint}</p>
+                      {isAdvancedMode ? (
+                        <>
+                          <p className="text-xs font-bold uppercase tracking-[0.14em]">{item.ok ? 'Da xong' : 'Can bo sung'}</p>
+                          <p className="mt-1 text-sm font-bold">{item.label}</p>
+                          <p className="mt-1 text-sm leading-5 opacity-90">{item.hint}</p>
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-bold uppercase tracking-[0.14em]">{item.ok ? 'Da xong' : 'Can bo sung'}</p>
+                            <p className="mt-1 text-sm font-bold">{item.label}</p>
+                          </div>
+                          <span className="text-xs font-semibold opacity-80">{item.hint}</span>
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
