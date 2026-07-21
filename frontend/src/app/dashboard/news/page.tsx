@@ -389,6 +389,7 @@ export default function NewsDashboardPage() {
   const resolvedMetaPreview = useMemo(() => buildResolvedMetaPreview(preparedPreview), [preparedPreview]);
   const contentOutlinePreview = useMemo(() => buildContentOutlinePreview(preparedPreview), [preparedPreview]);
   const seoSignals = useMemo(() => buildSeoSignals(form, seo), [form, seo]);
+  const needsImportedOptimization = useMemo(() => detectImportedFormatting(form.bodyHtml), [form.bodyHtml]);
   const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
   const canQuickPublish = corePublishItems.every((item) => item.ok);
@@ -1504,6 +1505,10 @@ export default function NewsDashboardPage() {
                 <Target size={18} aria-hidden="true" />
                 Vá lỗi SEO nhanh
               </Button>
+              <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                <Sparkles size={18} aria-hidden="true" />
+                Toi uu bai vua dan
+              </Button>
               <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
                 <Target size={18} aria-hidden="true" />
                 Đồng bộ social
@@ -1534,6 +1539,20 @@ export default function NewsDashboardPage() {
                   <p className="font-bold text-ink">Neu ban vua paste bai tu Word hoac Google Docs</p>
                   <p className="mt-1 leading-6">Bam &quot;Toi uu bai vua dan&quot; de he thong lam sach HTML, bo sung mo bai co tu khoa, heading co ban, internal link, meta va social preview trong mot lan.</p>
                 </div>
+                {needsImportedOptimization && (
+                  <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="font-bold">Editor phat hien bai vua dan con nhieu dinh dang tu Word/Docs</p>
+                        <p className="mt-1 leading-6">Nen bam &quot;Toi uu bai vua dan&quot; ngay luc nay de don HTML rac, giam the thua va dua bai ve bo cuc de doc hon tren mobile.</p>
+                      </div>
+                      <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Toi uu ngay
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 <div
                   ref={visualEditorRef}
                   data-testid="news-content-editor"
@@ -3097,6 +3116,11 @@ function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
       hint: form.coverImageUrl.trim() ? 'Da co anh bia, social preview se dep hon.' : 'Dan, tha hoac upload 1 anh ngang lam cover de bai de tin hon.'
     }
   ];
+}
+
+function detectImportedFormatting(value: string) {
+  if (!value.trim()) return false;
+  return /class="?Mso|mso-|font-family:|<span\b|<div\b|style=|<o:p>|<meta\b|<link\b|<xml\b/i.test(value);
 }
 
 function sanitizeImportedHtml(input: string) {
