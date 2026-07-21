@@ -428,7 +428,7 @@ export default function NewsDashboardPage() {
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
   const preparePreviewOpen = isAdvancedMode;
-  const simpleSeoBoardOpen = isAdvancedMode || seoMustFixCount > 0;
+  const simpleSeoBoardOpen = isAdvancedMode;
   const templateLibraryOpen = isAdvancedMode;
   const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
   const quickStartGuideOpen = isAdvancedMode;
