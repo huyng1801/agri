@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -7,11 +8,14 @@ import { ExternalLink, Save, ServerCog, Upload } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { apiFetch } from '@/lib/api';
 import { Button, Input, Panel, Textarea, cn } from '@/components/ui';
+import { apiFetch } from '@/lib/api';
 
 type SettingRecord = { key: string; value: unknown; description?: string | null };
 type TabId = 'profile' | 'public' | 'email' | 'r2' | 'security' | 'notifications' | 'backup';
+
+const defaultMapEmbedUrl =
+  'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
 const publicProfileSchema = z.object({
   appName: z.string().min(1),
@@ -22,7 +26,16 @@ const publicProfileSchema = z.object({
   messengerUrl: z.string().optional(),
   mapEmbedUrl: z.string().optional(),
   logoUrl: z.string().optional(),
-  faqText: z.string().optional()
+  faqText: z.string().optional(),
+  homeBadge: z.string().min(1),
+  homeTitle: z.string().min(1),
+  homeDescription: z.string().min(1),
+  introTitle: z.string().min(1),
+  introDescription: z.string().min(1),
+  aboutTitle: z.string().min(1),
+  aboutDescription: z.string().min(1),
+  contactTitle: z.string().min(1),
+  contactDescription: z.string().min(1)
 });
 
 const systemProfileSchema = z.object({
@@ -135,7 +148,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold">Cài đặt hệ thống</h1>
+      <h1 className="text-2xl font-bold">Cai dat he thong</h1>
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
           <button
@@ -152,10 +165,15 @@ export default function SettingsPage() {
 
       {tab === 'profile' && (
         <Panel>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={profileForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.profile', value: values, description: 'Hồ sơ hệ thống' }))}>
-            <Field label="Tên hệ thống"><Input {...profileForm.register('appName')} /></Field>
-            <Field label="Email hỗ trợ"><Input type="email" {...profileForm.register('supportEmail')} /></Field>
-            <Field label="Múi giờ"><Input {...profileForm.register('timezone')} placeholder="Asia/Ho_Chi_Minh" /></Field>
+          <form
+            className="grid gap-3 sm:grid-cols-2"
+            onSubmit={profileForm.handleSubmit((values) =>
+              saveMutation.mutate({ key: 'system.profile', value: values, description: 'Ho so he thong' })
+            )}
+          >
+            <Field label="Ten he thong"><Input {...profileForm.register('appName')} /></Field>
+            <Field label="Email ho tro"><Input type="email" {...profileForm.register('supportEmail')} /></Field>
+            <Field label="Mui gio"><Input {...profileForm.register('timezone')} placeholder="Asia/Ho_Chi_Minh" /></Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -164,49 +182,76 @@ export default function SettingsPage() {
       {tab === 'public' && (
         <div className="space-y-4">
           <Panel className="space-y-3 border-mint/70 bg-mint/40">
-            <h2 className="text-lg font-bold text-ink">Cập nhật nội dung mà không cần sửa code</h2>
+            <h2 className="text-lg font-bold text-ink">Cap nhat noi dung public khong can sua code</h2>
             <p className="text-sm leading-6 text-slate-700">
-              Tab này dùng để sửa logo, hotline, email, địa chỉ, bản đồ và FAQ public. Hồ sơ HTX/sản phẩm sửa trong dashboard HTX, còn bài blog public sửa tại khu vực Tin tức của Super Admin.
+              Tab nay dung de sua logo, hotline, email, dia chi, ban do, FAQ va noi dung hero cac trang public. Ho so HTX/san pham sua trong dashboard,
+              con bai blog public sua tai khu vuc Tin tuc cua Super Admin.
             </p>
             <div className="grid gap-2 sm:grid-cols-3">
               <Link href="/dashboard/news" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Soạn blog nhanh
+                Soan blog nhanh
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/cooperatives" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Sửa hồ sơ HTX
+                Sua ho so HTX
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/products" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Sửa sản phẩm
+                Sua san pham
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
             </div>
           </Panel>
 
           <Panel>
-            <form className="grid gap-3 sm:grid-cols-2" onSubmit={publicForm.handleSubmit((values) => {
-              const faqs = (values.faqText || '')
-                .split('\n')
-                .map((line) => line.trim())
-                .filter(Boolean)
-                .map((line) => {
-                  const [question, answer] = line.split('|');
-                  return { question: question?.trim() ?? '', answer: answer?.trim() ?? '' };
-                })
-                .filter((item) => item.question && item.answer);
-              saveMutation.mutate({
-                key: 'public.siteProfile',
-                value: { ...values, faqs, zaloUrl: '' },
-                description: 'Thông tin public sàn'
-              });
-            })}>
-              <Field label="Tên hiển thị"><Input {...publicForm.register('appName')} /></Field>
+            <form
+              className="grid gap-3 sm:grid-cols-2"
+              onSubmit={publicForm.handleSubmit((values) => {
+                const faqs = (values.faqText || '')
+                  .split('\n')
+                  .map((line) => line.trim())
+                  .filter(Boolean)
+                  .map((line) => {
+                    const [question, answer] = line.split('|');
+                    return { question: question?.trim() ?? '', answer: answer?.trim() ?? '' };
+                  })
+                  .filter((item) => item.question && item.answer);
+
+                saveMutation.mutate({
+                  key: 'public.siteProfile',
+                  value: {
+                    appName: values.appName,
+                    hotline: values.hotline,
+                    hotlineDisplay: values.hotlineDisplay,
+                    supportEmail: values.supportEmail,
+                    address: values.address,
+                    messengerUrl: values.messengerUrl,
+                    mapEmbedUrl: values.mapEmbedUrl,
+                    logoUrl: values.logoUrl,
+                    faqs,
+                    zaloUrl: '',
+                    pageContent: {
+                      homeBadge: values.homeBadge,
+                      homeTitle: values.homeTitle,
+                      homeDescription: values.homeDescription,
+                      introTitle: values.introTitle,
+                      introDescription: values.introDescription,
+                      aboutTitle: values.aboutTitle,
+                      aboutDescription: values.aboutDescription,
+                      contactTitle: values.contactTitle,
+                      contactDescription: values.contactDescription
+                    }
+                  },
+                  description: 'Thong tin public san'
+                });
+              })}
+            >
+              <Field label="Ten hien thi"><Input {...publicForm.register('appName')} /></Field>
               <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
-              <Field label="Hotline hiển thị"><Input {...publicForm.register('hotlineDisplay')} /></Field>
-              <Field label="Email liên hệ"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
-              <Field label="Địa chỉ"><Input {...publicForm.register('address')} /></Field>
-              <Field label="Mã nhúng bản đồ (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
+              <Field label="Hotline hien thi"><Input {...publicForm.register('hotlineDisplay')} /></Field>
+              <Field label="Email lien he"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
+              <Field label="Dia chi"><Input {...publicForm.register('address')} /></Field>
+              <Field label="Ma nhung ban do (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
               <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
               <Field label="Logo URL" className="sm:col-span-2">
                 <div className="flex gap-2">
@@ -214,12 +259,37 @@ export default function SettingsPage() {
                   <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
                     <Upload size={16} />
                     Upload
-                    <input type="file" accept="image/*" className="hidden" onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadLogo(file); }} />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) void uploadLogo(file);
+                      }}
+                    />
                   </label>
                 </div>
               </Field>
-              <Field label="FAQ (question|answer mỗi dòng)" className="sm:col-span-2">
+              <Field label="FAQ (question|answer moi dong)" className="sm:col-span-2">
                 <Textarea rows={5} {...publicForm.register('faqText')} />
+              </Field>
+              <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} /></Field>
+              <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} /></Field>
+              <Field label="Mo ta trang chu" className="sm:col-span-2">
+                <Textarea rows={3} {...publicForm.register('homeDescription')} />
+              </Field>
+              <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} /></Field>
+              <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
+                <Textarea rows={3} {...publicForm.register('introDescription')} />
+              </Field>
+              <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} /></Field>
+              <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
+                <Textarea rows={3} {...publicForm.register('aboutDescription')} />
+              </Field>
+              <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} /></Field>
+              <Field label="Mo ta trang lien he" className="sm:col-span-2">
+                <Textarea rows={3} {...publicForm.register('contactDescription')} />
               </Field>
               <SaveButton pending={saveMutation.isPending} />
             </form>
@@ -229,9 +299,12 @@ export default function SettingsPage() {
 
       {tab === 'email' && (
         <Panel>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={emailForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.email', value: values, description: 'Cấu hình email' }))}>
-            <Field label="Tên người gửi"><Input {...emailForm.register('fromName')} /></Field>
-            <Field label="Email gửi"><Input type="email" {...emailForm.register('fromEmail')} /></Field>
+          <form
+            className="grid gap-3 sm:grid-cols-2"
+            onSubmit={emailForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.email', value: values, description: 'Cau hinh email' }))}
+          >
+            <Field label="Ten nguoi gui"><Input {...emailForm.register('fromName')} /></Field>
+            <Field label="Email gui"><Input type="email" {...emailForm.register('fromEmail')} /></Field>
             <Field label="SMTP host"><Input {...emailForm.register('smtpHost')} /></Field>
             <Field label="SMTP port"><Input {...emailForm.register('smtpPort')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
@@ -241,16 +314,19 @@ export default function SettingsPage() {
 
       {tab === 'r2' && (
         <Panel className="space-y-4">
-          <p className="text-sm text-slate-600">Secret R2 thực tế vẫn lấy từ biến môi trường production. Tab này lưu metadata và test kết nối.</p>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}>
+          <p className="text-sm text-slate-600">Secret R2 van lay tu bien moi truong production. Tab nay luu metadata va test ket noi.</p>
+          <form
+            className="grid gap-3 sm:grid-cols-2"
+            onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}
+          >
             <Field label="Bucket"><Input {...r2Form.register('bucket')} placeholder={process.env.NEXT_PUBLIC_R2_BUCKET || 'agri-passport'} /></Field>
             <Field label="Public base URL"><Input {...r2Form.register('publicBaseUrl')} /></Field>
-            <Field label="Ghi chú" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
+            <Field label="Ghi chu" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
             <div className="flex flex-wrap gap-2 sm:col-span-2">
               <SaveButton pending={saveMutation.isPending} />
               <Button type="button" variant="ghost" data-testid="settings-test-r2-button" onClick={() => testR2.mutate()} disabled={testR2.isPending}>
                 <ServerCog size={16} />
-                Test kết nối R2
+                Test ket noi R2
               </Button>
             </div>
           </form>
@@ -260,10 +336,15 @@ export default function SettingsPage() {
 
       {tab === 'security' && (
         <Panel>
-          <form className="grid gap-3 sm:grid-cols-2" onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'Bảo mật' }))}>
-            <Field label="Session (giờ)"><Input {...securityForm.register('sessionHours')} /></Field>
+          <form
+            className="grid gap-3 sm:grid-cols-2"
+            onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'Bao mat' }))}
+          >
+            <Field label="Session (gio)"><Input {...securityForm.register('sessionHours')} /></Field>
             <Field label="Rate limit max"><Input {...securityForm.register('rateLimitMax')} /></Field>
-            <Field label="CORS origins" className="sm:col-span-2"><Textarea {...securityForm.register('corsOrigins')} placeholder="https://htxonline.vn,https://admin.htxonline.vn" /></Field>
+            <Field label="CORS origins" className="sm:col-span-2">
+              <Textarea {...securityForm.register('corsOrigins')} placeholder="https://htxonline.vn,https://admin.htxonline.vn" />
+            </Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -271,10 +352,15 @@ export default function SettingsPage() {
 
       {tab === 'notifications' && (
         <Panel>
-          <form className="space-y-3" onSubmit={notificationsForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Thông báo' }))}>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Cảnh báo đơn hàng mới</label>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('invoiceAlerts')} /> Cảnh báo hóa đơn quá hạn</label>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Cảnh báo liên hệ public</label>
+          <form
+            className="space-y-3"
+            onSubmit={notificationsForm.handleSubmit((values) =>
+              saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Thong bao' })
+            )}
+          >
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Canh bao don hang moi</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('invoiceAlerts')} /> Canh bao hoa don qua han</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Canh bao lien he public</label>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -282,10 +368,13 @@ export default function SettingsPage() {
 
       {tab === 'backup' && (
         <Panel>
-          <form className="space-y-3" onSubmit={backupForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.backup', value: values, description: 'Backup' }))}>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bật backup tự động</label>
-            <Field label="Lịch cron"><Input {...backupForm.register('schedule')} placeholder="0 2 * * *" /></Field>
-            <Field label="Giữ (ngày)"><Input {...backupForm.register('retentionDays')} /></Field>
+          <form
+            className="space-y-3"
+            onSubmit={backupForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.backup', value: values, description: 'Backup' }))}
+          >
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bat backup tu dong</label>
+            <Field label="Lich cron"><Input {...backupForm.register('schedule')} placeholder="0 2 * * *" /></Field>
+            <Field label="Giu (ngay)"><Input {...backupForm.register('retentionDays')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -304,16 +393,16 @@ export default function SettingsPage() {
 }
 
 const tabs: Array<{ id: TabId; label: string }> = [
-  { id: 'profile', label: 'Hồ sơ sàn' },
-  { id: 'public', label: 'Liên hệ public' },
+  { id: 'profile', label: 'Ho so san' },
+  { id: 'public', label: 'Lien he public' },
   { id: 'email', label: 'Email' },
   { id: 'r2', label: 'R2' },
-  { id: 'security', label: 'Bảo mật' },
-  { id: 'notifications', label: 'Thông báo' },
+  { id: 'security', label: 'Bao mat' },
+  { id: 'notifications', label: 'Thong bao' },
   { id: 'backup', label: 'Backup' }
 ];
 
-function Field({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+function Field({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
     <label className={cn('space-y-1 text-sm font-semibold', className)}>
       <span>{label}</span>
@@ -326,7 +415,7 @@ function SaveButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" className="sm:w-max" disabled={pending}>
       <Save size={18} />
-      {pending ? 'Đang lưu' : 'Lưu'}
+      {pending ? 'Dang luu' : 'Luu'}
     </Button>
   );
 }
@@ -338,27 +427,48 @@ function asObject(value: unknown) {
 function objectToPublicForm(value: unknown) {
   const object = asObject(value);
   const faqs = Array.isArray(object.faqs) ? object.faqs : [];
+  const pageContent = asObject(object.pageContent);
   return {
     appName: String(object.appName ?? 'HTXONLINE'),
     hotline: String(object.hotline ?? '0907001200'),
     hotlineDisplay: String(object.hotlineDisplay ?? ''),
     supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
-    address: String(object.address ?? 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam'),
+    address: String(object.address ?? 'So 130, To 8, Ap My Xuong, Xa My Tho, Tinh Dong Thap'),
     messengerUrl: String(object.messengerUrl ?? ''),
-    mapEmbedUrl: String(object.mapEmbedUrl ?? 'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718'),
+    mapEmbedUrl: String(object.mapEmbedUrl ?? defaultMapEmbedUrl),
     logoUrl: String(object.logoUrl ?? ''),
-    faqText: faqs.map((item) => `${(item as any).question}|${(item as any).answer}`).join('\n')
+    faqText: faqs.map((item) => `${(item as { question?: string }).question ?? ''}|${(item as { answer?: string }).answer ?? ''}`).join('\n'),
+    homeBadge: String(pageContent.homeBadge ?? 'Nen tang so cho hop tac xa'),
+    homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE giup hop tac xa ban hang minh bach hon tren moi truong so.'),
+    homeDescription: String(
+      pageContent.homeDescription ?? 'Cong khai san pham, mo QR Passport cho nguoi mua va van hanh quy trinh don COD tren cung mot he thong gon, ro va de tin tuong.'
+    ),
+    introTitle: String(pageContent.introTitle ?? 'Gioi thieu HTXONLINE'),
+    introDescription: String(pageContent.introDescription ?? 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.'),
+    aboutTitle: String(pageContent.aboutTitle ?? 'Chung toi la HTXONLINE'),
+    aboutDescription: String(pageContent.aboutDescription ?? 'San nong san so giup hop tac xa ket noi thi truong, minh bach nguon goc va ban hang COD hieu qua.'),
+    contactTitle: String(pageContent.contactTitle ?? 'Hay de HTXONLINE ket noi va dong hanh cung hop tac xa cua ban'),
+    contactDescription: String(pageContent.contactDescription ?? 'Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX.')
   };
 }
 
 function objectToProfileForm(value: unknown) {
   const object = asObject(value);
-  return { appName: String(object.appName ?? 'HTXONLINE'), supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'), timezone: String(object.timezone ?? 'Asia/Ho_Chi_Minh') };
+  return {
+    appName: String(object.appName ?? 'HTXONLINE'),
+    supportEmail: String(object.supportEmail ?? 'Agripassport@gmail.com'),
+    timezone: String(object.timezone ?? 'Asia/Ho_Chi_Minh')
+  };
 }
 
 function objectToEmailForm(value: unknown) {
   const object = asObject(value);
-  return { fromName: String(object.fromName ?? 'HTXONLINE'), fromEmail: String(object.fromEmail ?? 'Agripassport@gmail.com'), smtpHost: String(object.smtpHost ?? ''), smtpPort: String(object.smtpPort ?? '587') };
+  return {
+    fromName: String(object.fromName ?? 'HTXONLINE'),
+    fromEmail: String(object.fromEmail ?? 'Agripassport@gmail.com'),
+    smtpHost: String(object.smtpHost ?? ''),
+    smtpPort: String(object.smtpPort ?? '587')
+  };
 }
 
 function objectToR2Form(value: unknown) {

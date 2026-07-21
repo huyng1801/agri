@@ -5,6 +5,18 @@ export type PublicSiteFaq = {
   answer: string;
 };
 
+export type PublicPageContent = {
+  homeBadge: string;
+  homeTitle: string;
+  homeDescription: string;
+  introTitle: string;
+  introDescription: string;
+  aboutTitle: string;
+  aboutDescription: string;
+  contactTitle: string;
+  contactDescription: string;
+};
+
 export type PublicSiteProfile = {
   appName: string;
   hotline: string;
@@ -15,6 +27,7 @@ export type PublicSiteProfile = {
   messengerUrl: string;
   mapEmbedUrl: string;
   faqs: PublicSiteFaq[];
+  pageContent: PublicPageContent;
 };
 
 export const defaultMapEmbedUrl =
@@ -38,7 +51,21 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
       question: 'Người mua có cần đăng nhập để xem QR?',
       answer: 'Không. QR Passport public được mở trực tiếp cho khách truy cập.'
     }
-  ]
+  ],
+  pageContent: {
+    homeBadge: 'Nền tảng số cho hợp tác xã',
+    homeTitle: 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
+    homeDescription:
+      'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
+    introTitle: 'Giới thiệu HTXONLINE',
+    introDescription: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    aboutTitle: 'Chúng tôi là HTXONLINE',
+    aboutDescription:
+      'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
+    contactTitle: 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
+    contactDescription:
+      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.'
+  }
 };
 
 export async function getPublicSiteProfile() {
@@ -62,7 +89,8 @@ export function normalizePublicSiteProfile(profile?: Partial<PublicSiteProfile> 
     zaloUrl: stringValue(profile?.zaloUrl),
     messengerUrl: stringValue(profile?.messengerUrl),
     mapEmbedUrl: stringValue(profile?.mapEmbedUrl) || defaultPublicSiteProfile.mapEmbedUrl,
-    faqs: faqItems(profile?.faqs)
+    faqs: faqItems(profile?.faqs),
+    pageContent: pageContentItems(profile?.pageContent)
   };
 }
 
@@ -82,6 +110,21 @@ function faqItems(value: unknown): PublicSiteFaq[] {
     })
     .filter((item): item is PublicSiteFaq => Boolean(item));
   return items.length ? items : defaultPublicSiteProfile.faqs;
+}
+
+function pageContentItems(value: unknown): PublicPageContent {
+  const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Partial<PublicPageContent>) : {};
+  return {
+    homeBadge: stringValue(object.homeBadge) || defaultPublicSiteProfile.pageContent.homeBadge,
+    homeTitle: stringValue(object.homeTitle) || defaultPublicSiteProfile.pageContent.homeTitle,
+    homeDescription: stringValue(object.homeDescription) || defaultPublicSiteProfile.pageContent.homeDescription,
+    introTitle: stringValue(object.introTitle) || defaultPublicSiteProfile.pageContent.introTitle,
+    introDescription: stringValue(object.introDescription) || defaultPublicSiteProfile.pageContent.introDescription,
+    aboutTitle: stringValue(object.aboutTitle) || defaultPublicSiteProfile.pageContent.aboutTitle,
+    aboutDescription: stringValue(object.aboutDescription) || defaultPublicSiteProfile.pageContent.aboutDescription,
+    contactTitle: stringValue(object.contactTitle) || defaultPublicSiteProfile.pageContent.contactTitle,
+    contactDescription: stringValue(object.contactDescription) || defaultPublicSiteProfile.pageContent.contactDescription
+  };
 }
 
 function stringValue(value: unknown) {

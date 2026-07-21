@@ -44,7 +44,8 @@ export class SettingsService {
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
       mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || DEFAULT_MAP_EMBED_URL,
       logoUrl: stringValue(publicProfile.logoUrl) || '',
-      faqs: faqItems(publicProfile.faqs)
+      faqs: faqItems(publicProfile.faqs),
+      pageContent: pageContentItems(publicProfile.pageContent)
     };
   }
 
@@ -122,4 +123,25 @@ function faqItems(value: unknown) {
       answer: 'Không. Khách truy cập có thể xem QR Passport public trực tiếp.'
     }
   ];
+}
+
+function pageContentItems(value: unknown) {
+  const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+  return {
+    homeBadge: stringValue(object.homeBadge) || 'Nền tảng số cho hợp tác xã',
+    homeTitle: stringValue(object.homeTitle) || 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
+    homeDescription:
+      stringValue(object.homeDescription) ||
+      'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
+    introTitle: stringValue(object.introTitle) || 'Giới thiệu HTXONLINE',
+    introDescription: stringValue(object.introDescription) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    aboutTitle: stringValue(object.aboutTitle) || 'Chúng tôi là HTXONLINE',
+    aboutDescription:
+      stringValue(object.aboutDescription) ||
+      'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
+    contactTitle: stringValue(object.contactTitle) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
+    contactDescription:
+      stringValue(object.contactDescription) ||
+      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.'
+  };
 }

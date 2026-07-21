@@ -3,21 +3,24 @@ import Link from 'next/link';
 import { QrCode, ShoppingBag, Store } from 'lucide-react';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { Panel } from '@/components/ui';
+import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Giới thiệu | HTXONLINE',
-  description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+  title: 'Gioi thieu | HTXONLINE',
+  description: 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.',
   alternates: { canonical: 'https://htxonline.vn/gioi-thieu' }
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const siteProfile = await getPublicSiteProfile();
+
   return (
-    <PublicStaticPage title="Giới thiệu HTXONLINE" description="Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.">
+    <PublicStaticPage title={siteProfile.pageContent.introTitle} description={siteProfile.pageContent.introDescription}>
       <div className="grid gap-4 md:grid-cols-3">
         {[
-          { title: 'Kết nối HTX với người mua', icon: Store, text: 'HTX có thể publish sản phẩm, hồ sơ và bán hàng COD mà không cần xây website riêng.' },
-          { title: 'Minh bạch bằng QR Passport', icon: QrCode, text: 'Người mua quét QR để xem nhật ký, vùng trồng và chứng nhận public do HTX công bố.' },
-          { title: 'Vận hành bán hàng COD', icon: ShoppingBag, text: 'Giỏ hàng, checkout và tra cứu đơn hàng được tích hợp sẵn trên cùng một nền tảng.' }
+          { title: 'Ket noi HTX voi nguoi mua', icon: Store, text: 'HTX co the publish san pham, ho so va ban hang COD ma khong can xay website rieng.' },
+          { title: 'Minh bach bang QR Passport', icon: QrCode, text: 'Nguoi mua quet QR de xem nhat ky, vung trong va chung nhan public do HTX cong bo.' },
+          { title: 'Van hanh ban hang COD', icon: ShoppingBag, text: 'Gio hang, checkout va tra cuu don hang duoc tich hop san tren cung mot nen tang.' }
         ].map((item) => (
           <Panel key={item.title} className="h-full p-3.5 sm:p-5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint text-leaf sm:h-12 sm:w-12">
@@ -30,13 +33,13 @@ export default function AboutPage() {
       </div>
       <Panel className="mt-4 p-3.5 text-[0.9rem] leading-[1.7] text-slate-700 sm:p-5 sm:text-sm sm:leading-7">
         <p>
-          Tìm hiểu thêm về định hướng nền tảng tại{' '}
+          Tim hieu them ve dinh huong nen tang tai{' '}
           <Link href="/ve-chung-toi" className="font-semibold text-leaf">
-            Về chúng tôi
+            Ve chung toi
           </Link>{' '}
-          hoặc xem{' '}
+          hoac xem{' '}
           <Link href="/huong-dan-mua-hang" className="font-semibold text-leaf">
-            hướng dẫn mua hàng
+            huong dan mua hang
           </Link>
           .
         </p>
