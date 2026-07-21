@@ -131,6 +131,31 @@ type PreparedDiffItem = {
   after: string;
 };
 
+type ResolvedMetaPreview = {
+  keyword: string;
+  tags: string[];
+  title: string;
+  description: string;
+  canonical: string;
+  robots: string;
+  schemaType: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage: string;
+  twitterTitle: string;
+  twitterDescription: string;
+  twitterImage: string;
+};
+
+type ContentOutlinePreview = {
+  headings: Array<{ level: 'H2' | 'H3'; text: string }>;
+  paragraphCount: number;
+  imageCount: number;
+  imagesMissingAlt: number;
+  internalLinks: number;
+  estimatedMinutes: number;
+};
+
 type EditorMode = 'visual' | 'html';
 
 type LocalDraftPayload = {
@@ -331,6 +356,8 @@ export default function NewsDashboardPage() {
   const autofillPlan = useMemo(() => buildAutofillPlan(form, seo), [form, seo]);
   const preparedPreview = useMemo(() => buildPreparedNewsForm(form), [form]);
   const preparedDiffs = useMemo(() => buildPreparedDiffs(form, preparedPreview), [form, preparedPreview]);
+  const resolvedMetaPreview = useMemo(() => buildResolvedMetaPreview(preparedPreview), [preparedPreview]);
+  const contentOutlinePreview = useMemo(() => buildContentOutlinePreview(preparedPreview), [preparedPreview]);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
   const seoTitleLength = (form.seoTitle || form.title).trim().length;
@@ -1560,6 +1587,43 @@ export default function NewsDashboardPage() {
                     Không theo link
                   </label>
                 </div>
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold text-ink">Thẻ SEO sẽ xuất ra sau khi publish</p>
+                      <p className="text-sm text-slate-600">Dù bạn bỏ trống một số ô, hệ thống vẫn tự lấp phần còn thiếu theo nội dung đã chuẩn bị.</p>
+                    </div>
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                      {resolvedMetaPreview.robots} • {resolvedMetaPreview.schemaType}
+                    </span>
+                  </div>
+                  <div className="mt-3 grid gap-3 md:grid-cols-2">
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Google / canonical</p>
+                      <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{resolvedMetaPreview.description}</p>
+                      <p className="mt-2 text-xs leading-5 text-emerald-700">{resolvedMetaPreview.canonical}</p>
+                    </div>
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Open Graph / Twitter</p>
+                      <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.ogTitle}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{resolvedMetaPreview.ogDescription}</p>
+                      <p className="mt-2 break-all text-xs leading-5 text-slate-500">{resolvedMetaPreview.ogImage}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 grid gap-2 text-sm md:grid-cols-2">
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="font-semibold text-ink">Từ khóa chính</p>
+                      <p className="mt-1 text-slate-600">{resolvedMetaPreview.keyword || 'Chưa có, hệ thống sẽ ưu tiên lấy theo tiêu đề.'}</p>
+                    </div>
+                    <div className="rounded-xl border border-white bg-white p-3">
+                      <p className="font-semibold text-ink">Tags xuất ra</p>
+                      <p className="mt-1 text-slate-600">
+                        {resolvedMetaPreview.tags.length > 0 ? resolvedMetaPreview.tags.join(', ') : 'Chưa có tag, có thể bấm gợi ý tags hoặc dùng Đăng 1 chạm.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </details>
           </Panel>
@@ -1847,6 +1911,56 @@ export default function NewsDashboardPage() {
               <div className="p-3">
                 <p className="font-bold text-ink">{form.twitterTitle || form.title || 'Tiêu đề Twitter'}</p>
                 <p className="mt-1 text-sm text-slate-600">{form.twitterDescription || form.excerpt || 'Mô tả Twitter'}</p>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Khung bài sau khi chuẩn bị publish</p>
+                  <p className="text-sm text-slate-600">Editor soi trước bố cục, ảnh và điều hướng nội bộ để bạn biết bài sẽ lên trang public ra sao.</p>
+                </div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
+                  {contentOutlinePreview.estimatedMinutes} phút đọc
+                </span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-slate-500">Đoạn văn</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{contentOutlinePreview.paragraphCount}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-slate-500">Heading H2/H3</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{contentOutlinePreview.headings.length}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-slate-500">Ảnh trong bài</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{contentOutlinePreview.imageCount}</p>
+                </div>
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-slate-500">Link nội bộ</p>
+                  <p className="mt-1 text-lg font-bold text-ink">{contentOutlinePreview.internalLinks}</p>
+                </div>
+              </div>
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm">
+                <p className="font-semibold text-ink">Outline heading</p>
+                <div className="mt-2 space-y-2">
+                  {contentOutlinePreview.headings.length > 0 ? (
+                    contentOutlinePreview.headings.slice(0, 6).map((heading, index) => (
+                      <p key={`${heading.level}-${heading.text}-${index}`} className="text-slate-600">
+                        <span className="mr-2 rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-slate-700">{heading.level}</span>
+                        {heading.text}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="text-slate-600">Chưa có H2/H3. Bạn có thể bấm “Chèn heading mẫu” hoặc dùng “Đăng 1 chạm” để hệ thống dựng khung cơ bản.</p>
+                  )}
+                </div>
+              </div>
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                {contentOutlinePreview.imagesMissingAlt > 0
+                  ? `Còn ${contentOutlinePreview.imagesMissingAlt} ảnh trong body chưa có alt text rõ ràng. Đây là điểm nên vá thêm để hỗ trợ SEO hình ảnh.`
+                  : 'Ảnh trong body đang có alt text cơ bản hoặc chưa có ảnh nào trong bài.'}
               </div>
             </div>
 
@@ -2534,6 +2648,68 @@ function buildPreparedDiffs(form: NewsForm, prepared: NewsForm): PreparedDiffIte
   addDiff('body', 'Khung nội dung', beforeBodySignals, afterBodySignals);
 
   return diffs.slice(0, 6);
+}
+
+function buildResolvedMetaPreview(form: NewsForm): ResolvedMetaPreview {
+  const canonical = form.canonicalUrl.trim() || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`;
+  const title = (form.seoTitle || form.title || 'Tiêu đề SEO').trim();
+  const description = (form.seoDescription || form.excerpt || stripHtml(form.bodyHtml).slice(0, 160) || 'Mô tả SEO').trim();
+  const ogTitle = (form.ogTitle || title).trim();
+  const ogDescription = (form.ogDescription || description).trim();
+  const ogImage = (form.ogImageUrl || form.coverImageUrl || 'Ảnh bìa public').trim();
+  const twitterTitle = (form.twitterTitle || ogTitle).trim();
+  const twitterDescription = (form.twitterDescription || ogDescription).trim();
+  const twitterImage = (form.twitterImageUrl || ogImage).trim();
+
+  return {
+    keyword: (form.focusKeyword || form.title).trim(),
+    tags: form.tags
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean),
+    title,
+    description,
+    canonical,
+    robots: [form.robotsNoIndex ? 'noindex' : 'index', form.robotsNoFollow ? 'nofollow' : 'follow'].join(', '),
+    schemaType: form.schemaType || 'NewsArticle',
+    ogTitle,
+    ogDescription,
+    ogImage,
+    twitterTitle,
+    twitterDescription,
+    twitterImage
+  };
+}
+
+function buildContentOutlinePreview(form: NewsForm): ContentOutlinePreview {
+  const headings = Array.from(form.bodyHtml.matchAll(/<h([23])[^>]*>(.*?)<\/h\1>/gis))
+    .map((match) => ({
+      level: match[1] === '2' ? 'H2' : 'H3',
+      text: stripHtml(match[2] || '').replace(/\s+/g, ' ').trim()
+    }))
+    .filter((item) => item.text) as Array<{ level: 'H2' | 'H3'; text: string }>;
+
+  const paragraphCount = Math.max(
+    Array.from(form.bodyHtml.matchAll(/<p\b[^>]*>(.*?)<\/p>/gis))
+      .map((match) => stripHtml(match[1] || '').trim())
+      .filter(Boolean).length,
+    stripHtml(form.bodyHtml) ? 1 : 0
+  );
+  const imageTags = Array.from(form.bodyHtml.matchAll(/<img\b[^>]*>/gi)).map((match) => match[0]);
+  const imagesMissingAlt = imageTags.filter((tag) => {
+    const altMatch = tag.match(/\balt="([^"]*)"/i);
+    return !altMatch || !altMatch[1]?.trim();
+  }).length;
+  const words = stripHtml(form.bodyHtml).split(/\s+/).filter(Boolean).length;
+
+  return {
+    headings: headings.slice(0, 8),
+    paragraphCount,
+    imageCount: imageTags.length,
+    imagesMissingAlt,
+    internalLinks: countMatches(form.bodyHtml, /<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/gi),
+    estimatedMinutes: Math.max(1, Math.ceil(words / 180))
+  };
 }
 
 function publishReadinessClass(ratio: number) {
