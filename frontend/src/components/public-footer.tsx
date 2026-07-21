@@ -105,7 +105,7 @@ export async function PublicFooter() {
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3">
                   <div>
                     <p className="text-sm font-semibold text-white/90">Điểm hỗ trợ và bản đồ</p>
-                    <p className="mt-1 text-xs text-white/70">Footer giữ preview địa điểm ổn định. Bản đồ tương tác đầy đủ có sẵn ở trang liên hệ để bạn xem đường đi rõ hơn.</p>
+                    <p className="mt-1 text-xs text-white/70">Xem nhanh vị trí ngay trong footer, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.</p>
                   </div>
                   <a
                     href={mapSearchUrl}
@@ -117,43 +117,21 @@ export async function PublicFooter() {
                   </a>
                 </div>
 
-                <div className="relative overflow-hidden px-4 pb-4 pt-4">
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 opacity-70"
-                    style={{
-                      background:
-                        'radial-gradient(circle at 18% 16%, rgba(255,255,255,0.16), transparent 24%), radial-gradient(circle at 80% 18%, rgba(255,255,255,0.12), transparent 18%), linear-gradient(135deg, rgba(255,255,255,0.09) 1px, transparent 1px), linear-gradient(45deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
-                      backgroundSize: 'auto, auto, 26px 26px, 26px 26px'
-                    }}
-                  />
-
-                  <div className="relative rounded-[1.65rem] border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),rgba(255,255,255,0.08))] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                    <div className="rounded-2xl border border-white/14 bg-[#76a386]/40 px-5 py-4 shadow-lg backdrop-blur">
+                <div className="px-4 pb-4 pt-4">
+                  <div className="overflow-hidden rounded-[1.65rem] border border-white/14 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),rgba(255,255,255,0.08))] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                    <div className="rounded-2xl border border-white/14 bg-[#76a386]/40 px-4 py-3 shadow-lg backdrop-blur">
                       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Địa chỉ hỗ trợ</p>
-                      <p className="mt-1 text-lg font-bold leading-8 text-white">{profile.address}</p>
+                      <p className="mt-1 text-base font-bold leading-7 text-white">{profile.address}</p>
                     </div>
 
-                    <div className="relative mt-4 overflow-hidden rounded-2xl border border-white/14 bg-[#5f8f73]">
-                      <div
-                        aria-hidden="true"
-                        className="h-52"
-                        style={{
-                          background:
-                            'radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 28%), linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px), linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px), linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02))',
-                          backgroundSize: 'auto, 64px 64px, 64px 64px, auto'
-                        }}
+                    <div className="mt-3 overflow-hidden rounded-2xl border border-white/14 bg-white/10">
+                      <iframe
+                        title="Bản đồ HTXONLINE tại footer"
+                        src={profile.mapEmbedUrl}
+                        className="h-56 w-full border-0 md:h-64"
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
                       />
-                      <div className="absolute inset-x-0 top-[24%] h-[2px] bg-white/20" />
-                      <div className="absolute inset-y-0 left-[52%] w-[2px] bg-white/15" />
-                      <div className="absolute left-[52%] top-1/2 -translate-x-1/2 -translate-y-1/2">
-                        <div className="grid h-12 w-12 place-items-center rounded-full border border-white/35 bg-white/20 shadow-lg backdrop-blur">
-                          <MapPin size={22} className="text-white" aria-hidden="true" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-4 left-4 rounded-full border border-white/18 bg-[#1f5f3d]/85 px-3 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-white/75 backdrop-blur">
-                        Mỹ Thọ, Đồng Tháp
-                      </div>
                     </div>
                   </div>
                 </div>
