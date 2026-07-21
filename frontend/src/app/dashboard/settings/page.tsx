@@ -203,6 +203,19 @@ export default function SettingsPage() {
               Tab nay dung de sua logo, hotline, email, dia chi, ban do, FAQ va noi dung hero cac trang public. Ho so HTX/san pham sua trong dashboard,
               con bai blog public sua tai khu vuc Tin tuc cua Super Admin.
             </p>
+            <div className="grid gap-2 md:grid-cols-3">
+              {[
+                ['1', 'Sua lien he va footer', 'Cap nhat hotline, email, dia chi va ban do de hien dong nhat tren footer va trang lien he.'],
+                ['2', 'Dan anh vao tung muc', 'Chi can Ctrl+V hoac keo tha anh vao o anh la he thong tu upload va cap nhat URL.'],
+                ['3', 'Mo trang public de xem', 'Sau khi luu, bam cac nut xem nhanh ben duoi de kiem tra ngay tren mobile/desktop.']
+              ].map(([step, title, text]) => (
+                <div key={step} className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
+                  <p className="mt-1 text-sm font-bold text-ink">{title}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
+                </div>
+              ))}
+            </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <Link href="/dashboard/news" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
                 Soan blog nhanh
@@ -275,6 +288,9 @@ export default function SettingsPage() {
                   <div>
                     <p className="text-sm font-bold text-ink">Thông tin liên hệ và footer</p>
                     <p className="mt-1 text-sm leading-6 text-slate-600">Đây là nơi chỉnh hotline, email, địa chỉ, logo, FAQ và phần bản đồ hiển thị trên footer/trang liên hệ.</p>
+                    <p className="mt-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
+                      Zalo da duoc bo. Neu khong dung Messenger thi co the de trong o Messenger URL.
+                    </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     <Link href="/" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem trang chủ</Link>
@@ -282,13 +298,27 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <Field label="Ten hien thi"><Input {...publicForm.register('appName')} /></Field>
-                  <Field label="Hotline"><Input {...publicForm.register('hotline')} /></Field>
-                  <Field label="Hotline hien thi"><Input {...publicForm.register('hotlineDisplay')} /></Field>
-                  <Field label="Email lien he"><Input type="email" {...publicForm.register('supportEmail')} /></Field>
-                  <Field label="Dia chi" className="sm:col-span-2"><Input {...publicForm.register('address')} /></Field>
-                  <Field label="Ma nhung ban do (iframe URL)"><Input {...publicForm.register('mapEmbedUrl')} /></Field>
-                  <Field label="Messenger URL"><Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." /></Field>
+                  <Field label="Ten hien thi">
+                    <Input {...publicForm.register('appName')} placeholder="HTXONLINE" />
+                  </Field>
+                  <Field label="Hotline">
+                    <Input {...publicForm.register('hotline')} placeholder="0907001200" />
+                  </Field>
+                  <Field label="Hotline hien thi">
+                    <Input {...publicForm.register('hotlineDisplay')} placeholder="0907 001 200" />
+                  </Field>
+                  <Field label="Email lien he">
+                    <Input type="email" {...publicForm.register('supportEmail')} placeholder="Agripassport@gmail.com" />
+                  </Field>
+                  <Field label="Dia chi" className="sm:col-span-2">
+                    <Input {...publicForm.register('address')} placeholder="So 130, To 8, Ap My Xuong, Xa My Tho, Tinh Dong Thap" />
+                  </Field>
+                  <Field label="Ma nhung ban do (iframe URL)">
+                    <Input {...publicForm.register('mapEmbedUrl')} placeholder="https://www.openstreetmap.org/export/embed.html?..." />
+                  </Field>
+                  <Field label="Messenger URL">
+                    <Input {...publicForm.register('messengerUrl')} placeholder="https://m.me/..." />
+                  </Field>
                   <Field label="Logo URL" className="sm:col-span-2">
                     <div className="flex gap-2">
                       <Input {...publicForm.register('logoUrl')} />
@@ -307,8 +337,32 @@ export default function SettingsPage() {
                       </label>
                     </div>
                   </Field>
+                  {publicForm.watch('mapEmbedUrl') && (
+                    <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-3">
+                      <p className="text-sm font-bold text-ink">Preview khu ban do / footer</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        Neu iframe map bi chan tren mot thiet bi nao do, footer van se hien preview dia diem va nut mo Google Maps. O ben duoi la iframe hien tai de doi chieu nhanh.
+                      </p>
+                      <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                        <iframe
+                          src={publicForm.watch('mapEmbedUrl')}
+                          title="Map preview"
+                          loading="lazy"
+                          className="h-64 w-full border-0"
+                          referrerPolicy="no-referrer-when-downgrade"
+                        />
+                      </div>
+                    </div>
+                  )}
                   <Field label="FAQ (question|answer moi dong)" className="sm:col-span-2">
-                    <Textarea rows={5} {...publicForm.register('faqText')} />
+                    <Textarea
+                      rows={5}
+                      {...publicForm.register('faqText')}
+                      placeholder={'HTXONLINE ho tro gi?|Ho tro dang san, QR Passport va don hang COD.\nLam sao de dang bai blog?|Mo dashboard Tin tuc, dan noi dung va bam Dang 1 cham.'}
+                    />
+                    <p className="text-xs font-semibold text-slate-500">
+                      Moi dong la 1 cap <span className="font-bold">cau hoi|tra loi</span>. Vi du: <span className="font-bold">HTXONLINE la gi?|Nen tang so cho hop tac xa.</span>
+                    </p>
                   </Field>
                 </div>
               </div>
@@ -322,10 +376,10 @@ export default function SettingsPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} /></Field>
-                  <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} /></Field>
+                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} placeholder="Nen tang so cho hop tac xa" /></Field>
+                  <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE giup hop tac xa ban hang minh bach hon tren moi truong so." /></Field>
                   <Field label="Mo ta trang chu" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('homeDescription')} />
+                    <Textarea rows={3} {...publicForm.register('homeDescription')} placeholder="Cong khai san pham, mo QR Passport va van hanh don COD tren cung mot he thong gon, ro, de tin tuong." />
                   </Field>
                   <ImageField
                     label="Anh trang chu"
@@ -351,9 +405,9 @@ export default function SettingsPage() {
                   </div>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} /></Field>
+                  <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} placeholder="Gioi thieu HTXONLINE" /></Field>
                   <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('introDescription')} />
+                    <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam." />
                   </Field>
                   <ImageField
                     label="Anh trang gioi thieu"
@@ -363,9 +417,9 @@ export default function SettingsPage() {
                     onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
                     onUpload={(file) => uploadPublicImage(file, 'introImageUrl')}
                   />
-                  <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} /></Field>
+                  <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} placeholder="Chung toi la HTXONLINE" /></Field>
                   <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('aboutDescription')} />
+                    <Textarea rows={3} {...publicForm.register('aboutDescription')} placeholder="San nong san so giup hop tac xa ket noi thi truong, minh bach nguon goc va ban hang COD hieu qua." />
                   </Field>
                   <ImageField
                     label="Anh trang ve chung toi"
@@ -387,9 +441,9 @@ export default function SettingsPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} /></Field>
+                  <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} placeholder="Hay de HTXONLINE ket noi va dong hanh cung hop tac xa cua ban" /></Field>
                   <Field label="Mo ta trang lien he" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('contactDescription')} />
+                    <Textarea rows={3} {...publicForm.register('contactDescription')} placeholder="Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX." />
                   </Field>
                   <ImageField
                     label="Anh trang lien he"
