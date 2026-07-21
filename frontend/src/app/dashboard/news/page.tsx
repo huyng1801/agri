@@ -305,6 +305,10 @@ export default function NewsDashboardPage() {
   const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
   const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
   const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
+  const titleLength = form.title.trim().length;
+  const slugLength = form.slug.trim().length;
+  const seoTitleLength = (form.seoTitle || form.title).trim().length;
+  const seoDescriptionLength = form.seoDescription.trim().length;
   const seoAdvancedOpen = Boolean(
     form.focusKeyword.trim() ||
       form.seoTitle.trim() ||
@@ -957,11 +961,28 @@ export default function NewsDashboardPage() {
             <div className="grid gap-3 md:grid-cols-2">
               <label className="space-y-1 text-sm font-semibold">
                 <span>Tiêu đề</span>
-                <Input data-testid="news-title-input" value={form.title} onChange={(event) => update('title', event.target.value)} required />
+                <Input
+                  data-testid="news-title-input"
+                  value={form.title}
+                  onChange={(event) => update('title', event.target.value)}
+                  placeholder="Ví dụ: Xoài Mỹ Xương vào vụ mới, sản lượng ổn định"
+                  required
+                />
+                <span className={cn('text-xs font-semibold', lengthHintClass(titleLength, 35, 70))}>
+                  {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính ngay trên tiêu đề để hệ thống gợi ý slug và SEO tốt hơn.'}
+                </span>
               </label>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Slug</span>
-                <Input data-testid="news-slug-input" value={form.slug} onChange={(event) => update('slug', slugifyLocal(event.target.value))} />
+                <Input
+                  data-testid="news-slug-input"
+                  value={form.slug}
+                  onChange={(event) => update('slug', slugifyLocal(event.target.value))}
+                  placeholder="xoai-my-xuong-vao-vu-moi"
+                />
+                <span className={cn('text-xs font-semibold', lengthHintClass(slugLength, 12, 80))}>
+                  {slugLength ? 'Slug nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo slug từ tiêu đề.'}
+                </span>
               </label>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Danh mục</span>
@@ -983,7 +1004,15 @@ export default function NewsDashboardPage() {
               </label>
               <label className="space-y-1 text-sm font-semibold md:col-span-2">
                 <span>Mô tả ngắn</span>
-                <Textarea data-testid="news-excerpt-input" value={form.excerpt} onChange={(event) => update('excerpt', event.target.value)} />
+                <Textarea
+                  data-testid="news-excerpt-input"
+                  value={form.excerpt}
+                  onChange={(event) => update('excerpt', event.target.value)}
+                  placeholder="Tóm tắt 2-3 ý chính để người đọc hiểu nhanh bài viết nói về gì."
+                />
+                <span className={cn('text-xs font-semibold', lengthHintClass(excerptLength, 80, 180))}>
+                  {excerptLength ? `${excerptLength} ký tự. Mô tả ngắn đẹp thường nằm trong khoảng 80-180 ký tự.` : 'Đoạn này sẽ hiện ở danh sách tin tức và hỗ trợ lấy meta description khi cần.'}
+                </span>
               </label>
             </div>
             <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
@@ -1312,19 +1341,48 @@ export default function NewsDashboardPage() {
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Focus keyword</span>
-                    <Input data-testid="news-focus-keyword-input" value={form.focusKeyword} onChange={(event) => update('focusKeyword', event.target.value)} />
+                    <Input
+                      data-testid="news-focus-keyword-input"
+                      value={form.focusKeyword}
+                      onChange={(event) => update('focusKeyword', event.target.value)}
+                      placeholder="Ví dụ: xoài Mỹ Xương"
+                    />
+                    <span className="text-xs font-semibold text-slate-500">
+                      {form.focusKeyword.trim() ? 'Chọn 1 cụm từ khóa chính để hệ thống chấm title, mô tả, mật độ và phần mở bài.' : 'Nên chọn 1 cụm từ khóa chính, không cần nhồi nhiều từ khóa.'}
+                    </span>
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
                     <span>SEO title</span>
-                    <Input data-testid="news-seo-title-input" value={form.seoTitle} onChange={(event) => update('seoTitle', event.target.value)} />
+                    <Input
+                      data-testid="news-seo-title-input"
+                      value={form.seoTitle}
+                      onChange={(event) => update('seoTitle', event.target.value)}
+                      placeholder="Tiêu đề hiển thị trên Google"
+                    />
+                    <span className={cn('text-xs font-semibold', lengthHintClass(seoTitleLength, 35, 65))}>
+                      {seoTitleLength ? `${seoTitleLength}/65 ký tự` : 'Nên dài khoảng 35-65 ký tự'}
+                    </span>
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
                     <span>Meta description</span>
-                    <Textarea data-testid="news-seo-description-input" value={form.seoDescription} onChange={(event) => update('seoDescription', event.target.value)} />
+                    <Textarea
+                      data-testid="news-seo-description-input"
+                      value={form.seoDescription}
+                      onChange={(event) => update('seoDescription', event.target.value)}
+                      placeholder="Mô tả ngắn hiển thị trên Google, nên chứa từ khóa chính và lợi ích nổi bật."
+                    />
+                    <span className={cn('text-xs font-semibold', lengthHintClass(seoDescriptionLength, 120, 160))}>
+                      {seoDescriptionLength ? `${seoDescriptionLength}/160 ký tự` : 'Nên dài khoảng 120-160 ký tự'}
+                    </span>
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Canonical URL</span>
-                    <Input data-testid="news-canonical-url-input" value={form.canonicalUrl} onChange={(event) => update('canonicalUrl', event.target.value)} />
+                    <Input
+                      data-testid="news-canonical-url-input"
+                      value={form.canonicalUrl}
+                      onChange={(event) => update('canonicalUrl', event.target.value)}
+                      placeholder="https://htxonline.vn/tin-tuc/ten-bai-viet"
+                    />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Loại schema</span>
@@ -1523,11 +1581,33 @@ export default function NewsDashboardPage() {
               <div data-testid="news-seo-score" className={cn('rounded-md p-3 text-center', seoScoreClass(seo.score))}>
                 <p className="text-sm text-slate-600">Điểm SEO</p>
                 <p className="text-2xl font-bold text-leaf">{seo.score}</p>
+                <p className="mt-1 text-xs font-semibold text-slate-700">{seoScoreLabel(seo.score)}</p>
               </div>
               <div data-testid="news-readability-score" className={cn('rounded-md p-3 text-center', readabilityClass(seo.readability))}>
                 <p className="text-sm text-slate-600">Độ dễ đọc</p>
                 <p className="text-2xl font-bold text-ink">{seo.readability}</p>
+                <p className="mt-1 text-xs font-semibold text-slate-700">{readabilityLabel(seo.readability)}</p>
               </div>
+            </div>
+
+            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
+                <span>Mức sẵn sàng SEO</span>
+                <span>{seo.score}/100</span>
+              </div>
+              <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                <div
+                  className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
+                  style={{ width: `${Math.max(seo.score, 6)}%` }}
+                />
+              </div>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                {seo.score >= 80
+                  ? 'Bài đã khá ổn để xuất bản và chia sẻ. Chỉ cần rà lại nội dung thực tế trước khi đăng.'
+                  : seo.score >= 60
+                    ? 'Bài đã có nền tốt, nhưng nên xử lý thêm vài mục cảnh báo màu vàng để tăng khả năng hiển thị.'
+                    : 'Bài còn thiếu vài thành phần quan trọng. Hãy dùng checklist bên dưới hoặc nút vá nhanh để hoàn thiện nhanh hơn.'}
+              </p>
             </div>
 
             <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
@@ -1884,7 +1964,14 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
 function statusClass(status: string) {
   if (status === 'PUBLISHED') return 'bg-mint text-leaf';
   if (status === 'DRAFT') return 'bg-sky text-slate-700';
+  if (status === 'SCHEDULED') return 'bg-amber-100 text-amber-900';
   return 'bg-stone-100 text-stone-700';
+}
+
+function lengthHintClass(value: number, min: number, max: number) {
+  if (!value) return 'text-slate-500';
+  if (value >= min && value <= max) return 'text-emerald-700';
+  return 'text-amber-700';
 }
 
 function statusLabel(status: string) {
@@ -1901,10 +1988,28 @@ function seoScoreClass(score: number) {
   return 'bg-rose-100';
 }
 
+function seoScoreBarClass(score: number) {
+  if (score >= 80) return 'bg-emerald-500';
+  if (score >= 60) return 'bg-amber-500';
+  return 'bg-rose-500';
+}
+
+function seoScoreLabel(score: number) {
+  if (score >= 80) return 'Tốt, có thể tự tin publish';
+  if (score >= 60) return 'Khá ổn, nên rà thêm vài mục';
+  return 'Cần bổ sung trước khi đăng';
+}
+
 function readabilityClass(score: number) {
   if (score >= 80) return 'bg-sky';
   if (score >= 60) return 'bg-amber-100';
   return 'bg-slate-100';
+}
+
+function readabilityLabel(score: number) {
+  if (score >= 80) return 'Dễ đọc, câu khá gọn';
+  if (score >= 60) return 'Tạm ổn, có thể rút câu thêm';
+  return 'Khá dày, nên viết ngắn hơn';
 }
 
 function slugifyLocal(input: string) {
