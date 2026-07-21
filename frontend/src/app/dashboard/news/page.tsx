@@ -2319,43 +2319,71 @@ export default function NewsDashboardPage() {
               </div>
             </div>
 
-            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
-                <span>Mức sẵn sàng SEO</span>
-                <span>{seo.score}/100</span>
-              </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
-                <div
-                  className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
-                  style={{ width: `${Math.max(seo.score, 6)}%` }}
-                />
-              </div>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                {seo.score >= 80
-                  ? 'Bài đã khá ổn để xuất bản và chia sẻ. Chỉ cần rà lại nội dung thực tế trước khi đăng.'
-                  : seo.score >= 60
-                    ? 'Bài đã có nền tốt, nhưng nên xử lý thêm vài mục cảnh báo màu vàng để tăng khả năng hiển thị.'
-                    : 'Bài còn thiếu vài thành phần quan trọng. Hãy dùng checklist bên dưới hoặc nút vá nhanh để hoàn thiện nhanh hơn.'}
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {!form.focusKeyword.trim() && focusKeywordSuggestions[0] && (
-                  <Button type="button" variant="ghost" onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}>
-                    <Target size={18} aria-hidden="true" />
-                    Chọn từ khóa gợi ý
+            {isAdvancedMode ? (
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
+                  <span>Mức sẵn sàng SEO</span>
+                  <span>{seo.score}/100</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                  <div
+                    className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
+                    style={{ width: `${Math.max(seo.score, 6)}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {seo.score >= 80
+                    ? 'Bài đã khá ổn để xuất bản và chia sẻ. Chỉ cần rà lại nội dung thực tế trước khi đăng.'
+                    : seo.score >= 60
+                      ? 'Bài đã có nền tốt, nhưng nên xử lý thêm vài mục cảnh báo màu vàng để tăng khả năng hiển thị.'
+                      : 'Bài còn thiếu vài thành phần quan trọng. Hãy dùng checklist bên dưới hoặc nút vá nhanh để hoàn thiện nhanh hơn.'}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {!form.focusKeyword.trim() && focusKeywordSuggestions[0] && (
+                    <Button type="button" variant="ghost" onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}>
+                      <Target size={18} aria-hidden="true" />
+                      Chọn từ khóa gợi ý
+                    </Button>
+                  )}
+                  {form.focusKeyword.trim() && !stripHtml(form.bodyHtml).slice(0, 180).toLowerCase().includes(form.focusKeyword.trim().toLowerCase()) && (
+                    <Button type="button" variant="ghost" onClick={ensureKeywordInIntro}>
+                      <FileText size={18} aria-hidden="true" />
+                      Chèn mở bài có từ khóa
+                    </Button>
+                  )}
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Hoàn thiện SEO cơ bản
                   </Button>
-                )}
-                {form.focusKeyword.trim() && !stripHtml(form.bodyHtml).slice(0, 180).toLowerCase().includes(form.focusKeyword.trim().toLowerCase()) && (
-                  <Button type="button" variant="ghost" onClick={ensureKeywordInIntro}>
-                    <FileText size={18} aria-hidden="true" />
-                    Chèn mở bài có từ khóa
-                  </Button>
-                )}
-                <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                  <Sparkles size={18} aria-hidden="true" />
-                  Hoàn thiện SEO cơ bản
-                </Button>
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center justify-between gap-3 text-sm font-semibold text-slate-700">
+                  <span>Mức sẵn sàng SEO</span>
+                  <span>{seo.score}/100</span>
+                </div>
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                  <div
+                    className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
+                    style={{ width: `${Math.max(seo.score, 6)}%` }}
+                  />
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {seoMustFixCount > 0
+                    ? `Bài còn ${seoMustFixCount} mục SEO quan trọng nên vá trước khi đăng.`
+                    : seoShouldFixCount > 0
+                      ? `Còn ${seoShouldFixCount} mục nên tối ưu thêm để bài đẹp hơn.`
+                      : 'Điểm SEO đang ổn để tiếp tục hoàn thiện và xuất bản.'}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Hoàn thiện SEO cơ bản
+                  </Button>
+                </div>
+              </div>
+            )}
 
             <details className="mt-4 rounded-2xl border border-slate-200 bg-white/95" open={seoReviewOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
