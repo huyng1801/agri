@@ -113,7 +113,7 @@ type NextStepSuggestion = {
 };
 
 type QuickWinSuggestion = {
-  id: 'title' | 'excerpt' | 'keyword' | 'intro' | 'cover-alt' | 'tags';
+  id: 'title' | 'excerpt' | 'keyword' | 'intro' | 'cover-alt' | 'tags' | 'heading' | 'link';
   title: string;
   detail: string;
   actionLabel: string;
@@ -829,6 +829,18 @@ export default function NewsDashboardPage() {
     update('bodyHtml', `${introParagraph}${form.bodyHtml}`);
   }
 
+  function ensureHeadingStructure() {
+    const currentBody = form.bodyHtml || '<p></p>';
+    if (/<h[23][^>]*>/i.test(currentBody)) return;
+    const headingBlock = '<h2>Thong tin chinh</h2><p>Bo sung y chinh quan trong tai day.</p><h2>Noi dung can biet</h2><p>Mo rong them chi tiet, loi ich hoac huong dan cu the.</p>';
+    update('bodyHtml', `${headingBlock}${currentBody}`);
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual' && visualEditorRef.current) {
+        visualEditorRef.current.innerHTML = `${headingBlock}${currentBody}`;
+      }
+    });
+  }
+
   function fillExcerptFromBody() {
     const fallbackExcerpt = trimText(stripHtml(form.bodyHtml), 180);
     if (!fallbackExcerpt) return;
@@ -904,6 +916,14 @@ export default function NewsDashboardPage() {
     }
     if (winId === 'tags') {
       fillSuggestedTags();
+      return;
+    }
+    if (winId === 'heading') {
+      ensureHeadingStructure();
+      return;
+    }
+    if (winId === 'link') {
+      insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0]);
     }
   }
 
@@ -2351,6 +2371,24 @@ function buildQuickWins(form: NewsForm, seo: SeoScoreResult, focusKeywordSuggest
       title: 'Tạo tag gợi ý cho bài',
       detail: 'Tag giúp nhóm bài cùng chủ đề và hỗ trợ điều hướng tốt hơn trong kho nội dung.',
       actionLabel: 'Gợi ý tags'
+    });
+  }
+
+  if (seo.stats.words >= 120 && seo.stats.headings === 0) {
+    wins.push({
+      id: 'heading',
+      title: 'Thêm khung H2 để bài dễ đọc',
+      detail: 'Bài đã đủ nội dung cơ bản nhưng chưa chia mục. Chèn sẵn 2 heading sẽ giúp bài nhìn gọn và tăng điểm cấu trúc.',
+      actionLabel: 'Chèn heading mẫu'
+    });
+  }
+
+  if (seo.stats.words >= 120 && seo.stats.internalLinks === 0) {
+    wins.push({
+      id: 'link',
+      title: 'Chèn 1 internal link liên quan',
+      detail: 'Một link sang sản phẩm, HTX hoặc liên hệ sẽ giúp người đọc đi tiếp và cải thiện SEO on-page.',
+      actionLabel: 'Chèn link ngay'
     });
   }
 
