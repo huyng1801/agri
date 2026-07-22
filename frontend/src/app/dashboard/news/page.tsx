@@ -2193,7 +2193,7 @@ export default function NewsDashboardPage() {
                 <div className="relative">
                   {!isAdvancedMode && isBodyEmpty && (
                     <div className="pointer-events-none absolute inset-x-4 top-3 z-10 rounded-[1.1rem] border border-dashed border-leaf/25 bg-mint/20 px-3 py-1.5 text-sm text-slate-600">
-                      <p className="font-semibold text-ink">Viet hoac paste vao day nhu soan Word</p>
+                      <p className="font-semibold text-ink">Viết hoặc paste vào đây như soạn Word</p>
                       <p className="mt-0.5 text-[11px] leading-4">Ctrl+V ảnh hoặc văn bản. Ảnh vừa paste có thể dùng làm cover.</p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5 text-[10px] font-semibold text-leaf">
                         <span className="rounded-full bg-white px-2 py-1 shadow-sm">Nhập nội dung</span>
@@ -2831,7 +2831,7 @@ export default function NewsDashboardPage() {
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview Google</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
-                          {(resolvedMetaPreview.title || '').trim().length || 0} ky tu title
+                          {(resolvedMetaPreview.title || '').trim().length || 0} ký tự title
                         </span>
                       </div>
                       <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.title}</p>
