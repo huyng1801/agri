@@ -372,6 +372,7 @@ export default function NewsDashboardPage() {
   const [suggestedCover, setSuggestedCover] = useState<SuggestedCover | null>(null);
   const [simpleActionsExpanded, setSimpleActionsExpanded] = useState(false);
   const [simpleEditorToolsExpanded, setSimpleEditorToolsExpanded] = useState(false);
+  const [simplePermalinkToolsExpanded, setSimplePermalinkToolsExpanded] = useState(false);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -1702,31 +1703,45 @@ export default function NewsDashboardPage() {
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
                     <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                    <div className="mt-3 flex items-center gap-2">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-10 px-3">
                         <LinkIcon size={18} aria-hidden="true" />
                         Copy link
                       </Button>
-                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                        <Sparkles size={18} aria-hidden="true" />
-                        Sua nhanh SEO
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => setSimplePermalinkToolsExpanded((value) => !value)}
+                        className="min-h-10 px-3"
+                        aria-expanded={simplePermalinkToolsExpanded}
+                      >
+                        {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
+                        Them
                       </Button>
-                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
-                        <FileText size={18} aria-hidden="true" />
-                        Tao mo ta ngan
-                      </Button>
-                      {needsImportedOptimization ? (
-                        <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
-                          <Sparkles size={18} aria-hidden="true" />
-                          Toi uu bai vua dan
-                        </Button>
-                      ) : (
-                        <Button type="button" variant="ghost" onClick={cleanPastedContent}>
-                          <RefreshCcw size={18} aria-hidden="true" />
-                          Lam sach noi dung dan
-                        </Button>
-                      )}
                     </div>
+                    {simplePermalinkToolsExpanded && (
+                      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10">
+                          <Sparkles size={18} aria-hidden="true" />
+                          Sua nhanh SEO
+                        </Button>
+                        <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-10">
+                          <FileText size={18} aria-hidden="true" />
+                          Tao mo ta
+                        </Button>
+                        {needsImportedOptimization ? (
+                          <Button type="button" variant="ghost" onClick={optimizeImportedArticle} className="min-h-10 sm:col-span-2">
+                            <Sparkles size={18} aria-hidden="true" />
+                            Toi uu bai dan
+                          </Button>
+                        ) : (
+                          <Button type="button" variant="ghost" onClick={cleanPastedContent} className="min-h-10 sm:col-span-2">
+                            <RefreshCcw size={18} aria-hidden="true" />
+                            Lam sach noi dung
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
