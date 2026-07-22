@@ -580,19 +580,22 @@ export default function NewsDashboardPage() {
     target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  function focusAndReveal(target: HTMLElement | null) {
+    if (!target) return;
+    scrollToSection(target);
+    window.requestAnimationFrame(() => target.focus());
+  }
+
   function jumpToEditor() {
     if (editorMode === 'visual') {
-      focusVisualEditor();
-      scrollToSection(visualEditorRef.current);
+      focusAndReveal(visualEditorRef.current);
       return;
     }
-    bodyRef.current?.focus();
-    scrollToSection(bodyRef.current);
+    focusAndReveal(bodyRef.current);
   }
 
   function jumpToCover() {
-    coverDropzoneRef.current?.focus();
-    scrollToSection(coverDropzoneRef.current);
+    focusAndReveal(coverDropzoneRef.current);
   }
 
   function jumpToSimpleSeo() {
@@ -1081,16 +1084,15 @@ export default function NewsDashboardPage() {
 
   function runNextStepSuggestion(stepId: NextStepSuggestion['id']) {
     if (stepId === 'title') {
-      document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]')?.focus();
+      focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]'));
       return;
     }
     if (stepId === 'content') {
-      if (editorMode === 'visual') focusVisualEditor();
-      else bodyRef.current?.focus();
+      jumpToEditor();
       return;
     }
     if (stepId === 'cover') {
-      document.querySelector<HTMLInputElement>('[data-testid="news-cover-image-input"]')?.focus();
+      jumpToCover();
       return;
     }
     if (stepId === 'excerpt') {
@@ -1108,7 +1110,7 @@ export default function NewsDashboardPage() {
 
   function runQuickWin(winId: QuickWinSuggestion['id']) {
     if (winId === 'title') {
-      document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]')?.focus();
+      focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-title-input"]'));
       return;
     }
     if (winId === 'excerpt') {
@@ -1118,9 +1120,13 @@ export default function NewsDashboardPage() {
     if (winId === 'keyword') {
       if (focusKeywordSuggestions[0]) {
         applyFocusKeywordSuggestion(focusKeywordSuggestions[0]);
+        jumpToSimpleSeo();
         return;
       }
-      document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]')?.focus();
+      jumpToSimpleSeo();
+      window.requestAnimationFrame(() => {
+        focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]'));
+      });
       return;
     }
     if (winId === 'intro') {
@@ -1151,12 +1157,14 @@ export default function NewsDashboardPage() {
       return;
     }
     if (actionId === 'focus-keyword') {
-      document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]')?.focus();
+      jumpToSimpleSeo();
+      window.requestAnimationFrame(() => {
+        focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]'));
+      });
       return;
     }
     if (actionId === 'content') {
-      if (editorMode === 'visual') focusVisualEditor();
-      else bodyRef.current?.focus();
+      jumpToEditor();
       return;
     }
     if (actionId === 'intro-keyword') {
@@ -1164,7 +1172,7 @@ export default function NewsDashboardPage() {
       return;
     }
     if (actionId === 'cover') {
-      document.querySelector<HTMLInputElement>('[data-testid="news-cover-image-input"]')?.focus();
+      jumpToCover();
       return;
     }
     if (actionId === 'internal-link') {
@@ -1387,6 +1395,32 @@ export default function NewsDashboardPage() {
                       Xem preview
                     </Button>
                   </div>
+                  {nextStepSuggestions.length > 0 && (
+                    <div className="mt-3 rounded-2xl border border-white/90 bg-white/92 p-3">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Viec nen lam tiep</p>
+                          <p className="mt-1 text-sm font-bold text-ink">He thong goi y theo tinh trang bai hien tai, khong can tu doan buoc tiep theo.</p>
+                        </div>
+                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{nextStepSuggestions.length} goi y</span>
+                      </div>
+                      <div className="mt-3 grid gap-2">
+                        {nextStepSuggestions.slice(0, 3).map((step) => (
+                          <div key={`simple-next-${step.id}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div className="max-w-xl">
+                                <p className="text-sm font-bold text-ink">{step.title}</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-600">{step.detail}</p>
+                              </div>
+                              <Button type="button" variant="ghost" onClick={() => runNextStepSuggestion(step.id)}>
+                                {step.actionLabel}
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               {!isAdvancedMode && (
