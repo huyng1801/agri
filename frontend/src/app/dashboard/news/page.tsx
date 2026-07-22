@@ -4183,19 +4183,19 @@ function buildContentOutlinePreview(form: NewsForm): ContentOutlinePreview {
 }
 
 function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
-  return [
-    {
-      id: 'title',
-      label: 'Tieu de ro rang',
-      ok: form.title.trim().length >= 12,
-      hint: form.title.trim() ? 'Da co tieu de, co the bam de xem lai neu can.' : 'Nhap tieu de de he thong tao slug, keyword va preview SEO.'
-    },
-    {
-      id: 'content',
-      label: 'Noi dung bai viet',
-      ok: stripHtml(form.bodyHtml).trim().length >= 80,
-      hint: stripHtml(form.bodyHtml).trim() ? 'Da co noi dung, co the bo sung them H2 hoac anh neu muon.' : 'Dan noi dung hoac go truc tiep vao editor nhu soan Word.'
-    },
+    return [
+      {
+        id: 'title',
+        label: 'Tieu de',
+        ok: form.title.trim().length >= 12,
+        hint: form.title.trim() ? 'Da co tieu de, co the bam de xem lai neu can.' : 'Nhap tieu de de he thong tao slug, keyword va preview SEO.'
+      },
+      {
+        id: 'content',
+        label: 'Noi dung',
+        ok: stripHtml(form.bodyHtml).trim().length >= 80,
+        hint: stripHtml(form.bodyHtml).trim() ? 'Da co noi dung, co the bo sung them H2 hoac anh neu muon.' : 'Dan noi dung hoac go truc tiep vao editor nhu soan Word.'
+      },
     {
       id: 'cover',
       label: 'Anh bia',
