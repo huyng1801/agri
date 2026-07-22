@@ -16,6 +16,9 @@ type TabId = 'profile' | 'public' | 'email' | 'r2' | 'security' | 'notifications
 
 const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
+const standardAddress = 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp';
+const standardHotlineDisplay = '0907 001 200';
+const standardSupportEmail = 'Agripassport@gmail.com';
 
 const publicProfileSchema = z.object({
   appName: z.string().min(1),
@@ -123,6 +126,28 @@ export default function SettingsPage() {
     resolver: zodResolver(backupSchema),
     values: objectToBackupForm(settingsMap.get('system.backup')?.value)
   });
+  const watchedAddress = publicForm.watch('address');
+  const watchedHotlineDisplay = publicForm.watch('hotlineDisplay');
+  const watchedSupportEmail = publicForm.watch('supportEmail');
+  const watchedHomeTitle = publicForm.watch('homeTitle');
+  const watchedIntroTitle = publicForm.watch('introTitle');
+  const watchedAboutTitle = publicForm.watch('aboutTitle');
+  const watchedContactTitle = publicForm.watch('contactTitle');
+  const watchedFaqText = publicForm.watch('faqText');
+  const publicPageCards = [
+    { id: 'home', label: 'Trang chu', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
+    { id: 'intro', label: 'Gioi thieu', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gioi thieu ngan gon cho nguoi moi vao xem' },
+    { id: 'about', label: 'Ve chung toi', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
+    { id: 'contact', label: 'Lien he', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
+  ];
+  const faqCount = (watchedFaqText || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean).length;
+  const contactMatchesStandard =
+    normalizePlainText(watchedAddress) === normalizePlainText(standardAddress) &&
+    normalizePlainText(watchedHotlineDisplay) === normalizePlainText(standardHotlineDisplay) &&
+    normalizePlainText(watchedSupportEmail) === normalizePlainText(standardSupportEmail);
 
   const saveMutation = useMutation({
     mutationFn: (payload: { key: string; value: Record<string, unknown>; description?: string }) =>
@@ -229,6 +254,61 @@ export default function SettingsPage() {
                 Sua san pham
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
+            </div>
+            <div className="grid gap-3 xl:grid-cols-[1.1fr_0.9fr]">
+              <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang dieu khien noi dung public</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Moi trang public chinh deu co nut xem nhanh va mo ta ngan de ban sua dung cho, khong can nho cau truc code.</p>
+                  </div>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chinh</span>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {publicPageCards.map((item) => (
+                    <div key={item.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-ink">{item.label}</p>
+                          <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-700">{item.title}</p>
+                          <p className="mt-1 text-xs leading-5 text-slate-500">{item.note}</p>
+                        </div>
+                        <Link href={item.href} target="_blank" className="inline-flex min-h-10 shrink-0 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
+                          Xem
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Thong tin chuan tu docs</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Dia chi, hotline va email nay dang duoc dung xuyen suot cho footer, lien he va cac trang chinh sach.</p>
+                  </div>
+                  <span className={cn('rounded-full px-3 py-1 text-xs font-bold', contactMatchesStandard ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
+                    {contactMatchesStandard ? 'Dang dung chuan' : 'Can doi chieu lai'}
+                  </span>
+                </div>
+                <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
+                  <p><span className="font-bold text-ink">Dia chi:</span> {standardAddress}</p>
+                  <p><span className="font-bold text-ink">Hotline:</span> {standardHotlineDisplay}</p>
+                  <p><span className="font-bold text-ink">Email:</span> {standardSupportEmail}</p>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ dang co</p>
+                    <p className="mt-1 text-lg font-bold text-ink">{faqCount}</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">Moi dong trong o FAQ se ra 1 cap hoi dap tren trang lien he.</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Trang policy</p>
+                    <p className="mt-1 text-lg font-bold text-ink">4 trang</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">Dieu khoan, bao mat, doi tra va van hanh se tu dong lay bo thong tin lien he o day.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </Panel>
 
@@ -685,6 +765,15 @@ function ImageField({
 
 function asObject(value: unknown) {
   return value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
+}
+
+function normalizePlainText(value: string) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
 }
 
 function objectToPublicForm(value: unknown) {
