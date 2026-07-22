@@ -435,6 +435,13 @@ export default function NewsDashboardPage() {
   const quickStartGuideOpen = isAdvancedMode;
   const editorToolsOpen = isAdvancedMode || needsImportedOptimization || editorMode === 'html';
   const coverPanelOpen = isAdvancedMode || coverUploadActive;
+  const simpleMetaOpen = Boolean(
+    form.slug.trim() ||
+      form.excerpt.trim() ||
+      form.categoryId ||
+      form.status !== 'DRAFT' ||
+      draftSavedAt
+  );
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -1280,7 +1287,7 @@ export default function NewsDashboardPage() {
                 ) : null}
             </div>
 
-            <div className="grid gap-3 md:grid-cols-2">
+            <div className={cn('grid gap-3', isAdvancedMode && 'md:grid-cols-2')}>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Tiêu đề</span>
                 <Input
@@ -1294,6 +1301,7 @@ export default function NewsDashboardPage() {
                   {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính ngay trên tiêu đề để hệ thống gợi ý slug và SEO tốt hơn.'}
                 </span>
               </label>
+              {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Slug</span>
                 <Input
@@ -1336,8 +1344,9 @@ export default function NewsDashboardPage() {
                   {excerptLength ? `${excerptLength} ký tự. Mô tả ngắn đẹp thường nằm trong khoảng 80-180 ký tự.` : 'Đoạn này sẽ hiện ở danh sách tin tức và hỗ trợ lấy meta description khi cần.'}
                 </span>
               </label>
+              </>}
             </div>
-            <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
+            {isAdvancedMode && <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
                 <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
@@ -1483,14 +1492,14 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
               </div>
             </div>
-          </div>
+          </div>}
           {draftSavedAt && (
             <p className="text-xs font-semibold text-slate-500">Tự lưu nháp cục bộ lần cuối: {formatDateTime(draftSavedAt)}</p>
           )}
         </Panel>
 
           <Panel className="space-y-4">
-            {!isAdvancedMode && (
+            {false && !isAdvancedMode && (
               <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/35 p-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -1864,6 +1873,138 @@ export default function NewsDashboardPage() {
               </div>
             </details>
           </Panel>
+
+          {!isAdvancedMode && (
+            <Panel className="p-0">
+              <details className="group" open={simpleMetaOpen}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Thong tin bo sung va SEO tu dong</p>
+                    <p className="text-sm text-slate-600">Slug, danh muc, mo ta ngan va link bai se duoc he thong ho tro tu dien neu ban bo trong.</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleMetaOpen ? 'Da mo' : 'Bo qua cung duoc'}</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                  </div>
+                </summary>
+                <div className="space-y-4 border-t border-slate-100 px-4 pb-4 pt-4">
+                  <div className="grid gap-3">
+                    <label className="space-y-1 text-sm font-semibold">
+                      <span>Slug</span>
+                      <Input
+                        data-testid="news-slug-input"
+                        value={form.slug}
+                        onChange={(event) => update('slug', slugifyLocal(event.target.value))}
+                        placeholder="xoai-my-xuong-vao-vu-moi"
+                      />
+                      <span className={cn('text-xs font-semibold', lengthHintClass(slugLength, 12, 80))}>
+                        {slugLength ? 'Slug nen ngan, khong dau va de doc tren link chia se.' : 'Co the de trong, he thong se tu tao slug tu tieu de.'}
+                      </span>
+                    </label>
+                    <label className="space-y-1 text-sm font-semibold">
+                      <span>Danh muc</span>
+                      <Select data-testid="news-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
+                        <option value="">Khong chon</option>
+                        {categoryItems.map((category) => (
+                          <option key={category.id} value={category.id}>{category.name}</option>
+                        ))}
+                      </Select>
+                    </label>
+                    <label className="space-y-1 text-sm font-semibold">
+                      <span>Trang thai</span>
+                      <Select data-testid="news-status-select" value={form.status} onChange={(event) => update('status', event.target.value as NewsForm['status'])}>
+                        <option value="DRAFT">Nhap</option>
+                        <option value="PUBLISHED">Da dang</option>
+                        <option value="SCHEDULED">Hen gio</option>
+                        <option value="ARCHIVED">Luu tru</option>
+                      </Select>
+                    </label>
+                    <label className="space-y-1 text-sm font-semibold">
+                      <span>Mo ta ngan</span>
+                      <Textarea
+                        data-testid="news-excerpt-input"
+                        value={form.excerpt}
+                        onChange={(event) => update('excerpt', event.target.value)}
+                        placeholder="Tom tat 2-3 y chinh de nguoi doc hieu nhanh bai viet noi ve gi."
+                      />
+                      <span className={cn('text-xs font-semibold', lengthHintClass(excerptLength, 80, 180))}>
+                        {excerptLength ? `${excerptLength} ky tu. Mo ta ngan dep thuong nam trong khoang 80-180 ky tu.` : 'Doan nay se hien o danh sach tin tuc va ho tro lay meta description khi can.'}
+                      </span>
+                    </label>
+                  </div>
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
+                    <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Sua nhanh SEO
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Tu dien SEO
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                        <FileText size={18} aria-hidden="true" />
+                        Tao mo ta ngan
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                        <LinkIcon size={18} aria-hidden="true" />
+                        Copy link
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <p className="text-slate-500">Do dai tieu de</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <p className="text-slate-500">Mo ta ngan</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <p className="text-slate-500">Thoi gian doc</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phut</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <p className="text-slate-500">San sang publish</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            </Panel>
+          )}
+
+          {!isAdvancedMode && (
+            <Panel className="p-0">
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Mau bai nhanh</p>
+                    <p className="text-sm text-slate-600">Mo khi can lay bo cuc co san, con neu tu viet thi co the bo qua.</p>
+                  </div>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mau</span>
+                </summary>
+                <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
+                  <div className="grid gap-2">
+                    {articleTemplates.map((template) => (
+                      <button
+                        key={`simple-template-${template.id}`}
+                        type="button"
+                        className="rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm transition hover:border-leaf hover:bg-mint/30"
+                        onClick={() => applyTemplate(template.id)}
+                      >
+                        <p className="text-sm font-bold text-ink">{template.label}</p>
+                        <p className="mt-1 text-xs leading-5 text-slate-600">{template.description}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </details>
+            </Panel>
+          )}
 
           {isAdvancedMode && (
           <Panel className="space-y-3">
