@@ -70,7 +70,7 @@ export default async function HomePage() {
                 {siteProfile.pageContent.homeBadge}
               </div>
 
-              <h1 className="max-w-[16ch] text-[1.54rem] font-bold leading-[1.03] tracking-[-0.03em] text-ink sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
+              <h1 className="max-w-[17ch] text-[1.48rem] font-bold leading-[1.02] tracking-[-0.03em] text-ink sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
                 {siteProfile.pageContent.homeTitle}
               </h1>
 
@@ -78,10 +78,10 @@ export default async function HomePage() {
                 {siteProfile.pageContent.homeDescription}
               </p>
 
-              <div className="max-w-[24.5rem] rounded-[1.55rem] border border-white/80 bg-white/76 p-2.5 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="grid gap-2.5 min-[390px]:grid-cols-2 sm:flex sm:flex-wrap">
+              <div className="max-w-[24.5rem] rounded-[1.45rem] border border-white/85 bg-white/74 p-2 shadow-[0_18px_40px_rgba(148,163,184,0.14)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+                <div className="grid gap-2 min-[390px]:grid-cols-[1.06fr_0.94fr] sm:flex sm:flex-wrap">
                   <Link href="/san-pham" className="inline-flex sm:w-auto">
-                    <Button className="min-h-[3.3rem] w-full whitespace-nowrap rounded-2xl px-4 text-[0.94rem] shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto sm:px-5">
+                    <Button className="min-h-[3.15rem] w-full whitespace-nowrap rounded-2xl px-4 text-[0.92rem] shadow-[0_14px_28px_rgba(47,132,81,0.22)] sm:min-h-12 sm:w-auto sm:px-5">
                       Xem san pham
                       <ArrowRight size={18} aria-hidden="true" />
                     </Button>
@@ -89,14 +89,14 @@ export default async function HomePage() {
                   <Link href="/htx" className="inline-flex sm:w-auto">
                     <Button
                       variant="ghost"
-                      className="min-h-[3.3rem] w-full whitespace-nowrap justify-center rounded-2xl border border-white bg-[linear-gradient(180deg,#ffffff_0%,#f4faf6_100%)] px-4 text-[0.94rem] font-semibold text-slate-900 shadow-[0_14px_30px_rgba(148,163,184,0.16)] ring-1 ring-slate-200/55 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
+                      className="min-h-[3.15rem] w-full whitespace-nowrap justify-center rounded-2xl border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.92rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
                     >
                       Kham pha HTX
                     </Button>
                   </Link>
                 </div>
-                <p className="mt-2 px-1 text-[0.8rem] leading-6 text-slate-500 sm:hidden">
-                  Xem san pham public, ho so HTX va QR Passport theo mot luong ro rang ngay tren dien thoai.
+                <p className="mt-2 px-1 text-[0.76rem] leading-5 text-slate-500 sm:hidden">
+                  Mo nhanh san pham, ho so HTX va QR Passport theo mot luong gon tren dien thoai.
                 </p>
               </div>
 
