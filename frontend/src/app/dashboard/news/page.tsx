@@ -2146,43 +2146,43 @@ export default function NewsDashboardPage() {
                   </div>
                 )}
                 {bodyUploadActive && (
-                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-2.5 text-sm text-sky-950">
                     <p className="font-bold text-ink">Dang upload anh vao noi dung bai viet</p>
-                    <p className="mt-1 leading-6">Ban co the tiep tuc go noi dung. Anh se duoc chen vao editor ngay sau khi upload xong.</p>
+                    <p className="mt-1 leading-5">Ban co the viet tiep. Anh se tu chen vao bai ngay sau khi upload xong.</p>
                   </div>
                 )}
                 {editorAssist && (
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-3 text-sm text-emerald-950">
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-2.5 text-sm text-emerald-950">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="font-bold text-ink">{editorAssist.title}</p>
-                        <p className="mt-1 leading-6">{editorAssist.detail}</p>
+                        <p className="mt-1 leading-5">{editorAssist.detail}</p>
                       </div>
-                      <Button type="button" variant="ghost" onClick={() => setEditorAssist(null)}>
+                      <Button type="button" variant="ghost" onClick={() => setEditorAssist(null)} className="min-h-8 px-2.5 text-sm">
                         An goi y nay
                       </Button>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
+                    <div className="mt-2.5 flex flex-wrap gap-2">
                       {(editorAssist.kind === 'pasted-content' || editorAssist.kind === 'optimized-content') && (
-                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-8 px-2.5 text-sm">
                           <Sparkles size={18} aria-hidden="true" />
                           SEO nhanh
                         </Button>
                       )}
                       {(editorAssist.kind === 'pasted-image' || editorAssist.kind === 'optimized-content') && (
-                        <Button type="button" variant="ghost" onClick={preparePostForPublish}>
+                        <Button type="button" variant="ghost" onClick={preparePostForPublish} className="min-h-8 px-2.5 text-sm">
                           <Sparkles size={18} aria-hidden="true" />
                           Chuan bi publish
                         </Button>
                       )}
                       {editorAssist.kind === 'pasted-image' && suggestedCover && !form.coverImageUrl.trim() && (
-                        <Button type="button" variant="ghost" onClick={applySuggestedCover}>
+                        <Button type="button" variant="ghost" onClick={applySuggestedCover} className="min-h-8 px-2.5 text-sm">
                           <Image size={18} aria-hidden="true" />
                           Dung anh nay lam cover
                         </Button>
                       )}
                       {editorAssist.kind === 'prepared-publish' && (
-                        <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
+                        <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish} className="min-h-8 px-2.5 text-sm">
                           <Sparkles size={18} aria-hidden="true" />
                           {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
                         </Button>
@@ -2192,12 +2192,13 @@ export default function NewsDashboardPage() {
                 )}
                 <div className="relative">
                   {!isAdvancedMode && isBodyEmpty && (
-                    <div className="pointer-events-none absolute inset-x-4 top-3 z-10 rounded-[1.25rem] border border-dashed border-leaf/25 bg-mint/20 px-3 py-2 text-sm text-slate-600">
-                      <p className="font-bold text-ink">Bat dau viet nhu soan Word</p>
-                      <p className="mt-1 text-xs leading-5">Go hoac paste van ban, anh vao day. Anh vua paste co the dung lam cover.</p>
+                    <div className="pointer-events-none absolute inset-x-4 top-3 z-10 rounded-[1.1rem] border border-dashed border-leaf/25 bg-mint/20 px-3 py-1.5 text-sm text-slate-600">
+                      <p className="font-semibold text-ink">Viet hoac paste vao day nhu soan Word</p>
+                      <p className="mt-0.5 text-[11px] leading-4">Ctrl+V anh hoac van ban. Anh vua paste co the dung lam cover.</p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5 text-[10px] font-semibold text-leaf">
                         <span className="rounded-full bg-white px-2 py-1 shadow-sm">Nhap noi dung</span>
                         <span className="rounded-full bg-white px-2 py-1 shadow-sm">Ctrl+V anh</span>
+                        <span className="rounded-full bg-white px-2 py-1 shadow-sm">Anh thanh cover</span>
                       </div>
                     </div>
                   )}
@@ -2229,7 +2230,7 @@ export default function NewsDashboardPage() {
                     onPaste={(event) => void handleVisualPaste(event)}
                     className={cn(
                       'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
-                      isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[148px] pt-[5.8rem]' : 'min-h-[148px]',
+                      isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[136px] pt-[4.9rem]' : 'min-h-[136px]',
                       draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
                     )}
                   />
