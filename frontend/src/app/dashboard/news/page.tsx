@@ -431,6 +431,7 @@ export default function NewsDashboardPage() {
   const nextStepCount = nextStepSuggestions.length;
   const seoMustFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'must').length;
   const seoShouldFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'should').length;
+  const isBodyEmpty = stripHtml(form.bodyHtml).trim().length === 0;
   const detailHelpersOpen = isAdvancedMode;
   const publishChecklistOpen = isAdvancedMode;
   const seoReviewOpen = isAdvancedMode;
@@ -2122,38 +2123,51 @@ export default function NewsDashboardPage() {
                     </div>
                   </div>
                 )}
-                <div
-                  ref={visualEditorRef}
-                  data-testid="news-content-editor"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onDragEnter={(event) => {
-                    event.preventDefault();
-                    setDraggingEditor(true);
-                  }}
-                  onDragOver={(event) => {
-                    event.preventDefault();
-                    setDraggingEditor(true);
-                  }}
-                  onDragLeave={(event) => {
-                    event.preventDefault();
-                    if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
-                    setDraggingEditor(false);
-                  }}
-                  onDrop={(event) => {
-                    event.preventDefault();
-                    setDraggingEditor(false);
-                    void handleDroppedFiles(event.dataTransfer.files);
-                  }}
-                  onInput={syncVisualEditor}
-                  onBlur={syncVisualEditor}
-                  onPaste={(event) => void handleVisualPaste(event)}
-                  className={cn(
-                    'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
-                    isAdvancedMode ? 'min-h-[320px]' : 'min-h-[200px]',
-                    draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
+                <div className="relative">
+                  {!isAdvancedMode && isBodyEmpty && (
+                    <div className="pointer-events-none absolute inset-x-4 top-4 z-10 rounded-2xl border border-dashed border-leaf/25 bg-mint/20 px-4 py-3 text-sm text-slate-600">
+                      <p className="font-bold text-ink">Bat dau viet nhu soan Word</p>
+                      <p className="mt-1 leading-6">Go truc tiep vao day, hoac paste ca doan van ban va anh. Khi chua co cover, anh vua paste cung co the dung ngay lam anh bia.</p>
+                      <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-leaf">
+                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">1. Nhap noi dung</span>
+                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">2. Ctrl+V anh neu can</span>
+                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">3. Bam Dang 1 cham</span>
+                      </div>
+                    </div>
                   )}
-                />
+                  <div
+                    ref={visualEditorRef}
+                    data-testid="news-content-editor"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onDragEnter={(event) => {
+                      event.preventDefault();
+                      setDraggingEditor(true);
+                    }}
+                    onDragOver={(event) => {
+                      event.preventDefault();
+                      setDraggingEditor(true);
+                    }}
+                    onDragLeave={(event) => {
+                      event.preventDefault();
+                      if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+                      setDraggingEditor(false);
+                    }}
+                    onDrop={(event) => {
+                      event.preventDefault();
+                      setDraggingEditor(false);
+                      void handleDroppedFiles(event.dataTransfer.files);
+                    }}
+                    onInput={syncVisualEditor}
+                    onBlur={syncVisualEditor}
+                    onPaste={(event) => void handleVisualPaste(event)}
+                    className={cn(
+                      'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                      isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[168px] pt-[8.75rem]' : 'min-h-[168px]',
+                      draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
+                    )}
+                  />
+                </div>
                 {draggingEditor && (
                   <div className="pointer-events-none rounded-xl border border-dashed border-leaf/40 bg-mint/60 px-4 py-3 text-sm font-semibold text-leaf">
                     Thả ảnh vào đây để tự upload và chèn vào bài.
@@ -2809,32 +2823,39 @@ export default function NewsDashboardPage() {
           </div>
           ) : (
             <div className="fixed inset-x-0 bottom-20 z-30 px-3 xl:hidden">
-              <div className="mx-auto flex max-w-3xl items-center gap-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_12px_32px_rgba(15,23,42,0.14)] backdrop-blur">
-                <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
-                  <p className="truncate text-sm font-bold text-ink">
-                    {canQuickPublish ? 'Da du 3 muc cot loi, co the dang ngay.' : `${corePublishReady}/3 san sang de Dang 1 cham`}
-                  </p>
+              <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_12px_32px_rgba(15,23,42,0.14)] backdrop-blur">
+                <div className="flex items-center gap-2">
+                  <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
+                    <p className="truncate text-sm font-bold text-ink">
+                      {canQuickPublish ? 'Da du 3 muc cot loi, co the dang ngay.' : `${corePublishReady}/3 san sang de Dang 1 cham`}
+                    </p>
+                  </div>
+                  <Button
+                    data-testid="news-save-draft-floating-button"
+                    type="button"
+                    variant="ghost"
+                    onClick={() => saveArticle.mutate('DRAFT')}
+                    disabled={saveArticle.isPending}
+                  >
+                    <Save size={18} aria-hidden="true" />
+                    {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+                  </Button>
+                  <Button
+                    data-testid="news-quick-publish-floating-button"
+                    type="button"
+                    onClick={() => quickPublishArticle.mutate()}
+                    disabled={quickPublishArticle.isPending || !canQuickPublish}
+                  >
+                    <Sparkles size={18} aria-hidden="true" />
+                    {quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}
+                  </Button>
                 </div>
-                <Button
-                  data-testid="news-save-draft-floating-button"
-                  type="button"
-                  variant="ghost"
-                  onClick={() => saveArticle.mutate('DRAFT')}
-                  disabled={saveArticle.isPending}
-                >
-                  <Save size={18} aria-hidden="true" />
-                  {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
-                </Button>
-                <Button
-                  data-testid="news-quick-publish-floating-button"
-                  type="button"
-                  onClick={() => quickPublishArticle.mutate()}
-                  disabled={quickPublishArticle.isPending || !canQuickPublish}
-                >
-                  <Sparkles size={18} aria-hidden="true" />
-                  {quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}
-                </Button>
+                {!canQuickPublish && (
+                  <p className="mt-2 px-1 text-xs font-semibold text-slate-500">
+                    Con thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
+                  </p>
+                )}
               </div>
             </div>
           )}
