@@ -40,8 +40,8 @@ export default async function HomePage() {
   ];
   const heroSignals = [
     'Cong khai san pham va ho so HTX tren cung mot nen tang',
-    'QR Passport mo truc tiep cho nguoi mua ma khong can dang nhap',
-    'Dat hang COD nhanh, HTX chu dong xac nhan va xu ly'
+    'QR Passport m? tr?c ti?p cho ng??i mua m? kh?ng c?n ??ng nh?p',
+    '??t h?ng COD nhanh, HTX chu dong xac nhan va xu ly'
   ] as const;
 
   return (
@@ -163,7 +163,7 @@ export default async function HomePage() {
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/74">HTXONLINE</p>
-                      <h2 className="mt-2 max-w-xs text-2xl font-bold leading-tight sm:text-[2rem]">Mot lop trung bay san pham va truy xuat duoc thiet ke cho HTX.</h2>
+                      <h2 className="mt-2 max-w-xs text-2xl font-bold leading-tight sm:text-[2rem]">M?t l?p tr?ng b?y s?n ph?m v? truy xu?t ???c thi?t k? cho HTX.</h2>
                     </div>
                     <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
                       <Sparkles size={20} aria-hidden="true" className="text-mint" />
@@ -191,7 +191,7 @@ export default async function HomePage() {
                       {[
                         ['01', 'San pham public', 'Trang hien thi ro gia, HTX va QR neu co'],
                         ['02', 'Quet QR Passport', 'Xem vung trong, nhat ky va chung nhan'],
-                        ['03', 'Chot don COD', 'Nguoi mua gui don, HTX chu dong xac nhan']
+                        ['03', 'Ch?t ??n COD', 'Ng??i mua g?i ??n, HTX ch? ??ng x?c nh?n']
                       ].map(([step, title, text]) => (
                         <div key={title} className="rounded-2xl bg-white/10 p-4">
                           <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/62">{step}</p>
@@ -228,7 +228,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chua co HTX public" description="HTX se xuat hien khi co san pham duoc publish." />
+              <EmptyPublicState title="Ch?a c? HTX public" description="HTX s? xu?t hi?n khi c? s?n ph?m ???c publish." />
             </div>
           )}
         </PublicSection>
@@ -237,7 +237,7 @@ export default async function HomePage() {
           <div className="grid gap-4 md:grid-cols-3">
             {[
               ['Minh bach nguon goc', 'QR Passport giup nguoi mua kiem tra nhat ky, vung trong va chung nhan public.', QrCode],
-              ['Dat hang COD', 'Nguoi mua gui don nhanh, HTX lien he xac nhan va xu ly don.', ShoppingBag],
+              ['??t h?ng COD', 'Ng??i mua g?i ??n nhanh, HTX li?n h? x?c nh?n v? x? l? ??n.', ShoppingBag],
               ['HTX tu van hanh', 'San pham, vung trong, nhat ky va don hang do tung HTX tu quan ly.', BadgeCheck]
             ].map(([title, text, Icon]) => (
               <Panel key={String(title)} className="h-full p-3.5 sm:p-5">

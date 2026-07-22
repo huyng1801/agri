@@ -18,25 +18,25 @@ export const metadata: Metadata = {
 };
 
 const valuePillars = [
-  { title: 'San thuong mai cho HTX', description: 'Hien thi san pham public, ho so HTX va kenh tiep can nguoi mua tren toan quoc ma khong can website rieng.', icon: Store },
-  { title: 'QR Passport truy xuat', description: 'Moi san pham co ma QR de khach xem nhat ky canh tac, vung trong va chung nhan da cong khai.', icon: QrCode },
-  { title: 'Dat hang COD', description: 'Nguoi mua gui don nhanh, HTX chu dong lien he xac nhan va xu ly giao hang thu tien khi nhan.', icon: ShoppingBag },
+  { title: 'S?n th??ng m?i cho HTX', description: 'Hi?n th? s?n ph?m public, h? s? HTX v? k?nh ti?p c?n ng??i mua tr?n to?n qu?c m? kh?ng c?n website ri?ng.', icon: Store },
+  { title: 'QR Passport truy xu?t', description: 'M?i s?n ph?m c? m? QR ?? kh?ch xem nh?t k? canh t?c, v?ng tr?ng v? ch?ng nh?n ?? c?ng khai.', icon: QrCode },
+  { title: '??t h?ng COD', description: 'Ng??i mua g?i ??n nhanh, HTX ch? ??ng li?n h? x?c nh?n v? x? l? giao h?ng thu ti?n khi nh?n.', icon: ShoppingBag },
   { title: 'Dashboard van hanh HTX', description: 'HTX tu quan ly san pham, nong dan, vung trong, nhat ky va don hang tren mot he thong thong nhat.', icon: Users }
 ] as const;
 
 const coreValues = [
   { title: 'Minh bach', description: 'Nguon goc va du lieu public ro rang voi nguoi mua.', icon: ShieldCheck },
-  { title: 'Dong hanh HTX', description: 'Ho tro HTX so hoa va tiep can thi truong tot hon.', icon: Leaf },
-  { title: 'Tin cay', description: 'Quy trinh ban hang COD va truy xuat co kiem soat.', icon: BadgeCheck },
-  { title: 'Don gian', description: 'Dung duoc ngay, khong can xay website rieng.', icon: Sparkles },
+  { title: '??ng h?nh HTX', description: 'H? tr? HTX s? h?a v? ti?p c?n th? tr??ng t?t h?n.', icon: Leaf },
+  { title: 'Tin c?y', description: 'Quy tr?nh b?n h?ng COD v? truy xu?t c? ki?m so?t.', icon: BadgeCheck },
+  { title: '??n gi?n', description: 'D?ng ???c ngay, kh?ng c?n x?y website ri?ng.', icon: Sparkles },
   { title: 'Lan toa gia tri', description: 'Ket noi nong san dia phuong voi nguoi tieu dung.', icon: Target }
 ] as const;
 
 const journeySteps = [
   { title: 'Cong khai san pham', description: 'HTX dua san pham, vung trong va chung nhan public len cung mot mat bang thuong mai so.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
   { title: 'Chuan hoa truy xuat', description: 'QR Passport gom nhat ky canh tac, moc kiem chung va du lieu quan trong thanh mot hanh trinh ro rang.', accent: 'bg-white border-slate-200', icon: QrCode },
-  { title: 'Chot don COD', description: 'Nguoi mua dat hang nhanh, con HTX chu dong xac nhan va xu ly van hanh theo quy trinh phu hop.', accent: 'bg-mint/70 border-mint/80', icon: ShoppingBag },
-  { title: 'Theo doi tang truong', description: 'Dashboard giup doi van hanh nhin duoc san pham, don hang va niem tin thi truong theo thoi gian.', accent: 'bg-white border-slate-200', icon: Users }
+  { title: 'Ch?t ??n COD', description: 'Ng??i mua ??t h?ng nhanh, c?n HTX ch? ??ng x?c nh?n v? x? l? v?n h?nh theo quy tr?nh ph? h?p.', accent: 'bg-mint/70 border-mint/80', icon: ShoppingBag },
+  { title: 'Theo d?i t?ng tr??ng', description: 'Dashboard gi?p ??i v?n h?nh nh?n ???c s?n ph?m, ??n h?ng v? ni?m tin th? tr??ng theo th?i gian.', accent: 'bg-white border-slate-200', icon: Users }
 ] as const;
 
 const trustSignals = ['San pham public da publish', 'QR mo truc tiep cho khach', 'Quan ly vung trong tap trung', 'COD theo quy trinh HTX'] as const;
@@ -45,9 +45,9 @@ export default async function AboutUsPage() {
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile()]);
   const stats = [
     { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX dang hien thi tren san' },
-    { value: `${catalog.totalProducts || 60}+`, label: 'San pham public dang ban' },
-    { value: '100%', label: 'QR Passport xem duoc khong can dang nhap' },
-    { value: '1 nen tang', label: 'Tu san xuat den ban hang COD' }
+    { value: `${catalog.totalProducts || 60}+`, label: 'S?n ph?m public ?ang b?n' },
+    { value: '100%', label: 'QR Passport xem ???c kh?ng c?n ??ng nh?p' },
+    { value: '1 n?n t?ng', label: 'T? s?n xu?t ??n b?n h?ng COD' }
   ];
   const featuredCooperatives =
     catalog.cooperatives.slice(0, 6).length > 0 ? catalog.cooperatives.slice(0, 6) : Array.from({ length: 6 }).map((_, index) => ({ id: String(index), name: `HTX ${index + 1}` }));
@@ -160,11 +160,11 @@ export default async function AboutUsPage() {
             <article className="rounded-[1.6rem] border border-slate-200 bg-white p-4 text-ink shadow-sm sm:p-7">
               <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf/80 sm:text-sm sm:tracking-wide">Cau chuyen thuong hieu</p>
               <p className="mt-3 text-[0.96rem] leading-[1.7] text-slate-700 sm:text-base sm:leading-[1.8]">
-                HTXONLINE ra doi de giup hop tac xa Viet Nam dua nong san dia phuong len moi truong so mot cach minh bach. Chung toi ket hop san ban hang,
+                HTXONLINE ra ??i ?? gi?p h?p t?c x? Vi?t Nam ??a n?ng s?n ??a ph??ng l?n m?i tr??ng s? m?t c?ch minh b?ch. Ch?ng t?i k?t h?p s?n b?n h?ng,
                 QR Passport va dashboard van hanh de HTX tap trung vao chat luong san pham, con nguoi mua de dang tin tuong nguon goc.
               </p>
               <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-slate-600 sm:mt-3 sm:text-sm sm:leading-[1.75]">
-                Khong chi la website gioi thieu, day la he sinh thai san xuat, truy xuat va ban hang tren cung mot nen tang.
+                Kh?ng ch? l? website gi?i thi?u, ??y l? h? sinh th?i s?n xu?t, truy xu?t v? b?n h?ng tr?n c?ng m?t n?n t?ng.
               </p>
               <div className="mt-3.5 grid grid-cols-2 gap-2 lg:grid-cols-1">
                 {trustSignals.map((item) => (
@@ -194,7 +194,7 @@ export default async function AboutUsPage() {
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thong tin phap ly</p>
               <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
               <p className="mt-2 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
-                Ho so phap ly tren giay chung nhan duoc tach ro voi thong tin lien he cong khai tren website de nguoi xem de doi chieu khi can xac minh.
+                H? s? ph?p l? tr?n gi?y ch?ng nh?n ???c t?ch r? v?i th?ng tin li?n h? c?ng khai tr?n website ?? ng??i xem d? ??i chi?u khi c?n x?c minh.
               </p>
               <div className="mt-4 grid gap-3 sm:mt-5 sm:grid-cols-2">
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
@@ -205,12 +205,12 @@ export default async function AboutUsPage() {
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ma so to hop tac</p>
                   <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Dang ky lan dau ngay {legalEntityProfile.registrationDate}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">??ng k? l?n ??u ng?y {legalEntityProfile.registrationDate}</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Dia chi va nguoi dai dien theo ho so</p>
                   <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Nguoi dai dien: {legalEntityProfile.representative}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Ng??i ??i di?n: {legalEntityProfile.representative}</p>
                   <p className="mt-1 text-sm leading-6 text-slate-600">Email ho so: {legalEntityProfile.legalEmail} · Dien thoai ho so: {legalEntityProfile.legalPhone}</p>
                 </div>
               </div>
@@ -220,7 +220,7 @@ export default async function AboutUsPage() {
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thong tin cong khai tren HTXONLINE</p>
               <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Kenh lien he danh cho khach hang va HTX</h2>
               <p className="mt-2.5 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
-                Bo thong tin nay dang duoc dung dong nhat o footer, lien he va cac trang chinh sach theo noi dung ban cung cap trong tai lieu cap nhat.
+                B? th?ng tin n?y ?ang ???c d?ng ??ng nh?t ? footer, li?n h? v? c?c trang ch?nh s?ch theo n?i dung b?n cung c?p trong t?i li?u c?p nh?t.
               </p>
               <div className="mt-4 grid gap-3 sm:mt-5">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
@@ -245,9 +245,9 @@ export default async function AboutUsPage() {
         <section className="bg-white py-9 sm:py-12">
           <div className={publicContainerClass}>
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Thanh cong duoc tao dung tu gia tri khac biet</h2>
+              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Th?nh c?ng ???c t?o d?ng t? gi? tr? kh?c bi?t</h2>
               <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                HTXONLINE giup HTX hien dien tren thi truong so bang du lieu minh bach, quy trinh ban hang ro rang va trai nghiem mua sam don gian.
+                HTXONLINE gi?p HTX hi?n di?n tr?n th? tr??ng s? b?ng d? li?u minh b?ch, quy tr?nh b?n h?ng r? r?ng v? tr?i nghi?m mua s?m ??n gi?n.
               </p>
             </div>
             <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-2 md:gap-4">
@@ -272,12 +272,12 @@ export default async function AboutUsPage() {
                   <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Tam nhin</p>
                   <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] text-ink sm:text-2xl">Tro thanh nen tang so tin cay cho hop tac xa nong nghiep Viet Nam.</h3>
                   <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">
-                    Moi HTX co the ke cau chuyen nguon goc ro rang, moi nguoi mua deu kiem tra duoc san pham truoc khi quyet dinh mua.
+                    M?i HTX c? th? k? c?u chuy?n ngu?n g?c r? r?ng, m?i ng??i mua ??u ki?m tra ???c s?n ph?m tr??c khi quy?t ??nh mua.
                   </p>
                 </article>
                 <article className="rounded-2xl bg-leaf p-4 text-white shadow-sm sm:p-5">
                   <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Su menh</p>
-                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">So hoa ban hang va truy xuat nguon goc cho HTX.</h3>
+                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">S? h?a b?n h?ng v? truy xu?t ngu?n g?c cho HTX.</h3>
                   <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/85 sm:mt-3 sm:text-sm sm:leading-7">
                     Chung toi mang den cong cu thuc te: san public, QR Passport, dashboard van hanh va don COD de HTX phat trien ben vung hon.
                   </p>
@@ -365,10 +365,10 @@ export default async function AboutUsPage() {
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
                   <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bat dau cung HTXONLINE</p>
-                  <h2 className="mt-2 max-w-2xl text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">HTX muon tham gia san hoac can tu van trien khai truy xuat?</h2>
+                  <h2 className="mt-2 max-w-2xl text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">HTX mu?n tham gia s?n ho?c c?n t? v?n tri?n khai truy xu?t?</h2>
                 </div>
                 <p className="max-w-md text-[0.84rem] leading-[1.6] text-slate-600 sm:text-sm sm:leading-6">
-                  De lai thong tin, doi van hanh se ho tro onboarding va huong dan quy trinh phu hop voi HTX cua ban.
+                  ?? l?i th?ng tin, ??i v?n h?nh s? h? tr? onboarding v? h??ng d?n quy tr?nh ph? h?p v?i HTX c?a b?n.
                 </p>
               </div>
             </div>

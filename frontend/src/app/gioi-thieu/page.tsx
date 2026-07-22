@@ -23,9 +23,9 @@ export default async function AboutPage() {
     >
       <div className="grid gap-4 md:grid-cols-3">
         {[
-          { title: 'Ket noi HTX voi nguoi mua', icon: Store, text: 'HTX co the publish san pham, ho so va ban hang COD ma khong can xay website rieng.' },
-          { title: 'Minh bach bang QR Passport', icon: QrCode, text: 'Nguoi mua quet QR de xem nhat ky, vung trong va chung nhan public do HTX cong bo.' },
-          { title: 'Van hanh ban hang COD', icon: ShoppingBag, text: 'Gio hang, checkout va tra cuu don hang duoc tich hop san tren cung mot nen tang.' }
+          { title: 'K?t n?i HTX v?i ng??i mua', icon: Store, text: 'HTX c? th? publish s?n ph?m, h? s? v? b?n h?ng COD m? kh?ng c?n x?y website ri?ng.' },
+          { title: 'Minh b?ch b?ng QR Passport', icon: QrCode, text: 'Ng??i mua qu?t QR ?? xem nh?t k?, v?ng tr?ng v? ch?ng nh?n public do HTX c?ng b?.' },
+          { title: 'V?n h?nh b?n h?ng COD', icon: ShoppingBag, text: 'Gi? h?ng, checkout v? tra c?u ??n h?ng ???c t?ch h?p s?n tr?n c?ng m?t n?n t?ng.' }
         ].map((item) => (
           <Panel key={item.title} className="h-full p-3.5 sm:p-5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint text-leaf sm:h-12 sm:w-12">

@@ -136,7 +136,7 @@ export default function SettingsPage() {
   const watchedFaqText = publicForm.watch('faqText');
   const publicPageCards = [
     { id: 'home', label: 'Trang chu', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
-    { id: 'intro', label: 'Gioi thieu', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gioi thieu ngan gon cho nguoi moi vao xem' },
+    { id: 'intro', label: 'Gi?i thi?u', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gi?i thi?u ng?n g?n cho ng??i m?i v?o xem' },
     { id: 'about', label: 'Ve chung toi', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
     { id: 'contact', label: 'Lien he', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
   ];
@@ -236,16 +236,16 @@ export default function SettingsPage() {
       {tab === 'public' && (
         <div className="space-y-4">
           <Panel className="space-y-3 border-mint/70 bg-mint/40">
-            <h2 className="text-lg font-bold text-ink">Cap nhat noi dung public khong can sua code</h2>
+            <h2 className="text-lg font-bold text-ink">C?p nh?t n?i dung public kh?ng c?n s?a code</h2>
             <p className="text-sm leading-6 text-slate-700">
-              Tab nay dung de sua logo, hotline, email, dia chi, ban do, FAQ va noi dung hero cac trang public. Ho so HTX/san pham sua trong dashboard,
+              Tab n?y d?ng ?? s?a logo, hotline, email, ??a ch?, b?n ??, FAQ v? n?i dung hero c?c trang public. H? s? HTX/s?n ph?m s?a trong dashboard,
               con bai blog public sua tai khu vuc Tin tuc cua Super Admin.
             </p>
             <div className="grid gap-2 md:grid-cols-3">
               {[
-                ['1', 'Sua lien he va footer', 'Cap nhat hotline, email, dia chi va ban do de hien dong nhat tren footer va trang lien he.'],
-                ['2', 'Dan anh vao tung muc', 'Chi can Ctrl+V hoac keo tha anh vao o anh la he thong tu upload va cap nhat URL.'],
-                ['3', 'Mo trang public de xem', 'Sau khi luu, bam cac nut xem nhanh ben duoi de kiem tra ngay tren mobile/desktop.']
+                ['1', 'S?a li?n h? v? footer', 'C?p nh?t hotline, email, ??a ch? v? b?n ?? ?? hi?n ??ng nh?t tr?n footer v? trang li?n h?.'],
+                ['2', 'D?n ?nh v?o t?ng m?c', 'Ch? c?n Ctrl+V ho?c k?o th? ?nh v?o ? ?nh l? h? th?ng t? upload v? c?p nh?t URL.'],
+                ['3', 'M? trang public ?? xem', 'Sau khi l?u, b?m c?c n?t xem nhanh b?n d??i ?? ki?m tra ngay tr?n mobile/desktop.']
               ].map(([step, title, text]) => (
                 <div key={step} className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
                   <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
@@ -273,7 +273,7 @@ export default function SettingsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang dieu khien noi dung public</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Moi trang public chinh deu co nut xem nhanh va mo ta ngan de ban sua dung cho, khong can nho cau truc code.</p>
+                    <p className="mt-1 text-sm font-bold text-ink">M?i trang public ch?nh ??u c? n?t xem nhanh v? m? t? ng?n ?? b?n s?a ??ng ch?, kh?ng c?n nh? c?u tr?c code.</p>
                   </div>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chinh</span>
                 </div>
@@ -298,10 +298,10 @@ export default function SettingsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Thong tin chuan tu docs</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Dia chi, hotline va email nay dang duoc dung xuyen suot cho footer, lien he va cac trang chinh sach.</p>
+                    <p className="mt-1 text-sm font-bold text-ink">??a ch?, hotline v? email n?y ?ang ???c d?ng xuy?n su?t cho footer, li?n h? v? c?c trang ch?nh s?ch.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', contactMatchesStandard ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
-                    {contactMatchesStandard ? 'Dang dung chuan' : 'Can doi chieu lai'}
+                    {contactMatchesStandard ? '?ang ??ng chu?n' : 'C?n ??i chi?u l?i'}
                   </span>
                 </div>
                 <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
@@ -427,7 +427,7 @@ export default function SettingsPage() {
                   <Field label="Dia chi" className="sm:col-span-2">
                     <Input {...publicForm.register('address')} placeholder="So 130, To 8, Ap My Xuong, Xa My Tho, Tinh Dong Thap" />
                   </Field>
-                  <Field label="Ma nhung ban do (iframe URL)">
+                  <Field label="M? nh?ng b?n ?? (iframe URL)">
                     <Input {...publicForm.register('mapEmbedUrl')} placeholder="https://www.openstreetmap.org/export/embed.html?..." />
                   </Field>
                   <Field label="Messenger URL">
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                   </Field>
                   {publicForm.watch('mapEmbedUrl') && (
                     <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-3">
-                      <p className="text-sm font-bold text-ink">Preview khu ban do / footer</p>
+                      <p className="text-sm font-bold text-ink">Preview khu b?n ?? / footer</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
                         Neu iframe map bi chan tren mot thiet bi nao do, footer van se hien preview dia diem va nut mo Google Maps. O ben duoi la iframe hien tai de doi chieu nhanh.
                       </p>
@@ -491,12 +491,12 @@ export default function SettingsPage() {
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
                   <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} placeholder="Nen tang so cho hop tac xa" /></Field>
-                  <Field label="Tieu de trang chu"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE giup hop tac xa ban hang minh bach hon tren moi truong so." /></Field>
-                  <Field label="Mo ta trang chu" className="sm:col-span-2">
+                  <Field label="Ti?u ?? trang ch?"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?." /></Field>
+                  <Field label="M? t? trang ch?" className="sm:col-span-2">
                     <Textarea rows={3} {...publicForm.register('homeDescription')} placeholder="Cong khai san pham, mo QR Passport va van hanh don COD tren cung mot he thong gon, ro, de tin tuong." />
                   </Field>
                   <ImageField
-                    label="Anh trang chu"
+                    label="?nh trang ch?"
                     urlValue={publicForm.watch('homeImageUrl')}
                     altValue={publicForm.watch('homeImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('homeImageUrl', value)}
@@ -513,30 +513,30 @@ export default function SettingsPage() {
                     <p className="mt-1 text-sm text-slate-600">Hai trang này dùng để kể câu chuyện thương hiệu, năng lực và định hướng của HTXONLINE.</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Gioi thieu</Link>
+                    <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Gi?i thi?u</Link>
                     <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Ve chung toi</Link>
                     <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                   </div>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Tieu de trang gioi thieu"><Input {...publicForm.register('introTitle')} placeholder="Gioi thieu HTXONLINE" /></Field>
-                  <Field label="Mo ta trang gioi thieu" className="sm:col-span-2">
+                  <Field label="Ti?u ?? trang gi?i thi?u"><Input {...publicForm.register('introTitle')} placeholder="Gi?i thi?u HTXONLINE" /></Field>
+                  <Field label="M? t? trang gi?i thi?u" className="sm:col-span-2">
                     <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam." />
                   </Field>
                   <ImageField
-                    label="Anh trang gioi thieu"
+                    label="?nh trang gi?i thi?u"
                     urlValue={publicForm.watch('introImageUrl')}
                     altValue={publicForm.watch('introImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('introImageUrl', value)}
                     onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
                     onUpload={(file) => uploadPublicImage(file, 'introImageUrl')}
                   />
-                  <Field label="Tieu de trang ve chung toi"><Input {...publicForm.register('aboutTitle')} placeholder="Chung toi la HTXONLINE" /></Field>
-                  <Field label="Mo ta trang ve chung toi" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('aboutDescription')} placeholder="San nong san so giup hop tac xa ket noi thi truong, minh bach nguon goc va ban hang COD hieu qua." />
+                  <Field label="Ti?u ?? trang v? ch?ng t?i"><Input {...publicForm.register('aboutTitle')} placeholder="Ch?ng t?i l? HTXONLINE" /></Field>
+                  <Field label="M? t? trang v? ch?ng t?i" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('aboutDescription')} placeholder="S?n n?ng s?n s? gi?p h?p t?c x? k?t n?i th? tr??ng, minh b?ch ngu?n g?c v? b?n h?ng COD hi?u qu?." />
                   </Field>
                   <ImageField
-                    label="Anh trang ve chung toi"
+                    label="?nh trang v? ch?ng t?i"
                     urlValue={publicForm.watch('aboutImageUrl')}
                     altValue={publicForm.watch('aboutImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('aboutImageUrl', value)}
@@ -555,12 +555,12 @@ export default function SettingsPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Tieu de trang lien he"><Input {...publicForm.register('contactTitle')} placeholder="Hay de HTXONLINE ket noi va dong hanh cung hop tac xa cua ban" /></Field>
-                  <Field label="Mo ta trang lien he" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('contactDescription')} placeholder="Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX." />
+                  <Field label="Ti?u ?? trang li?n h?"><Input {...publicForm.register('contactTitle')} placeholder="H?y ?? HTXONLINE k?t n?i v? ??ng h?nh c?ng h?p t?c x? c?a b?n" /></Field>
+                  <Field label="M? t? trang li?n h?" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('contactDescription')} placeholder="T? v?n tham gia s?n, QR truy xu?t ngu?n g?c, h? tr? ??n h?ng COD v? v?n h?nh s? cho HTX." />
                   </Field>
                   <ImageField
-                    label="Anh trang lien he"
+                    label="?nh trang li?n h?"
                     urlValue={publicForm.watch('contactImageUrl')}
                     altValue={publicForm.watch('contactImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('contactImageUrl', value)}
@@ -592,7 +592,7 @@ export default function SettingsPage() {
 
       {tab === 'r2' && (
         <Panel className="space-y-4">
-          <p className="text-sm text-slate-600">Secret R2 van lay tu bien moi truong production. Tab nay luu metadata va test ket noi.</p>
+          <p className="text-sm text-slate-600">Secret R2 v?n l?y t? bi?n m?i tr??ng production. Tab n?y l?u metadata v? test k?t n?i.</p>
           <form
             className="grid gap-3 sm:grid-cols-2"
             onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}
@@ -704,7 +704,7 @@ function SaveButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" className="sm:w-max" disabled={pending}>
       <Save size={18} />
-      {pending ? 'Dang luu' : 'Luu'}
+      {pending ? '?ang l?u' : 'L?u'}
     </Button>
   );
 }
@@ -771,7 +771,7 @@ function ImageField({
           <Input value={urlValue} onChange={(event) => onUrlChange(event.target.value)} />
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
             <Upload size={16} />
-            {isUploading ? 'Dang upload' : 'Upload'}
+            {isUploading ? '?ang upload' : 'Upload'}
             <input
               type="file"
               accept="image/*"
@@ -825,22 +825,22 @@ function objectToPublicForm(value: unknown) {
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as { question?: string }).question ?? ''}|${(item as { answer?: string }).answer ?? ''}`).join('\n'),
     homeBadge: String(pageContent.homeBadge ?? 'Nen tang so cho hop tac xa'),
-    homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE giup hop tac xa ban hang minh bach hon tren moi truong so.'),
+    homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?.'),
     homeDescription: String(
       pageContent.homeDescription ?? 'Cong khai san pham, mo QR Passport cho nguoi mua va van hanh quy trinh don COD tren cung mot he thong gon, ro va de tin tuong.'
     ),
     homeImageUrl: String(pageContent.homeImageUrl ?? ''),
     homeImageAlt: String(pageContent.homeImageAlt ?? ''),
-    introTitle: String(pageContent.introTitle ?? 'Gioi thieu HTXONLINE'),
+    introTitle: String(pageContent.introTitle ?? 'Gi?i thi?u HTXONLINE'),
     introDescription: String(pageContent.introDescription ?? 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.'),
     introImageUrl: String(pageContent.introImageUrl ?? ''),
     introImageAlt: String(pageContent.introImageAlt ?? ''),
-    aboutTitle: String(pageContent.aboutTitle ?? 'Chung toi la HTXONLINE'),
-    aboutDescription: String(pageContent.aboutDescription ?? 'San nong san so giup hop tac xa ket noi thi truong, minh bach nguon goc va ban hang COD hieu qua.'),
+    aboutTitle: String(pageContent.aboutTitle ?? 'Ch?ng t?i l? HTXONLINE'),
+    aboutDescription: String(pageContent.aboutDescription ?? 'S?n n?ng s?n s? gi?p h?p t?c x? k?t n?i th? tr??ng, minh b?ch ngu?n g?c v? b?n h?ng COD hi?u qu?.'),
     aboutImageUrl: String(pageContent.aboutImageUrl ?? ''),
     aboutImageAlt: String(pageContent.aboutImageAlt ?? ''),
-    contactTitle: String(pageContent.contactTitle ?? 'Hay de HTXONLINE ket noi va dong hanh cung hop tac xa cua ban'),
-    contactDescription: String(pageContent.contactDescription ?? 'Tu van tham gia san, QR truy xuat nguon goc, ho tro don hang COD va van hanh so cho HTX.'),
+    contactTitle: String(pageContent.contactTitle ?? 'H?y ?? HTXONLINE k?t n?i v? ??ng h?nh c?ng h?p t?c x? c?a b?n'),
+    contactDescription: String(pageContent.contactDescription ?? 'T? v?n tham gia s?n, QR truy xu?t ngu?n g?c, h? tr? ??n h?ng COD v? v?n h?nh s? cho HTX.'),
     contactImageUrl: String(pageContent.contactImageUrl ?? ''),
     contactImageAlt: String(pageContent.contactImageAlt ?? '')
   };

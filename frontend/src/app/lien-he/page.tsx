@@ -13,7 +13,7 @@ import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/publi
 
 export const metadata: Metadata = {
   title: 'Lien he | HTXONLINE',
-  description: 'Lien he HTXONLINE de duoc tu van tham gia san, ho tro don hang hoac trien khai truy xuat nguon goc.',
+  description: 'Li?n h? HTXONLINE ?? ???c t? v?n tham gia s?n, h? tr? ??n h?ng ho?c tri?n khai truy xu?t ngu?n g?c.',
   alternates: { canonical: 'https://htxonline.vn/lien-he' }
 };
 
@@ -168,7 +168,7 @@ export default async function ContactPage() {
                         </p>
                         <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">Van phong ho tro HTXONLINE</h3>
                         <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
-                          Ban do dang duoc cap nhat. Ban van co the lien he truoc de duoc doi van hanh huong dan duong di hoac hen lich tu van phu hop.
+                          B?n ?? ?ang ???c c?p nh?t. B?n v?n c? th? li?n h? tr??c ?? ???c ??i v?n h?nh h??ng d?n ???ng ?i ho?c h?n l?ch t? v?n ph? h?p.
                         </p>
                       </div>
                       <div className="hidden rounded-2xl border border-white/70 bg-white/70 p-4 text-left shadow-sm lg:block">
@@ -267,10 +267,10 @@ export default async function ContactPage() {
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ma so to hop tac</p>
                   <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Dang ky lan dau ngay {legalEntityProfile.registrationDate}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">??ng k? l?n ??u ng?y {legalEntityProfile.registrationDate}</p>
                 </div>
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Nguoi dai dien</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ng??i ??i di?n</p>
                   <p className="mt-2 text-lg font-bold text-ink">{legalEntityProfile.representative}</p>
                   <p className="mt-1 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
                 </div>
@@ -285,7 +285,7 @@ export default async function ContactPage() {
 
             <article className="rounded-2xl bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-5 shadow-sm sm:p-6">
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Luu y khi lien he</p>
-              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">Kenh ho tro cong khai va ho so phap ly duoc tach ro</h2>
+              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">K?nh h? tr? c?ng khai v? h? s? ph?p l? ???c t?ch r?</h2>
               <div className="mt-4 grid gap-3">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline cong khai tren website</p>
@@ -296,7 +296,7 @@ export default async function ContactPage() {
                   <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-6 text-slate-600">
-                  Thong tin cong khai dang phuc vu tu van va ho tro nguoi dung tren HTXONLINE. Khi can xac minh phap ly, ban co the doi chieu them voi bo ho so o cot ben canh.
+                  Th?ng tin c?ng khai ?ang ph?c v? t? v?n v? h? tr? ng??i d?ng tr?n HTXONLINE. Khi c?n x?c minh ph?p l?, b?n c? th? ??i chi?u th?m v?i b? h? s? ? c?t b?n c?nh.
                 </p>
               </div>
             </article>
