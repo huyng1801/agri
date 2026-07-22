@@ -2128,13 +2128,13 @@ export default function NewsDashboardPage() {
                 )}
                 <div className="relative">
                   {!isAdvancedMode && isBodyEmpty && (
-                    <div className="pointer-events-none absolute inset-x-4 top-4 z-10 rounded-2xl border border-dashed border-leaf/25 bg-mint/20 px-4 py-3 text-sm text-slate-600">
+                    <div className="pointer-events-none absolute inset-x-4 top-4 z-10 rounded-2xl border border-dashed border-leaf/25 bg-mint/20 px-4 py-2.5 text-sm text-slate-600">
                       <p className="font-bold text-ink">Bat dau viet nhu soan Word</p>
-                      <p className="mt-1 leading-6">Go truc tiep vao day, hoac paste ca doan van ban va anh. Khi chua co cover, anh vua paste cung co the dung ngay lam anh bia.</p>
-                      <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-leaf">
-                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">1. Nhap noi dung</span>
-                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">2. Ctrl+V anh neu can</span>
-                        <span className="rounded-full bg-white px-3 py-1 shadow-sm">3. Bam Dang 1 cham</span>
+                      <p className="mt-1 leading-6">Go truc tiep, hoac paste van ban va anh vao day. Neu chua co cover, anh vua paste co the dung ngay lam anh bia.</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] font-semibold text-leaf">
+                        <span className="rounded-full bg-white px-2.5 py-1 shadow-sm">Nhap noi dung</span>
+                        <span className="rounded-full bg-white px-2.5 py-1 shadow-sm">Ctrl+V anh</span>
+                        <span className="rounded-full bg-white px-2.5 py-1 shadow-sm">Dang 1 cham</span>
                       </div>
                     </div>
                   )}
@@ -2166,7 +2166,7 @@ export default function NewsDashboardPage() {
                     onPaste={(event) => void handleVisualPaste(event)}
                     className={cn(
                       'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
-                      isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[168px] pt-[8.75rem]' : 'min-h-[168px]',
+                      isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[156px] pt-[7.25rem]' : 'min-h-[156px]',
                       draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
                     )}
                   />
