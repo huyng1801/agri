@@ -1266,6 +1266,43 @@ export default function NewsDashboardPage() {
                   </div>
                 )}
               </div>
+              {!isAdvancedMode && (
+                <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai nhanh va tac vu hay dung</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi chon mau, con khong thi nhap bai va bam Dang 1 cham.</p>
+                    </div>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {simpleTemplateShortcuts.map((template) => (
+                      <button
+                        key={`hero-simple-template-${template.id}`}
+                        type="button"
+                        className="rounded-full border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-ink shadow-sm transition hover:border-leaf hover:bg-mint/30"
+                        onClick={() => applyTemplate(template.id)}
+                      >
+                        {template.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                      <FileText size={18} aria-hidden="true" />
+                      Tạo mô tả ngắn
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                      <Sparkles size={18} aria-hidden="true" />
+                      Sửa nhanh SEO
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent}>
+                      {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
+                      {needsImportedOptimization ? 'Tối ưu bài vừa dán' : 'Làm sạch nội dung dán'}
+                    </Button>
+                  </div>
+                </div>
+              )}
               {isAdvancedMode ? (
                 <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 shadow-sm" open={quickStartGuideOpen}>
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
@@ -1307,59 +1344,6 @@ export default function NewsDashboardPage() {
                   {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính ngay trên tiêu đề để hệ thống gợi ý slug và SEO tốt hơn.'}
                 </span>
               </label>
-              {!isAdvancedMode && (
-                <div className="rounded-2xl border border-leaf/15 bg-mint/35 p-4">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-ink">Đăng bài đơn giản nhưng đủ SEO</p>
-                      <p className="mt-1 text-sm leading-6 text-slate-600">
-                        Đi theo đúng 3 bước: chọn mẫu nếu cần, dán nội dung và ảnh, rồi bấm Đăng 1 chạm. Các thẻ SEO, social, slug và alt text có thể để hệ thống tự hoàn thiện.
-                      </p>
-                    </div>
-                    <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mẫu nhanh</span>
-                  </div>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                    {[
-                      ['1', 'Chọn mẫu nếu cần', 'Dùng khi muốn có khung bài sẵn như WordPress.'],
-                      ['2', 'Dán nội dung + ảnh', 'Có thể paste text và ảnh trực tiếp vào editor.'],
-                      ['3', 'Kiểm tra rồi đăng', 'Bảng điểm và nút Đăng 1 chạm sẽ xử lý phần còn thiếu.']
-                    ].map(([step, title, text]) => (
-                      <div key={step} className="rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
-                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Bước {step}</p>
-                        <p className="mt-1 text-sm font-bold text-ink">{title}</p>
-                        <p className="mt-1 text-sm leading-5 text-slate-600">{text}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {simpleTemplateShortcuts.map((template) => (
-                      <button
-                        key={`simple-template-shortcut-${template.id}`}
-                        type="button"
-                        className="rounded-full border border-white bg-white px-3 py-2 text-sm font-semibold text-ink shadow-sm transition hover:border-leaf hover:bg-mint/30"
-                        onClick={() => applyTemplate(template.id)}
-                      >
-                        {template.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
-                      <FileText size={18} aria-hidden="true" />
-                      Tạo mô tả ngắn
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                      <Sparkles size={18} aria-hidden="true" />
-                      Sửa nhanh SEO
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent}>
-                      {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
-                      {needsImportedOptimization ? 'Tối ưu bài vừa dán' : 'Làm sạch nội dung dán'}
-                    </Button>
-                  </div>
-                  <p className="mt-3 break-all text-xs font-semibold text-emerald-700">{permalink}</p>
-                </div>
-              )}
               {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Slug</span>
