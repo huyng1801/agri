@@ -2407,21 +2407,22 @@ export default function NewsDashboardPage() {
           {!isAdvancedMode && (
             <Panel className="p-0">
               <details className="group" open={simpleMetaOpen}>
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
                   <div>
                     <p className="text-sm font-bold text-ink">Duong dan, mo ta ngan va danh muc</p>
-                    <p className="text-sm text-slate-600">Chi sua khi can. Neu bo trong, editor van co the tu dien khi ban bam Dang 1 cham.</p>
+                    <p className="text-sm text-slate-600">Chi sua khi can. De trong van dang nhanh duoc.</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleMetaOpen ? 'Da mo' : 'Bo qua cung duoc'}</span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleMetaOpen ? 'Da mo' : 'Co the bo qua'}</span>
                     <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                   </div>
                 </summary>
-                <div className="space-y-4 border-t border-slate-100 px-4 pb-4 pt-4">
-                  <div className="grid gap-3">
+                <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
+                  <div className="grid gap-2.5">
                     <label className="space-y-1 text-sm font-semibold">
                       <span>Slug</span>
                       <Input
+                        className="h-11"
                         data-testid="news-slug-input"
                         value={form.slug}
                         onChange={(event) => update('slug', slugifyLocal(event.target.value))}
@@ -2433,7 +2434,7 @@ export default function NewsDashboardPage() {
                     </label>
                     <label className="space-y-1 text-sm font-semibold">
                       <span>Danh muc</span>
-                      <Select data-testid="news-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
+                      <Select className="h-11" data-testid="news-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
                         <option value="">Khong chon</option>
                         {categoryItems.map((category) => (
                           <option key={category.id} value={category.id}>{category.name}</option>
@@ -2453,7 +2454,7 @@ export default function NewsDashboardPage() {
                       </span>
                     </label>
                   </div>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Dang 1 cham se tu bo sung</p>
@@ -2463,49 +2464,49 @@ export default function NewsDashboardPage() {
                             : 'Slug, mo ta ngan va meta co ban da kha day du.'}
                         </p>
                       </div>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700">
                         {publishReadiness.completed}/{publishReadiness.total} san sang
                       </span>
                     </div>
-                    <p className="mt-3 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
+                    <p className="mt-2.5 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
                     {autofillPlan.length > 0 && (
-                      <div className="mt-3 flex flex-wrap gap-2">
+                      <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {autofillPlan.map((item) => (
-                          <span key={`simple-autofill-${item.id}`} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                          <span key={`simple-autofill-${item.id}`} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
                             {item.label}
                           </span>
                         ))}
                       </div>
                     )}
-                    <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
-                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                    <div className="mt-2.5 grid grid-cols-3 gap-1.5 text-sm">
+                      <div className="rounded-xl border border-slate-200 bg-white p-2.5">
                         <p className="text-slate-500">Tieu de</p>
                         <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
                       </div>
-                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <div className="rounded-xl border border-slate-200 bg-white p-2.5">
                         <p className="text-slate-500">Mo ta</p>
                         <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
                       </div>
-                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                      <div className="rounded-xl border border-slate-200 bg-white p-2.5">
                         <p className="text-slate-500">Doc</p>
                         <p className="mt-1 text-lg font-bold text-ink">{readingMinutes}p</p>
                       </div>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                    <div className="mt-2.5 flex flex-wrap gap-1.5">
+                      <Button className="min-h-8 px-2.5 text-sm" type="button" variant="ghost" onClick={() => void copyPermalink()}>
                         <LinkIcon size={18} aria-hidden="true" />
                         Copy link
                       </Button>
-                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                      <Button className="min-h-8 px-2.5 text-sm" type="button" variant="ghost" onClick={fillExcerptFromBody}>
                         <FileText size={18} aria-hidden="true" />
                         Tạo mô tả ngắn
                       </Button>
-                      <Button type="button" variant="ghost" onClick={fillSuggestedTags}>
+                      <Button className="min-h-8 px-2.5 text-sm" type="button" variant="ghost" onClick={fillSuggestedTags}>
                         <Sparkles size={18} aria-hidden="true" />
                         Gợi ý tags
                       </Button>
                     </div>
-                    <p className="mt-3 text-xs font-semibold text-slate-500">
+                    <p className="mt-2.5 text-[11px] font-semibold text-slate-500">
                       Trang thai publish se do cac nut ben duoi quyet dinh, vi vay simple mode khong can chon tay o day nua.
                     </p>
                   </div>
