@@ -1341,15 +1341,19 @@ export default function NewsDashboardPage() {
                   )}
                 </div>) : (<p className="text-xs font-semibold text-leaf/90">Cuon xuong nhap 3 muc: tieu de, noi dung, anh bia.</p>)}
               </div>
-              <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+              <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2.5 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-bold text-ink">Muc toi thieu de bam Dang 1 cham</p>
-                    <p className="mt-1 text-xs leading-5 text-slate-600">Chi can du 3 muc. Cac the SEO co the de he thong xu ly sau.</p>
+                    <p className="text-sm font-bold text-ink">{isAdvancedMode ? 'Muc toi thieu de bam Dang 1 cham' : '3 muc can co de dang nhanh'}</p>
+                    {isAdvancedMode ? (
+                      <p className="mt-1 text-xs leading-5 text-slate-600">Chi can du 3 muc. Cac the SEO co the de he thong xu ly sau.</p>
+                    ) : (
+                      <p className="mt-0.5 text-[11px] leading-4 text-slate-500">Tieu de, noi dung va anh bia.</p>
+                    )}
                   </div>
                   <span
                     className={cn(
-                      'rounded-full px-3 py-1 text-xs font-bold',
+                      isAdvancedMode ? 'rounded-full px-3 py-1 text-xs font-bold' : 'rounded-full px-2.5 py-1 text-[11px] font-bold',
                       canQuickPublish ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
                     )}
                   >
@@ -1375,14 +1379,14 @@ export default function NewsDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
+                  <div className="mt-2.5 grid grid-cols-3 gap-1.5 text-[11px] font-semibold text-slate-700">
                     {corePublishItems.map((item) => (
                       <button
                         key={item.id}
                         type="button"
                         onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
                         className={cn(
-                          'rounded-full border px-3 py-2 text-left transition',
+                          'rounded-2xl border px-2 py-2 text-center transition',
                           item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900 hover:border-leaf'
                         )}
                       >
