@@ -12,8 +12,8 @@ import { legalEntityProfile } from '@/lib/legal-entity';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Li?n h? | HTXONLINE',
-  description: 'Li?n h? HTXONLINE ?? ???c t? v?n tham gia s?n, h? tr? ??n h?ng ho?c tri?n khai truy xu?t ngu?n g?c.',
+  title: 'Liên hệ | HTXONLINE',
+  description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
   alternates: { canonical: 'https://htxonline.vn/lien-he' }
 };
 
@@ -35,7 +35,7 @@ export default async function ContactPage() {
             }}
           />
           <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-16 sm:text-center')}>
-            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-leaf/80 sm:text-sm sm:tracking-wide">Li?n h?</p>
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-leaf/80 sm:text-sm sm:tracking-wide">Liên hệ</p>
             <h1 className="mt-2 max-w-[18rem] text-[1.72rem] font-bold leading-[0.98] tracking-tight text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
               {siteProfile.pageContent.contactTitle}
             </h1>
@@ -70,14 +70,14 @@ export default async function ContactPage() {
                   <PublicLogo size={44} />
                   <div>
                     <h2 className="text-lg font-bold text-ink sm:text-xl">{siteProfile.appName}</h2>
-                    <p className="text-sm font-semibold text-leaf">S?n n?ng s?n s? cho h?p t?c x?</p>
+                    <p className="text-sm font-semibold text-leaf">Sàn nông sản số cho hợp tác xã</p>
                   </div>
                 </div>
                 <div className="mt-5 space-y-4 text-sm leading-6 text-slate-700">
                   <p className="flex items-start gap-3">
                     <MapPinned className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
                     <span>
-                      <span className="block text-xs font-bold uppercase tracking-wide text-slate-500">??a ch?</span>
+                      <span className="block text-xs font-bold uppercase tracking-wide text-slate-500">Địa chỉ</span>
                       <span className="mt-1 block font-semibold text-ink">{siteProfile.address}</span>
                     </span>
                   </p>
@@ -98,15 +98,15 @@ export default async function ContactPage() {
                 </div>
                 <div className="mt-5 grid gap-2 sm:grid-cols-3">
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
-                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ph?n h?i</p>
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Phản hồi</p>
                     <p className="mt-1 text-lg font-bold text-ink">Trong ngay</p>
                   </div>
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
-                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Tri?n khai</p>
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Triển khai</p>
                     <p className="mt-1 text-lg font-bold text-ink">QR Passport</p>
                   </div>
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
-                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">H? tr?</p>
+                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hỗ trợ</p>
                     <p className="mt-1 text-lg font-bold text-ink">Don COD</p>
                   </div>
                 </div>
@@ -126,8 +126,8 @@ export default async function ContactPage() {
                       <Download size={18} aria-hidden="true" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-ink">Gi?i thi?u HTXONLINE</p>
-                      <p className="text-xs text-slate-500">Xem gi?i ph?p s?n + QR Passport cho HTX</p>
+                      <p className="text-sm font-bold text-ink">Giới thiệu HTXONLINE</p>
+                      <p className="text-xs text-slate-500">Xem giải pháp sàn + QR Passport cho HTX</p>
                     </div>
                     <Link href="/gioi-thieu" className="shrink-0 text-sm font-semibold text-leaf hover:underline">
                       Xem ngay
@@ -164,15 +164,15 @@ export default async function ContactPage() {
                       <div>
                         <p className="inline-flex items-center gap-2 rounded-full bg-white/88 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-leaf shadow-sm">
                           <MapPinned size={14} aria-hidden="true" />
-                          ?i?m h? tr?
+                          Điểm hỗ trợ
                         </p>
-                        <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">V?n ph?ng h? tr? HTXONLINE</h3>
+                        <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">Văn phòng hỗ trợ HTXONLINE</h3>
                         <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
-                          B?n ?? ?ang ???c c?p nh?t. B?n v?n c? th? li?n h? tr??c ?? ???c ??i v?n h?nh h??ng d?n ???ng ?i ho?c h?n l?ch t? v?n ph? h?p.
+                          Bản đồ đang được cập nhật. Bạn vẫn có thể liên hệ trước để được đội vận hành hướng dẫn đường đi hoặc hẹn lịch tư vấn phù hợp.
                         </p>
                       </div>
                       <div className="hidden rounded-2xl border border-white/70 bg-white/70 p-4 text-left shadow-sm lg:block">
-                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Gi? h? tr?</p>
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
                         <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-ink">
                           <Clock3 size={16} aria-hidden="true" />
                           08:00 - 17:30
@@ -182,26 +182,26 @@ export default async function ContactPage() {
 
                     <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
                       <div className="rounded-2xl border border-white/80 bg-white/88 p-5 shadow-sm backdrop-blur-sm">
-                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">??a ch? li?n h?</p>
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ liên hệ</p>
                         <p className="mt-2 text-lg font-bold leading-8 text-ink">{siteProfile.address}</p>
                         <div className="mt-4 flex flex-wrap gap-3">
                           <a href={telHref(siteProfile.hotline)} className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5">
                             <PhoneCall size={16} aria-hidden="true" />
-                            G?i hotline
+                            Gọi hotline
                           </a>
                           <Link href="/gioi-thieu" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                            Xem gi?i ph?p
+                            Xem giải pháp
                             <ArrowRight size={16} aria-hidden="true" />
                           </Link>
                         </div>
                       </div>
 
                       <div className="rounded-2xl border border-dashed border-leaf/25 bg-white/65 p-5 shadow-sm backdrop-blur-sm">
-                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">?u ti?n h? tr?</p>
+                        <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ưu tiên hỗ trợ</p>
                         <div className="mt-3 space-y-3 text-sm leading-6 text-slate-700">
-                          <p>Onboarding HTX m?i l?n s?n</p>
-                          <p>Thi?t l?p QR Passport v? v?ng tr?ng</p>
-                          <p>H? tr? quy trinh don hang COD</p>
+                          <p>Onboarding HTX mới lên sàn</p>
+                          <p>Thiết lập QR Passport và vùng trồng</p>
+                          <p>Hỗ trợ quy trình đơn hàng COD</p>
                         </div>
                       </div>
                     </div>
@@ -219,11 +219,11 @@ export default async function ContactPage() {
                 <div className="flex items-center gap-3">
                   <PublicLogo size={52} />
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-wide text-leaf">Form t? v?n</p>
-                    <h2 className="text-2xl font-bold text-ink">K?t n?i v?i ??i v?n h?nh HTXONLINE</h2>
+                    <p className="text-sm font-semibold uppercase tracking-wide text-leaf">Form tư vấn</p>
+                    <h2 className="text-2xl font-bold text-ink">Kết nối với đội vận hành HTXONLINE</h2>
                   </div>
                 </div>
-                <p className="max-w-md text-sm leading-6 text-slate-600">?i?n th?ng tin b?n d??i. Ch?ng t?i s? ph?n h?i qua ?i?n tho?i ho?c email trong th?i gian s?m nh?t.</p>
+                <p className="max-w-md text-sm leading-6 text-slate-600">Điền thông tin bên dưới. Chúng tôi sẽ phản hồi qua điện thoại hoặc email trong thời gian sớm nhất.</p>
               </div>
             </div>
             <div className="p-5 sm:p-8">
@@ -237,8 +237,8 @@ export default async function ContactPage() {
             <div className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 sm:rounded-none sm:rounded-l-2xl">
               <MapPinned size={22} aria-hidden="true" />
               <span>
-                <span className="block text-xs font-semibold uppercase tracking-wide text-white/70">??a ch?</span>
-                <span className="mt-1 block font-bold">V?n ph?ng h? tr?</span>
+                <span className="block text-xs font-semibold uppercase tracking-wide text-white/70">Địa chỉ</span>
+                <span className="mt-1 block font-bold">Văn phòng hỗ trợ</span>
               </span>
             </div>
             <a href={telHref(siteProfile.hotline)} className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 transition hover:bg-white/10 sm:rounded-none">
@@ -261,21 +261,21 @@ export default async function ContactPage() {
         <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
           <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
             <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Th?ng tin ph?p l? ??i chi?u</p>
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin pháp lý đối chiếu</p>
               <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">M? s? t? h?p t?c</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Mã số tổ hợp tác</p>
                   <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">??ng k? l?n ??u ng?y {legalEntityProfile.registrationDate}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
                 </div>
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Ng??i ??i di?n</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Người đại diện</p>
                   <p className="mt-2 text-lg font-bold text-ink">{legalEntityProfile.representative}</p>
                   <p className="mt-1 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
                 </div>
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">??a ch? v? li?n h? tr?n h? s?</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ và liên hệ trên hồ sơ</p>
                   <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">Dien thoai: {legalEntityProfile.legalPhone}</p>
                   <p className="text-sm leading-6 text-slate-600">Email: {legalEntityProfile.legalEmail}</p>
@@ -284,8 +284,8 @@ export default async function ContactPage() {
             </article>
 
             <article className="rounded-2xl bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">L?u ? khi li?n h?</p>
-              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">K?nh h? tr? c?ng khai v? h? s? ph?p l? ???c t?ch r?</h2>
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Lưu ý khi liên hệ</p>
+              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">Kênh hỗ trợ công khai và hồ sơ pháp lý được tách rõ</h2>
               <div className="mt-4 grid gap-3">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline cong khai tren website</p>
@@ -296,7 +296,7 @@ export default async function ContactPage() {
                   <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-6 text-slate-600">
-                  Th?ng tin c?ng khai ?ang ph?c v? t? v?n v? h? tr? ng??i d?ng tr?n HTXONLINE. Khi c?n x?c minh ph?p l?, b?n c? th? ??i chi?u th?m v?i b? h? s? ? c?t b?n c?nh.
+                  Thông tin công khai đang phục vụ tư vấn và hỗ trợ người dùng trên HTXONLINE. Khi cần xác minh pháp lý, bạn có thể đối chiếu thêm với bộ hồ sơ ở cột bên cạnh.
                 </p>
               </div>
             </article>
@@ -305,7 +305,7 @@ export default async function ContactPage() {
 
         {siteProfile.faqs.length > 0 && (
           <section className={cn(publicContainerClass, 'pb-[calc(10.5rem+var(--safe-bottom))] sm:pb-12')}>
-            <h2 className="text-2xl font-bold text-ink">C?u h?i th??ng g?p</h2>
+            <h2 className="text-2xl font-bold text-ink">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {siteProfile.faqs.map((faq) => (
                 <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />

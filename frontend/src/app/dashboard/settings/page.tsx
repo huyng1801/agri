@@ -137,8 +137,8 @@ export default function SettingsPage() {
   const publicPageCards = [
     { id: 'home', label: 'Trang ch?', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
     { id: 'intro', label: 'Gi?i thi?u', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gi?i thi?u ng?n g?n cho ng??i m?i v?o xem' },
-    { id: 'about', label: 'V? ch?ng t?i', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
-    { id: 'contact', label: 'Li?n h?', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
+    { id: 'about', label: 'V? ch?ng t?i', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang n?ng l?c, ph?p l? v? th?ng tin li?n h? m? r?ng' },
+    { id: 'contact', label: 'Li?n h?', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, ??a ch?, map v? FAQ' }
   ];
   const policyPageCards = [
     { id: 'terms', label: 'Dieu khoan su dung', href: '/dieu-khoan-su-dung' },
@@ -243,7 +243,7 @@ export default function SettingsPage() {
             </p>
             <div className="grid gap-2 md:grid-cols-3">
               {[
-                ['1', 'S?a li?n h? v? footer', 'C?p nh?t hotline, email, ??a ch? v? b?n ?? ?? hi?n ??ng nh?t tr?n footer v? trang li?n h?.'],
+                ['1', 'S?a li?n h? v? footer', 'C?p nh?t hotline, email, ??a ch? v? b?n ?? ?? hi?n th? ??ng nh?t tr?n footer v? trang li?n h?.'],
                 ['2', 'D?n ?nh v?o t?ng m?c', 'Ch? c?n Ctrl+V ho?c k?o th? ?nh v?o ? ?nh l? h? th?ng t? upload v? c?p nh?t URL.'],
                 ['3', 'M? trang public ?? xem', 'Sau khi l?u, b?m c?c n?t xem nhanh b?n d??i ?? ki?m tra ngay tr?n mobile/desktop.']
               ].map(([step, title, text]) => (
@@ -455,7 +455,7 @@ export default function SettingsPage() {
                     <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-3">
                       <p className="text-sm font-bold text-ink">Preview khu b?n ?? / footer</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
-                        Neu iframe map bi chan tren mot thiet bi nao do, footer van se hien preview dia diem va nut mo Google Maps. O ben duoi la iframe hien tai de doi chieu nhanh.
+                        N?u iframe map b? ch?n tr?n m?t thi?t b? n?o ??, footer v?n s? hi?n preview ??a ?i?m v? n?t m? Google Maps. ? b?n d??i l? iframe hi?n t?i ?? ??i chi?u nhanh.
                       </p>
                       <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                         <iframe
@@ -472,10 +472,10 @@ export default function SettingsPage() {
                     <Textarea
                       rows={5}
                       {...publicForm.register('faqText')}
-                      placeholder={'HTXONLINE ho tro gi?|Ho tro dang san, QR Passport va don hang COD.\nLam sao de dang bai blog?|Mo dashboard Tin tuc, dan noi dung va bam Dang 1 cham.'}
+                      placeholder={'HTXONLINE ho tro gi?|Ho tro dang san, QR Passport va don hang COD.\nLam sao de dang bai blog?|Mo dashboard Tin tuc, dan noi dung va bam ??ng 1 ch?m.'}
                     />
                     <p className="text-xs font-semibold text-slate-500">
-                      Moi dong la 1 cap <span className="font-bold">cau hoi|tra loi</span>. Vi du: <span className="font-bold">HTXONLINE la gi?|N?n t?ng s? cho h?p t?c x?.</span>
+                      M?i d?ng l? 1 c?p <span className="font-bold">c?u h?i|tr? l?i</span>. Vi du: <span className="font-bold">HTXONLINE l? g??|N?n t?ng s? cho h?p t?c x?.</span>
                     </p>
                   </Field>
                 </div>
@@ -521,7 +521,7 @@ export default function SettingsPage() {
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
                   <Field label="Ti?u ?? trang gi?i thi?u"><Input {...publicForm.register('introTitle')} placeholder="Gi?i thi?u HTXONLINE" /></Field>
                   <Field label="M? t? trang gi?i thi?u" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam." />
+                    <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="N?n t?ng s?n n?ng s?n s? v? QR truy xu?t ngu?n g?c cho h?p t?c x? Vi?t Nam." />
                   </Field>
                   <ImageField
                     label="?nh trang gi?i thi?u"
@@ -616,7 +616,7 @@ export default function SettingsPage() {
         <Panel>
           <form
             className="grid gap-3 sm:grid-cols-2"
-            onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'Bao mat' }))}
+            onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'B?o m?t' }))}
           >
             <Field label="Session (gio)"><Input {...securityForm.register('sessionHours')} /></Field>
             <Field label="Rate limit max"><Input {...securityForm.register('rateLimitMax')} /></Field>
@@ -633,7 +633,7 @@ export default function SettingsPage() {
           <form
             className="space-y-3"
             onSubmit={notificationsForm.handleSubmit((values) =>
-              saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Thong bao' })
+              saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Th?ng b?o' })
             )}
           >
             <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Canh bao don hang moi</label>
@@ -686,8 +686,8 @@ const tabs: Array<{ id: TabId; label: string }> = [
   { id: 'public', label: 'Li?n h? public' },
   { id: 'email', label: 'Email' },
   { id: 'r2', label: 'R2' },
-  { id: 'security', label: 'Bao mat' },
-  { id: 'notifications', label: 'Thong bao' },
+  { id: 'security', label: 'B?o m?t' },
+  { id: 'notifications', label: 'Th?ng b?o' },
   { id: 'backup', label: 'Backup' }
 ];
 
@@ -832,7 +832,7 @@ function objectToPublicForm(value: unknown) {
     homeImageUrl: String(pageContent.homeImageUrl ?? ''),
     homeImageAlt: String(pageContent.homeImageAlt ?? ''),
     introTitle: String(pageContent.introTitle ?? 'Gi?i thi?u HTXONLINE'),
-    introDescription: String(pageContent.introDescription ?? 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.'),
+    introDescription: String(pageContent.introDescription ?? 'N?n t?ng s?n n?ng s?n s? v? QR truy xu?t ngu?n g?c cho h?p t?c x? Vi?t Nam.'),
     introImageUrl: String(pageContent.introImageUrl ?? ''),
     introImageAlt: String(pageContent.introImageAlt ?? ''),
     aboutTitle: String(pageContent.aboutTitle ?? 'Ch?ng t?i l? HTXONLINE'),
