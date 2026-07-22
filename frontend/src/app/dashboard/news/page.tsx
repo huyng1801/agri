@@ -1277,17 +1277,7 @@ export default function NewsDashboardPage() {
                     ))}
                   </div>
                 </details>
-              ) : (
-                <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 px-3 py-3 shadow-sm">
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="text-sm font-bold text-ink">Huong dan nhanh</p>
-                      <p className="mt-1 text-sm leading-6 text-slate-600">Tieu de, noi dung, cover roi bam Dang 1 cham. SEO va social co the de he thong tu bo sung.</p>
-                    </div>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">3 muc</span>
-                  </div>
-                </div>
-              )}
+                ) : null}
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
@@ -1369,7 +1359,7 @@ export default function NewsDashboardPage() {
                     Copy link
                   </Button>
                 </div>
-                {autofillPlan.length > 0 && (
+                {isAdvancedMode && autofillPlan.length > 0 && (
                   <details className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90" open={autofillPlanOpen}>
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
@@ -1387,7 +1377,7 @@ export default function NewsDashboardPage() {
                     </div>
                   </details>
                 )}
-                {preparedDiffs.length > 0 && (
+                {isAdvancedMode && preparedDiffs.length > 0 && (
                   <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={preparePreviewOpen}>
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
@@ -1415,7 +1405,7 @@ export default function NewsDashboardPage() {
                     </div>
                   </details>
                 )}
-                {!isAdvancedMode && (
+                {isAdvancedMode && (
                   <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={simpleSeoBoardOpen}>
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
@@ -1576,7 +1566,7 @@ export default function NewsDashboardPage() {
               </div>
             </details>
 
-            {!isAdvancedMode && (
+            {!isAdvancedMode && editorToolsOpen && (
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
                   <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
@@ -1681,13 +1671,13 @@ export default function NewsDashboardPage() {
 
             {editorMode === 'visual' ? (
               <div className="space-y-2">
-                <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
+                {(isAdvancedMode || needsImportedOptimization || bodyUploadActive) && <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
                   <span className="rounded-full bg-white px-3 py-1 text-leaf">Chế độ dễ dùng</span>
                   <span>Dán ảnh từ clipboard: `Ctrl+V`</span>
                   <span>Dán nội dung từ Word/Docs: hệ thống tự làm sạch</span>
                   <span>Bấm toolbar để tạo H2, H3, danh sách, link</span>
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
-                </div>
+                </div>}
                 {isAdvancedMode && (
                 <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
                   Đăng nhanh: chỉ cần tiêu đề, nội dung, ảnh và bấm &quot;Đăng 1 chạm&quot;. Các mục SEO, social và lịch đăng chỉ cần mở khi thật sự cần và có thể bổ sung sau.
@@ -2155,6 +2145,10 @@ export default function NewsDashboardPage() {
                   Cac muc schema, canonical, robots, Open Graph, Twitter, lich dang va tuy chon hien thi dang duoc an bot de de thao tac hon.
                 </p>
                 <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={preparePostForPublish}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    Chuan bi publish
+                  </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
                     <Sparkles size={18} aria-hidden="true" />
                     Tu dien SEO co ban
@@ -2205,6 +2199,10 @@ export default function NewsDashboardPage() {
               <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
                 <Save size={18} aria-hidden="true" />
                 {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setAuthorMode('advanced')}>
+                <Target size={18} aria-hidden="true" />
+                Mo nang cao
               </Button>
             </div>
           )}
