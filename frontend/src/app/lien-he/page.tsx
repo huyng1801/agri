@@ -4,11 +4,12 @@ import { ArrowRight, Clock3, Download, Mail, MapPinned, PhoneCall } from 'lucide
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
+import { PublicMapPreview } from '@/components/public-map-preview';
 import { PublicShell } from '@/components/public-marketplace';
 import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
-import { getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
 
 export const metadata: Metadata = {
   title: 'Lien he | HTXONLINE',
@@ -18,6 +19,8 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const siteProfile = await getPublicSiteProfile();
+  const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
+  const mapLocation = getPublicMapLocation(siteProfile);
 
   return (
     <PublicShell>
@@ -136,13 +139,15 @@ export default async function ContactPage() {
 
             <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {siteProfile.mapEmbedUrl ? (
-                <iframe
-                  title="Ban do HTXONLINE"
-                  src={siteProfile.mapEmbedUrl}
-                  className="h-full min-h-[320px] w-full border-0 lg:min-h-[420px]"
-                  loading="eager"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+                <div className="h-full p-3 sm:p-4">
+                  <PublicMapPreview
+                    address={siteProfile.address}
+                    location={mapLocation}
+                    mapSearchUrl={mapSearchUrl}
+                    className="h-full border-slate-200 bg-[#dbece1]"
+                    frameClassName="rounded-[1.45rem]"
+                  />
+                </div>
               ) : (
                 <div className="relative grid min-h-[320px] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(223,244,232,0.95),rgba(248,250,247,1)_60%)] p-6 lg:min-h-[420px]">
                   <div

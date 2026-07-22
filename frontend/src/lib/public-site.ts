@@ -38,8 +38,18 @@ export type PublicSiteProfile = {
   pageContent: PublicPageContent;
 };
 
+export type PublicMapLocation = {
+  latitude: number;
+  longitude: number;
+};
+
 export const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
+
+export const defaultPublicMapLocation: PublicMapLocation = {
+  latitude: 10.4458,
+  longitude: 105.718
+};
 
 export const defaultPublicSiteProfile: PublicSiteProfile = {
   appName: 'HTXONLINE',
@@ -118,6 +128,30 @@ export function telHref(value: string) {
   return `tel:${value.replace(/\s+/g, '')}`;
 }
 
+export function getPublicMapLocation(profile?: Pick<PublicSiteProfile, 'mapEmbedUrl'> | null): PublicMapLocation {
+  const source = stringValue(profile?.mapEmbedUrl);
+  if (!source) return defaultPublicMapLocation;
+
+  try {
+    const url = new URL(source);
+    const markerValue = url.searchParams.get('marker') || url.searchParams.get('ll') || url.searchParams.get('q');
+    if (markerValue) {
+      const location = parseCoordinates(markerValue);
+      if (location) return location;
+    }
+
+    if (url.hash.startsWith('#map=')) {
+      const hashLocation = parseCoordinates(url.hash.replace('#map=', '').split('/').slice(-2).join(','));
+      if (hashLocation) return hashLocation;
+    }
+  } catch {
+    const location = parseCoordinates(source);
+    if (location) return location;
+  }
+
+  return defaultPublicMapLocation;
+}
+
 function faqItems(value: unknown): PublicSiteFaq[] {
   if (!Array.isArray(value)) return defaultPublicSiteProfile.faqs;
   const items = value
@@ -157,4 +191,14 @@ function pageContentItems(value: unknown): PublicPageContent {
 
 function stringValue(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function parseCoordinates(value: string): PublicMapLocation | null {
+  const matches = value.match(/-?\d+(?:\.\d+)?/g);
+  if (!matches || matches.length < 2) return null;
+  const latitude = Number(matches[0]);
+  const longitude = Number(matches[1]);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return null;
+  if (Math.abs(latitude) > 90 || Math.abs(longitude) > 180) return null;
+  return { latitude, longitude };
 }

@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
-import { getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
+import { PublicMapPreview } from './public-map-preview';
 
 const footerLinkClass = 'text-sm text-white/90 transition hover:text-white';
 
 export async function PublicFooter() {
   const profile = await getPublicSiteProfile();
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
+  const mapLocation = getPublicMapLocation(profile);
 
   return (
     <footer className="mt-8 bg-[#1f5f3d] pb-[calc(7.75rem+var(--safe-bottom))] text-white lg:pb-0">
@@ -99,7 +101,7 @@ export async function PublicFooter() {
                 </a>
               </div>
               <p className="rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-sm leading-6 text-white/75">
-                Náº¿u tra cá»©u QR Passport hoáº·c Ä‘Æ¡n hÃ ng gáº·p váº¥n Ä‘á», hÃ£y liÃªn há»‡ hotline hoáº·c email Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£ nhanh.
+                Nếu tra cứu QR Passport hoặc đơn hàng gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.
               </p>
             </div>
 
@@ -108,7 +110,9 @@ export async function PublicFooter() {
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3">
                   <div>
                     <p className="text-sm font-semibold text-white/90">Điểm hỗ trợ và bản đồ</p>
-                    <p className="mt-1 text-xs text-white/70">Xem nhanh vị trí ngay trong footer, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.</p>
+                    <p className="mt-1 text-xs text-white/70">
+                      Xem nhanh vị trí ngay trong footer, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.
+                    </p>
                   </div>
                   <a
                     href={mapSearchUrl}
@@ -126,16 +130,7 @@ export async function PublicFooter() {
                       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Địa chỉ hỗ trợ</p>
                       <p className="mt-1 text-base font-bold leading-7 text-white">{profile.address}</p>
                     </div>
-
-                    <div className="mt-3 overflow-hidden rounded-2xl border border-white/14 bg-white/10">
-                      <iframe
-                        title="Bản đồ HTXONLINE tại footer"
-                        src={profile.mapEmbedUrl}
-                        className="h-56 w-full border-0 md:h-64"
-                        loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade"
-                      />
-                    </div>
+                    <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} className="mt-3 border-white/14 bg-white/10" compact />
                   </div>
                 </div>
 
