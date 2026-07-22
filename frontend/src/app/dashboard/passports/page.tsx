@@ -180,7 +180,7 @@ export default function PassportsPage() {
               </Button>
               <Button data-testid="passport-publish-button" type="button" onClick={() => savePassport.mutate('PUBLISHED')} disabled={savePassport.isPending}>
                 <ShieldCheck size={18} aria-hidden="true" />
-                Publish QR
+                Công khai QR
               </Button>
               <Button type="submit" disabled={savePassport.isPending}>{savePassport.isPending ? 'Đang lưu' : 'Lưu'}</Button>
             </div>
@@ -227,7 +227,7 @@ export default function PassportsPage() {
               <div className="space-y-3 px-4 pb-4">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <Info icon={Eye} label="Lượt xem" value={String(passport.viewCount)} />
-                  <Info icon={CalendarClock} label="Publish" value={formatDate(passport.publishedAt)} />
+                  <Info icon={CalendarClock} label="Ngày công khai" value={formatDate(passport.publishedAt)} />
                   <Info icon={CalendarClock} label="Hết hạn" value={formatDate(passport.expiredAt)} />
                   <Info icon={LinkIcon} label="Vùng" value={passport.product?.zone?.name || '—'} />
                 </div>
@@ -239,7 +239,7 @@ export default function PassportsPage() {
                   <Link href={publicUrl} target="_blank">
                     <Button type="button" variant="ghost">
                       <LinkIcon size={16} aria-hidden="true" />
-                      Public
+                      Trang công khai
                     </Button>
                   </Link>
                   {passport.qrDataUrl && (
@@ -249,7 +249,7 @@ export default function PassportsPage() {
                   )}
                   {passport.status !== 'PUBLISHED' && (
                     <Button type="button" onClick={() => setPassportStatus.mutate({ id: passport.id, nextStatus: 'PUBLISHED' })} disabled={setPassportStatus.isPending}>
-                      Publish
+                      Công khai
                     </Button>
                   )}
                   <Button type="button" variant="danger" onClick={() => hidePassport.mutate(passport.id)} disabled={hidePassport.isPending}>

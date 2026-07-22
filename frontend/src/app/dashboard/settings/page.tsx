@@ -438,7 +438,7 @@ export default function SettingsPage() {
                       <Input {...publicForm.register('logoUrl')} />
                       <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
                         <Upload size={16} />
-                        Upload
+                        Tải lên
                         <input
                           type="file"
                           accept="image/*"
@@ -453,7 +453,7 @@ export default function SettingsPage() {
                   </Field>
                   {publicForm.watch('mapEmbedUrl') && (
                     <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-3">
-                      <p className="text-sm font-bold text-ink">Preview khu bản đồ / footer</p>
+                      <p className="text-sm font-bold text-ink">Xem trước khu bản đồ / footer</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
                         Nếu iframe map bị chặn trên một thiết bị nào đó, footer vẫn sẽ hiện preview địa điểm và nút mở Google Maps. Ở bên dưới là iframe hiện tại để đối chiếu nhanh.
                       </p>

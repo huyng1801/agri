@@ -1437,7 +1437,7 @@ export default function NewsDashboardPage() {
                       <p className="mt-1 text-sm leading-5 text-slate-600">{readabilityLabel(seo.readability)}</p>
                     </div>
                     <div className="rounded-xl border border-white/90 bg-white/92 p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước</p>
                       <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
                       <p className="mt-1 text-sm leading-5 text-slate-600">{publishReadiness.label}</p>
                     </div>
@@ -1457,7 +1457,7 @@ export default function NewsDashboardPage() {
                     </Button>
                     <Button type="button" variant="ghost" onClick={jumpToSimplePreview}>
                       <Eye size={18} aria-hidden="true" />
-                      Xem preview
+                      Xem trước
                     </Button>
                   </div>
                   {nextStepSuggestions.length > 0 && (
@@ -2020,7 +2020,7 @@ export default function NewsDashboardPage() {
                 <div className="flex flex-wrap gap-2">
                   <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)} className="min-h-10 px-3">
                     <Eye size={18} aria-hidden="true" />
-                    Preview
+                    Xem trước
                   </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10 px-3">
                     <Target size={18} aria-hidden="true" />
@@ -2572,7 +2572,7 @@ export default function NewsDashboardPage() {
                 </p>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Focus keyword</span>
+                    <span>Từ khóa chính</span>
                     <Input
                       data-testid="news-focus-keyword-input"
                       value={form.focusKeyword}
@@ -2603,7 +2603,7 @@ export default function NewsDashboardPage() {
                     )}
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>SEO title</span>
+                    <span>Tiêu đề SEO</span>
                     <Input
                       data-testid="news-seo-title-input"
                       value={form.seoTitle}
@@ -2627,7 +2627,7 @@ export default function NewsDashboardPage() {
                     </span>
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Canonical URL</span>
+                    <span>URL chuẩn</span>
                     <Input
                       data-testid="news-canonical-url-input"
                       value={form.canonicalUrl}
@@ -2829,7 +2829,7 @@ export default function NewsDashboardPage() {
                   <div className="mt-3 grid gap-2">
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview Google</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước Google</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
                           {(resolvedMetaPreview.title || '').trim().length || 0} ký tự title
                         </span>
@@ -2840,7 +2840,7 @@ export default function NewsDashboardPage() {
                     </div>
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview chia se</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước chia sẻ</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
                           {resolvedMetaPreview.ogImage && resolvedMetaPreview.ogImage !== 'Ảnh bìa public' ? 'Có ảnh' : 'Chưa có ảnh'}
                         </span>
@@ -3306,7 +3306,7 @@ export default function NewsDashboardPage() {
             </div>
 
             <div data-testid="news-preview-twitter" className="mt-3 overflow-hidden rounded-md border border-slate-200 bg-white">
-              <div className="border-b border-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Preview X / Twitter</div>
+              <div className="border-b border-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Xem trước X / Twitter</div>
               <div className="aspect-[16/8] bg-slate-100 bg-cover bg-center" style={{ backgroundImage: form.twitterImageUrl || form.coverImageUrl ? `url('${form.twitterImageUrl || form.coverImageUrl}')` : undefined }} />
               <div className="p-3">
                 <p className="font-bold text-ink">{form.twitterTitle || form.title || 'Tiêu đề Twitter'}</p>

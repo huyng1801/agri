@@ -360,10 +360,10 @@ export default function ProductsPage() {
                       </div>
                     )}
                   </div>
-                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Upload R2 để tạo URL ảnh public" className="bg-slate-100 text-slate-600" />
+                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Tải ảnh lên R2 để tạo URL ảnh public" className="bg-slate-100 text-slate-600" />
                   <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                     <ImagePlus size={18} aria-hidden="true" />
-                    {uploading ? 'Đang upload' : 'Upload R2'}
+                    {uploading ? 'Đang tải ảnh lên' : 'Tải ảnh lên R2'}
                     <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && uploadImage(event.target.files[0])} />
                   </label>
                 </Panel>
@@ -393,7 +393,7 @@ export default function ProductsPage() {
               </Button>
               <Button data-testid="product-publish-button" type="button" onClick={() => saveProduct.mutate('PUBLISHED')} disabled={saveProduct.isPending}>
                 <Save size={18} aria-hidden="true" />
-                Publish
+                Đăng công khai
               </Button>
               <Button type="submit" disabled={saveProduct.isPending}>
                 {saveProduct.isPending ? 'Đang lưu' : 'Lưu'}

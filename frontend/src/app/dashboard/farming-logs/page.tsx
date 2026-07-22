@@ -323,7 +323,7 @@ export default function FarmingLogsPage() {
                   </div>
                   <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                     <Upload size={18} aria-hidden="true" />
-                    {uploading ? 'Đang upload' : 'Upload R2'}
+                    {uploading ? 'Đang tải ảnh lên' : 'Tải ảnh lên R2'}
                     <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && uploadEvidence(event.target.files[0])} />
                   </label>
                 </Panel>
@@ -339,7 +339,7 @@ export default function FarmingLogsPage() {
               </Button>
               <Button data-testid="farming-log-publish-button" type="button" onClick={() => saveLog.mutate('PUBLISHED')} disabled={saveLog.isPending}>
                 <Save size={18} aria-hidden="true" />
-                Publish
+                Đăng công khai
               </Button>
               <Button type="submit" disabled={saveLog.isPending}>{saveLog.isPending ? 'Đang lưu' : 'Lưu'}</Button>
             </div>
