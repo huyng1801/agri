@@ -604,7 +604,7 @@ export default function SettingsPage() {
               <SaveButton pending={saveMutation.isPending} />
               <Button type="button" variant="ghost" data-testid="settings-test-r2-button" onClick={() => testR2.mutate()} disabled={testR2.isPending}>
                 <ServerCog size={16} />
-                Test ket noi R2
+                Test kết nối R2
               </Button>
             </div>
           </form>
