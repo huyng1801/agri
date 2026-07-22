@@ -1783,7 +1783,7 @@ export default function NewsDashboardPage() {
               </label>
             )}
 
-            <details className="rounded-md border border-slate-200 bg-slate-50" open={editorTipsOpen}>
+            {editorTipsOpen && <details className="rounded-md border border-slate-200 bg-slate-50" open={editorTipsOpen}>
               <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Mẹo đăng bài nhanh</summary>
               <div className="space-y-2 border-t border-slate-200 px-3 py-3 text-sm leading-6 text-slate-600">
                 <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
@@ -1792,7 +1792,7 @@ export default function NewsDashboardPage() {
                 <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
                 <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
               </div>
-            </details>
+            </details>}
 
             {preview && (
               <div className="prose max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
