@@ -583,8 +583,8 @@ export default function SettingsPage() {
           >
             <Field label="Tên người gửi"><Input {...emailForm.register('fromName')} /></Field>
             <Field label="Email gửi"><Input type="email" {...emailForm.register('fromEmail')} /></Field>
-            <Field label="SMTP host"><Input {...emailForm.register('smtpHost')} /></Field>
-            <Field label="SMTP port"><Input {...emailForm.register('smtpPort')} /></Field>
+            <Field label="Máy chủ SMTP"><Input {...emailForm.register('smtpHost')} /></Field>
+            <Field label="Cổng SMTP"><Input {...emailForm.register('smtpPort')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -592,13 +592,13 @@ export default function SettingsPage() {
 
       {tab === 'r2' && (
         <Panel className="space-y-4">
-          <p className="text-sm text-slate-600">Secret R2 vẫn lấy từ biến môi trường production. Tab này lưu metadata và test kết nối.</p>
+          <p className="text-sm text-slate-600">Khóa bí mật R2 vẫn lấy từ biến môi trường production. Tab này lưu metadata và kiểm tra kết nối.</p>
           <form
             className="grid gap-3 sm:grid-cols-2"
             onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}
           >
-            <Field label="Bucket"><Input {...r2Form.register('bucket')} placeholder={process.env.NEXT_PUBLIC_R2_BUCKET || 'agri-passport'} /></Field>
-            <Field label="Public base URL"><Input {...r2Form.register('publicBaseUrl')} /></Field>
+            <Field label="Bucket lưu trữ"><Input {...r2Form.register('bucket')} placeholder={process.env.NEXT_PUBLIC_R2_BUCKET || 'agri-passport'} /></Field>
+            <Field label="URL public gốc"><Input {...r2Form.register('publicBaseUrl')} /></Field>
             <Field label="Ghi chú" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
             <div className="flex flex-wrap gap-2 sm:col-span-2">
               <SaveButton pending={saveMutation.isPending} />
@@ -618,9 +618,9 @@ export default function SettingsPage() {
             className="grid gap-3 sm:grid-cols-2"
             onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'Bảo mật' }))}
           >
-            <Field label="Session (giờ)"><Input {...securityForm.register('sessionHours')} /></Field>
-            <Field label="Rate limit max"><Input {...securityForm.register('rateLimitMax')} /></Field>
-            <Field label="CORS origins" className="sm:col-span-2">
+            <Field label="Phiên đăng nhập (giờ)"><Input {...securityForm.register('sessionHours')} /></Field>
+            <Field label="Giới hạn request tối đa"><Input {...securityForm.register('rateLimitMax')} /></Field>
+            <Field label="Nguồn CORS" className="sm:col-span-2">
               <Textarea {...securityForm.register('corsOrigins')} placeholder="https://htxonline.vn,https://admin.htxonline.vn" />
             </Field>
             <SaveButton pending={saveMutation.isPending} />

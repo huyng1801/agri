@@ -2106,7 +2106,7 @@ export default function NewsDashboardPage() {
               </Button>
               <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
                 <Eye size={18} aria-hidden="true" />
-                Preview
+                Xem trước
               </Button>
             </div>
             )}
@@ -2270,7 +2270,7 @@ export default function NewsDashboardPage() {
             {editorTipsOpen && <details className="rounded-md border border-slate-200 bg-slate-50" open={editorTipsOpen}>
               <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Mẹo đăng bài nhanh</summary>
               <div className="space-y-2 border-t border-slate-200 px-3 py-3 text-sm leading-6 text-slate-600">
-                <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Preview` để xem trước trước khi publish.</p>
+                <p>Dùng `Tiêu đề H2/H3` để chia mục, `Chèn ảnh` cho ảnh nằm giữa bài, và `Xem trước` để xem thử trước khi đăng.</p>
                 <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
                 <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
                 <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
@@ -2538,7 +2538,7 @@ export default function NewsDashboardPage() {
               </Button>
               <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                 <Upload size={18} aria-hidden="true" />
-                {uploading === 'body' ? 'Đang upload' : 'Upload ảnh body'}
+                {uploading === 'body' ? 'Đang tải ảnh lên' : 'Tải ảnh nội dung'}
                 <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'body')} />
               </label>
             </div>
@@ -2615,7 +2615,7 @@ export default function NewsDashboardPage() {
                     </span>
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                    <span>Meta description</span>
+                    <span>Mô tả meta</span>
                     <Textarea
                       data-testid="news-seo-description-input"
                       value={form.seoDescription}
@@ -2655,7 +2655,7 @@ export default function NewsDashboardPage() {
                 <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
-                      <p className="text-sm font-bold text-ink">Thẻ SEO sẽ xuất ra sau khi publish</p>
+                      <p className="text-sm font-bold text-ink">Thẻ SEO sẽ xuất ra sau khi đăng</p>
                       <p className="text-sm text-slate-600">Dù bạn bỏ trống một số ô, hệ thống vẫn tự lấp phần còn thiếu theo nội dung đã chuẩn bị.</p>
                     </div>
                     <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
@@ -2664,7 +2664,7 @@ export default function NewsDashboardPage() {
                   </div>
                   <div className="mt-3 grid gap-3 md:grid-cols-2">
                     <div className="rounded-xl border border-white bg-white p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Google / canonical</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Google / URL chuẩn</p>
                       <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.title}</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">{resolvedMetaPreview.description}</p>
                       <p className="mt-2 text-xs leading-5 text-emerald-700">{resolvedMetaPreview.canonical}</p>
@@ -2698,7 +2698,7 @@ export default function NewsDashboardPage() {
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
                 <div>
                   <p className="text-sm font-bold text-ink">Mạng xã hội</p>
-                  <p className="text-sm text-slate-600">Nếu bỏ trống, hệ thống ưu tiên lấy preview từ SEO title, mô tả và ảnh bìa.</p>
+                  <p className="text-sm text-slate-600">Nếu bỏ trống, hệ thống ưu tiên lấy phần xem trước từ tiêu đề SEO, mô tả và ảnh bìa.</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{socialAdvancedOpen ? 'Đã tùy biến' : 'Tự động theo SEO'}</span>
@@ -2707,7 +2707,7 @@ export default function NewsDashboardPage() {
               </summary>
               <div className="border-t border-slate-100 px-4 pb-4 pt-4">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm text-slate-600">Preview chia sẻ Facebook và Twitter sẽ lấy từ các trường này khi bạn cần tùy biến.</p>
+                  <p className="text-sm text-slate-600">Phần xem trước khi chia sẻ lên Facebook và Twitter sẽ lấy từ các trường này khi bạn cần tùy biến.</p>
                   <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
                     <Target size={18} aria-hidden="true" />
                     Lấy từ SEO
@@ -2723,7 +2723,7 @@ export default function NewsDashboardPage() {
                     <Input data-testid="news-og-image-input" value={form.ogImageUrl} onChange={(event) => update('ogImageUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                    <span>OG description</span>
+                    <span>Mô tả OG</span>
                     <Textarea data-testid="news-og-description-input" value={form.ogDescription} onChange={(event) => update('ogDescription', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
@@ -2735,7 +2735,7 @@ export default function NewsDashboardPage() {
                     <Input data-testid="news-twitter-image-input" value={form.twitterImageUrl} onChange={(event) => update('twitterImageUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                    <span>Twitter description</span>
+                    <span>Mô tả Twitter</span>
                     <Textarea data-testid="news-twitter-description-input" value={form.twitterDescription} onChange={(event) => update('twitterDescription', event.target.value)} />
                   </label>
                 </div>
