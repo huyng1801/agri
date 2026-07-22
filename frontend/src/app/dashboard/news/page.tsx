@@ -2235,15 +2235,31 @@ export default function NewsDashboardPage() {
             {quickWins.length > 0 && (
               <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-900">Sua nhanh trong 1 phut</p>
-                <p className="mt-1 text-lg font-bold text-ink">Chi can xu ly 2-4 viec nho ben duoi la bai se dep va chuan hon rat nhieu.</p>
+                <p className={cn('mt-1 font-bold text-ink', isAdvancedMode ? 'text-lg' : 'text-sm')}>
+                  {isAdvancedMode ? 'Chi can xu ly 2-4 viec nho ben duoi la bai se dep va chuan hon rat nhieu.' : 'Xu ly 2-4 viec nho de bai dep va chuan hon.'}
+                </p>
                 <div className="mt-3 space-y-2">
                   {quickWins.map((item) => (
                     <div key={item.id} className="rounded-xl border border-white/90 bg-white/90 p-3">
-                      <p className="font-semibold text-ink">{item.title}</p>
-                      <p className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</p>
-                      <Button type="button" variant="ghost" className="mt-2" onClick={() => runQuickWin(item.id)}>
-                        {item.actionLabel}
-                      </Button>
+                      {isAdvancedMode ? (
+                        <>
+                          <p className="font-semibold text-ink">{item.title}</p>
+                          <p className="mt-1 text-sm leading-6 text-slate-600">{item.detail}</p>
+                          <Button type="button" variant="ghost" className="mt-2" onClick={() => runQuickWin(item.id)}>
+                            {item.actionLabel}
+                          </Button>
+                        </>
+                      ) : (
+                        <div className="flex items-center justify-between gap-3">
+                          <div>
+                            <p className="font-semibold text-ink">{item.title}</p>
+                            <p className="mt-1 text-xs leading-5 text-slate-600">{item.actionLabel}</p>
+                          </div>
+                          <Button type="button" variant="ghost" onClick={() => runQuickWin(item.id)}>
+                            Lam ngay
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -2269,11 +2285,25 @@ export default function NewsDashboardPage() {
             <div className="space-y-2">
               {nextStepSuggestions.map((step) => (
                 <div key={step.id} className="rounded-xl border border-slate-200 bg-white p-3">
-                  <p className="font-semibold text-ink">{step.title}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{step.detail}</p>
-                  <Button type="button" variant="ghost" className="mt-2" onClick={() => runNextStepSuggestion(step.id)}>
-                    {step.actionLabel}
-                  </Button>
+                  {isAdvancedMode ? (
+                    <>
+                      <p className="font-semibold text-ink">{step.title}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{step.detail}</p>
+                      <Button type="button" variant="ghost" className="mt-2" onClick={() => runNextStepSuggestion(step.id)}>
+                        {step.actionLabel}
+                      </Button>
+                    </>
+                  ) : (
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="font-semibold text-ink">{step.title}</p>
+                        <p className="mt-1 text-xs leading-5 text-slate-600">{step.actionLabel}</p>
+                      </div>
+                      <Button type="button" variant="ghost" onClick={() => runNextStepSuggestion(step.id)}>
+                        Mo
+                      </Button>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
