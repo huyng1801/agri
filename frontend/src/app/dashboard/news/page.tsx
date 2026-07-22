@@ -187,6 +187,7 @@ type CorePublishItem = {
 type EditorMode = 'visual' | 'html';
 type AuthorMode = 'simple' | 'advanced';
 type EditorAssistKind = 'pasted-image' | 'pasted-content' | 'optimized-content' | 'prepared-publish';
+type SuggestedCover = { url: string; alt: string; sourceLabel: string };
 
 type LocalDraftPayload = {
   savedAt: string;
@@ -366,6 +367,7 @@ export default function NewsDashboardPage() {
   const [localDraft, setLocalDraft] = useState<LocalDraftPayload | null>(null);
   const [draggingEditor, setDraggingEditor] = useState(false);
   const [editorAssist, setEditorAssist] = useState<{ kind: EditorAssistKind; title: string; detail: string } | null>(null);
+  const [suggestedCover, setSuggestedCover] = useState<SuggestedCover | null>(null);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -609,6 +611,7 @@ export default function NewsDashboardPage() {
   function edit(article: NewsArticle) {
     setEditingId(article.id);
     setForm(fromArticle(article));
+    setSuggestedCover(null);
     setPreview(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -616,6 +619,7 @@ export default function NewsDashboardPage() {
   function reset() {
     setEditingId(null);
     setForm(emptyForm);
+    setSuggestedCover(null);
     setPreview(false);
   }
 
@@ -624,6 +628,7 @@ export default function NewsDashboardPage() {
     skipAutosaveRef.current = true;
     setEditingId(localDraft.editingId);
     setForm(localDraft.form);
+    setSuggestedCover(null);
     setDraftSavedAt(localDraft.savedAt);
     setPreview(false);
     window.requestAnimationFrame(() => {
@@ -757,6 +762,7 @@ export default function NewsDashboardPage() {
         update('coverImageUrl', url);
         if (!form.ogImageUrl) update('ogImageUrl', url);
         if (!form.twitterImageUrl) update('twitterImageUrl', url);
+        setSuggestedCover(null);
       } else {
         setBodyImage((current) => ({ ...current, url }));
       }
@@ -779,6 +785,28 @@ export default function NewsDashboardPage() {
     setBodyImage({ url: '', alt: '', caption: '' });
   }
 
+  function rememberSuggestedCover(url: string, fallbackAlt: string, sourceLabel: string) {
+    if (form.coverImageUrl.trim()) return;
+    setSuggestedCover({ url, alt: fallbackAlt, sourceLabel });
+  }
+
+  function applySuggestedCover() {
+    if (!suggestedCover) return;
+    setForm((current) => ({
+      ...current,
+      coverImageUrl: current.coverImageUrl || suggestedCover.url,
+      coverImageAlt: current.coverImageAlt || suggestedCover.alt || current.focusKeyword || current.title,
+      ogImageUrl: current.ogImageUrl || suggestedCover.url,
+      twitterImageUrl: current.twitterImageUrl || suggestedCover.url
+    }));
+    setSuggestedCover(null);
+    setEditorAssist({
+      kind: 'pasted-image',
+      title: 'Anh vua duoc dua len cover',
+      detail: 'Anh body da duoc dung lam anh bia va nguon preview chia se mac dinh neu cac o SEO dang de trong.'
+    });
+  }
+
   async function handleBodyPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
     const items = Array.from(event.clipboardData?.items ?? []);
     const imageItem = items.find((item) => item.type.startsWith('image/'));
@@ -794,11 +822,12 @@ export default function NewsDashboardPage() {
     const url = await uploadFile(file, 'body');
     if (!url) return;
     const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua paste vao bai');
     insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
     setEditorAssist({
       kind: 'pasted-image',
       title: 'Anh vua duoc chen vao bai',
-      detail: 'Ban co the go tiep noi dung, them alt/cover neu can, roi bam Chuan bi publish hoac Dang 1 cham.'
+      detail: 'Ban co the go tiep noi dung, dung ngay anh nay lam cover neu bai chua co anh bia, roi bam Chuan bi publish hoac Dang 1 cham.'
     });
   }
 
@@ -813,11 +842,12 @@ export default function NewsDashboardPage() {
       const url = await uploadFile(file, 'body');
       if (!url) return;
       const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+      rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua paste vao editor');
       insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
       setEditorAssist({
         kind: 'pasted-image',
         title: 'Anh vua duoc chen vao editor',
-        detail: 'He thong da upload anh len bai viet. Neu muon dep hon khi chia se, ban co the them cover va bam SEO nhanh.'
+        detail: 'He thong da upload anh len bai viet. Neu bai chua co cover, ban co the dung ngay anh nay lam anh bia de preview chia se dep hon.'
       });
       return;
     }
@@ -845,13 +875,14 @@ export default function NewsDashboardPage() {
     const url = await uploadFile(file, 'body');
     if (!url) return;
     const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
+    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua tha vao bai');
     const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
     if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
     else insertHtml(imageHtml);
     setEditorAssist({
       kind: 'pasted-image',
       title: 'Anh vua duoc tha vao bai',
-      detail: 'Anh da duoc upload va chen vao noi dung. Ban co the tiep tuc viet hoac bam Chuan bi publish.'
+      detail: 'Anh da duoc upload va chen vao noi dung. Neu cover dang trong, ban co the dung ngay anh nay lam anh bia.'
     });
   }
 
@@ -935,6 +966,9 @@ export default function NewsDashboardPage() {
       excerpt: current.excerpt || template.excerpt,
       bodyHtml: template.bodyHtml,
       schemaType: template.schemaType,
+      focusKeyword: current.focusKeyword || template.title,
+      seoTitle: current.seoTitle || trimText(template.title, 65),
+      seoDescription: current.seoDescription || trimText(template.excerpt, 155),
       status: 'DRAFT'
     }));
     window.requestAnimationFrame(() => {
@@ -2073,6 +2107,12 @@ export default function NewsDashboardPage() {
                           Chuan bi publish
                         </Button>
                       )}
+                      {editorAssist.kind === 'pasted-image' && suggestedCover && !form.coverImageUrl.trim() && (
+                        <Button type="button" variant="ghost" onClick={applySuggestedCover}>
+                          <Image size={18} aria-hidden="true" />
+                          Dung anh nay lam cover
+                        </Button>
+                      )}
                       {editorAssist.kind === 'prepared-publish' && (
                         <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
                           <Sparkles size={18} aria-hidden="true" />
@@ -2236,6 +2276,21 @@ export default function NewsDashboardPage() {
                   <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
                     <p className="font-bold text-ink">Dang upload anh bia</p>
                     <p className="mt-1 leading-6">Anh bia se tu dong cap nhat vao cover, Open Graph va Twitter image neu cac truong nay dang de trong.</p>
+                  </div>
+                )}
+                {suggestedCover && !form.coverImageUrl.trim() && (
+                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="font-bold text-ink">Co anh body san sang lam cover</p>
+                        <p className="mt-1 leading-6">
+                          He thong dang goi y dung {suggestedCover.sourceLabel} lam anh bia de bai dep hon tren trang tin tuc va cac preview khi chia se.
+                        </p>
+                      </div>
+                      <Button type="button" variant="ghost" onClick={applySuggestedCover}>
+                        Dung lam cover
+                      </Button>
+                    </div>
                   </div>
                 )}
                 {form.coverImageUrl && (

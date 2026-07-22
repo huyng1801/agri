@@ -89,12 +89,15 @@ export default async function HomePage() {
                   <Link href="/htx" className="inline-flex sm:w-auto">
                     <Button
                       variant="ghost"
-                      className="min-h-[3.3rem] w-full whitespace-nowrap justify-center rounded-2xl border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf9_100%)] px-4 text-[0.94rem] text-slate-900 shadow-[0_10px_24px_rgba(148,163,184,0.12)] hover:border-leaf/35 hover:bg-[#f7fbf8] sm:min-h-12 sm:w-auto sm:px-5"
+                      className="min-h-[3.3rem] w-full whitespace-nowrap justify-center rounded-2xl border border-white bg-[linear-gradient(180deg,#ffffff_0%,#f4faf6_100%)] px-4 text-[0.94rem] font-semibold text-slate-900 shadow-[0_14px_30px_rgba(148,163,184,0.16)] ring-1 ring-slate-200/55 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
                     >
                       Kham pha HTX
                     </Button>
                   </Link>
                 </div>
+                <p className="mt-2 px-1 text-[0.8rem] leading-6 text-slate-500 sm:hidden">
+                  Xem san pham public, ho so HTX va QR Passport theo mot luong ro rang ngay tren dien thoai.
+                </p>
               </div>
 
               <div className="max-w-2xl rounded-[1.55rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
