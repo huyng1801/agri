@@ -1493,9 +1493,9 @@ export default function NewsDashboardPage() {
               {!isAdvancedMode && (
                 <details className="mt-2 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu phu</p>
-                      <p className="mt-0.5 truncate text-sm font-bold text-ink">Mo khi can bo cuc san, tao mo ta hoac don bai vua paste.</p>
+                      <p className="mt-0.5 truncate text-xs font-semibold text-slate-600">Mo khi can them bo cuc, mo ta hoac don bai vua paste.</p>
                     </div>
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
                   </summary>
@@ -1633,7 +1633,7 @@ export default function NewsDashboardPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Tu khoa chinh, link bai viet va diem SEO.</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Tu khoa, link va diem SEO.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                 </div>
@@ -1642,6 +1642,7 @@ export default function NewsDashboardPage() {
                     <span>Tu khoa chinh</span>
                     <Input
                       data-testid="news-focus-keyword-input"
+                      className="placeholder:text-[14px] placeholder:text-slate-300"
                       value={form.focusKeyword}
                       onChange={(event) => update('focusKeyword', event.target.value)}
                       placeholder="Vi du: xoai My Xuong"
@@ -2913,11 +2914,11 @@ export default function NewsDashboardPage() {
                   <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-1.5">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
                     <p className="truncate text-[13px] font-bold text-ink">
-                      {canQuickPublish ? 'San sang dang ngay' : `${corePublishReady}/3 san sang`}
+                      {canQuickPublish ? 'San sang dang' : `${corePublishReady}/3 san sang`}
                     </p>
                     {!canQuickPublish && (
                       <p className="mt-0.5 truncate text-[10px] text-slate-500">
-                        Thieu: {missingCoreItems.map((item) => item.label).join(', ')}
+                        {`Con thieu ${missingCoreItems.length} muc`}
                       </p>
                     )}
                   </div>
