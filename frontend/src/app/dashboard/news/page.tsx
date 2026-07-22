@@ -2358,6 +2358,39 @@ export default function NewsDashboardPage() {
                 <p className="text-sm leading-6 text-slate-600">
                   Cac muc schema, canonical, robots, Open Graph, Twitter, lich dang va tuy chon hien thi dang duoc an bot de de thao tac hon.
                 </p>
+                <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Truoc khi bam Dang 1 cham</p>
+                      <p className="mt-1 text-sm font-semibold text-ink">
+                        {canQuickPublish
+                          ? 'Ban da du 3 muc cot loi. Co the dang ngay, roi bo sung SEO sau neu muon.'
+                          : `Moi can xong ${corePublishReady}/3 muc cot loi. Chi can title, noi dung va anh bia la du de dang nhanh.`}
+                      </p>
+                    </div>
+                    <span className={cn('rounded-full px-3 py-1 text-xs font-bold', canQuickPublish ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
+                      {corePublishReady}/3 san sang
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {corePublishItems.map((item) => (
+                      <span
+                        key={`simple-publish-${item.id}`}
+                        className={cn(
+                          'rounded-full border px-3 py-1 text-xs font-semibold',
+                          item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900'
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="mt-3 text-xs font-semibold text-slate-500">
+                    {autofillPlan.length > 0
+                      ? `Sau khi dang, editor co the tu bo sung them: ${autofillPlan.slice(0, 4).map((item) => item.label).join(', ')}.`
+                      : 'Slug, mo ta ngan va cac the SEO co ban dang kha day du hoac san sang tu tao.'}
+                  </p>
+                </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
                     <Sparkles size={18} aria-hidden="true" />
