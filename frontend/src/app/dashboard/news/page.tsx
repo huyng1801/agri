@@ -1397,16 +1397,16 @@ export default function NewsDashboardPage() {
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den dang bai</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Trang thai dang nhanh, diem SEO va preview da nam trong editor.</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Nhap bai, dan cover va theo doi diem ngay trong editor.</p>
                     </div>
                     <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                   </div>
-                  <div className="mt-3 grid grid-cols-2 gap-2">
-                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-10">
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-9 px-3">
                       <FileText size={18} aria-hidden="true" />
                       Nhap bai ngay
                     </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-10">
+                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-9 px-3">
                       <Image size={18} aria-hidden="true" />
                       Dan anh bia
                     </Button>
@@ -1495,7 +1495,7 @@ export default function NewsDashboardPage() {
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu hay dung</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, con khong thi nhap bai va bam Dang 1 cham.</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, khong thi nhap bai roi dang ngay.</p>
                     </div>
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
                   </summary>
