@@ -56,7 +56,7 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
   hotline: '0907001200',
   hotlineDisplay: '0907 001 200',
   supportEmail: 'Agripassport@gmail.com',
-  address: 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
+  address: 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
   zaloUrl: '',
   messengerUrl: '',
   mapEmbedUrl: defaultMapEmbedUrl,

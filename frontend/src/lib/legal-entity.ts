@@ -5,7 +5,7 @@ export const legalEntityProfile = {
   registrationDate: '13/07/2026',
   organizationName: 'Tổ hợp tác Công nghệ Nông nghiệp Agri Passport',
   organizationNameEn: 'Agri Passport Technology Cooperative',
-  legalAddress: 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
+  legalAddress: 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
   legalPhone: '0907 001 200',
   legalEmail: 'Agripassport@gmail.com',
   representative: 'Đinh Thanh Toàn'

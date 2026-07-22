@@ -39,7 +39,7 @@ export class SettingsService {
       hotline: stringValue(publicProfile.hotline) || '0907001200',
       hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0907 001 200',
       supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'Agripassport@gmail.com',
-      address: stringValue(publicProfile.address) || 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp, Việt Nam',
+      address: stringValue(publicProfile.address) || 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
       zaloUrl: stringValue(publicProfile.zaloUrl),
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
       mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || DEFAULT_MAP_EMBED_URL,
