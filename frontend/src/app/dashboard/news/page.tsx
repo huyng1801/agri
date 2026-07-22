@@ -2285,13 +2285,13 @@ export default function NewsDashboardPage() {
 
           <Panel className="p-0">
             <details className="group" open={coverPanelOpen}>
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
                 <div>
                   <p className="text-sm font-bold text-ink">Anh dai dien</p>
                   <p className="text-sm text-slate-600">
                     {form.coverImageUrl
-                      ? 'Da co anh bia. Neu can, mo ra de doi nhanh anh hoac sua alt text.'
-                      : 'Dan, tha hoac upload anh bia. Khong can qua nhieu buoc.'}
+                      ? 'Da co anh bia. Mo ra de doi nhanh neu can.'
+                      : 'Paste, tha hoac upload anh bia.'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -2306,30 +2306,30 @@ export default function NewsDashboardPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </div>
               </summary>
-                <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                <div className="space-y-2.5 border-t border-slate-100 px-4 pb-4 pt-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-ink">Cover tốt giúp bài đẹp hơn trên trang chủ, mạng xã hội và Google.</p>
-                      <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                      <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700">
                         {form.coverImageAlt.trim() ? 'Đã có alt' : 'Nên thêm alt'}
                       </span>
                     </div>
-                    <p className="mt-2 text-xs leading-5 text-slate-600">
+                    <p className="mt-1.5 text-[11px] leading-5 text-slate-600">
                       Mẹo nhanh: chỉ cần paste ảnh vào khung bên dưới, hệ thống sẽ tự cập nhật cover và ưu tiên dùng cho Open Graph hoặc Twitter image khi các ô này còn trống.
                     </p>
                   </div>
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Mo ta anh bia (alt)</span>
-                    <Input data-testid="news-cover-image-alt-input" value={form.coverImageAlt} onChange={(event) => update('coverImageAlt', event.target.value)} />
+                    <Input data-testid="news-cover-image-alt-input" value={form.coverImageAlt} onChange={(event) => update('coverImageAlt', event.target.value)} className="h-11" />
                   </label>
                   <details className="rounded-xl border border-slate-200 bg-white" open={isAdvancedMode}>
-                    <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">
-                      {isAdvancedMode ? 'URL cover va tuy chon nang cao' : 'Nhap URL cover neu can'}
+                    <summary className="cursor-pointer list-none px-3 py-2.5 text-sm font-semibold text-ink">
+                      {isAdvancedMode ? 'URL cover va tuy chon nang cao' : 'Nhap URL cover khi can'}
                     </summary>
-                    <div className="space-y-3 border-t border-slate-100 px-3 py-3">
+                    <div className="space-y-2.5 border-t border-slate-100 px-3 py-3">
                       <label className="space-y-1 text-sm font-semibold">
                         <span>Cover image URL</span>
-                        <Input data-testid="news-cover-image-input" value={form.coverImageUrl} onChange={(event) => update('coverImageUrl', event.target.value)} />
+                        <Input data-testid="news-cover-image-input" value={form.coverImageUrl} onChange={(event) => update('coverImageUrl', event.target.value)} className="h-11" />
                       </label>
                       <p className="text-xs leading-5 text-slate-500">Neu khong co san link anh, ban chi can paste, tha hoac bam nut chon anh o khung phia duoi.</p>
                     </div>
@@ -2350,12 +2350,12 @@ export default function NewsDashboardPage() {
                     event.preventDefault();
                     void handleCoverFiles(event.dataTransfer.files);
                   }}
-                  className="rounded-xl border border-dashed border-leaf/30 bg-mint/40 px-4 py-3 text-sm text-slate-700 outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+                  className="rounded-xl border border-dashed border-leaf/30 bg-mint/40 px-4 py-2.5 text-sm text-slate-700 outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
                 >
                   <p className="font-semibold text-ink">Dan, tha hoac paste anh bia</p>
-                  <p className="mt-1 text-xs leading-5">Click vao khung nay roi bam `Ctrl+V`, hoac keo anh vao day de tu upload anh cover.</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" onClick={() => coverFileInputRef.current?.click()}>
+                  <p className="mt-1 text-[11px] leading-5">Click vao day roi bam `Ctrl+V`, hoac keo anh vao de tu upload cover.</p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={() => coverFileInputRef.current?.click()} className="min-h-8 px-2.5 text-sm">
                       {coverUploadActive ? 'Dang upload anh...' : 'Chon anh tu may'}
                     </Button>
                     <input
@@ -2372,21 +2372,21 @@ export default function NewsDashboardPage() {
                   </div>
                 </div>
                 {coverUploadActive && (
-                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-2.5 text-sm text-sky-950">
                     <p className="font-bold text-ink">Dang upload anh bia</p>
-                    <p className="mt-1 leading-6">Anh bia se tu dong cap nhat vao cover, Open Graph va Twitter image neu cac truong nay dang de trong.</p>
+                    <p className="mt-1 leading-5">Anh bia se tu dong cap nhat vao cover va preview chia se neu cac truong nay dang trong.</p>
                   </div>
                 )}
                 {suggestedCover && !form.coverImageUrl.trim() && (
-                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
+                  <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-2.5 text-sm text-sky-950">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="font-bold text-ink">Co anh body san sang lam cover</p>
-                        <p className="mt-1 leading-6">
-                          He thong dang goi y dung {suggestedCover.sourceLabel} lam anh bia de bai dep hon tren trang tin tuc va cac preview khi chia se.
+                        <p className="mt-1 leading-5">
+                          He thong dang goi y dung {suggestedCover.sourceLabel} lam anh bia de bai dep hon khi chia se.
                         </p>
                       </div>
-                      <Button type="button" variant="ghost" onClick={applySuggestedCover}>
+                      <Button type="button" variant="ghost" onClick={applySuggestedCover} className="min-h-8 px-2.5 text-sm">
                         Dung lam cover
                       </Button>
                     </div>
