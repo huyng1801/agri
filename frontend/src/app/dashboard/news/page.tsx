@@ -2822,12 +2822,12 @@ export default function NewsDashboardPage() {
             </Button>
           </div>
           ) : (
-            <div className="fixed inset-x-0 bottom-20 z-30 px-3 xl:hidden">
-              <div className="mx-auto max-w-3xl rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_12px_32px_rgba(15,23,42,0.14)] backdrop-blur">
+            <div className="fixed inset-x-0 bottom-[4.35rem] z-30 px-3 xl:hidden">
+              <div className="mx-auto max-w-3xl rounded-[1.35rem] border border-slate-200 bg-white/95 p-2 shadow-[0_10px_28px_rgba(15,23,42,0.14)] backdrop-blur">
                 <div className="flex items-center gap-2">
                   <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
-                    <p className="truncate text-sm font-bold text-ink">
+                    <p className="truncate text-[13px] font-bold text-ink">
                       {canQuickPublish ? 'Da du 3 muc cot loi, co the dang ngay.' : `${corePublishReady}/3 san sang de Dang 1 cham`}
                     </p>
                   </div>
@@ -2837,22 +2837,24 @@ export default function NewsDashboardPage() {
                     variant="ghost"
                     onClick={() => saveArticle.mutate('DRAFT')}
                     disabled={saveArticle.isPending}
+                    className="min-h-11 px-3"
                   >
                     <Save size={18} aria-hidden="true" />
-                    {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+                    <span className="hidden min-[390px]:inline">{saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}</span>
                   </Button>
                   <Button
                     data-testid="news-quick-publish-floating-button"
                     type="button"
                     onClick={() => quickPublishArticle.mutate()}
                     disabled={quickPublishArticle.isPending || !canQuickPublish}
+                    className="min-h-11 px-3"
                   >
                     <Sparkles size={18} aria-hidden="true" />
-                    {quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}
+                    <span className="hidden min-[390px]:inline">{quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}</span>
                   </Button>
                 </div>
                 {!canQuickPublish && (
-                  <p className="mt-2 px-1 text-xs font-semibold text-slate-500">
+                  <p className="mt-1.5 px-1 text-[11px] font-semibold text-slate-500">
                     Con thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
                   </p>
                 )}

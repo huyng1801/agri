@@ -160,7 +160,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </button>
       </aside>
 
-      <main className="min-w-0 flex-1 pb-24 lg:pb-0">
+      <main className="min-w-0 flex-1 pb-20 lg:pb-0">
         <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center gap-2 font-bold">
@@ -177,7 +177,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="mx-auto max-w-7xl px-4 py-5 lg:px-8 lg:py-8">{children}</div>
       </main>
 
-      <nav data-testid="mobile-bottom-nav" className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+8px)] pt-2 shadow-soft backdrop-blur lg:hidden">
+      <nav data-testid="mobile-bottom-nav" className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+6px)] pt-1.5 shadow-soft backdrop-blur lg:hidden">
         <div className="grid grid-cols-5 gap-1">
           {mobileNav.map((item) => {
             const Icon = item.icon;
@@ -187,11 +187,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex min-h-14 flex-col items-center justify-center gap-1 rounded-md text-[11px] font-semibold text-slate-500',
+                  'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
                   active && 'bg-mint text-leaf'
                 )}
               >
-                <Icon size={20} aria-hidden="true" />
+                <Icon size={18} aria-hidden="true" />
                 <span className="max-w-full truncate">{item.label}</span>
               </Link>
             );
