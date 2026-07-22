@@ -5,6 +5,7 @@ import {
   Bold,
   Code2,
   ChevronUp,
+  ChevronDown,
   Eye,
   FileText,
   Heading2,
@@ -370,6 +371,7 @@ export default function NewsDashboardPage() {
   const [editorAssist, setEditorAssist] = useState<{ kind: EditorAssistKind; title: string; detail: string } | null>(null);
   const [suggestedCover, setSuggestedCover] = useState<SuggestedCover | null>(null);
   const [simpleActionsExpanded, setSimpleActionsExpanded] = useState(false);
+  const [simpleEditorToolsExpanded, setSimpleEditorToolsExpanded] = useState(false);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -1482,20 +1484,34 @@ export default function NewsDashboardPage() {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                  <div className="mt-3 flex items-center gap-2">
+                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-10 px-3">
                       <FileText size={18} aria-hidden="true" />
-                      Tạo mô tả ngắn
+                      Tạo mô tả
                     </Button>
-                    <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                      <Sparkles size={18} aria-hidden="true" />
-                      Sửa nhanh SEO
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent}>
-                      {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
-                      {needsImportedOptimization ? 'Tối ưu bài vừa dán' : 'Làm sạch nội dung dán'}
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setSimpleEditorToolsExpanded((value) => !value)}
+                      className="min-h-10 px-3"
+                      aria-expanded={simpleEditorToolsExpanded}
+                    >
+                      {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
+                      Them
                     </Button>
                   </div>
+                  {simpleEditorToolsExpanded && (
+                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10">
+                        <Sparkles size={18} aria-hidden="true" />
+                        Sua nhanh SEO
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent} className="min-h-10">
+                        {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
+                        {needsImportedOptimization ? 'Toi uu bai dan' : 'Lam sach noi dung'}
+                      </Button>
+                    </div>
+                  )}
                 </div>
               )}
               {isAdvancedMode ? (
@@ -1955,16 +1971,29 @@ export default function NewsDashboardPage() {
                     <Code2 size={18} aria-hidden="true" />
                     HTML
                   </Button>
-                  <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setSimpleEditorToolsExpanded((value) => !value)}
+                    aria-expanded={simpleEditorToolsExpanded}
+                  >
+                    {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
+                    Cong cu
+                  </Button>
+                </div>
+                {simpleEditorToolsExpanded && (
+                <div className="flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)} className="min-h-10 px-3">
                     <Eye size={18} aria-hidden="true" />
                     Preview
                   </Button>
-                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10 px-3">
                     <Target size={18} aria-hidden="true" />
                     Va SEO nhanh
                   </Button>
                 </div>
-                <details className="rounded-xl border border-slate-200 bg-slate-50" open={editorToolsOpen}>
+                )}
+                <details className="rounded-xl border border-slate-200 bg-slate-50" open={editorToolsOpen && simpleEditorToolsExpanded}>
                   <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Dinh dang va cong cu them</summary>
                   <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 px-3 py-3">
                     {editorSnippets.map(([Icon, snippet]) => (
