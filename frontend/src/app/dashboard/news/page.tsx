@@ -1488,7 +1488,26 @@ export default function NewsDashboardPage() {
         </Panel>
 
           <Panel className="space-y-4">
-            <details className="group rounded-2xl border border-dashed border-leaf/30 bg-mint/40" open={templateLibraryOpen}>
+            {!isAdvancedMode && (
+              <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/35 p-3">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Mau bai nhanh</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Can bo cuc co san thi mo che do nang cao, con luong don gian co the viet va dang ngay.</p>
+                  </div>
+                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mau</span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={() => applyTemplate(articleTemplates[0].id)}>
+                    Dung mau nhanh
+                  </Button>
+                  <Button type="button" onClick={() => setAuthorMode('advanced')}>
+                    Mo nang cao
+                  </Button>
+                </div>
+              </div>
+            )}
+            <details className={cn('group rounded-2xl border border-dashed border-leaf/30 bg-mint/40', !isAdvancedMode && 'hidden')} open={templateLibraryOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                 <div className="flex items-start gap-3">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
@@ -1657,13 +1676,17 @@ export default function NewsDashboardPage() {
                   <span>Bấm toolbar để tạo H2, H3, danh sách, link</span>
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
                 </div>
+                {isAdvancedMode && (
                 <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
                   Đăng nhanh: chỉ cần tiêu đề, nội dung, ảnh và bấm &quot;Đăng 1 chạm&quot;. Các mục SEO, social và lịch đăng chỉ cần mở khi thật sự cần và có thể bổ sung sau.
                 </p>
+                )}
+                {isAdvancedMode && (
                 <div className="rounded-xl border border-dashed border-leaf/30 bg-white/90 px-3 py-3 text-sm text-slate-700">
                   <p className="font-bold text-ink">Neu ban vua paste bai tu Word hoac Google Docs</p>
                   <p className="mt-1 leading-6">Bam &quot;Toi uu bai vua dan&quot; de he thong lam sach HTML, bo sung mo bai co tu khoa, heading co ban, internal link, meta va social preview trong mot lan.</p>
                 </div>
+                )}
                 {needsImportedOptimization && (
                   <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
                     <div className="flex flex-wrap items-start justify-between gap-3">
