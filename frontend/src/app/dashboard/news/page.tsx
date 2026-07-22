@@ -2285,7 +2285,15 @@ export default function NewsDashboardPage() {
                 <p className="text-sm leading-6 text-slate-600">
                   Cac muc schema, canonical, robots, Open Graph, Twitter, lich dang va tuy chon hien thi dang duoc an bot de de thao tac hon.
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
+                    <Sparkles size={18} aria-hidden="true" />
+                    {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
+                  </Button>
+                  <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
+                    <Save size={18} aria-hidden="true" />
+                    {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+                  </Button>
                   <Button type="button" variant="ghost" onClick={preparePostForPublish}>
                     <Sparkles size={18} aria-hidden="true" />
                     Chuan bi publish
@@ -2332,16 +2340,7 @@ export default function NewsDashboardPage() {
             </Button>
           </div>
           ) : (
-            <div className="sticky bottom-[calc(5rem+var(--safe-bottom))] z-20 grid grid-cols-2 gap-2 rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-soft backdrop-blur lg:bottom-4">
-              <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
-                <Sparkles size={18} aria-hidden="true" />
-                {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
-              </Button>
-              <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
-                <Save size={18} aria-hidden="true" />
-                {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
-              </Button>
-            </div>
+            null
           )}
         </form>
 
