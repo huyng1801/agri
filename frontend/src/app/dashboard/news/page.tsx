@@ -2830,7 +2830,7 @@ export default function NewsDashboardPage() {
                   <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
                     <p className="truncate text-[13px] font-bold text-ink">
-                      {canQuickPublish ? 'Da du 3 muc cot loi, co the dang ngay.' : `${corePublishReady}/3 san sang de Dang 1 cham`}
+                      {canQuickPublish ? 'San sang dang ngay' : `${corePublishReady}/3 san sang`}
                     </p>
                   </div>
                   <Button
@@ -2875,7 +2875,7 @@ export default function NewsDashboardPage() {
                 )}
                 {!canQuickPublish && (
                   <p className="mt-1.5 px-1 text-[11px] font-semibold text-slate-500">
-                    Con thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
+                    Thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
                   </p>
                 )}
               </div>
