@@ -2637,7 +2637,35 @@ export default function NewsDashboardPage() {
             </Button>
           </div>
           ) : (
-            null
+            <div className="fixed inset-x-0 bottom-20 z-30 px-3 xl:hidden">
+              <div className="mx-auto flex max-w-3xl items-center gap-2 rounded-2xl border border-slate-200 bg-white/95 p-2 shadow-[0_12px_32px_rgba(15,23,42,0.14)] backdrop-blur">
+                <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
+                  <p className="truncate text-sm font-bold text-ink">
+                    {canQuickPublish ? 'Da du 3 muc cot loi, co the dang ngay.' : `${corePublishReady}/3 san sang de Dang 1 cham`}
+                  </p>
+                </div>
+                <Button
+                  data-testid="news-save-draft-floating-button"
+                  type="button"
+                  variant="ghost"
+                  onClick={() => saveArticle.mutate('DRAFT')}
+                  disabled={saveArticle.isPending}
+                >
+                  <Save size={18} aria-hidden="true" />
+                  {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+                </Button>
+                <Button
+                  data-testid="news-quick-publish-floating-button"
+                  type="button"
+                  onClick={() => quickPublishArticle.mutate()}
+                  disabled={quickPublishArticle.isPending || !canQuickPublish}
+                >
+                  <Sparkles size={18} aria-hidden="true" />
+                  {quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}
+                </Button>
+              </div>
+            </div>
           )}
         </form>
 
