@@ -54,7 +54,7 @@ const nav: NavItem[] = [
   { href: '/dashboard/zones', label: 'Vùng trồng', icon: Map, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-zones' },
   { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-farming-logs' },
   { href: '/dashboard/passports', label: 'QR', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-passports' },
-  { href: '/dashboard/news', label: 'Tin tá»©c', icon: Newspaper, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-news' },
+  { href: '/dashboard/news', label: 'Tin tức', icon: Newspaper, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-news' },
   { href: '/dashboard/orders', label: 'Đơn hàng', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-orders' },
   { href: '/dashboard/users', label: 'Thành viên', icon: Users, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-members' },
   { href: '/dashboard/farmers', label: 'Nông dân', icon: Users, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-farmers' },
