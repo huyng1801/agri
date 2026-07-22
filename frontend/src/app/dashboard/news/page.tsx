@@ -1341,14 +1341,14 @@ export default function NewsDashboardPage() {
                   )}
                 </div>) : null}
               </div>
-              <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2.5 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
+                <div className="flex flex-wrap items-center justify-between gap-2.5">
                   <div>
                     <p className="text-sm font-bold text-ink">{isAdvancedMode ? 'Muc toi thieu de bam Dang 1 cham' : '3 muc can co de dang nhanh'}</p>
                     {isAdvancedMode ? (
                       <p className="mt-1 text-xs leading-5 text-slate-600">Chi can du 3 muc. Cac the SEO co the de he thong xu ly sau.</p>
                     ) : (
-                      <p className="mt-0.5 text-[11px] leading-4 text-slate-500">Tieu de, noi dung va anh bia.</p>
+                      <p className="mt-0.5 text-[10px] leading-4 text-slate-500">Tieu de, noi dung, anh bia.</p>
                     )}
                   </div>
                   <span
@@ -1379,7 +1379,7 @@ export default function NewsDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-2.5 space-y-2">
+                  <div className="mt-2 space-y-1.5">
                     <div className="grid grid-cols-3 gap-1.5 text-[11px] font-semibold text-slate-700">
                       {corePublishItems.map((item) => (
                         <button
@@ -1395,16 +1395,16 @@ export default function NewsDashboardPage() {
                         </button>
                       ))}
                     </div>
-                    <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
-                      <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-8 px-2.5 text-sm">
+                    <div className="grid grid-cols-[1fr_1fr_auto] gap-1.5">
+                      <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-8 px-2 text-sm">
                         <FileText size={18} aria-hidden="true" />
                         Nhap bai
                       </Button>
-                      <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-8 px-2.5 text-sm">
+                      <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-8 px-2 text-sm">
                         <Image size={18} aria-hidden="true" />
                         Anh bia
                       </Button>
-                      <span className={cn('inline-flex items-center justify-center rounded-full px-2.5 text-[11px] font-bold', seoScoreClass(seo.score))}>
+                      <span className={cn('inline-flex items-center justify-center rounded-full px-2 text-[11px] font-bold', seoScoreClass(seo.score))}>
                         SEO {seo.score}
                       </span>
                     </div>
@@ -1489,15 +1489,15 @@ export default function NewsDashboardPage() {
                 </div>
               )}
               {!isAdvancedMode && (
-                <details className="mt-2 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
+                <details className="mt-2 rounded-2xl border border-white/80 bg-white/92 p-1.5 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu phu</p>
-                      <p className="mt-0.5 truncate text-[11px] text-slate-500">Chi mo khi can bo cuc san hoac don bai paste.</p>
+                      <p className="mt-0.5 truncate text-[10px] text-slate-500">Chi mo khi can bo cuc san hoac don bai paste.</p>
                     </div>
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
                   </summary>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {simpleTemplateShortcuts.map((template) => (
                       <button
                         key={`hero-simple-template-${template.id}`}
@@ -1509,8 +1509,8 @@ export default function NewsDashboardPage() {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-2 grid grid-cols-2 gap-2">
-                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-9 px-3 text-sm">
+                  <div className="mt-1.5 grid grid-cols-2 gap-1.5">
+                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-8 px-2.5 text-sm">
                       <FileText size={18} aria-hidden="true" />
                       Tao mo ta
                     </Button>
@@ -1518,7 +1518,7 @@ export default function NewsDashboardPage() {
                       type="button"
                       variant="ghost"
                       onClick={() => setSimpleEditorToolsExpanded((value) => !value)}
-                      className="min-h-9 px-3 text-sm"
+                      className="min-h-8 px-2.5 text-sm"
                       aria-expanded={simpleEditorToolsExpanded}
                     >
                       {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
