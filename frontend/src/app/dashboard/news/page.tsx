@@ -391,6 +391,7 @@ export default function NewsDashboardPage() {
   const seoSignals = useMemo(() => buildSeoSignals(form, seo), [form, seo]);
   const needsImportedOptimization = useMemo(() => detectImportedFormatting(form.bodyHtml), [form.bodyHtml]);
   const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
+  const simpleTemplateShortcuts = articleTemplates.slice(0, 3);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
   const canQuickPublish = corePublishItems.every((item) => item.ok);
   const titleLength = form.title.trim().length;
@@ -1306,6 +1307,59 @@ export default function NewsDashboardPage() {
                   {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính ngay trên tiêu đề để hệ thống gợi ý slug và SEO tốt hơn.'}
                 </span>
               </label>
+              {!isAdvancedMode && (
+                <div className="rounded-2xl border border-leaf/15 bg-mint/35 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-bold text-ink">Đăng bài đơn giản nhưng đủ SEO</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        Đi theo đúng 3 bước: chọn mẫu nếu cần, dán nội dung và ảnh, rồi bấm Đăng 1 chạm. Các thẻ SEO, social, slug và alt text có thể để hệ thống tự hoàn thiện.
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mẫu nhanh</span>
+                  </div>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                    {[
+                      ['1', 'Chọn mẫu nếu cần', 'Dùng khi muốn có khung bài sẵn như WordPress.'],
+                      ['2', 'Dán nội dung + ảnh', 'Có thể paste text và ảnh trực tiếp vào editor.'],
+                      ['3', 'Kiểm tra rồi đăng', 'Bảng điểm và nút Đăng 1 chạm sẽ xử lý phần còn thiếu.']
+                    ].map(([step, title, text]) => (
+                      <div key={step} className="rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Bước {step}</p>
+                        <p className="mt-1 text-sm font-bold text-ink">{title}</p>
+                        <p className="mt-1 text-sm leading-5 text-slate-600">{text}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {simpleTemplateShortcuts.map((template) => (
+                      <button
+                        key={`simple-template-shortcut-${template.id}`}
+                        type="button"
+                        className="rounded-full border border-white bg-white px-3 py-2 text-sm font-semibold text-ink shadow-sm transition hover:border-leaf hover:bg-mint/30"
+                        onClick={() => applyTemplate(template.id)}
+                      >
+                        {template.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                      <FileText size={18} aria-hidden="true" />
+                      Tạo mô tả ngắn
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                      <Sparkles size={18} aria-hidden="true" />
+                      Sửa nhanh SEO
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent}>
+                      {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
+                      {needsImportedOptimization ? 'Tối ưu bài vừa dán' : 'Làm sạch nội dung dán'}
+                    </Button>
+                  </div>
+                  <p className="mt-3 break-all text-xs font-semibold text-emerald-700">{permalink}</p>
+                </div>
+              )}
               {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Slug</span>
@@ -1885,8 +1939,8 @@ export default function NewsDashboardPage() {
                   <p className="text-sm font-bold text-ink">Anh dai dien</p>
                   <p className="text-sm text-slate-600">
                     {form.coverImageUrl
-                      ? 'Da co anh bia. Mo ra neu can doi anh, canh cover hoac alt text.'
-                      : 'Mo de dan, tha hoac upload anh bia cho bai viet.'}
+                      ? 'Da co anh bia. Neu can, mo ra de doi nhanh anh hoac sua alt text.'
+                      : 'Dan, tha hoac upload anh bia. Khong can qua nhieu buoc.'}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -1901,10 +1955,21 @@ export default function NewsDashboardPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </div>
               </summary>
-              <div className="space-y-4 border-t border-slate-100 px-4 pb-4 pt-4">
-                <div className="grid gap-3 md:grid-cols-2">
-                  <label className="space-y-1 text-sm font-semibold">
-                    <span>Cover image URL</span>
+                <div className="space-y-4 border-t border-slate-100 px-4 pb-4 pt-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-ink">Cover tốt giúp bài đẹp hơn trên trang chủ, mạng xã hội và Google.</p>
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                        {form.coverImageAlt.trim() ? 'Đã có alt' : 'Nên thêm alt'}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-xs leading-5 text-slate-600">
+                      Mẹo nhanh: chỉ cần paste ảnh vào khung bên dưới, hệ thống sẽ tự cập nhật cover và ưu tiên dùng cho Open Graph hoặc Twitter image khi các ô này còn trống.
+                    </p>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <label className="space-y-1 text-sm font-semibold">
+                      <span>Cover image URL</span>
                     <Input data-testid="news-cover-image-input" value={form.coverImageUrl} onChange={(event) => update('coverImageUrl', event.target.value)} />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
@@ -1960,7 +2025,7 @@ export default function NewsDashboardPage() {
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
                   <div>
                     <p className="text-sm font-bold text-ink">Duong dan, mo ta ngan va danh muc</p>
-                    <p className="text-sm text-slate-600">Chi can sua 3 muc nay khi can. Neu bo trong, he thong van co the tu dien khi ban bam Dang 1 cham.</p>
+                    <p className="text-sm text-slate-600">Chi sua khi can. Neu bo trong, editor van co the tu dien khi ban bam Dang 1 cham.</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleMetaOpen ? 'Da mo' : 'Bo qua cung duoc'}</span>
@@ -2041,38 +2106,23 @@ export default function NewsDashboardPage() {
                         <p className="mt-1 text-lg font-bold text-ink">{readingMinutes}p</p>
                       </div>
                     </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                        <LinkIcon size={18} aria-hidden="true" />
+                        Copy link
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                        <FileText size={18} aria-hidden="true" />
+                        Tạo mô tả ngắn
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={fillSuggestedTags}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Gợi ý tags
+                      </Button>
+                    </div>
                     <p className="mt-3 text-xs font-semibold text-slate-500">
                       Trang thai publish se do cac nut ben duoi quyet dinh, vi vay simple mode khong can chon tay o day nua.
                     </p>
-                  </div>
-                </div>
-              </details>
-            </Panel>
-          )}
-
-          {!isAdvancedMode && (
-            <Panel className="p-0">
-              <details className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
-                  <div>
-                    <p className="text-sm font-bold text-ink">Mau bai nhanh</p>
-                    <p className="text-sm text-slate-600">Mo khi can lay bo cuc co san, con neu tu viet thi co the bo qua.</p>
-                  </div>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mau</span>
-                </summary>
-                <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
-                  <div className="grid gap-2">
-                    {articleTemplates.map((template) => (
-                      <button
-                        key={`simple-template-${template.id}`}
-                        type="button"
-                        className="rounded-xl border border-slate-200 bg-white p-3 text-left shadow-sm transition hover:border-leaf hover:bg-mint/30"
-                        onClick={() => applyTemplate(template.id)}
-                      >
-                        <p className="text-sm font-bold text-ink">{template.label}</p>
-                        <p className="mt-1 text-xs leading-5 text-slate-600">{template.description}</p>
-                      </button>
-                    ))}
                   </div>
                 </div>
               </details>
