@@ -1731,11 +1731,13 @@ export default function NewsDashboardPage() {
                       </div>
                     )}
                   </details>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
-                    <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
-                    <div className="mt-3 flex items-center gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-10 px-3">
+                    <div className="mt-1 rounded-xl border border-white/90 bg-white px-3 py-2">
+                      <p className="truncate text-sm font-semibold text-emerald-700">{permalink}</p>
+                    </div>
+                    <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-10 px-3 justify-center">
                         <LinkIcon size={18} aria-hidden="true" />
                         Copy link
                       </Button>
@@ -1743,7 +1745,7 @@ export default function NewsDashboardPage() {
                         type="button"
                         variant="ghost"
                         onClick={() => setSimplePermalinkToolsExpanded((value) => !value)}
-                        className="min-h-10 px-3"
+                        className="min-h-10 px-3 justify-center"
                         aria-expanded={simplePermalinkToolsExpanded}
                       >
                         {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
