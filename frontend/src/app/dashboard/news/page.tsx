@@ -1645,30 +1645,16 @@ export default function NewsDashboardPage() {
                       onChange={(event) => update('focusKeyword', event.target.value)}
                       placeholder="Vi du: xoai My Xuong"
                     />
-                    <span className="text-[11px] font-semibold leading-4 text-slate-500">
-                      {form.focusKeyword.trim()
-                        ? 'Editor se cham title, mo ta va mo bai theo cum tu khoa nay.'
-                        : 'Chi can 1 cum tu khoa de editor cham bai nhanh.'}
-                    </span>
                   </label>
                   {focusKeywordSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {focusKeywordSuggestions.slice(0, 2).map((keyword) => (
-                        <button
-                          key={`simple-keyword-${keyword}`}
-                          type="button"
-                          className={cn(
-                            'rounded-full border px-2.5 py-1 text-[11px] font-semibold transition',
-                            form.focusKeyword.trim().toLowerCase() === keyword.toLowerCase()
-                              ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
-                              : 'border-slate-200 bg-white text-slate-700 hover:border-leaf hover:text-leaf'
-                          )}
-                          onClick={() => applyFocusKeywordSuggestion(keyword)}
-                        >
-                          {keyword}
-                        </button>
-                      ))}
-                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}
+                      className="min-h-8 w-fit px-3 text-xs"
+                    >
+                      Dung: {focusKeywordSuggestions[0]}
+                    </Button>
                   )}
                   <details className="rounded-2xl border border-slate-200 bg-white p-2.5">
                     <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
