@@ -1393,22 +1393,22 @@ export default function NewsDashboardPage() {
                 )}
               </div>
               {!isAdvancedMode && (
-                <div className="mt-3 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm lg:hidden">
+                <div className="mt-3 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-2.5 shadow-sm lg:hidden">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den dang bai</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Nhap bai, dan cover va theo doi diem ngay trong editor.</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Nhap bai, dan cover, xem diem SEO.</p>
                     </div>
                     <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                   </div>
                   <div className="mt-2 grid grid-cols-2 gap-2">
                     <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-9 px-2.5 text-sm">
                       <FileText size={18} aria-hidden="true" />
-                      Nhap bai ngay
+                      Nhap bai
                     </Button>
                     <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-9 px-2.5 text-sm">
                       <Image size={18} aria-hidden="true" />
-                      Dan anh bia
+                      Anh bia
                     </Button>
                   </div>
                 </div>
@@ -1491,11 +1491,11 @@ export default function NewsDashboardPage() {
                 </div>
               )}
               {!isAdvancedMode && (
-                <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+                <details className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2.5 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu hay dung</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, khong thi nhap bai roi dang ngay.</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, neu khong thi dang nhanh.</p>
                     </div>
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
                   </summary>
