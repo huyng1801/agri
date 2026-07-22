@@ -1193,14 +1193,18 @@ export default function NewsDashboardPage() {
                     <Save size={18} aria-hidden="true" />
                     {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm'}
                   </Button>
-                  <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
-                    <Sparkles size={18} aria-hidden="true" />
-                    Toi uu bai vua dan
-                  </Button>
-                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                    <Target size={18} aria-hidden="true" />
-                    Va SEO nhanh
-                  </Button>
+                  {isAdvancedMode && (
+                    <>
+                      <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Toi uu bai vua dan
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                        <Target size={18} aria-hidden="true" />
+                        Va SEO nhanh
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
