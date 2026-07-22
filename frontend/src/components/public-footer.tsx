@@ -169,7 +169,7 @@ export async function PublicFooter() {
                 </p>
               </div>
               <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
-              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi Agripassport</p>
+              <p className="text-xs text-white/60">Liên hệ hotline hoặc email để được đội vận hành HTXONLINE hỗ trợ nhanh.</p>
             </div>
           </div>
         </div>
