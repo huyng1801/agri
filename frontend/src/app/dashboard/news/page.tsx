@@ -1298,7 +1298,7 @@ export default function NewsDashboardPage() {
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
         <form
-          className="space-y-4"
+          className={cn('space-y-4', !isAdvancedMode && 'pb-36 sm:pb-40 xl:pb-0')}
           onSubmit={(event) => {
             event.preventDefault();
             saveArticle.mutate(undefined);
@@ -1573,6 +1573,7 @@ export default function NewsDashboardPage() {
                 <span>Tiêu đề</span>
                 <Input
                   data-testid="news-title-input"
+                  className="text-[15px] font-semibold placeholder:text-[15px] placeholder:text-slate-300 sm:text-base sm:font-normal sm:placeholder:text-base"
                   value={form.title}
                   onChange={(event) => update('title', event.target.value)}
                   placeholder="Ví dụ: Xoài Mỹ Xương vào vụ mới, sản lượng ổn định"
@@ -2907,15 +2908,15 @@ export default function NewsDashboardPage() {
           </div>
           ) : (
             <div className="fixed inset-x-0 bottom-[4.35rem] z-30 px-3 xl:hidden">
-              <div className="mx-auto max-w-3xl rounded-[1.35rem] border border-slate-200 bg-white/95 p-2 shadow-[0_10px_28px_rgba(15,23,42,0.14)] backdrop-blur">
+              <div className="mx-auto max-w-3xl rounded-[1.2rem] border border-slate-200 bg-white/95 p-1.5 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur">
                 <div className="flex items-center gap-2">
-                  <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-2">
+                  <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-1.5">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
                     <p className="truncate text-[13px] font-bold text-ink">
                       {canQuickPublish ? 'San sang dang ngay' : `${corePublishReady}/3 san sang`}
                     </p>
                     {!canQuickPublish && (
-                      <p className="mt-0.5 truncate text-[11px] text-slate-500">
+                      <p className="mt-0.5 truncate text-[10px] text-slate-500">
                         Thieu: {missingCoreItems.map((item) => item.label).join(', ')}
                       </p>
                     )}
@@ -2924,7 +2925,7 @@ export default function NewsDashboardPage() {
                     type="button"
                     variant="ghost"
                     onClick={() => setSimpleActionsExpanded((value) => !value)}
-                    className="min-h-11 px-3"
+                    className="min-h-10 px-3"
                     aria-expanded={simpleActionsExpanded}
                     aria-label={simpleActionsExpanded ? 'An tac vu phu' : 'Mo tac vu phu'}
                   >
@@ -2935,7 +2936,7 @@ export default function NewsDashboardPage() {
                     type="button"
                     onClick={() => quickPublishArticle.mutate()}
                     disabled={quickPublishArticle.isPending || !canQuickPublish}
-                    className="min-h-11 px-3"
+                    className="min-h-10 px-3"
                   >
                     <Sparkles size={18} aria-hidden="true" />
                     <span>{quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}</span>
