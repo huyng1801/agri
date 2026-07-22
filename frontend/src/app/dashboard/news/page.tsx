@@ -1339,7 +1339,7 @@ export default function NewsDashboardPage() {
                       </Button>
                     </>
                   )}
-                </div>) : (<p className="text-xs font-semibold text-leaf/90">Cuon xuong nhap 3 muc: tieu de, noi dung, anh bia.</p>)}
+                </div>) : null}
               </div>
               <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2.5 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
@@ -1379,44 +1379,38 @@ export default function NewsDashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="mt-2.5 grid grid-cols-3 gap-1.5 text-[11px] font-semibold text-slate-700">
-                    {corePublishItems.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
-                        className={cn(
-                          'rounded-2xl border px-2 py-2 text-center transition',
-                          item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900 hover:border-leaf'
-                        )}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
+                  <div className="mt-2.5 space-y-2">
+                    <div className="grid grid-cols-3 gap-1.5 text-[11px] font-semibold text-slate-700">
+                      {corePublishItems.map((item) => (
+                        <button
+                          key={item.id}
+                          type="button"
+                          onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
+                          className={cn(
+                            'rounded-2xl border px-2 py-2 text-center transition',
+                            item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900 hover:border-leaf'
+                          )}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                      <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-8 px-2.5 text-sm">
+                        <FileText size={18} aria-hidden="true" />
+                        Nhap bai
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-8 px-2.5 text-sm">
+                        <Image size={18} aria-hidden="true" />
+                        Anh bia
+                      </Button>
+                      <span className={cn('inline-flex items-center justify-center rounded-full px-2.5 text-[11px] font-bold', seoScoreClass(seo.score))}>
+                        SEO {seo.score}
+                      </span>
+                    </div>
                   </div>
                 )}
               </div>
-              {!isAdvancedMode && (
-                <div className="mt-2.5 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-2 shadow-sm lg:hidden">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den dang bai</p>
-                      <p className="mt-0.5 text-xs font-semibold text-slate-600">Nhap bai va dan cover truoc.</p>
-                    </div>
-                    <span className={cn('rounded-full px-2.5 py-1 text-[11px] font-bold', seoScoreClass(seo.score))}>SEO {seo.score}</span>
-                  </div>
-                  <div className="mt-2 grid grid-cols-2 gap-2">
-                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-8 px-2.5 text-sm">
-                      <FileText size={18} aria-hidden="true" />
-                      Nhap bai
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-8 px-2.5 text-sm">
-                      <Image size={18} aria-hidden="true" />
-                      Anh bia
-                    </Button>
-                  </div>
-                </div>
-              )}
               {!isAdvancedMode && (
                 <div className="mt-4 hidden rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm lg:block">
                   <div className="flex flex-wrap items-start justify-between gap-3">
