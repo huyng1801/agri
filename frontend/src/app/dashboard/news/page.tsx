@@ -392,6 +392,9 @@ export default function NewsDashboardPage() {
   const needsImportedOptimization = useMemo(() => detectImportedFormatting(form.bodyHtml), [form.bodyHtml]);
   const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
   const simpleTemplateShortcuts = articleTemplates.slice(0, 3);
+  const seoGreenCount = seoSignals.filter((item) => item.ok).length;
+  const simpleSeoMustFixes = seoSignals.filter((item) => !item.ok && item.priority === 'must').slice(0, 3);
+  const simpleSeoShouldFixes = seoSignals.filter((item) => !item.ok && item.priority === 'should').slice(0, 3);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
   const canQuickPublish = corePublishItems.every((item) => item.ok);
   const titleLength = form.title.trim().length;
@@ -1432,6 +1435,62 @@ export default function NewsDashboardPage() {
                       ))}
                     </div>
                   )}
+                  <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den SEO dang plugin</p>
+                        <p className="mt-1 text-sm font-bold text-ink">Thay vi tu doan, chi can xu ly tung muc duoi day roi dang.</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
+                        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800">{seoGreenCount}/{seoSignals.length} xanh</span>
+                      </div>
+                    </div>
+                    {simpleSeoMustFixes.length > 0 ? (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-900">Can lam ngay</p>
+                        {simpleSeoMustFixes.map((signal) => (
+                          <div key={`simple-must-${signal.id}`} className="rounded-xl border border-amber-200 bg-amber-50/90 p-3">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-bold text-ink">{signal.label}</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-700">{signal.detail}</p>
+                              </div>
+                              {signal.actionId && signal.actionLabel && (
+                                <Button type="button" variant="ghost" onClick={() => runSeoSignalAction(signal.actionId)}>
+                                  {signal.actionLabel}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-sm leading-6 text-emerald-900">
+                        Các tín hiệu SEO cốt lõi đang ổn. Bạn có thể đăng ngay hoặc tối ưu thêm phần gợi ý bên dưới.
+                      </div>
+                    )}
+                    {simpleSeoShouldFixes.length > 0 && (
+                      <div className="mt-3 space-y-2">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Nen bo sung them</p>
+                        {simpleSeoShouldFixes.map((signal) => (
+                          <div key={`simple-should-${signal.id}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-bold text-ink">{signal.label}</p>
+                                <p className="mt-1 text-sm leading-6 text-slate-700">{signal.detail}</p>
+                              </div>
+                              {signal.actionId && signal.actionLabel && (
+                                <Button type="button" variant="ghost" onClick={() => runSeoSignalAction(signal.actionId)}>
+                                  {signal.actionLabel}
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
                     <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
