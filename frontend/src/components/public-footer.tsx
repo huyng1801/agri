@@ -18,9 +18,7 @@ export async function PublicFooter() {
         <div className="grid gap-4 border-b border-white/15 py-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">HTXONLINE</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight">
-              Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.
-            </h2>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <a
