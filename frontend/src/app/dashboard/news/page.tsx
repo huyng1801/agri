@@ -1959,8 +1959,8 @@ export default function NewsDashboardPage() {
               <details className="group" open={simpleMetaOpen}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
                   <div>
-                    <p className="text-sm font-bold text-ink">Thong tin bo sung va SEO tu dong</p>
-                    <p className="text-sm text-slate-600">Slug, danh muc, mo ta ngan va link bai se duoc he thong ho tro tu dien neu ban bo trong.</p>
+                    <p className="text-sm font-bold text-ink">Duong dan, mo ta ngan va danh muc</p>
+                    <p className="text-sm text-slate-600">Chi can sua 3 muc nay khi can. Neu bo trong, he thong van co the tu dien khi ban bam Dang 1 cham.</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleMetaOpen ? 'Da mo' : 'Bo qua cung duoc'}</span>
@@ -1991,15 +1991,6 @@ export default function NewsDashboardPage() {
                       </Select>
                     </label>
                     <label className="space-y-1 text-sm font-semibold">
-                      <span>Trang thai</span>
-                      <Select data-testid="news-status-select" value={form.status} onChange={(event) => update('status', event.target.value as NewsForm['status'])}>
-                        <option value="DRAFT">Nhap</option>
-                        <option value="PUBLISHED">Da dang</option>
-                        <option value="SCHEDULED">Hen gio</option>
-                        <option value="ARCHIVED">Luu tru</option>
-                      </Select>
-                    </label>
-                    <label className="space-y-1 text-sm font-semibold">
                       <span>Mo ta ngan</span>
                       <Textarea
                         data-testid="news-excerpt-input"
@@ -2013,27 +2004,46 @@ export default function NewsDashboardPage() {
                     </label>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
-                    <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
-                    <p className="mt-2 text-xs font-semibold text-slate-500">Slug, mo ta ngan va the meta co the de he thong tu bo sung khi ban bam Dang 1 cham hoac Chuan bi publish.</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="rounded-xl border border-slate-200 bg-white p-3">
-                      <p className="text-slate-500">Do dai tieu de</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Dang 1 cham se tu bo sung</p>
+                        <p className="mt-1 text-sm font-semibold text-ink">
+                          {autofillPlan.length > 0
+                            ? `${autofillPlan.length} muc se duoc editor tu dien neu ban de trong.`
+                            : 'Slug, mo ta ngan va meta co ban da kha day du.'}
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">
+                        {publishReadiness.completed}/{publishReadiness.total} san sang
+                      </span>
                     </div>
-                    <div className="rounded-xl border border-slate-200 bg-white p-3">
-                      <p className="text-slate-500">Mo ta ngan</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
+                    <p className="mt-3 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
+                    {autofillPlan.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {autofillPlan.map((item) => (
+                          <span key={`simple-autofill-${item.id}`} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-700">
+                            {item.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
+                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                        <p className="text-slate-500">Tieu de</p>
+                        <p className="mt-1 text-lg font-bold text-ink">{(form.title || form.seoTitle).trim().length}</p>
+                      </div>
+                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                        <p className="text-slate-500">Mo ta</p>
+                        <p className="mt-1 text-lg font-bold text-ink">{excerptLength}</p>
+                      </div>
+                      <div className="rounded-xl border border-slate-200 bg-white p-3">
+                        <p className="text-slate-500">Doc</p>
+                        <p className="mt-1 text-lg font-bold text-ink">{readingMinutes}p</p>
+                      </div>
                     </div>
-                    <div className="rounded-xl border border-slate-200 bg-white p-3">
-                      <p className="text-slate-500">Thoi gian doc</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phut</p>
-                    </div>
-                    <div className="rounded-xl border border-slate-200 bg-white p-3">
-                      <p className="text-slate-500">San sang publish</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
-                    </div>
+                    <p className="mt-3 text-xs font-semibold text-slate-500">
+                      Trang thai publish se do cac nut ben duoi quyet dinh, vi vay simple mode khong can chon tay o day nua.
+                    </p>
                   </div>
                 </div>
               </details>
