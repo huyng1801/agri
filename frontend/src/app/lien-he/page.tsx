@@ -99,7 +99,7 @@ export default async function ContactPage() {
                 <div className="mt-5 grid gap-2 sm:grid-cols-3">
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Phản hồi</p>
-                    <p className="mt-1 text-lg font-bold text-ink">Trong ngay</p>
+                    <p className="mt-1 text-lg font-bold text-ink">Trong ngày</p>
                   </div>
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Triển khai</p>
@@ -107,7 +107,7 @@ export default async function ContactPage() {
                   </div>
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hỗ trợ</p>
-                    <p className="mt-1 text-lg font-bold text-ink">Don COD</p>
+                    <p className="mt-1 text-lg font-bold text-ink">Đơn COD</p>
                   </div>
                 </div>
               </div>
@@ -277,7 +277,7 @@ export default async function ContactPage() {
                 <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ và liên hệ trên hồ sơ</p>
                   <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Dien thoai: {legalEntityProfile.legalPhone}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">Điện thoại: {legalEntityProfile.legalPhone}</p>
                   <p className="text-sm leading-6 text-slate-600">Email: {legalEntityProfile.legalEmail}</p>
                 </div>
               </div>
@@ -288,11 +288,11 @@ export default async function ContactPage() {
               <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">Kênh hỗ trợ công khai và hồ sơ pháp lý được tách rõ</h2>
               <div className="mt-4 grid gap-3">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline cong khai tren website</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline công khai trên website</p>
                   <p className="mt-2 text-lg font-medium text-ink">{siteProfile.hotlineDisplay}</p>
                 </div>
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email ho tro tren website</p>
+                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email hỗ trợ trên website</p>
                   <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-6 text-slate-600">

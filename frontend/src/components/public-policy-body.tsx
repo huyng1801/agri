@@ -24,10 +24,10 @@ export function PublicPolicyBody({
       <Panel className="space-y-3 border-slate-200 bg-slate-50/90">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Muc luc nhanh</p>
-            <p className="mt-1 text-sm font-bold text-ink">Chon dung muc can doc truoc, de quet nhanh tren mobile thay vi cuon het mot mach.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mục lục nhanh</p>
+            <p className="mt-1 text-sm font-bold text-ink">Chọn đúng mục cần đọc trước, để quét nhanh trên mobile thay vì cuộn hết một mạch.</p>
           </div>
-          <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{sections.length} muc</span>
+          <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{sections.length} mục</span>
         </div>
         <div className="flex flex-wrap gap-2">
           {quickLinks.map((item) => (
@@ -105,7 +105,7 @@ function PolicyContactCard({ bullets }: { bullets: string[] }) {
             className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf"
           >
             <Mail size={16} aria-hidden="true" />
-            Gui email
+            Gửi email
           </a>
         ) : null}
       </div>

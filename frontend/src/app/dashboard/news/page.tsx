@@ -2197,7 +2197,7 @@ export default function NewsDashboardPage() {
                       <p className="mt-0.5 text-[11px] leading-4">Ctrl+V ảnh hoặc văn bản. Ảnh vừa paste có thể dùng làm cover.</p>
                       <div className="mt-1.5 flex flex-wrap gap-1.5 text-[10px] font-semibold text-leaf">
                         <span className="rounded-full bg-white px-2 py-1 shadow-sm">Nhập nội dung</span>
-                        <span className="rounded-full bg-white px-2 py-1 shadow-sm">Ctrl+V anh</span>
+                        <span className="rounded-full bg-white px-2 py-1 shadow-sm">Ctrl+V ảnh</span>
                         <span className="rounded-full bg-white px-2 py-1 shadow-sm">Ảnh thành cover</span>
                       </div>
                     </div>
