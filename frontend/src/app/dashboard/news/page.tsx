@@ -1258,7 +1258,7 @@ export default function NewsDashboardPage() {
                 isAdvancedMode ? 'bg-ink text-white shadow-sm' : 'text-slate-600 hover:text-ink'
               )}
             >
-              Nang cao
+              Nâng cao
             </button>
           </div>
           <Button type="button" variant="ghost" onClick={() => articles.refetch()} aria-label="Tải lại">
@@ -1453,7 +1453,7 @@ export default function NewsDashboardPage() {
                     </Button>
                     <Button type="button" variant="ghost" onClick={jumpToSimpleSeo}>
                       <Target size={18} aria-hidden="true" />
-                      Xem diem SEO
+                      Xem điểm SEO
                     </Button>
                     <Button type="button" variant="ghost" onClick={jumpToSimplePreview}>
                       <Eye size={18} aria-hidden="true" />
