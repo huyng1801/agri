@@ -2303,7 +2303,7 @@ export default function NewsDashboardPage() {
                   >
                     {form.coverImageUrl ? 'Đã có cover' : 'Thiếu cover'}
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
                 </div>
               </summary>
                 <div className="space-y-2.5 border-t border-slate-100 px-4 pb-4 pt-4">
@@ -2414,7 +2414,7 @@ export default function NewsDashboardPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleMetaOpen ? 'Đã mở' : 'Có thể bỏ qua'}</span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
                   </div>
                 </summary>
                 <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
@@ -2750,7 +2750,7 @@ export default function NewsDashboardPage() {
                   <p className="text-sm font-bold text-ink">Lịch đăng, tags và tùy chọn hiển thị</p>
                   <p className="text-sm text-slate-600">Chỉ mở mục này khi cần lên lịch, thêm tag hoặc đẩy bài ra trang chủ.</p>
                 </div>
-                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
               </summary>
               <div className="border-t border-slate-100 px-4 pb-4 pt-4">
                 <div className="grid gap-3 md:grid-cols-2">
