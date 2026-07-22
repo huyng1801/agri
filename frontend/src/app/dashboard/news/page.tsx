@@ -3097,7 +3097,7 @@ export default function NewsDashboardPage() {
                         <p className="mt-1 text-xs leading-5 text-slate-600">{step.actionLabel}</p>
                       </div>
                       <Button type="button" variant="ghost" onClick={() => runNextStepSuggestion(step.id)}>
-                        Mo
+                        Mở
                       </Button>
                     </div>
                   )}
