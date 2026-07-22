@@ -2332,7 +2332,7 @@ export default function NewsDashboardPage() {
             </Button>
           </div>
           ) : (
-            <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
+            <div className="sticky bottom-[calc(5rem+var(--safe-bottom))] z-20 grid grid-cols-2 gap-2 rounded-2xl border border-slate-200/80 bg-white/95 p-2 shadow-soft backdrop-blur lg:bottom-4">
               <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
                 <Sparkles size={18} aria-hidden="true" />
                 {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
@@ -2340,10 +2340,6 @@ export default function NewsDashboardPage() {
               <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
                 <Save size={18} aria-hidden="true" />
                 {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
-              </Button>
-              <Button type="button" variant="ghost" onClick={() => setAuthorMode('advanced')}>
-                <Target size={18} aria-hidden="true" />
-                Mo nang cao
               </Button>
             </div>
           )}
