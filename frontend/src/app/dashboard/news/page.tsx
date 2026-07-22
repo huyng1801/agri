@@ -186,6 +186,7 @@ type CorePublishItem = {
 
 type EditorMode = 'visual' | 'html';
 type AuthorMode = 'simple' | 'advanced';
+type EditorAssistKind = 'pasted-image' | 'pasted-content' | 'optimized-content' | 'prepared-publish';
 
 type LocalDraftPayload = {
   savedAt: string;
@@ -361,6 +362,7 @@ export default function NewsDashboardPage() {
   const [draftSavedAt, setDraftSavedAt] = useState('');
   const [localDraft, setLocalDraft] = useState<LocalDraftPayload | null>(null);
   const [draggingEditor, setDraggingEditor] = useState(false);
+  const [editorAssist, setEditorAssist] = useState<{ kind: EditorAssistKind; title: string; detail: string } | null>(null);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -760,6 +762,11 @@ export default function NewsDashboardPage() {
     if (!url) return;
     const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
     insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
+    setEditorAssist({
+      kind: 'pasted-image',
+      title: 'Anh vua duoc chen vao bai',
+      detail: 'Ban co the go tiep noi dung, them alt/cover neu can, roi bam Chuan bi publish hoac Dang 1 cham.'
+    });
   }
 
   async function handleVisualPaste(event: ClipboardEvent<HTMLDivElement>) {
@@ -774,6 +781,11 @@ export default function NewsDashboardPage() {
       if (!url) return;
       const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
       insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
+      setEditorAssist({
+        kind: 'pasted-image',
+        title: 'Anh vua duoc chen vao editor',
+        detail: 'He thong da upload anh len bai viet. Neu muon dep hon khi chia se, ban co the them cover va bam SEO nhanh.'
+      });
       return;
     }
 
@@ -785,6 +797,13 @@ export default function NewsDashboardPage() {
     const cleaned = html ? sanitizeImportedHtml(html) : plainTextToEditorHtml(text);
     if (!cleaned.trim()) return;
     insertHtmlIntoVisualEditor(cleaned);
+    setEditorAssist({
+      kind: 'pasted-content',
+      title: html ? 'Noi dung da duoc dan va lam sach co ban' : 'Noi dung da duoc chen vao editor',
+      detail: html
+        ? 'Neu day la bai tu Word hoac Google Docs, ban nen bam Toi uu bai vua dan de he thong don bo cuc, them mo bai va sua SEO nhanh.'
+        : 'Ban co the xem lai bo cuc, them anh va bam Chuan bi publish khi da du noi dung.'
+    });
   }
 
   async function handleDroppedFiles(fileList: FileList | null) {
@@ -796,6 +815,11 @@ export default function NewsDashboardPage() {
     const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
     if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
     else insertHtml(imageHtml);
+    setEditorAssist({
+      kind: 'pasted-image',
+      title: 'Anh vua duoc tha vao bai',
+      detail: 'Anh da duoc upload va chen vao noi dung. Ban co the tiep tuc viet hoac bam Chuan bi publish.'
+    });
   }
 
   async function handleCoverFiles(fileList: FileList | null) {
@@ -934,10 +958,20 @@ export default function NewsDashboardPage() {
         visualEditorRef.current.innerHTML = nextForm.bodyHtml || '<p></p>';
       }
     });
+    setEditorAssist({
+      kind: 'optimized-content',
+      title: 'Bai vua dan da duoc toi uu',
+      detail: 'He thong da don HTML, bo sung bo cuc co ban va dien cac truong SEO/social con thieu neu co the.'
+    });
   }
 
   function preparePostForPublish() {
     setForm((current) => buildPreparedNewsForm(current));
+    setEditorAssist({
+      kind: 'prepared-publish',
+      title: 'Ban nhap da duoc chuan bi de dang',
+      detail: 'Slug, mo ta, social, alt text va mot phan bo cuc da duoc tu bo sung. Hay xem lai nhanh roi bam Dang 1 cham.'
+    });
   }
 
   function applyFocusKeywordSuggestion(keyword: string) {
@@ -992,6 +1026,11 @@ export default function NewsDashboardPage() {
       if (editorMode === 'visual' && visualEditorRef.current) {
         visualEditorRef.current.innerHTML = cleaned;
       }
+    });
+    setEditorAssist({
+      kind: 'optimized-content',
+      title: 'Noi dung da duoc lam sach',
+      detail: 'The rac tu Word/Docs da duoc rut gon. Neu bai can dang nhanh, ban co the bam SEO nhanh hoac Chuan bi publish tiep.'
     });
   }
 
@@ -1893,6 +1932,39 @@ export default function NewsDashboardPage() {
                   <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
                     <p className="font-bold text-ink">Dang upload anh vao noi dung bai viet</p>
                     <p className="mt-1 leading-6">Ban co the tiep tuc go noi dung. Anh se duoc chen vao editor ngay sau khi upload xong.</p>
+                  </div>
+                )}
+                {editorAssist && (
+                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 px-3 py-3 text-sm text-emerald-950">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="font-bold text-ink">{editorAssist.title}</p>
+                        <p className="mt-1 leading-6">{editorAssist.detail}</p>
+                      </div>
+                      <Button type="button" variant="ghost" onClick={() => setEditorAssist(null)}>
+                        An goi y nay
+                      </Button>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {(editorAssist.kind === 'pasted-content' || editorAssist.kind === 'optimized-content') && (
+                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                          <Sparkles size={18} aria-hidden="true" />
+                          SEO nhanh
+                        </Button>
+                      )}
+                      {(editorAssist.kind === 'pasted-image' || editorAssist.kind === 'optimized-content') && (
+                        <Button type="button" variant="ghost" onClick={preparePostForPublish}>
+                          <Sparkles size={18} aria-hidden="true" />
+                          Chuan bi publish
+                        </Button>
+                      )}
+                      {editorAssist.kind === 'prepared-publish' && (
+                        <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
+                          <Sparkles size={18} aria-hidden="true" />
+                          {quickPublishArticle.isPending ? 'Dang dang 1 cham' : 'Dang 1 cham'}
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 )}
                 <div
