@@ -135,16 +135,16 @@ export default function SettingsPage() {
   const watchedContactTitle = publicForm.watch('contactTitle');
   const watchedFaqText = publicForm.watch('faqText');
   const publicPageCards = [
-    { id: 'home', label: 'Trang ch?', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
-    { id: 'intro', label: 'Gi?i thi?u', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gi?i thi?u ng?n g?n cho ng??i m?i v?o xem' },
-    { id: 'about', label: 'V? ch?ng t?i', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang n?ng l?c, ph?p l? v? th?ng tin li?n h? m? r?ng' },
-    { id: 'contact', label: 'Li?n h?', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, ??a ch?, map v? FAQ' }
+    { id: 'home', label: 'Trang chủ', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tìm kiếm và CTA đầu tiên' },
+    { id: 'intro', label: 'Giới thiệu', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang giới thiệu ngắn gọn cho người mới vào xem' },
+    { id: 'about', label: 'Về chúng tôi', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang năng lực, pháp lý và thông tin liên hệ mở rộng' },
+    { id: 'contact', label: 'Liên hệ', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, địa chỉ, map và FAQ' }
   ];
   const policyPageCards = [
-    { id: 'terms', label: 'Dieu khoan su dung', href: '/dieu-khoan-su-dung' },
-    { id: 'privacy', label: 'Chinh sach bao mat', href: '/chinh-sach-bao-mat' },
-    { id: 'returns', label: 'Chinh sach doi tra', href: '/chinh-sach-doi-tra' },
-    { id: 'operations', label: 'Chinh sach van hanh', href: '/chinh-sach-van-hanh' }
+    { id: 'terms', label: 'Điều khoản sử dụng', href: '/dieu-khoan-su-dung' },
+    { id: 'privacy', label: 'Chính sách bảo mật', href: '/chinh-sach-bao-mat' },
+    { id: 'returns', label: 'Chính sách đổi trả', href: '/chinh-sach-doi-tra' },
+    { id: 'operations', label: 'Chính sách vận hành', href: '/chinh-sach-van-hanh' }
   ];
   const faqCount = (watchedFaqText || '')
     .split('\n')
@@ -202,7 +202,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold">C?i ??t h? th?ng</h1>
+      <h1 className="text-2xl font-bold">Cài đặt hệ thống</h1>
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
           <button
@@ -222,12 +222,12 @@ export default function SettingsPage() {
           <form
             className="grid gap-3 sm:grid-cols-2"
             onSubmit={profileForm.handleSubmit((values) =>
-              saveMutation.mutate({ key: 'system.profile', value: values, description: 'Ho so he thong' })
+              saveMutation.mutate({ key: 'system.profile', value: values, description: 'Hồ sơ hệ thống' })
             )}
           >
-            <Field label="Ten he thong"><Input {...profileForm.register('appName')} /></Field>
-            <Field label="Email ho tro"><Input type="email" {...profileForm.register('supportEmail')} /></Field>
-            <Field label="Mui gio"><Input {...profileForm.register('timezone')} placeholder="Asia/Ho_Chi_Minh" /></Field>
+            <Field label="Tên hệ thống"><Input {...profileForm.register('appName')} /></Field>
+            <Field label="Email hỗ trợ"><Input type="email" {...profileForm.register('supportEmail')} /></Field>
+            <Field label="Múi giờ"><Input {...profileForm.register('timezone')} placeholder="Asia/Ho_Chi_Minh" /></Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -236,19 +236,19 @@ export default function SettingsPage() {
       {tab === 'public' && (
         <div className="space-y-4">
           <Panel className="space-y-3 border-mint/70 bg-mint/40">
-            <h2 className="text-lg font-bold text-ink">C?p nh?t n?i dung public kh?ng c?n s?a code</h2>
+            <h2 className="text-lg font-bold text-ink">Cập nhật nội dung public không cần sửa code</h2>
             <p className="text-sm leading-6 text-slate-700">
-              Tab n?y d?ng ?? s?a logo, hotline, email, ??a ch?, b?n ??, FAQ v? n?i dung hero c?c trang public. H? s? HTX/s?n ph?m s?a trong dashboard,
-              con bai blog public sua tai khu vuc Tin tuc cua Super Admin.
+              Tab này dùng để sửa logo, hotline, email, địa chỉ, bản đồ, FAQ và nội dung hero các trang public. Hồ sơ HTX/sản phẩm sửa trong dashboard,
+              còn bài blog public sửa tại khu vực Tin tức của Super Admin.
             </p>
             <div className="grid gap-2 md:grid-cols-3">
               {[
-                ['1', 'S?a li?n h? v? footer', 'C?p nh?t hotline, email, ??a ch? v? b?n ?? ?? hi?n th? ??ng nh?t tr?n footer v? trang li?n h?.'],
-                ['2', 'D?n ?nh v?o t?ng m?c', 'Ch? c?n Ctrl+V ho?c k?o th? ?nh v?o ? ?nh l? h? th?ng t? upload v? c?p nh?t URL.'],
-                ['3', 'M? trang public ?? xem', 'Sau khi l?u, b?m c?c n?t xem nhanh b?n d??i ?? ki?m tra ngay tr?n mobile/desktop.']
+                ['1', 'Sửa liên hệ và footer', 'Cập nhật hotline, email, địa chỉ và bản đồ để hiển thị đồng nhất trên footer và trang liên hệ.'],
+                ['2', 'Dán ảnh vào từng mục', 'Chỉ cần Ctrl+V hoặc kéo thả ảnh vào ô ảnh là hệ thống tự upload và cập nhật URL.'],
+                ['3', 'Mở trang public để xem', 'Sau khi lưu, bấm các nút xem nhanh bên dưới để kiểm tra ngay trên mobile/desktop.']
               ].map(([step, title, text]) => (
                 <div key={step} className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Buoc {step}</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Bước {step}</p>
                   <p className="mt-1 text-sm font-bold text-ink">{title}</p>
                   <p className="mt-1 text-sm leading-6 text-slate-600">{text}</p>
                 </div>
@@ -256,15 +256,15 @@ export default function SettingsPage() {
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <Link href="/dashboard/news" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                So?n blog nhanh
+                Soạn blog nhanh
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/cooperatives" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                S?a h? s? HTX
+                Sửa hồ sơ HTX
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/products" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                S?a s?n ph?m
+                Sửa sản phẩm
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
             </div>
@@ -272,10 +272,10 @@ export default function SettingsPage() {
               <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">B?ng ?i?u khi?n n?i dung public</p>
-                    <p className="mt-1 text-sm font-bold text-ink">M?i trang public ch?nh ??u c? n?t xem nhanh v? m? t? ng?n ?? b?n s?a ??ng ch?, kh?ng c?n nh? c?u tr?c code.</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng điều khiển nội dung public</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Mỗi trang public chính đều có nút xem nhanh và mô tả ngắn để bạn sửa đúng chỗ, không cần nhớ cấu trúc code.</p>
                   </div>
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chinh</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chính</span>
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   {publicPageCards.map((item) => (
@@ -297,36 +297,36 @@ export default function SettingsPage() {
               <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Th?ng tin chu?n t? docs</p>
-                    <p className="mt-1 text-sm font-bold text-ink">??a ch?, hotline v? email n?y ?ang ???c d?ng xuy?n su?t cho footer, li?n h? v? c?c trang ch?nh s?ch.</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Thông tin chuẩn từ docs</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Địa chỉ, hotline và email này đang được dùng xuyên suốt cho footer, liên hệ và các trang chính sách.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', contactMatchesStandard ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
-                    {contactMatchesStandard ? '?ang ??ng chu?n' : 'C?n ??i chi?u l?i'}
+                    {contactMatchesStandard ? 'Đang đúng chuẩn' : 'Cần đối chiếu lại'}
                   </span>
                 </div>
                 <div className="mt-3 space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-700">
-                  <p><span className="font-bold text-ink">Dia chi:</span> {standardAddress}</p>
+                  <p><span className="font-bold text-ink">Địa chỉ:</span> {standardAddress}</p>
                   <p><span className="font-bold text-ink">Hotline:</span> {standardHotlineDisplay}</p>
                   <p><span className="font-bold text-ink">Email:</span> {standardSupportEmail}</p>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Button type="button" variant="ghost" onClick={applyStandardContactBundle}>
-                    ?p d?ng b? th?ng tin chu?n
+                    Áp dụng bộ thông tin chuẩn
                   </Button>
                   <Link href="/lien-he" target="_blank" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                    Xem trang li?n h?
+                    Xem trang liên hệ
                   </Link>
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ ?ang c?</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ đang có</p>
                     <p className="mt-1 text-lg font-bold text-ink">{faqCount}</p>
-                    <p className="mt-1 text-sm leading-5 text-slate-600">M?i d?ng trong ? FAQ s? ra 1 c?p h?i ??p tr?n trang li?n h?.</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">Mỗi dòng trong ô FAQ sẽ ra 1 cặp hỏi đáp trên trang liên hệ.</p>
                   </div>
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Trang policy</p>
                     <p className="mt-1 text-lg font-bold text-ink">4 trang</p>
-                    <p className="mt-1 text-sm leading-5 text-slate-600">?i?u kho?n, b?o m?t, ??i tr? v? v?n h?nh s? t? ??ng l?y b? th?ng tin li?n h? ? ??y.</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">Điều khoản, bảo mật, đổi trả và vận hành sẽ tự động lấy bộ thông tin liên hệ ở đây.</p>
                   </div>
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                       contactImageAlt: values.contactImageAlt
                     }
                   },
-                  description: 'Thong tin public san'
+                  description: 'Thông tin public sàn'
                 });
               })}
             >
@@ -403,7 +403,7 @@ export default function SettingsPage() {
                     <p className="text-sm font-bold text-ink">Thông tin liên hệ và footer</p>
                     <p className="mt-1 text-sm leading-6 text-slate-600">Đây là nơi chỉnh hotline, email, địa chỉ, logo, FAQ và phần bản đồ hiển thị trên footer/trang liên hệ.</p>
                     <p className="mt-2 rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
-                      Zalo da duoc bo. Neu khong dung Messenger thi co the de trong o Messenger URL.
+                      Zalo đã được bỏ. Nếu không dùng Messenger thì có thể để trống ở Messenger URL.
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -412,22 +412,22 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <Field label="Ten hien thi">
+                  <Field label="Tên hiển thị">
                     <Input {...publicForm.register('appName')} placeholder="HTXONLINE" />
                   </Field>
                   <Field label="Hotline">
                     <Input {...publicForm.register('hotline')} placeholder="0907001200" />
                   </Field>
-                  <Field label="Hotline hien thi">
+                  <Field label="Hotline hiển thị">
                     <Input {...publicForm.register('hotlineDisplay')} placeholder="0907 001 200" />
                   </Field>
-                  <Field label="Email lien he">
+                  <Field label="Email liên hệ">
                     <Input type="email" {...publicForm.register('supportEmail')} placeholder="Agripassport@gmail.com" />
                   </Field>
-                  <Field label="Dia chi" className="sm:col-span-2">
-                    <Input {...publicForm.register('address')} placeholder="So 130, To 8, Ap My Xuong, Xa My Tho, Tinh Dong Thap" />
+                  <Field label="Địa chỉ" className="sm:col-span-2">
+                    <Input {...publicForm.register('address')} placeholder="Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp" />
                   </Field>
-                  <Field label="M? nh?ng b?n ?? (iframe URL)">
+                  <Field label="Mã nhúng bản đồ (iframe URL)">
                     <Input {...publicForm.register('mapEmbedUrl')} placeholder="https://www.openstreetmap.org/export/embed.html?..." />
                   </Field>
                   <Field label="Messenger URL">
@@ -453,9 +453,9 @@ export default function SettingsPage() {
                   </Field>
                   {publicForm.watch('mapEmbedUrl') && (
                     <div className="sm:col-span-2 rounded-2xl border border-slate-200 bg-white p-3">
-                      <p className="text-sm font-bold text-ink">Preview khu b?n ?? / footer</p>
+                      <p className="text-sm font-bold text-ink">Preview khu bản đồ / footer</p>
                       <p className="mt-1 text-sm leading-6 text-slate-600">
-                        N?u iframe map b? ch?n tr?n m?t thi?t b? n?o ??, footer v?n s? hi?n preview ??a ?i?m v? n?t m? Google Maps. ? b?n d??i l? iframe hi?n t?i ?? ??i chi?u nhanh.
+                        Nếu iframe map bị chặn trên một thiết bị nào đó, footer vẫn sẽ hiện preview địa điểm và nút mở Google Maps. Ở bên dưới là iframe hiện tại để đối chiếu nhanh.
                       </p>
                       <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                         <iframe
@@ -468,14 +468,14 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   )}
-                  <Field label="FAQ (question|answer moi dong)" className="sm:col-span-2">
+                  <Field label="FAQ (question|answer mỗi dòng)" className="sm:col-span-2">
                     <Textarea
                       rows={5}
                       {...publicForm.register('faqText')}
-                      placeholder={'HTXONLINE ho tro gi?|Ho tro dang san, QR Passport va don hang COD.\nLam sao de dang bai blog?|Mo dashboard Tin tuc, dan noi dung va bam ??ng 1 ch?m.'}
+                      placeholder={'HTXONLINE hỗ trợ gì?|Hỗ trợ đăng sản, QR Passport và đơn hàng COD.\nLàm sao để đăng bài blog?|Mở dashboard Tin tức, dán nội dung và bấm Đăng 1 chạm.'}
                     />
                     <p className="text-xs font-semibold text-slate-500">
-                      M?i d?ng l? 1 c?p <span className="font-bold">c?u h?i|tr? l?i</span>. Vi du: <span className="font-bold">HTXONLINE l? g??|N?n t?ng s? cho h?p t?c x?.</span>
+                      Mỗi dòng là 1 cặp <span className="font-bold">câu hỏi|trả lời</span>. Ví dụ: <span className="font-bold">HTXONLINE là gì?|Nền tảng số cho hợp tác xã.</span>
                     </p>
                   </Field>
                 </div>
@@ -487,16 +487,16 @@ export default function SettingsPage() {
                     <p className="text-sm font-bold text-ink">Trang chủ</p>
                     <p className="mt-1 text-sm text-slate-600">Sửa badge, tiêu đề, mô tả và ảnh hero của trang đầu tiên người mua nhìn thấy.</p>
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} placeholder="N?n t?ng s? cho h?p t?c x?" /></Field>
-                  <Field label="Ti?u ?? trang ch?"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?." /></Field>
-                  <Field label="M? t? trang ch?" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('homeDescription')} placeholder="Cong khai san pham, mo QR Passport va van hanh don COD tren cung mot he thong gon, ro, de tin tuong." />
+                  <Field label="Badge trang chủ"><Input {...publicForm.register('homeBadge')} placeholder="Nền tảng số cho hợp tác xã" /></Field>
+                  <Field label="Tiêu đề trang chủ"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số." /></Field>
+                  <Field label="Mô tả trang chủ" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('homeDescription')} placeholder="Công khai sản phẩm, mở QR Passport và vận hành đơn COD trên cùng một hệ thống gọn, rõ, dễ tin tưởng." />
                   </Field>
                   <ImageField
-                    label="?nh trang ch?"
+                    label="Ảnh trang chủ"
                     urlValue={publicForm.watch('homeImageUrl')}
                     altValue={publicForm.watch('homeImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('homeImageUrl', value)}
@@ -513,30 +513,30 @@ export default function SettingsPage() {
                     <p className="mt-1 text-sm text-slate-600">Hai trang này dùng để kể câu chuyện thương hiệu, năng lực và định hướng của HTXONLINE.</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Gi?i thi?u</Link>
-                    <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem V? ch?ng t?i</Link>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                    <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Giới thiệu</Link>
+                    <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Về chúng tôi</Link>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
                   </div>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Ti?u ?? trang gi?i thi?u"><Input {...publicForm.register('introTitle')} placeholder="Gi?i thi?u HTXONLINE" /></Field>
-                  <Field label="M? t? trang gi?i thi?u" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="N?n t?ng s?n n?ng s?n s? v? QR truy xu?t ngu?n g?c cho h?p t?c x? Vi?t Nam." />
+                  <Field label="Tiêu đề trang giới thiệu"><Input {...publicForm.register('introTitle')} placeholder="Giới thiệu HTXONLINE" /></Field>
+                  <Field label="Mô tả trang giới thiệu" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('introDescription')} placeholder="Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam." />
                   </Field>
                   <ImageField
-                    label="?nh trang gi?i thi?u"
+                    label="Ảnh trang giới thiệu"
                     urlValue={publicForm.watch('introImageUrl')}
                     altValue={publicForm.watch('introImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('introImageUrl', value)}
                     onAltChange={(value) => publicForm.setValue('introImageAlt', value)}
                     onUpload={(file) => uploadPublicImage(file, 'introImageUrl')}
                   />
-                  <Field label="Ti?u ?? trang v? ch?ng t?i"><Input {...publicForm.register('aboutTitle')} placeholder="Ch?ng t?i l? HTXONLINE" /></Field>
-                  <Field label="M? t? trang v? ch?ng t?i" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('aboutDescription')} placeholder="S?n n?ng s?n s? gi?p h?p t?c x? k?t n?i th? tr??ng, minh b?ch ngu?n g?c v? b?n h?ng COD hi?u qu?." />
+                  <Field label="Tiêu đề trang về chúng tôi"><Input {...publicForm.register('aboutTitle')} placeholder="Chúng tôi là HTXONLINE" /></Field>
+                  <Field label="Mô tả trang về chúng tôi" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('aboutDescription')} placeholder="Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả." />
                   </Field>
                   <ImageField
-                    label="?nh trang v? ch?ng t?i"
+                    label="Ảnh trang về chúng tôi"
                     urlValue={publicForm.watch('aboutImageUrl')}
                     altValue={publicForm.watch('aboutImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('aboutImageUrl', value)}
@@ -552,15 +552,15 @@ export default function SettingsPage() {
                     <p className="text-sm font-bold text-ink">Trang liên hệ</p>
                     <p className="mt-1 text-sm text-slate-600">Sửa lời kêu gọi, mô tả hỗ trợ và ảnh minh họa của trang liên hệ.</p>
                   </div>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Ti?u ?? trang li?n h?"><Input {...publicForm.register('contactTitle')} placeholder="H?y ?? HTXONLINE k?t n?i v? ??ng h?nh c?ng h?p t?c x? c?a b?n" /></Field>
-                  <Field label="M? t? trang li?n h?" className="sm:col-span-2">
-                    <Textarea rows={3} {...publicForm.register('contactDescription')} placeholder="T? v?n tham gia s?n, QR truy xu?t ngu?n g?c, h? tr? ??n h?ng COD v? v?n h?nh s? cho HTX." />
+                  <Field label="Tiêu đề trang liên hệ"><Input {...publicForm.register('contactTitle')} placeholder="Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn" /></Field>
+                  <Field label="Mô tả trang liên hệ" className="sm:col-span-2">
+                    <Textarea rows={3} {...publicForm.register('contactDescription')} placeholder="Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX." />
                   </Field>
                   <ImageField
-                    label="?nh trang li?n h?"
+                    label="Ảnh trang liên hệ"
                     urlValue={publicForm.watch('contactImageUrl')}
                     altValue={publicForm.watch('contactImageAlt')}
                     onUrlChange={(value) => publicForm.setValue('contactImageUrl', value)}
@@ -579,10 +579,10 @@ export default function SettingsPage() {
         <Panel>
           <form
             className="grid gap-3 sm:grid-cols-2"
-            onSubmit={emailForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.email', value: values, description: 'Cau hinh email' }))}
+            onSubmit={emailForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.email', value: values, description: 'Cấu hình email' }))}
           >
-            <Field label="Ten nguoi gui"><Input {...emailForm.register('fromName')} /></Field>
-            <Field label="Email gui"><Input type="email" {...emailForm.register('fromEmail')} /></Field>
+            <Field label="Tên người gửi"><Input {...emailForm.register('fromName')} /></Field>
+            <Field label="Email gửi"><Input type="email" {...emailForm.register('fromEmail')} /></Field>
             <Field label="SMTP host"><Input {...emailForm.register('smtpHost')} /></Field>
             <Field label="SMTP port"><Input {...emailForm.register('smtpPort')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
@@ -592,14 +592,14 @@ export default function SettingsPage() {
 
       {tab === 'r2' && (
         <Panel className="space-y-4">
-          <p className="text-sm text-slate-600">Secret R2 v?n l?y t? bi?n m?i tr??ng production. Tab n?y l?u metadata v? test k?t n?i.</p>
+          <p className="text-sm text-slate-600">Secret R2 vẫn lấy từ biến môi trường production. Tab này lưu metadata và test kết nối.</p>
           <form
             className="grid gap-3 sm:grid-cols-2"
             onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}
           >
             <Field label="Bucket"><Input {...r2Form.register('bucket')} placeholder={process.env.NEXT_PUBLIC_R2_BUCKET || 'agri-passport'} /></Field>
             <Field label="Public base URL"><Input {...r2Form.register('publicBaseUrl')} /></Field>
-            <Field label="Ghi chu" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
+            <Field label="Ghi chú" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
             <div className="flex flex-wrap gap-2 sm:col-span-2">
               <SaveButton pending={saveMutation.isPending} />
               <Button type="button" variant="ghost" data-testid="settings-test-r2-button" onClick={() => testR2.mutate()} disabled={testR2.isPending}>
@@ -616,9 +616,9 @@ export default function SettingsPage() {
         <Panel>
           <form
             className="grid gap-3 sm:grid-cols-2"
-            onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'B?o m?t' }))}
+            onSubmit={securityForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.security', value: values, description: 'Bảo mật' }))}
           >
-            <Field label="Session (gio)"><Input {...securityForm.register('sessionHours')} /></Field>
+            <Field label="Session (giờ)"><Input {...securityForm.register('sessionHours')} /></Field>
             <Field label="Rate limit max"><Input {...securityForm.register('rateLimitMax')} /></Field>
             <Field label="CORS origins" className="sm:col-span-2">
               <Textarea {...securityForm.register('corsOrigins')} placeholder="https://htxonline.vn,https://admin.htxonline.vn" />
@@ -633,12 +633,12 @@ export default function SettingsPage() {
           <form
             className="space-y-3"
             onSubmit={notificationsForm.handleSubmit((values) =>
-              saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Th?ng b?o' })
+              saveMutation.mutate({ key: 'system.notifications', value: values, description: 'Thông báo' })
             )}
           >
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Canh bao don hang moi</label>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('invoiceAlerts')} /> Canh bao hoa don qua han</label>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Canh bao lien he public</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Cảnh báo đơn hàng mới</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('invoiceAlerts')} /> Cảnh báo hóa đơn quá hạn</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Cảnh báo liên hệ public</label>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -650,9 +650,9 @@ export default function SettingsPage() {
             className="space-y-3"
             onSubmit={backupForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.backup', value: values, description: 'Backup' }))}
           >
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bat backup tu dong</label>
-            <Field label="Lich cron"><Input {...backupForm.register('schedule')} placeholder="0 2 * * *" /></Field>
-            <Field label="Giu (ngay)"><Input {...backupForm.register('retentionDays')} /></Field>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bật backup tự động</label>
+            <Field label="Lịch cron"><Input {...backupForm.register('schedule')} placeholder="0 2 * * *" /></Field>
+            <Field label="Giữ (ngày)"><Input {...backupForm.register('retentionDays')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -682,12 +682,12 @@ export default function SettingsPage() {
 }
 
 const tabs: Array<{ id: TabId; label: string }> = [
-  { id: 'profile', label: 'H? s? s?n' },
-  { id: 'public', label: 'Li?n h? public' },
+  { id: 'profile', label: 'Hồ sơ sàn' },
+  { id: 'public', label: 'Liên hệ public' },
   { id: 'email', label: 'Email' },
   { id: 'r2', label: 'R2' },
-  { id: 'security', label: 'B?o m?t' },
-  { id: 'notifications', label: 'Th?ng b?o' },
+  { id: 'security', label: 'Bảo mật' },
+  { id: 'notifications', label: 'Thông báo' },
   { id: 'backup', label: 'Backup' }
 ];
 
@@ -704,7 +704,7 @@ function SaveButton({ pending }: { pending: boolean }) {
   return (
     <Button type="submit" className="sm:w-max" disabled={pending}>
       <Save size={18} />
-      {pending ? '?ang l?u' : 'L?u'}
+      {pending ? 'Đang lưu' : 'Lưu'}
     </Button>
   );
 }
@@ -771,7 +771,7 @@ function ImageField({
           <Input value={urlValue} onChange={(event) => onUrlChange(event.target.value)} />
           <label className="inline-flex cursor-pointer items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-semibold">
             <Upload size={16} />
-            {isUploading ? '?ang upload' : 'Upload'}
+            {isUploading ? 'Đang upload' : 'Upload'}
             <input
               type="file"
               accept="image/*"
@@ -824,23 +824,23 @@ function objectToPublicForm(value: unknown) {
     mapEmbedUrl: String(object.mapEmbedUrl ?? defaultMapEmbedUrl),
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as { question?: string }).question ?? ''}|${(item as { answer?: string }).answer ?? ''}`).join('\n'),
-    homeBadge: String(pageContent.homeBadge ?? 'N?n t?ng s? cho h?p t?c x?'),
-    homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?.'),
+    homeBadge: String(pageContent.homeBadge ?? 'Nền tảng số cho hợp tác xã'),
+    homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.'),
     homeDescription: String(
-      pageContent.homeDescription ?? 'C?ng khai s?n ph?m, m? QR Passport cho ng??i mua v? v?n h?nh quy tr?nh ??n COD tr?n c?ng m?t h? th?ng g?n, r? v? d? tin t??ng.'
+      pageContent.homeDescription ?? 'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.'
     ),
     homeImageUrl: String(pageContent.homeImageUrl ?? ''),
     homeImageAlt: String(pageContent.homeImageAlt ?? ''),
-    introTitle: String(pageContent.introTitle ?? 'Gi?i thi?u HTXONLINE'),
-    introDescription: String(pageContent.introDescription ?? 'N?n t?ng s?n n?ng s?n s? v? QR truy xu?t ngu?n g?c cho h?p t?c x? Vi?t Nam.'),
+    introTitle: String(pageContent.introTitle ?? 'Giới thiệu HTXONLINE'),
+    introDescription: String(pageContent.introDescription ?? 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.'),
     introImageUrl: String(pageContent.introImageUrl ?? ''),
     introImageAlt: String(pageContent.introImageAlt ?? ''),
-    aboutTitle: String(pageContent.aboutTitle ?? 'Ch?ng t?i l? HTXONLINE'),
-    aboutDescription: String(pageContent.aboutDescription ?? 'S?n n?ng s?n s? gi?p h?p t?c x? k?t n?i th? tr??ng, minh b?ch ngu?n g?c v? b?n h?ng COD hi?u qu?.'),
+    aboutTitle: String(pageContent.aboutTitle ?? 'Chúng tôi là HTXONLINE'),
+    aboutDescription: String(pageContent.aboutDescription ?? 'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.'),
     aboutImageUrl: String(pageContent.aboutImageUrl ?? ''),
     aboutImageAlt: String(pageContent.aboutImageAlt ?? ''),
-    contactTitle: String(pageContent.contactTitle ?? 'H?y ?? HTXONLINE k?t n?i v? ??ng h?nh c?ng h?p t?c x? c?a b?n'),
-    contactDescription: String(pageContent.contactDescription ?? 'T? v?n tham gia s?n, QR truy xu?t ngu?n g?c, h? tr? ??n h?ng COD v? v?n h?nh s? cho HTX.'),
+    contactTitle: String(pageContent.contactTitle ?? 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn'),
+    contactDescription: String(pageContent.contactDescription ?? 'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.'),
     contactImageUrl: String(pageContent.contactImageUrl ?? ''),
     contactImageAlt: String(pageContent.contactImageAlt ?? '')
   };

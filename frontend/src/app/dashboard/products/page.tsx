@@ -273,7 +273,7 @@ export default function ProductsPage() {
                 <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>Đóng</Button>
                 {editingId && (
                   <Link href={`/san-pham/${form.slug}`} target="_blank">
-                    <Button type="button" variant="ghost">Preview public</Button>
+                    <Button type="button" variant="ghost">Xem trang public</Button>
                   </Link>
                 )}
               </div>
@@ -293,10 +293,10 @@ export default function ProductsPage() {
                   </Field>
                   <Field label="Trạng thái">
                     <Select data-testid="product-status-select" value={form.status} onChange={(event) => update('status', event.target.value as ProductStatus)}>
-                      <option value="DRAFT">DRAFT</option>
-                      <option value="PUBLISHED">PUBLISHED</option>
-                      <option value="HIDDEN">HIDDEN</option>
-                      <option value="ARCHIVED">ARCHIVED</option>
+                      <option value="DRAFT">Nháp</option>
+                      <option value="PUBLISHED">Đã publish</option>
+                      <option value="HIDDEN">Đang ẩn</option>
+                      <option value="ARCHIVED">Lưu trữ</option>
                     </Select>
                   </Field>
                   <Field label="Danh mục">
@@ -449,7 +449,7 @@ export default function ProductsPage() {
                   Sửa
                 </Button>
                 <Link href={`/san-pham/${product.slug}`} target="_blank">
-                  <Button type="button" variant="ghost">Public</Button>
+                <Button type="button" variant="ghost">Trang public</Button>
                 </Link>
                 <Button type="button" variant="danger" onClick={() => archiveProduct.mutate(product.id)} disabled={archiveProduct.isPending}>
                   <Trash2 size={16} aria-hidden="true" />

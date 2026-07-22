@@ -214,9 +214,9 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
               )}
               <Field label="Trạng thái">
                 <Select data-testid={isFarmersMode ? 'farmer-status-select' : 'user-status-select'} value={form.status} onChange={(event) => update('status', event.target.value as UserStatus)}>
-                  <option value="ACTIVE">ACTIVE</option>
-                  <option value="INACTIVE">INACTIVE</option>
-                  <option value="LOCKED">LOCKED</option>
+                  <option value="ACTIVE">Đang hoạt động</option>
+                  <option value="INACTIVE">Tạm dừng</option>
+                  <option value="LOCKED">Đã khóa</option>
                 </Select>
               </Field>
               {isSuperAdmin && (
@@ -259,9 +259,9 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
         )}
         <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as UserStatus | '')}>
           <option value="">Tất cả trạng thái</option>
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="LOCKED">LOCKED</option>
-          <option value="INACTIVE">INACTIVE</option>
+          <option value="ACTIVE">Đang hoạt động</option>
+          <option value="LOCKED">Đã khóa</option>
+          <option value="INACTIVE">Tạm dừng</option>
         </Select>
       </div>
 

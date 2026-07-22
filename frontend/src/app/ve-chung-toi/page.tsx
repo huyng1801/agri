@@ -21,30 +21,30 @@ const valuePillars = [
   { title: 'Sàn thương mại cho HTX', description: 'Hiển thị sản phẩm public, hồ sơ HTX và kênh tiếp cận người mua trên toàn quốc mà không cần website riêng.', icon: Store },
   { title: 'QR Passport truy xuất', description: 'Mỗi sản phẩm có mã QR để khách xem nhật ký canh tác, vùng trồng và chứng nhận đã công khai.', icon: QrCode },
   { title: 'Đặt hàng COD', description: 'Người mua gửi đơn nhanh, HTX chủ động liên hệ xác nhận và xử lý giao hàng thu tiền khi nhận.', icon: ShoppingBag },
-  { title: 'Dashboard van hanh HTX', description: 'HTX tu quan ly san pham, nong dan, vung trong, nhat ky va don hang tren mot he thong thong nhat.', icon: Users }
+  { title: 'Dashboard vận hành HTX', description: 'HTX tự quản lý sản phẩm, nông dân, vùng trồng, nhật ký và đơn hàng trên một hệ thống thống nhất.', icon: Users }
 ] as const;
 
 const coreValues = [
-  { title: 'Minh bach', description: 'Nguon goc va du lieu public ro rang voi nguoi mua.', icon: ShieldCheck },
+  { title: 'Minh bạch', description: 'Nguồn gốc và dữ liệu public rõ ràng với người mua.', icon: ShieldCheck },
   { title: 'Đồng hành HTX', description: 'Hỗ trợ HTX số hóa và tiếp cận thị trường tốt hơn.', icon: Leaf },
   { title: 'Tin cậy', description: 'Quy trình bán hàng COD và truy xuất có kiểm soát.', icon: BadgeCheck },
   { title: 'Đơn giản', description: 'Dùng được ngay, không cần xây website riêng.', icon: Sparkles },
-  { title: 'Lan toa gia tri', description: 'Ket noi nong san dia phuong voi nguoi tieu dung.', icon: Target }
+  { title: 'Lan tỏa giá trị', description: 'Kết nối nông sản địa phương với người tiêu dùng.', icon: Target }
 ] as const;
 
 const journeySteps = [
-  { title: 'Cong khai san pham', description: 'HTX dua san pham, vung trong va chung nhan public len cung mot mat bang thuong mai so.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
-  { title: 'Chuan hoa truy xuat', description: 'QR Passport gom nhat ky canh tac, moc kiem chung va du lieu quan trong thanh mot hanh trinh ro rang.', accent: 'bg-white border-slate-200', icon: QrCode },
+  { title: 'Công khai sản phẩm', description: 'HTX đưa sản phẩm, vùng trồng và chứng nhận public lên cùng một mặt bằng thương mại số.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
+  { title: 'Chuẩn hóa truy xuất', description: 'QR Passport gom nhật ký canh tác, mốc kiểm chứng và dữ liệu quan trọng thành một hành trình rõ ràng.', accent: 'bg-white border-slate-200', icon: QrCode },
   { title: 'Chốt đơn COD', description: 'Người mua đặt hàng nhanh, còn HTX chủ động xác nhận và xử lý vận hành theo quy trình phù hợp.', accent: 'bg-mint/70 border-mint/80', icon: ShoppingBag },
   { title: 'Theo dõi tăng trưởng', description: 'Dashboard giúp đội vận hành nhìn được sản phẩm, đơn hàng và niềm tin thị trường theo thời gian.', accent: 'bg-white border-slate-200', icon: Users }
 ] as const;
 
-const trustSignals = ['San pham public da publish', 'QR mo truc tiep cho khach', 'Quan ly vung trong tap trung', 'COD theo quy trinh HTX'] as const;
+const trustSignals = ['Sản phẩm public đã publish', 'QR mở trực tiếp cho khách', 'Quản lý vùng trồng tập trung', 'COD theo quy trình HTX'] as const;
 
 export default async function AboutUsPage() {
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile()]);
   const stats = [
-    { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX dang hien thi tren san' },
+    { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX đang hiển thị trên sàn' },
     { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm public đang bán' },
     { value: '100%', label: 'QR Passport xem được không cần đăng nhập' },
     { value: '1 nền tảng', label: 'Từ sản xuất đến bán hàng COD' }
@@ -161,7 +161,7 @@ export default async function AboutUsPage() {
               <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf/80 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
               <p className="mt-3 text-[0.96rem] leading-[1.7] text-slate-700 sm:text-base sm:leading-[1.8]">
                 HTXONLINE ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
-                QR Passport va dashboard van hanh de HTX tap trung vao chat luong san pham, con nguoi mua de dang tin tuong nguon goc.
+                QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
               <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-slate-600 sm:mt-3 sm:text-sm sm:leading-[1.75]">
                 Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất, truy xuất và bán hàng trên cùng một nền tảng.
@@ -279,7 +279,7 @@ export default async function AboutUsPage() {
                   <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Sứ mệnh</p>
                   <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">Số hóa bán hàng và truy xuất nguồn gốc cho HTX.</h3>
                   <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/85 sm:mt-3 sm:text-sm sm:leading-7">
-                    Chung toi mang den cong cu thuc te: san public, QR Passport, dashboard van hanh va don COD de HTX phat trien ben vung hon.
+                    Chúng tôi mang đến công cụ thực tế: sàn public, QR Passport, dashboard vận hành và đơn COD để HTX phát triển bền vững hơn.
                   </p>
                 </article>
               </div>
@@ -334,13 +334,13 @@ export default async function AboutUsPage() {
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/70 sm:text-sm sm:tracking-wide">Đội ngũ đồng hành</p>
               <h2 className="mt-2 max-w-lg text-[1.7rem] font-bold leading-[1.12] sm:text-3xl">Những con người trẻ cùng đam mê tạo nên giá trị lớn cho nông sản Việt.</h2>
               <p className="mt-3 max-w-xl text-[0.84rem] leading-[1.66] text-white/82 sm:mt-4 sm:text-sm sm:leading-7">
-                Chung toi lam viec de HTX de hien dien hon tren moi truong so, con nguoi mua co them niem tin khi chon san pham minh bach nguon goc.
+                Chúng tôi làm việc để HTX dễ hiện diện hơn trên môi trường số, còn người mua có thêm niềm tin khi chọn sản phẩm minh bạch nguồn gốc.
               </p>
             </article>
 
             <article className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Đối tác & niềm tin</p>
-              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{catalog.cooperatives.length || 12}+ HTX dong hanh</h2>
+               <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{catalog.cooperatives.length || 12}+ HTX đồng hành</h2>
               <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
                 Cảm ơn các hợp tác xã và người mua đã tin tưởng HTXONLINE để kết nối nông sản minh bạch trên môi trường số.
               </p>

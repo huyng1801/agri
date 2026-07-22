@@ -401,10 +401,10 @@ export default function CooperativesPage() {
               {canManagePlatform && (
                 <Field label="Trạng thái">
                   <Select data-testid="cooperative-status-select" value={form.status} onChange={(event) => update('status', event.target.value as CooperativeStatus)}>
-                    <option value="ACTIVE">ACTIVE</option>
-                    <option value="INACTIVE">INACTIVE</option>
-                    <option value="SUSPENDED">SUSPENDED</option>
-                    <option value="ARCHIVED">ARCHIVED</option>
+                    <option value="ACTIVE">Đang hoạt động</option>
+                    <option value="INACTIVE">Tạm dừng</option>
+                    <option value="SUSPENDED">Tạm khóa</option>
+                    <option value="ARCHIVED">Lưu trữ</option>
                   </Select>
                 </Field>
               )}
@@ -449,11 +449,11 @@ export default function CooperativesPage() {
                 </Field>
                 <Field label="Trạng thái gói">
                   <Select value={subscriptionForm.status} onChange={(event) => updateSubscription('status', event.target.value as SubscriptionStatus)}>
-                    <option value="ACTIVE">ACTIVE</option>
-                    <option value="TRIAL">TRIAL</option>
-                    <option value="EXPIRED">EXPIRED</option>
-                    <option value="SUSPENDED">SUSPENDED</option>
-                    <option value="CANCELLED">CANCELLED</option>
+                    <option value="ACTIVE">Đang hoạt động</option>
+                    <option value="TRIAL">Dùng thử</option>
+                    <option value="EXPIRED">Hết hạn</option>
+                    <option value="SUSPENDED">Tạm khóa</option>
+                    <option value="CANCELLED">Đã hủy</option>
                   </Select>
                 </Field>
                 <Field label="Ngày bắt đầu">
@@ -516,10 +516,10 @@ export default function CooperativesPage() {
         <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm tên, mã HTX, mã số thuế" />
         <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="ACTIVE">ACTIVE</option>
-          <option value="INACTIVE">INACTIVE</option>
-          <option value="SUSPENDED">SUSPENDED</option>
-          <option value="ARCHIVED">ARCHIVED</option>
+          <option value="ACTIVE">Đang hoạt động</option>
+          <option value="INACTIVE">Tạm dừng</option>
+          <option value="SUSPENDED">Tạm khóa</option>
+          <option value="ARCHIVED">Lưu trữ</option>
         </Select>
         {canManagePlatform && (
           <Select value={planFilter} onChange={(event) => setPlanFilter(event.target.value)}>
@@ -685,7 +685,7 @@ function CooperativeCard({
         <Link href={`/htx/${cooperative.code}`} target="_blank">
           <Button type="button" variant="ghost">
             <ExternalLink size={16} aria-hidden="true" />
-            Public
+            Trang public
           </Button>
         </Link>
         {canManagePlatform && cooperative.status !== 'ARCHIVED' && (

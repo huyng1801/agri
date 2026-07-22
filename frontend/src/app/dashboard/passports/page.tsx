@@ -162,10 +162,10 @@ export default function PassportsPage() {
               </Field>
               <Field label="Trạng thái">
                 <Select data-testid="passport-status-select" value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as PassportStatus }))}>
-                  <option value="DRAFT">DRAFT</option>
-                  <option value="PUBLISHED">PUBLISHED</option>
-                  <option value="HIDDEN">HIDDEN</option>
-                  <option value="EXPIRED">EXPIRED</option>
+                  <option value="DRAFT">Nháp</option>
+                  <option value="PUBLISHED">Đã publish</option>
+                  <option value="HIDDEN">Đang ẩn</option>
+                  <option value="EXPIRED">Hết hạn</option>
                 </Select>
               </Field>
               <Field label="Ngày hết hạn">
@@ -191,10 +191,10 @@ export default function PassportsPage() {
       <div className="sticky top-[66px] z-10 flex gap-2 rounded-md border border-slate-200 bg-white p-2 lg:top-0">
         <Select value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="PUBLISHED">PUBLISHED</option>
-          <option value="DRAFT">DRAFT</option>
-          <option value="HIDDEN">HIDDEN</option>
-          <option value="EXPIRED">EXPIRED</option>
+          <option value="PUBLISHED">Đã publish</option>
+          <option value="DRAFT">Nháp</option>
+          <option value="HIDDEN">Đang ẩn</option>
+          <option value="EXPIRED">Hết hạn</option>
         </Select>
       </div>
 

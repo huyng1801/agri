@@ -86,8 +86,8 @@ function PolicyContactCard({ bullets }: { bullets: string[] }) {
   return (
     <div className="space-y-3 rounded-2xl border border-slate-200 bg-slate-50/90 p-4">
       <div className="grid gap-3 sm:grid-cols-2">
-        {address ? <PublicInfoTile title="Dia chi" description={address} /> : null}
-        {supportTime ? <PublicInfoTile title="Thoi gian ho tro" description={supportTime} /> : null}
+        {address ? <PublicInfoTile title="Địa chỉ" description={address} /> : null}
+        {supportTime ? <PublicInfoTile title="Thời gian hỗ trợ" description={supportTime} /> : null}
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {hotline ? (
@@ -96,7 +96,7 @@ function PolicyContactCard({ bullets }: { bullets: string[] }) {
             className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf"
           >
             <Phone size={16} aria-hidden="true" />
-            Goi {hotline}
+            Gọi {hotline}
           </a>
         ) : null}
         {email ? (

@@ -339,7 +339,7 @@ export default function CertificationsPage() {
                 <p className="mt-1 text-sm text-slate-500">{certification.issuer || 'Đơn vị cấp đang cập nhật'}</p>
               </div>
               <Badge className={certification.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>
-                {certification.isPublic ? 'Public' : 'Ẩn'}
+                {certification.isPublic ? 'Công khai' : 'Ẩn'}
               </Badge>
             </div>
 

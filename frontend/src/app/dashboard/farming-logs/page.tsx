@@ -242,7 +242,7 @@ export default function FarmingLogsPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Metric label="Tổng nhật ký" value={stats.total} />
-        <Metric label="Public" value={stats.published} tone="leaf" />
+        <Metric label="Công khai" value={stats.published} tone="leaf" />
         <Metric label="Có ảnh" value={stats.withImages} />
       </div>
 
@@ -285,9 +285,9 @@ export default function FarmingLogsPage() {
                   </Field>
                   <Field label="Trạng thái">
                     <Select data-testid="farming-log-status-select" value={form.status} onChange={(event) => update('status', event.target.value as LogStatus)}>
-                      <option value="DRAFT">DRAFT</option>
-                      <option value="PUBLISHED">PUBLISHED</option>
-                      <option value="ARCHIVED">ARCHIVED</option>
+                      <option value="DRAFT">Nháp</option>
+                      <option value="PUBLISHED">Đã publish</option>
+                      <option value="ARCHIVED">Lưu trữ</option>
                     </Select>
                   </Field>
                   <Field label="Vật tư đầu vào">
@@ -354,9 +354,9 @@ export default function FarmingLogsPage() {
         </div>
         <Select value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="PUBLISHED">PUBLISHED</option>
-          <option value="DRAFT">DRAFT</option>
-          <option value="ARCHIVED">ARCHIVED</option>
+          <option value="PUBLISHED">Đã publish</option>
+          <option value="DRAFT">Nháp</option>
+          <option value="ARCHIVED">Lưu trữ</option>
         </Select>
       </div>
 

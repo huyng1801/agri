@@ -71,7 +71,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
               {[
                 { icon: Building2, title: 'HTX hiển thị', value: `${cooperatives.length}+`, note: 'Hồ sơ đang có mặt trên sàn' },
                 { icon: MapPin, title: 'Tỉnh thành', value: `${new Set(cooperatives.map((item) => item.province).filter(Boolean)).size || 1}+`, note: 'Khu vực hoạt động được công khai' },
-                { icon: ShieldCheck, title: 'Tín hiệu tin cậy', value: 'Public', note: 'Dẫn thẳng tới sản phẩm, QR và thông tin liên hệ' }
+                { icon: ShieldCheck, title: 'Tín hiệu tin cậy', value: 'Công khai', note: 'Dẫn thẳng tới sản phẩm, QR và thông tin liên hệ' }
               ].map((item, index) => (
                 <article key={item.title} className={`rounded-2xl border border-slate-200/80 bg-white/86 p-3.5 shadow-sm sm:p-4 ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}>
                   <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-leaf sm:h-11 sm:w-11">

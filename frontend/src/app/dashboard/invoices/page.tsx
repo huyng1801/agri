@@ -244,11 +244,11 @@ export default function InvoicesPage() {
               </Field>
               <Field label="Trạng thái">
                 <Select data-testid="invoice-status-select" value={form.status} onChange={(event) => update('status', event.target.value as InvoiceStatus)}>
-                  <option value="DRAFT">DRAFT</option>
-                  <option value="UNPAID">UNPAID</option>
-                  <option value="PAID">PAID</option>
-                  <option value="OVERDUE">OVERDUE</option>
-                  <option value="CANCELLED">CANCELLED</option>
+                  <option value="DRAFT">Nháp</option>
+                  <option value="UNPAID">Chưa thanh toán</option>
+                  <option value="PAID">Đã thanh toán</option>
+                  <option value="OVERDUE">Quá hạn</option>
+                  <option value="CANCELLED">Đã hủy</option>
                 </Select>
               </Field>
               <Field label="Hạn thanh toán">
@@ -277,11 +277,11 @@ export default function InvoicesPage() {
         </div>
         <Select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="UNPAID">UNPAID</option>
-          <option value="PAID">PAID</option>
-          <option value="OVERDUE">OVERDUE</option>
-          <option value="CANCELLED">CANCELLED</option>
-          <option value="DRAFT">DRAFT</option>
+          <option value="UNPAID">Chưa thanh toán</option>
+          <option value="PAID">Đã thanh toán</option>
+          <option value="OVERDUE">Quá hạn</option>
+          <option value="CANCELLED">Đã hủy</option>
+          <option value="DRAFT">Nháp</option>
         </Select>
         {isSuperAdmin && (
           <Select value={cooperativeFilter} onChange={(event) => setCooperativeFilter(event.target.value)}>

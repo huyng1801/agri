@@ -233,7 +233,7 @@ export default function ZonesPage() {
                 <Panel className="space-y-3 bg-slate-50 shadow-none">
                   <h3 className="font-bold">Tóm tắt public</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge className={form.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{form.isPublic ? 'Public' : 'Ẩn public'}</Badge>
+                    <Badge className={form.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{form.isPublic ? 'Công khai' : 'Ẩn public'}</Badge>
                     <Badge className={statusTone(form.status)}>{statusLabel(form.status)}</Badge>
                   </div>
                   <Info label="Tên vùng" value={form.name || 'Chưa nhập'} />
@@ -321,7 +321,7 @@ export default function ZonesPage() {
                 <p className="mt-1 text-sm text-slate-500">{zone.code}</p>
               </div>
               <div className="flex flex-wrap justify-end gap-2">
-                <Badge className={zone.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{zone.isPublic ? 'Public' : 'Ẩn'}</Badge>
+                <Badge className={zone.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{zone.isPublic ? 'Công khai' : 'Ẩn'}</Badge>
                 <Badge className={statusTone(zone.status)}>{statusLabel(zone.status)}</Badge>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function ZonesPage() {
                   disabled={togglePublic.isPending}
                 >
                   {zone.isPublic ? <EyeOff size={16} aria-hidden="true" /> : <Globe2 size={16} aria-hidden="true" />}
-                  {zone.isPublic ? 'Ẩn public' : 'Cho public'}
+                  {zone.isPublic ? 'Ẩn public' : 'Bật public'}
                 </Button>
               )}
               <a

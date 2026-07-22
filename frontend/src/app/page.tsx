@@ -11,11 +11,11 @@ import { fetchPublicCatalog } from '@/lib/public-catalog';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'HTXONLINE — San nong san so cho hop tac xa Viet Nam',
+  title: 'HTXONLINE — Sàn nông sản số cho hợp tác xã Việt Nam',
   description: 'Kết nối người mua với sản phẩm HTX minh bạch, QR truy xuất nguồn gốc và đặt hàng COD trên HTXONLINE.',
   alternates: { canonical: 'https://htxonline.vn/' },
   openGraph: {
-    title: 'HTXONLINE — San nong san so',
+    title: 'HTXONLINE — Sàn nông sản số',
     description: 'Sàn nông sản số cho hợp tác xã Việt Nam với QR Passport và đặt hàng COD.',
     url: 'https://htxonline.vn/',
     siteName: 'HTXONLINE',

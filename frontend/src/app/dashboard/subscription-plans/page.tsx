@@ -261,7 +261,7 @@ export default function SubscriptionPlansPage() {
                 <h2 className="truncate text-lg font-bold text-ink">{plan.name}</h2>
                 <p className="mt-1 text-sm text-slate-500">{plan.slug}</p>
               </div>
-              <Badge className={plan.isActive ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{plan.isActive ? 'ACTIVE' : 'INACTIVE'}</Badge>
+              <Badge className={plan.isActive ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{plan.isActive ? 'Đang bật' : 'Tạm tắt'}</Badge>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
               <Info label="Giá tháng" value={formatCurrency(plan.priceMonthly)} />
