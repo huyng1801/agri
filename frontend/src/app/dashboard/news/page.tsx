@@ -1627,20 +1627,20 @@ export default function NewsDashboardPage() {
               </>}
             </div>
             {!isAdvancedMode && (
-              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-2.5 shadow-sm">
-                <div className="flex flex-wrap items-start justify-between gap-3">
+              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-2 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-2.5">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Tu khoa, link va diem SEO.</p>
+                    <p className="mt-0.5 text-sm font-bold text-ink">Tu khoa, link, diem SEO.</p>
                   </div>
-                  <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
+                  <span className={cn('rounded-full px-2.5 py-1 text-[11px] font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                 </div>
-                <div className="mt-2 grid gap-2">
+                <div className="mt-1.5 grid gap-1.5">
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Tu khoa chinh</span>
+                    <span className="text-[13px]">Tu khoa chinh</span>
                     <Input
                       data-testid="news-focus-keyword-input"
-                      className="placeholder:text-[14px] placeholder:text-slate-300"
+                      className="h-11 placeholder:text-[13px] placeholder:text-slate-300"
                       value={form.focusKeyword}
                       onChange={(event) => update('focusKeyword', event.target.value)}
                       placeholder="Vi du: xoai My Xuong"
@@ -1651,7 +1651,7 @@ export default function NewsDashboardPage() {
                       type="button"
                       variant="ghost"
                       onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}
-                      className="min-h-8 w-fit px-3 text-xs"
+                      className="min-h-8 w-fit px-2.5 text-[11px]"
                     >
                       Dung: {focusKeywordSuggestions[0]}
                     </Button>
@@ -1720,11 +1720,11 @@ export default function NewsDashboardPage() {
                   </details>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
-                    <div className="mt-1 rounded-xl border border-white/90 bg-white px-3 py-2">
+                    <div className="mt-1 rounded-xl border border-white/90 bg-white px-2.5 py-2">
                       <p className="truncate text-sm font-semibold text-emerald-700">{permalink}</p>
                     </div>
                     <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-9 px-3 justify-center">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-8 px-2.5 justify-center text-sm">
                         <LinkIcon size={18} aria-hidden="true" />
                         Copy
                       </Button>
@@ -1732,30 +1732,30 @@ export default function NewsDashboardPage() {
                         type="button"
                         variant="ghost"
                         onClick={() => setSimplePermalinkToolsExpanded((value) => !value)}
-                        className="min-h-9 px-3 justify-center"
+                        className="min-h-8 px-2.5 justify-center text-sm"
                         aria-expanded={simplePermalinkToolsExpanded}
                       >
                         {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                        More
+                        Them
                       </Button>
                     </div>
                     {simplePermalinkToolsExpanded && (
-                      <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10">
+                      <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
+                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-9 text-sm">
                           <Sparkles size={18} aria-hidden="true" />
                           Sua nhanh SEO
                         </Button>
-                        <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-10">
+                        <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-9 text-sm">
                           <FileText size={18} aria-hidden="true" />
                           Tao mo ta
                         </Button>
                         {needsImportedOptimization ? (
-                          <Button type="button" variant="ghost" onClick={optimizeImportedArticle} className="min-h-10 sm:col-span-2">
+                          <Button type="button" variant="ghost" onClick={optimizeImportedArticle} className="min-h-9 text-sm sm:col-span-2">
                             <Sparkles size={18} aria-hidden="true" />
                             Toi uu bai dan
                           </Button>
                         ) : (
-                          <Button type="button" variant="ghost" onClick={cleanPastedContent} className="min-h-10 sm:col-span-2">
+                          <Button type="button" variant="ghost" onClick={cleanPastedContent} className="min-h-9 text-sm sm:col-span-2">
                             <RefreshCcw size={18} aria-hidden="true" />
                             Lam sach noi dung
                           </Button>
