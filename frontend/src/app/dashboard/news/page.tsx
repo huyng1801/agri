@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   Bold,
   Code2,
+  ChevronUp,
   Eye,
   FileText,
   Heading2,
@@ -368,6 +369,7 @@ export default function NewsDashboardPage() {
   const [draggingEditor, setDraggingEditor] = useState(false);
   const [editorAssist, setEditorAssist] = useState<{ kind: EditorAssistKind; title: string; detail: string } | null>(null);
   const [suggestedCover, setSuggestedCover] = useState<SuggestedCover | null>(null);
+  const [simpleActionsExpanded, setSimpleActionsExpanded] = useState(false);
 
   const articles = useQuery({
     queryKey: ['news', search],
@@ -2832,15 +2834,14 @@ export default function NewsDashboardPage() {
                     </p>
                   </div>
                   <Button
-                    data-testid="news-save-draft-floating-button"
                     type="button"
                     variant="ghost"
-                    onClick={() => saveArticle.mutate('DRAFT')}
-                    disabled={saveArticle.isPending}
+                    onClick={() => setSimpleActionsExpanded((value) => !value)}
                     className="min-h-11 px-3"
+                    aria-expanded={simpleActionsExpanded}
+                    aria-label={simpleActionsExpanded ? 'An tac vu phu' : 'Mo tac vu phu'}
                   >
-                    <Save size={18} aria-hidden="true" />
-                    <span className="hidden min-[390px]:inline">{saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}</span>
+                    <ChevronUp size={18} aria-hidden="true" className={cn('transition', !simpleActionsExpanded && 'rotate-180')} />
                   </Button>
                   <Button
                     data-testid="news-quick-publish-floating-button"
@@ -2850,9 +2851,28 @@ export default function NewsDashboardPage() {
                     className="min-h-11 px-3"
                   >
                     <Sparkles size={18} aria-hidden="true" />
-                    <span className="hidden min-[390px]:inline">{quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}</span>
+                    <span>{quickPublishArticle.isPending ? 'Dang dang' : 'Dang 1 cham'}</span>
                   </Button>
                 </div>
+                {simpleActionsExpanded && (
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <Button
+                      data-testid="news-save-draft-floating-button"
+                      type="button"
+                      variant="ghost"
+                      onClick={() => saveArticle.mutate('DRAFT')}
+                      disabled={saveArticle.isPending}
+                      className="min-h-10"
+                    >
+                      <Save size={18} aria-hidden="true" />
+                      {saveArticle.isPending ? 'Dang luu' : 'Luu nhap'}
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={preparePostForPublish} className="min-h-10">
+                      <Sparkles size={18} aria-hidden="true" />
+                      Chuan bi
+                    </Button>
+                  </div>
+                )}
                 {!canQuickPublish && (
                   <p className="mt-1.5 px-1 text-[11px] font-semibold text-slate-500">
                     Con thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
