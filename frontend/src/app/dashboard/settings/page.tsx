@@ -460,7 +460,7 @@ export default function SettingsPage() {
                       <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
                         <iframe
                           src={publicForm.watch('mapEmbedUrl')}
-                          title="Map preview"
+                          title="Xem trước bản đồ"
                           loading="lazy"
                           className="h-64 w-full border-0"
                           referrerPolicy="no-referrer-when-downgrade"
@@ -468,7 +468,7 @@ export default function SettingsPage() {
                       </div>
                     </div>
                   )}
-                  <Field label="FAQ (question|answer mỗi dòng)" className="sm:col-span-2">
+                  <Field label="FAQ (hỏi|đáp mỗi dòng)" className="sm:col-span-2">
                     <Textarea
                       rows={5}
                       {...publicForm.register('faqText')}
@@ -648,9 +648,9 @@ export default function SettingsPage() {
         <Panel>
           <form
             className="space-y-3"
-            onSubmit={backupForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.backup', value: values, description: 'Backup' }))}
+            onSubmit={backupForm.handleSubmit((values) => saveMutation.mutate({ key: 'system.backup', value: values, description: 'Sao lưu' }))}
           >
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bật backup tự động</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...backupForm.register('enabled')} /> Bật sao lưu tự động</label>
             <Field label="Lịch cron"><Input {...backupForm.register('schedule')} placeholder="0 2 * * *" /></Field>
             <Field label="Giữ (ngày)"><Input {...backupForm.register('retentionDays')} /></Field>
             <SaveButton pending={saveMutation.isPending} />
@@ -688,7 +688,7 @@ const tabs: Array<{ id: TabId; label: string }> = [
   { id: 'r2', label: 'R2' },
   { id: 'security', label: 'Bảo mật' },
   { id: 'notifications', label: 'Thông báo' },
-  { id: 'backup', label: 'Backup' }
+  { id: 'backup', label: 'Sao lưu' }
 ];
 
 function Field({ label, children, className }: { label: string; children: ReactNode; className?: string }) {

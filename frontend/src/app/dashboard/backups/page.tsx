@@ -51,7 +51,7 @@ export default function BackupsPage() {
           </Button>
           <Button onClick={() => createBackup.mutate()} disabled={createBackup.isPending}>
             <Database size={18} aria-hidden="true" />
-            {createBackup.isPending ? 'Đang tạo' : 'Tạo backup'}
+            {createBackup.isPending ? 'Đang tạo' : 'Tạo bản sao lưu'}
           </Button>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function BackupsPage() {
         </div>
       )}
 
-      {!backups.isLoading && items.length === 0 && <Panel className="text-slate-600">Chưa có backup</Panel>}
+      {!backups.isLoading && items.length === 0 && <Panel className="text-slate-600">Chưa có bản sao lưu</Panel>}
 
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {items.map((backup) => {
@@ -113,7 +113,7 @@ export default function BackupsPage() {
               </div>
 
               <label className="block space-y-1 text-sm font-semibold text-slate-700">
-                <span>Xác nhận restore</span>
+                <span>Xác nhận khôi phục</span>
                 <Input
                   value={confirmation}
                   onChange={(event) => setConfirmations((current) => ({ ...current, [backup.fileName]: event.target.value }))}
@@ -137,7 +137,7 @@ async function downloadBackup(fileName: string) {
   });
   if (!response.ok) {
     const body = (await response.json().catch(() => null)) as { message?: string; errors?: Array<{ message?: string }> } | null;
-    throw new Error(body?.errors?.[0]?.message || body?.message || 'Không tải được backup');
+    throw new Error(body?.errors?.[0]?.message || body?.message || 'Không tải được bản sao lưu');
   }
   const blob = await response.blob();
   const url = URL.createObjectURL(blob);
