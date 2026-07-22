@@ -79,7 +79,7 @@ export default async function HomePage() {
               </p>
 
               <div className="max-w-[24.5rem] rounded-[1.55rem] border border-white/80 bg-white/76 p-2.5 shadow-[0_18px_44px_rgba(148,163,184,0.15)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="grid gap-2.5 min-[430px]:grid-cols-2 sm:flex sm:flex-wrap">
+                <div className="grid gap-2.5 min-[390px]:grid-cols-2 sm:flex sm:flex-wrap">
                   <Link href="/san-pham" className="inline-flex sm:w-auto">
                     <Button className="min-h-[3.3rem] w-full whitespace-nowrap rounded-2xl px-4 text-[0.94rem] shadow-[0_16px_32px_rgba(47,132,81,0.24)] sm:min-h-12 sm:w-auto sm:px-5">
                       Xem san pham
@@ -89,7 +89,7 @@ export default async function HomePage() {
                   <Link href="/htx" className="inline-flex sm:w-auto">
                     <Button
                       variant="ghost"
-                      className="min-h-[3.3rem] w-full whitespace-nowrap justify-center rounded-2xl border-white/90 bg-white/96 px-4 text-[0.94rem] text-slate-900 shadow-[0_14px_28px_rgba(148,163,184,0.16)] ring-1 ring-slate-100/80 hover:bg-white sm:min-h-12 sm:w-auto sm:px-5"
+                      className="min-h-[3.3rem] w-full whitespace-nowrap justify-center rounded-2xl border-slate-200/90 bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf9_100%)] px-4 text-[0.94rem] text-slate-900 shadow-[0_10px_24px_rgba(148,163,184,0.12)] hover:border-leaf/35 hover:bg-[#f7fbf8] sm:min-h-12 sm:w-auto sm:px-5"
                     >
                       Kham pha HTX
                     </Button>

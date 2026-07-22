@@ -349,6 +349,9 @@ export default function NewsDashboardPage() {
   const queryClient = useQueryClient();
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
   const visualEditorRef = useRef<HTMLDivElement | null>(null);
+  const coverDropzoneRef = useRef<HTMLDivElement | null>(null);
+  const simpleSeoSectionRef = useRef<HTMLDivElement | null>(null);
+  const simplePreviewSectionRef = useRef<HTMLDivElement | null>(null);
   const skipAutosaveRef = useRef(false);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState<NewsForm>(emptyForm);
@@ -571,6 +574,33 @@ export default function NewsDashboardPage() {
 
   function focusVisualEditor() {
     visualEditorRef.current?.focus();
+  }
+
+  function scrollToSection(target: HTMLElement | null) {
+    target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function jumpToEditor() {
+    if (editorMode === 'visual') {
+      focusVisualEditor();
+      scrollToSection(visualEditorRef.current);
+      return;
+    }
+    bodyRef.current?.focus();
+    scrollToSection(bodyRef.current);
+  }
+
+  function jumpToCover() {
+    coverDropzoneRef.current?.focus();
+    scrollToSection(coverDropzoneRef.current);
+  }
+
+  function jumpToSimpleSeo() {
+    scrollToSection(simpleSeoSectionRef.current);
+  }
+
+  function jumpToSimplePreview() {
+    scrollToSection(simplePreviewSectionRef.current);
   }
 
   function edit(article: NewsArticle) {
@@ -1309,6 +1339,57 @@ export default function NewsDashboardPage() {
                 )}
               </div>
               {!isAdvancedMode && (
+                <div className="mt-4 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Ban dieu khien dang bai dang WordPress</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Nhap bai theo cach don gian, nhung van co diem SEO, do de doc va preview truoc khi dang.</p>
+                    </div>
+                    <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>{seoScoreLabel(seo.score)}</span>
+                  </div>
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dang nhanh</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{corePublishReady}/3</p>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">Chi can tieu de, noi dung va anh bia.</p>
+                    </div>
+                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">SEO</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{seo.score}/100</p>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">{seoGreenCount}/{seoSignals.length} tin hieu xanh.</p>
+                    </div>
+                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">De doc tren mobile</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{seo.readability}/100</p>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">{readabilityLabel(seo.readability)}</p>
+                    </div>
+                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview</p>
+                      <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
+                      <p className="mt-1 text-sm leading-5 text-slate-600">{publishReadiness.label}</p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={jumpToEditor}>
+                      <FileText size={18} aria-hidden="true" />
+                      Nhap bai ngay
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={jumpToCover}>
+                      <Image size={18} aria-hidden="true" />
+                      Dan anh bia
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={jumpToSimpleSeo}>
+                      <Target size={18} aria-hidden="true" />
+                      Xem diem SEO
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={jumpToSimplePreview}>
+                      <Eye size={18} aria-hidden="true" />
+                      Xem preview
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {!isAdvancedMode && (
                 <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
@@ -1432,7 +1513,7 @@ export default function NewsDashboardPage() {
               </>}
             </div>
             {!isAdvancedMode && (
-              <div className="rounded-2xl border border-slate-200 bg-white/92 p-4 shadow-sm">
+              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
@@ -2097,6 +2178,7 @@ export default function NewsDashboardPage() {
                   </label>
                 </div>
                 <div
+                  ref={coverDropzoneRef}
                   tabIndex={0}
                   onPaste={(event) => {
                     const file = Array.from(event.clipboardData?.items ?? [])
@@ -2518,7 +2600,7 @@ export default function NewsDashboardPage() {
             </>
           ) : (
             <Panel className="border-slate-200 bg-slate-50/90">
-              <div className="space-y-3">
+              <div ref={simplePreviewSectionRef} className="space-y-3">
                 <p className="text-sm font-bold text-ink">Che do don gian dang bat</p>
                 <p className="text-sm leading-6 text-slate-600">
                   Cac muc schema, canonical, robots, Open Graph, Twitter, lich dang va tuy chon hien thi dang duoc an bot de de thao tac hon.
