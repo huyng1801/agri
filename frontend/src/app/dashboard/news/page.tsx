@@ -2555,6 +2555,32 @@ export default function NewsDashboardPage() {
                       ? `Sau khi dang, editor co the tu bo sung them: ${autofillPlan.slice(0, 4).map((item) => item.label).join(', ')}.`
                       : 'Slug, mo ta ngan va cac the SEO co ban dang kha day du hoac san sang tu tao.'}
                   </p>
+                  <div className="mt-3 grid gap-2">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview Google</p>
+                        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
+                          {(resolvedMetaPreview.title || '').trim().length || 0} ky tu title
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.title}</p>
+                      <p className="mt-1 text-xs leading-5 text-emerald-700">{resolvedMetaPreview.canonical}</p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{resolvedMetaPreview.description}</p>
+                    </div>
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Preview chia se</p>
+                        <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
+                          {resolvedMetaPreview.ogImage && resolvedMetaPreview.ogImage !== 'Ảnh bìa public' ? 'Co anh' : 'Chua co anh'}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.ogTitle}</p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">{resolvedMetaPreview.ogDescription}</p>
+                      <p className="mt-2 text-xs leading-5 text-slate-500">
+                        {resolvedMetaPreview.ogImage || 'He thong se uu tien lay anh bia khi ban de trong.'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
