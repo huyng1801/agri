@@ -1351,6 +1351,81 @@ export default function NewsDashboardPage() {
               </label>
               </>}
             </div>
+            {!isAdvancedMode && (
+              <div className="rounded-2xl border border-slate-200 bg-white/92 p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Chon tu khoa chinh, copy link va dung cac nut goi y ngay canh editor.</p>
+                  </div>
+                  <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
+                </div>
+                <div className="mt-3 grid gap-3">
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Tu khoa chinh</span>
+                    <Input
+                      data-testid="news-focus-keyword-input"
+                      value={form.focusKeyword}
+                      onChange={(event) => update('focusKeyword', event.target.value)}
+                      placeholder="Vi du: xoai My Xuong"
+                    />
+                    <span className="text-xs font-semibold text-slate-500">
+                      {form.focusKeyword.trim()
+                        ? 'Editor se cham title, mo ta, mat do va mo bai theo cum tu khoa nay.'
+                        : 'Chi can 1 cum tu khoa chinh de editor cham bai giong plugin SEO nhung don gian hon.'}
+                    </span>
+                  </label>
+                  {focusKeywordSuggestions.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {focusKeywordSuggestions.map((keyword) => (
+                        <button
+                          key={`simple-keyword-${keyword}`}
+                          type="button"
+                          className={cn(
+                            'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                            form.focusKeyword.trim().toLowerCase() === keyword.toLowerCase()
+                              ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
+                              : 'border-slate-200 bg-white text-slate-700 hover:border-leaf hover:text-leaf'
+                          )}
+                          onClick={() => applyFocusKeywordSuggestion(keyword)}
+                        >
+                          Dung: {keyword}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
+                    <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
+                        <LinkIcon size={18} aria-hidden="true" />
+                        Copy link
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                        <Sparkles size={18} aria-hidden="true" />
+                        Sua nhanh SEO
+                      </Button>
+                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
+                        <FileText size={18} aria-hidden="true" />
+                        Tao mo ta ngan
+                      </Button>
+                      {needsImportedOptimization ? (
+                        <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                          <Sparkles size={18} aria-hidden="true" />
+                          Toi uu bai vua dan
+                        </Button>
+                      ) : (
+                        <Button type="button" variant="ghost" onClick={cleanPastedContent}>
+                          <RefreshCcw size={18} aria-hidden="true" />
+                          Lam sach noi dung dan
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             {isAdvancedMode && <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
@@ -1940,24 +2015,7 @@ export default function NewsDashboardPage() {
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
                     <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                        <Sparkles size={18} aria-hidden="true" />
-                        Sua nhanh SEO
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
-                        <Sparkles size={18} aria-hidden="true" />
-                        Tu dien SEO
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={fillExcerptFromBody}>
-                        <FileText size={18} aria-hidden="true" />
-                        Tao mo ta ngan
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()}>
-                        <LinkIcon size={18} aria-hidden="true" />
-                        Copy link
-                      </Button>
-                    </div>
+                    <p className="mt-2 text-xs font-semibold text-slate-500">Slug, mo ta ngan va the meta co the de he thong tu bo sung khi ban bam Dang 1 cham hoac Chuan bi publish.</p>
                   </div>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="rounded-xl border border-slate-200 bg-white p-3">
