@@ -405,6 +405,7 @@ export default function NewsDashboardPage() {
   const simpleSeoMustFixes = seoSignals.filter((item) => !item.ok && item.priority === 'must').slice(0, 3);
   const simpleSeoShouldFixes = seoSignals.filter((item) => !item.ok && item.priority === 'should').slice(0, 3);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
+  const missingCoreItems = corePublishItems.filter((item) => !item.ok);
   const canQuickPublish = corePublishItems.every((item) => item.ok);
   const titleLength = form.title.trim().length;
   const slugLength = form.slug.trim().length;
@@ -2874,9 +2875,16 @@ export default function NewsDashboardPage() {
                   </div>
                 )}
                 {!canQuickPublish && (
-                  <p className="mt-1.5 px-1 text-[11px] font-semibold text-slate-500">
-                    Thieu: {corePublishItems.filter((item) => !item.ok).map((item) => item.label).join(', ')}.
-                  </p>
+                  <div className="mt-1.5 flex flex-wrap gap-1.5 px-1">
+                    <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
+                      Thieu
+                    </span>
+                    {missingCoreItems.map((item) => (
+                      <span key={`missing-core-${item.id}`} className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-900 ring-1 ring-amber-200">
+                        {item.label}
+                      </span>
+                    ))}
+                  </div>
                 )}
               </div>
             </div>
