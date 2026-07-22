@@ -1628,15 +1628,15 @@ export default function NewsDashboardPage() {
               </>}
             </div>
             {!isAdvancedMode && (
-              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-3 shadow-sm">
+              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-2.5 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Chon tu khoa chinh va copy link truoc khi dang.</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Tu khoa chinh, link bai viet va diem SEO.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                 </div>
-                <div className="mt-2.5 grid gap-2.5">
+                <div className="mt-2 grid gap-2">
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Tu khoa chinh</span>
                     <Input
@@ -1648,12 +1648,12 @@ export default function NewsDashboardPage() {
                     <span className="text-[11px] font-semibold leading-4 text-slate-500">
                       {form.focusKeyword.trim()
                         ? 'Editor se cham title, mo ta va mo bai theo cum tu khoa nay.'
-                        : 'Chi can 1 cum tu khoa chinh de editor cham bai nhanh hon.'}
+                        : 'Chi can 1 cum tu khoa de editor cham bai nhanh.'}
                     </span>
                   </label>
                   {focusKeywordSuggestions.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
-                      {focusKeywordSuggestions.map((keyword) => (
+                      {focusKeywordSuggestions.slice(0, 2).map((keyword) => (
                         <button
                           key={`simple-keyword-${keyword}`}
                           type="button"
@@ -1670,16 +1670,16 @@ export default function NewsDashboardPage() {
                       ))}
                     </div>
                   )}
-                  <details className="rounded-2xl border border-slate-200 bg-white p-3">
+                  <details className="rounded-2xl border border-slate-200 bg-white p-2.5">
                     <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                       <div>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den SEO dang plugin</p>
                         <p className="mt-1 text-sm font-bold text-ink">
                           {simpleSeoMustFixes.length > 0
-                            ? `${simpleSeoMustFixes.length} muc can lam ngay truoc khi dang.`
+                            ? `${simpleSeoMustFixes.length} muc can lam ngay.`
                             : simpleSeoShouldFixes.length > 0
-                              ? `${simpleSeoShouldFixes.length} muc nen bo sung them.`
-                              : 'Tin hieu SEO cot loi dang on de tiep tuc dang bai.'}
+                              ? `${simpleSeoShouldFixes.length} muc nen bo sung.`
+                              : 'Tin hieu SEO cot loi dang on.'}
                         </p>
                       </div>
                       <div className="flex flex-wrap gap-2">
@@ -1740,7 +1740,7 @@ export default function NewsDashboardPage() {
                     <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
                       <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-9 px-3 justify-center">
                         <LinkIcon size={18} aria-hidden="true" />
-                        Copy link
+                        Copy
                       </Button>
                       <Button
                         type="button"
@@ -1750,7 +1750,7 @@ export default function NewsDashboardPage() {
                         aria-expanded={simplePermalinkToolsExpanded}
                       >
                         {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                        Them
+                        More
                       </Button>
                     </div>
                     {simplePermalinkToolsExpanded && (
