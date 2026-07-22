@@ -2,6 +2,7 @@ import type { PublicSiteProfile } from './public-site';
 
 export function buildPolicyContactSection(siteProfile: PublicSiteProfile, lead: string) {
   return {
+    kind: 'contact' as const,
     title: 'Thông tin liên hệ',
     paragraphs: [lead],
     bullets: [
