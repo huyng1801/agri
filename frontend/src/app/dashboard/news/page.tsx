@@ -1491,13 +1491,13 @@ export default function NewsDashboardPage() {
                 </div>
               )}
               {!isAdvancedMode && (
-                <details className="mt-2.5 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
-                  <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu hay dung</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, neu khong thi dang ngay.</p>
+                <details className="mt-2 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu phu</p>
+                      <p className="mt-0.5 truncate text-sm font-bold text-ink">Mo khi can bo cuc san, tao mo ta hoac don bai vua paste.</p>
                     </div>
-                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
                   </summary>
                   <div className="mt-2 flex flex-wrap gap-1.5">
                     {simpleTemplateShortcuts.map((template) => (
@@ -1511,7 +1511,7 @@ export default function NewsDashboardPage() {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-2 flex items-center gap-2">
+                  <div className="mt-2 grid grid-cols-2 gap-2">
                     <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-9 px-3 text-sm">
                       <FileText size={18} aria-hidden="true" />
                       Tao mo ta
@@ -1524,11 +1524,11 @@ export default function NewsDashboardPage() {
                       aria-expanded={simpleEditorToolsExpanded}
                     >
                       {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                      More
+                      Them tac vu
                     </Button>
                   </div>
                   {simpleEditorToolsExpanded && (
-                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                    <div className="mt-2 grid gap-2">
                       <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10">
                         <Sparkles size={18} aria-hidden="true" />
                         Sua nhanh SEO
@@ -1573,7 +1573,7 @@ export default function NewsDashboardPage() {
                 <span>Tiêu đề</span>
                 <Input
                   data-testid="news-title-input"
-                  className="text-[15px] font-semibold placeholder:text-[15px] placeholder:text-slate-300 sm:text-base sm:font-normal sm:placeholder:text-base"
+                  className="text-[15px] font-medium placeholder:text-[13px] placeholder:font-medium placeholder:text-slate-300 sm:text-base sm:font-normal sm:placeholder:text-base"
                   value={form.title}
                   onChange={(event) => update('title', event.target.value)}
                   placeholder="Ví dụ: Xoài Mỹ Xương vào vụ mới, sản lượng ổn định"
