@@ -1308,9 +1308,13 @@ export default function NewsDashboardPage() {
               <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-2xl">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Dang bai cuc nhanh</p>
-                  <h2 className="mt-1 text-lg font-bold text-ink">Chi can tieu de, noi dung, anh bia va bam chuan bi publish</h2>
+                  <h2 className="mt-1 text-lg font-bold text-ink">
+                    {isAdvancedMode ? 'Chi can tieu de, noi dung, anh bia va bam chuan bi publish' : 'Chi can tieu de, noi dung va anh bia'}
+                  </h2>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
-                    Day la luong dang bai don gian nhat cho nguoi moi. He thong se tu dien slug, mo ta, SEO title, social image, canonical va tag neu ban chua nhap.
+                    {isAdvancedMode
+                      ? 'Day la luong dang bai don gian nhat cho nguoi moi. He thong se tu dien slug, mo ta, SEO title, social image, canonical va tag neu ban chua nhap.'
+                      : 'Dang nhanh truoc, con slug, meta, social va tag de editor tu dien hoac bo sung sau.'}
                   </p>
                 </div>
                 {isAdvancedMode ? (<div className="flex flex-wrap gap-2">
@@ -1388,7 +1392,28 @@ export default function NewsDashboardPage() {
                 )}
               </div>
               {!isAdvancedMode && (
-                <div className="mt-4 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm">
+                <div className="mt-3 rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm lg:hidden">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang den dang bai</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Trang thai dang nhanh, diem SEO va preview da nam trong editor.</p>
+                    </div>
+                    <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-10">
+                      <FileText size={18} aria-hidden="true" />
+                      Nhap bai ngay
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-10">
+                      <Image size={18} aria-hidden="true" />
+                      Dan anh bia
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {!isAdvancedMode && (
+                <div className="mt-4 hidden rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm lg:block">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Ban dieu khien dang bai dang WordPress</p>
@@ -1465,14 +1490,14 @@ export default function NewsDashboardPage() {
                 </div>
               )}
               {!isAdvancedMode && (
-                <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
+                <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai nhanh va tac vu hay dung</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi chon mau, con khong thi nhap bai va bam Dang 1 cham.</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mau bai va tac vu hay dung</p>
+                      <p className="mt-1 text-sm font-bold text-ink">Can bo cuc san thi mo mau bai, con khong thi nhap bai va bam Dang 1 cham.</p>
                     </div>
                     <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{simpleTemplateShortcuts.length} mau</span>
-                  </div>
+                  </summary>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {simpleTemplateShortcuts.map((template) => (
                       <button
@@ -1513,7 +1538,7 @@ export default function NewsDashboardPage() {
                       </Button>
                     </div>
                   )}
-                </div>
+                </details>
               )}
               {isAdvancedMode ? (
                 <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 shadow-sm" open={quickStartGuideOpen}>
@@ -2877,6 +2902,11 @@ export default function NewsDashboardPage() {
                     <p className="truncate text-[13px] font-bold text-ink">
                       {canQuickPublish ? 'San sang dang ngay' : `${corePublishReady}/3 san sang`}
                     </p>
+                    {!canQuickPublish && (
+                      <p className="mt-0.5 truncate text-[11px] text-slate-500">
+                        Thieu: {missingCoreItems.map((item) => item.label).join(', ')}
+                      </p>
+                    )}
                   </div>
                   <Button
                     type="button"
@@ -2916,18 +2946,6 @@ export default function NewsDashboardPage() {
                       <Sparkles size={18} aria-hidden="true" />
                       Chuan bi
                     </Button>
-                  </div>
-                )}
-                {!canQuickPublish && (
-                  <div className="mt-1.5 flex flex-wrap gap-1.5 px-1">
-                    <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">
-                      Thieu
-                    </span>
-                    {missingCoreItems.map((item) => (
-                      <span key={`missing-core-${item.id}`} className="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-900 ring-1 ring-amber-200">
-                        {item.label}
-                      </span>
-                    ))}
                   </div>
                 )}
               </div>
