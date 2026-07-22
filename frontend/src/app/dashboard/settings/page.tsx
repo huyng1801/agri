@@ -135,10 +135,10 @@ export default function SettingsPage() {
   const watchedContactTitle = publicForm.watch('contactTitle');
   const watchedFaqText = publicForm.watch('faqText');
   const publicPageCards = [
-    { id: 'home', label: 'Trang chu', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
+    { id: 'home', label: 'Trang ch?', href: '/', title: watchedHomeTitle, note: 'Hero, badge, tim kiem va CTA dau tien' },
     { id: 'intro', label: 'Gi?i thi?u', href: '/gioi-thieu', title: watchedIntroTitle, note: 'Trang gi?i thi?u ng?n g?n cho ng??i m?i v?o xem' },
-    { id: 'about', label: 'Ve chung toi', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
-    { id: 'contact', label: 'Lien he', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
+    { id: 'about', label: 'V? ch?ng t?i', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
+    { id: 'contact', label: 'Li?n h?', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
   ];
   const policyPageCards = [
     { id: 'terms', label: 'Dieu khoan su dung', href: '/dieu-khoan-su-dung' },
@@ -202,7 +202,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-5">
-      <h1 className="text-2xl font-bold">Cai dat he thong</h1>
+      <h1 className="text-2xl font-bold">C?i ??t h? th?ng</h1>
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
           <button
@@ -256,15 +256,15 @@ export default function SettingsPage() {
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <Link href="/dashboard/news" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Soan blog nhanh
+                So?n blog nhanh
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/cooperatives" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Sua ho so HTX
+                S?a h? s? HTX
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
               <Link href="/dashboard/products" className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                Sua san pham
+                S?a s?n ph?m
                 <ExternalLink size={16} aria-hidden="true" />
               </Link>
             </div>
@@ -272,7 +272,7 @@ export default function SettingsPage() {
               <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bang dieu khien noi dung public</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">B?ng ?i?u khi?n n?i dung public</p>
                     <p className="mt-1 text-sm font-bold text-ink">M?i trang public ch?nh ??u c? n?t xem nhanh v? m? t? ng?n ?? b?n s?a ??ng ch?, kh?ng c?n nh? c?u tr?c code.</p>
                   </div>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chinh</span>
@@ -297,7 +297,7 @@ export default function SettingsPage() {
               <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Thong tin chuan tu docs</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Th?ng tin chu?n t? docs</p>
                     <p className="mt-1 text-sm font-bold text-ink">??a ch?, hotline v? email n?y ?ang ???c d?ng xuy?n su?t cho footer, li?n h? v? c?c trang ch?nh s?ch.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', contactMatchesStandard ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
@@ -311,22 +311,22 @@ export default function SettingsPage() {
                 </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Button type="button" variant="ghost" onClick={applyStandardContactBundle}>
-                    Ap dung bo thong tin chuan
+                    ?p d?ng b? th?ng tin chu?n
                   </Button>
                   <Link href="/lien-he" target="_blank" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
-                    Xem trang lien he
+                    Xem trang li?n h?
                   </Link>
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ dang co</p>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ ?ang c?</p>
                     <p className="mt-1 text-lg font-bold text-ink">{faqCount}</p>
-                    <p className="mt-1 text-sm leading-5 text-slate-600">Moi dong trong o FAQ se ra 1 cap hoi dap tren trang lien he.</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">M?i d?ng trong ? FAQ s? ra 1 c?p h?i ??p tr?n trang li?n h?.</p>
                   </div>
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Trang policy</p>
                     <p className="mt-1 text-lg font-bold text-ink">4 trang</p>
-                    <p className="mt-1 text-sm leading-5 text-slate-600">Dieu khoan, bao mat, doi tra va van hanh se tu dong lay bo thong tin lien he o day.</p>
+                    <p className="mt-1 text-sm leading-5 text-slate-600">?i?u kho?n, b?o m?t, ??i tr? v? v?n h?nh s? t? ??ng l?y b? th?ng tin li?n h? ? ??y.</p>
                   </div>
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                       placeholder={'HTXONLINE ho tro gi?|Ho tro dang san, QR Passport va don hang COD.\nLam sao de dang bai blog?|Mo dashboard Tin tuc, dan noi dung va bam Dang 1 cham.'}
                     />
                     <p className="text-xs font-semibold text-slate-500">
-                      Moi dong la 1 cap <span className="font-bold">cau hoi|tra loi</span>. Vi du: <span className="font-bold">HTXONLINE la gi?|Nen tang so cho hop tac xa.</span>
+                      Moi dong la 1 cap <span className="font-bold">cau hoi|tra loi</span>. Vi du: <span className="font-bold">HTXONLINE la gi?|N?n t?ng s? cho h?p t?c x?.</span>
                     </p>
                   </Field>
                 </div>
@@ -490,7 +490,7 @@ export default function SettingsPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </summary>
                 <div className="mt-3 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:grid-cols-2">
-                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} placeholder="Nen tang so cho hop tac xa" /></Field>
+                  <Field label="Badge trang chu"><Input {...publicForm.register('homeBadge')} placeholder="N?n t?ng s? cho h?p t?c x?" /></Field>
                   <Field label="Ti?u ?? trang ch?"><Input {...publicForm.register('homeTitle')} placeholder="HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?." /></Field>
                   <Field label="M? t? trang ch?" className="sm:col-span-2">
                     <Textarea rows={3} {...publicForm.register('homeDescription')} placeholder="Cong khai san pham, mo QR Passport va van hanh don COD tren cung mot he thong gon, ro, de tin tuong." />
@@ -514,7 +514,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Link href="/gioi-thieu" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Gi?i thi?u</Link>
-                    <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem Ve chung toi</Link>
+                    <Link href="/ve-chung-toi" target="_blank" className="inline-flex min-h-10 items-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">Xem V? ch?ng t?i</Link>
                     <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                   </div>
                 </summary>
@@ -682,8 +682,8 @@ export default function SettingsPage() {
 }
 
 const tabs: Array<{ id: TabId; label: string }> = [
-  { id: 'profile', label: 'Ho so san' },
-  { id: 'public', label: 'Lien he public' },
+  { id: 'profile', label: 'H? s? s?n' },
+  { id: 'public', label: 'Li?n h? public' },
   { id: 'email', label: 'Email' },
   { id: 'r2', label: 'R2' },
   { id: 'security', label: 'Bao mat' },
@@ -824,10 +824,10 @@ function objectToPublicForm(value: unknown) {
     mapEmbedUrl: String(object.mapEmbedUrl ?? defaultMapEmbedUrl),
     logoUrl: String(object.logoUrl ?? ''),
     faqText: faqs.map((item) => `${(item as { question?: string }).question ?? ''}|${(item as { answer?: string }).answer ?? ''}`).join('\n'),
-    homeBadge: String(pageContent.homeBadge ?? 'Nen tang so cho hop tac xa'),
+    homeBadge: String(pageContent.homeBadge ?? 'N?n t?ng s? cho h?p t?c x?'),
     homeTitle: String(pageContent.homeTitle ?? 'HTXONLINE gi?p h?p t?c x? b?n h?ng minh b?ch h?n tr?n m?i tr??ng s?.'),
     homeDescription: String(
-      pageContent.homeDescription ?? 'Cong khai san pham, mo QR Passport cho nguoi mua va van hanh quy trinh don COD tren cung mot he thong gon, ro va de tin tuong.'
+      pageContent.homeDescription ?? 'C?ng khai s?n ph?m, m? QR Passport cho ng??i mua v? v?n h?nh quy tr?nh ??n COD tr?n c?ng m?t h? th?ng g?n, r? v? d? tin t??ng.'
     ),
     homeImageUrl: String(pageContent.homeImageUrl ?? ''),
     homeImageAlt: String(pageContent.homeImageAlt ?? ''),

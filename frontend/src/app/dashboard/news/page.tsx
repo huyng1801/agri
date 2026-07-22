@@ -870,7 +870,7 @@ export default function NewsDashboardPage() {
     insertHtmlIntoVisualEditor(cleaned);
     setEditorAssist({
       kind: 'pasted-content',
-      title: html ? 'Noi dung da duoc dan va lam sach co ban' : 'Noi dung da duoc chen vao editor',
+      title: html ? 'N?i dung ?? ???c d?n v? l?m s?ch c? b?n' : 'N?i dung ?? ???c ch?n v?o editor',
       detail: html
         ? 'N?u ??y l? b?i t? Word ho?c Google Docs, b?n n?n b?m T?i ?u b?i v?a d?n ?? h? th?ng d?n b? c?c, th?m m? b?i v? s?a SEO nhanh.'
         : 'B?n c? th? xem l?i b? c?c, th?m ?nh v? b?m Chu?n b? publish khi ?? ?? n?i dung.'
@@ -1078,7 +1078,7 @@ export default function NewsDashboardPage() {
   function ensureHeadingStructure() {
     const currentBody = form.bodyHtml || '<p></p>';
     if (/<h[23][^>]*>/i.test(currentBody)) return;
-    const headingBlock = '<h2>Thong tin chinh</h2><p>Bo sung y chinh quan trong tai day.</p><h2>Noi dung can biet</h2><p>Mo rong them chi tiet, loi ich hoac huong dan cu the.</p>';
+    const headingBlock = '<h2>Th?ng tin ch?nh</h2><p>B? sung ? ch?nh quan tr?ng t?i ??y.</p><h2>N?i dung c?n bi?t</h2><p>M? r?ng th?m chi ti?t, l?i ?ch ho?c h??ng d?n c? th?.</p>';
     update('bodyHtml', `${headingBlock}${currentBody}`);
     window.requestAnimationFrame(() => {
       if (editorMode === 'visual' && visualEditorRef.current) {
@@ -1104,7 +1104,7 @@ export default function NewsDashboardPage() {
     });
     setEditorAssist({
       kind: 'optimized-content',
-      title: 'Noi dung da duoc lam sach',
+      title: 'N?i dung ?? ???c l?m s?ch',
       detail: 'Th? r?c t? Word/Docs ?? ???c r?t g?n. N?u b?i c?n ??ng nhanh, b?n c? th? b?m SEO nhanh ho?c Chu?n b? publish ti?p.'
     });
   }
@@ -1924,7 +1924,7 @@ export default function NewsDashboardPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-bold text-ink">Mau bai nhanh</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">Can bo cuc co san thi mo che do nang cao, con luong don gian co the viet va dang ngay.</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">C?n b? c?c c? s?n th? m? ch? ?? n?ng cao, c?n lu?ng ??n gi?n c? th? vi?t v? ??ng ngay.</p>
                   </div>
                   <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mau</span>
                 </div>
@@ -2136,7 +2136,7 @@ export default function NewsDashboardPage() {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="font-bold">Editor phat hien bai vua dan con nhieu dinh dang tu Word/Docs</p>
-                        <p className="mt-1 leading-6">Nen bam &quot;T?i ?u b?i v?a d?n&quot; ngay luc nay de don HTML rac, giam the thua va dua bai ve bo cuc de doc hon tren mobile.</p>
+                        <p className="mt-1 leading-6">N?n b?m &quot;T?i ?u b?i v?a d?n&quot; ngay l?c n?y ?? d?n HTML r?c, gi?m th? th?a v? ??a b?i v? b? c?c d? ??c h?n tr?n mobile.</p>
                       </div>
                       <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
                         <Sparkles size={18} aria-hidden="true" />
@@ -2797,7 +2797,7 @@ export default function NewsDashboardPage() {
                 <div className="rounded-2xl border border-slate-200 bg-white p-3">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Truoc khi bam ??ng 1 ch?m</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Tr??c khi b?m ??ng 1 ch?m</p>
                       <p className="mt-1 text-sm font-semibold text-ink">
                         {canQuickPublish
                           ? 'Ban da du 3 muc cot loi. Co the dang ngay, roi bo sung SEO sau neu muon.'
@@ -3780,7 +3780,7 @@ function buildPreparedBodyHtml(form: NewsForm) {
   }
 
   if (stripped.split(/\s+/).filter(Boolean).length >= 120 && !/<h[23][^>]*>/i.test(bodyHtml)) {
-    const headingBlock = '<h2>Thong tin chinh</h2><p>Bo sung y chinh quan trong tai day.</p><h2>Noi dung can biet</h2><p>Mo rong them chi tiet, loi ich hoac huong dan cu the.</p>';
+    const headingBlock = '<h2>Th?ng tin ch?nh</h2><p>B? sung ? ch?nh quan tr?ng t?i ??y.</p><h2>N?i dung c?n bi?t</h2><p>M? r?ng th?m chi ti?t, l?i ?ch ho?c h??ng d?n c? th?.</p>';
     bodyHtml = `${headingBlock}${bodyHtml}`;
   }
 
@@ -4268,7 +4268,7 @@ function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
       },
       {
         id: 'content',
-        label: 'Noi dung',
+        label: 'N?i dung',
         ok: stripHtml(form.bodyHtml).trim().length >= 80,
         hint: stripHtml(form.bodyHtml).trim() ? 'Da co noi dung, co the bo sung them H2 hoac anh neu muon.' : 'Dan noi dung hoac go truc tiep vao editor nhu soan Word.'
       },
@@ -4397,7 +4397,7 @@ function suggestPrimaryInternalLink(form: NewsForm) {
     };
   }
   return {
-    label: 'Kham pha them san pham va hop tac xa tren HTXONLINE',
+    label: 'Kh?m ph? th?m s?n ph?m v? h?p t?c x? tr?n HTXONLINE',
     href: '/san-pham'
   };
 }

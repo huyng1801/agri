@@ -6,8 +6,8 @@ import { Panel } from '@/components/ui';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Gioi thieu | HTXONLINE',
-  description: 'Nen tang san nong san so va QR truy xuat nguon goc cho hop tac xa Viet Nam.',
+  title: 'Gi?i thi?u | HTXONLINE',
+  description: 'N?n t?ng s?n n?ng s?n s? v? QR truy xu?t ngu?n g?c cho h?p t?c x? Vi?t Nam.',
   alternates: { canonical: 'https://htxonline.vn/gioi-thieu' }
 };
 
@@ -38,13 +38,13 @@ export default async function AboutPage() {
       </div>
       <Panel className="mt-4 p-3.5 text-[0.9rem] leading-[1.7] text-slate-700 sm:p-5 sm:text-sm sm:leading-7">
         <p>
-          Tim hieu them ve dinh huong nen tang tai{' '}
+          T?m hi?u th?m v? ??nh h??ng n?n t?ng t?i{' '}
           <Link href="/ve-chung-toi" className="font-semibold text-leaf">
-            Ve chung toi
+            V? ch?ng t?i
           </Link>{' '}
-          hoac xem{' '}
+          ho?c xem{' '}
           <Link href="/huong-dan-mua-hang" className="font-semibold text-leaf">
-            huong dan mua hang
+            h??ng d?n mua h?ng
           </Link>
           .
         </p>

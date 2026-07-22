@@ -12,11 +12,11 @@ import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
   title: 'HTXONLINE — San nong san so cho hop tac xa Viet Nam',
-  description: 'Ket noi nguoi mua voi san pham HTX minh bach, QR truy xuat nguon goc va dat hang COD tren HTXONLINE.',
+  description: 'K?t n?i ng??i mua v?i s?n ph?m HTX minh b?ch, QR truy xu?t ngu?n g?c v? ??t h?ng COD tr?n HTXONLINE.',
   alternates: { canonical: 'https://htxonline.vn/' },
   openGraph: {
     title: 'HTXONLINE — San nong san so',
-    description: 'San nong san so cho hop tac xa Viet Nam voi QR Passport va dat hang COD.',
+    description: 'S?n n?ng s?n s? cho h?p t?c x? Vi?t Nam v?i QR Passport v? ??t h?ng COD.',
     url: 'https://htxonline.vn/',
     siteName: 'HTXONLINE',
     locale: 'vi_VN',
@@ -34,14 +34,14 @@ export default async function HomePage() {
   const featuredProducts = catalog.products.slice(0, 12);
   const featuredCooperatives = catalog.cooperatives.slice(0, 6);
   const stats: Array<[string, string | number, LucideIcon]> = [
-    ['San pham public', catalog.totalProducts, ShoppingBag],
-    ['HTX dang hien thi', catalog.cooperatives.length, Store],
-    ['QR Passport', 'Truy xuat nhanh', QrCode]
+    ['S?n ph?m public', catalog.totalProducts, ShoppingBag],
+    ['HTX ?ang hi?n th?', catalog.cooperatives.length, Store],
+    ['QR Passport', 'Truy xu?t nhanh', QrCode]
   ];
   const heroSignals = [
-    'Cong khai san pham va ho so HTX tren cung mot nen tang',
+    'C?ng khai s?n ph?m v? h? s? HTX tr?n c?ng m?t n?n t?ng',
     'QR Passport m? tr?c ti?p cho ng??i mua m? kh?ng c?n ??ng nh?p',
-    '??t h?ng COD nhanh, HTX chu dong xac nhan va xu ly'
+    '??t h?ng COD nhanh, HTX ch? ??ng x?c nh?n v? x? l?'
   ] as const;
 
   return (
@@ -82,7 +82,7 @@ export default async function HomePage() {
                 <div className="grid gap-2 min-[390px]:grid-cols-[1.06fr_0.94fr] sm:flex sm:flex-wrap">
                   <Link href="/san-pham" className="inline-flex sm:w-auto">
                     <Button className="min-h-[3.15rem] w-full whitespace-nowrap rounded-2xl px-4 text-[0.92rem] shadow-[0_14px_28px_rgba(47,132,81,0.22)] sm:min-h-12 sm:w-auto sm:px-5">
-                      Xem san pham
+                      Xem s?n ph?m
                       <ArrowRight size={18} aria-hidden="true" />
                     </Button>
                   </Link>
@@ -91,12 +91,12 @@ export default async function HomePage() {
                       variant="ghost"
                       className="min-h-[3.15rem] w-full whitespace-nowrap justify-center rounded-2xl border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.92rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
                     >
-                      Kham pha HTX
+                      Kh?m ph? HTX
                     </Button>
                   </Link>
                 </div>
                 <p className="mt-2 px-1 text-[0.76rem] leading-5 text-slate-500 sm:hidden">
-                  Mo nhanh san pham, ho so HTX va QR Passport theo mot luong gon tren dien thoai.
+                  M? nhanh s?n ph?m, h? s? HTX v? QR Passport theo m?t lu?ng g?n tr?n ?i?n tho?i.
                 </p>
               </div>
 
@@ -126,7 +126,7 @@ export default async function HomePage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/74">QR Passport</p>
-                    <h2 className="mt-1.5 text-[1.28rem] font-bold leading-[1.08]">Truy xuat nhanh va chot don gon hon tren mobile.</h2>
+                    <h2 className="mt-1.5 text-[1.28rem] font-bold leading-[1.08]">Truy xu?t nhanh va chot don gon hon tren mobile.</h2>
                   </div>
                   <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[1rem] bg-white/12 ring-1 ring-white/15">
                     <Sparkles size={16} aria-hidden="true" className="text-mint" />
@@ -185,12 +185,12 @@ export default async function HomePage() {
                   <div className="mt-5 rounded-[1.5rem] bg-black/12 p-4 ring-1 ring-white/10">
                     <div className="flex items-center gap-2 text-sm font-semibold text-white/84">
                       <BadgeCheck size={16} aria-hidden="true" />
-                      Hanh trinh mua hang ro rang hon
+                      H?nh tr?nh mua h?ng r? r?ng h?n
                     </div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
                       {[
-                        ['01', 'San pham public', 'Trang hien thi ro gia, HTX va QR neu co'],
-                        ['02', 'Quet QR Passport', 'Xem vung trong, nhat ky va chung nhan'],
+                        ['01', 'S?n ph?m public', 'Trang hi?n th? r? gi?, HTX v? QR n?u c?'],
+                        ['02', 'Qu?t QR Passport', 'Xem v?ng tr?ng, nh?t k? v? ch?ng nh?n'],
                         ['03', 'Ch?t ??n COD', 'Ng??i mua g?i ??n, HTX ch? ??ng x?c nh?n']
                       ].map(([step, title, text]) => (
                         <div key={title} className="rounded-2xl bg-white/10 p-4">
@@ -208,18 +208,18 @@ export default async function HomePage() {
         </section>
 
         <PublicSection>
-          <PublicSectionHeader title="San pham noi bat" description="Nong san public tu cac HTX tren he thong." href="/san-pham" linkLabel="Xem tat ca" />
+          <PublicSectionHeader title="S?n ph?m n?i b?t" description="N?ng s?n public t? c?c HTX tr?n h? th?ng." href="/san-pham" linkLabel="Xem t?t c?" />
           {featuredProducts.length ? (
             <ProductSlider products={featuredProducts} />
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chua co san pham public" description="Khi HTX publish san pham, san pham se xuat hien tai day." />
+              <EmptyPublicState title="Ch?a c? s?n ph?m public" description="Khi HTX publish s?n ph?m, s?n ph?m s? xu?t hi?n t?i ??y." />
             </div>
           )}
         </PublicSection>
 
         <PublicSection band>
-          <PublicSectionHeader title="HTX noi bat" description="Ho so HTX dang co san pham public." href="/htx" linkLabel="Xem HTX" />
+          <PublicSectionHeader title="HTX n?i b?t" description="H? s? HTX ?ang c? s?n ph?m public." href="/htx" linkLabel="Xem HTX" />
           {featuredCooperatives.length ? (
             <div className="mt-5 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
               {featuredCooperatives.map((cooperative, index) => (
@@ -236,9 +236,9 @@ export default async function HomePage() {
         <PublicSection>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              ['Minh bach nguon goc', 'QR Passport giup nguoi mua kiem tra nhat ky, vung trong va chung nhan public.', QrCode],
+              ['Minh b?ch ngu?n g?c', 'QR Passport gi?p ng??i mua ki?m tra nh?t k?, v?ng tr?ng v? ch?ng nh?n public.', QrCode],
               ['??t h?ng COD', 'Ng??i mua g?i ??n nhanh, HTX li?n h? x?c nh?n v? x? l? ??n.', ShoppingBag],
-              ['HTX tu van hanh', 'San pham, vung trong, nhat ky va don hang do tung HTX tu quan ly.', BadgeCheck]
+              ['HTX t? v?n h?nh', 'S?n ph?m, v?ng tr?ng, nh?t k? v? ??n h?ng do t?ng HTX t? qu?n l?.', BadgeCheck]
             ].map(([title, text, Icon]) => (
               <Panel key={String(title)} className="h-full p-3.5 sm:p-5">
                 <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-mint text-leaf sm:h-12 sm:w-12 sm:rounded-2xl">
@@ -252,7 +252,7 @@ export default async function HomePage() {
         </PublicSection>
 
         <PublicSection band>
-          <PublicSectionHeader title="Tin tuc moi nhat" description="Tin HTX, thi truong va truy xuat nguon goc tu doi van hanh HTXONLINE." href="/tin-tuc" linkLabel="Xem tin tuc" />
+          <PublicSectionHeader title="Tin t?c m?i nh?t" description="Tin HTX, th? tr??ng v? truy xu?t ngu?n g?c t? ??i v?n h?nh HTXONLINE." href="/tin-tuc" linkLabel="Xem tin t?c" />
           {news.data.length ? (
             <div className="mt-5 grid gap-4 md:grid-cols-3">
               {news.data.map((article, index) => (
@@ -261,7 +261,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chua co tin tuc public" description="Tin tuc do Super Admin publish se xuat hien tai day." />
+              <EmptyPublicState title="Ch?a c? tin t?c public" description="Tin t?c do Super Admin publish s? xu?t hi?n t?i ??y." />
             </div>
           )}
         </PublicSection>
