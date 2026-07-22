@@ -140,6 +140,12 @@ export default function SettingsPage() {
     { id: 'about', label: 'Ve chung toi', href: '/ve-chung-toi', title: watchedAboutTitle, note: 'Trang nang luc, phap ly va thong tin lien he mo rong' },
     { id: 'contact', label: 'Lien he', href: '/lien-he', title: watchedContactTitle, note: 'Hotline, email, dia chi, map va FAQ' }
   ];
+  const policyPageCards = [
+    { id: 'terms', label: 'Dieu khoan su dung', href: '/dieu-khoan-su-dung' },
+    { id: 'privacy', label: 'Chinh sach bao mat', href: '/chinh-sach-bao-mat' },
+    { id: 'returns', label: 'Chinh sach doi tra', href: '/chinh-sach-doi-tra' },
+    { id: 'operations', label: 'Chinh sach van hanh', href: '/chinh-sach-van-hanh' }
+  ];
   const faqCount = (watchedFaqText || '')
     .split('\n')
     .map((line) => line.trim())
@@ -185,6 +191,13 @@ export default function SettingsPage() {
 
   async function uploadPublicImage(file: File, field: keyof z.infer<typeof publicProfileSchema>) {
     publicForm.setValue(field, await uploadPublicAsset(file));
+  }
+
+  function applyStandardContactBundle() {
+    publicForm.setValue('hotline', '0907001200');
+    publicForm.setValue('hotlineDisplay', standardHotlineDisplay);
+    publicForm.setValue('supportEmail', standardSupportEmail);
+    publicForm.setValue('address', standardAddress);
   }
 
   return (
@@ -296,6 +309,14 @@ export default function SettingsPage() {
                   <p><span className="font-bold text-ink">Hotline:</span> {standardHotlineDisplay}</p>
                   <p><span className="font-bold text-ink">Email:</span> {standardSupportEmail}</p>
                 </div>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button type="button" variant="ghost" onClick={applyStandardContactBundle}>
+                    Ap dung bo thong tin chuan
+                  </Button>
+                  <Link href="/lien-he" target="_blank" className="inline-flex min-h-11 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf">
+                    Xem trang lien he
+                  </Link>
+                </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">FAQ dang co</p>
@@ -307,6 +328,19 @@ export default function SettingsPage() {
                     <p className="mt-1 text-lg font-bold text-ink">4 trang</p>
                     <p className="mt-1 text-sm leading-5 text-slate-600">Dieu khoan, bao mat, doi tra va van hanh se tu dong lay bo thong tin lien he o day.</p>
                   </div>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {policyPageCards.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={item.href}
+                      target="_blank"
+                      className="inline-flex min-h-11 items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:bg-white hover:text-leaf"
+                    >
+                      {item.label}
+                      <ExternalLink size={16} aria-hidden="true" />
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
