@@ -1191,7 +1191,7 @@ export default function NewsDashboardPage() {
                     Day la luong dang bai don gian nhat cho nguoi moi. He thong se tu dien slug, mo ta, SEO title, social image, canonical va tag neu ban chua nhap.
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                {isAdvancedMode ? (<div className="flex flex-wrap gap-2">
                   <Button type="button" variant="ghost" onClick={preparePostForPublish}>
                     <Sparkles size={18} aria-hidden="true" />
                     Chuan bi publish
@@ -1212,7 +1212,7 @@ export default function NewsDashboardPage() {
                       </Button>
                     </>
                   )}
-                </div>
+                </div>) : (<p className="text-sm font-semibold text-leaf/90">Cuon xuong de nhap tieu de, dan noi dung va them anh dai dien.</p>)}
               </div>
               <div className="mt-4 rounded-2xl border border-white/80 bg-white/92 p-3 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
