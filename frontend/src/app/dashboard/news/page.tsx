@@ -1711,7 +1711,8 @@ export default function NewsDashboardPage() {
                   onBlur={syncVisualEditor}
                   onPaste={(event) => void handleVisualPaste(event)}
                   className={cn(
-                    'min-h-[320px] rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                    'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                    isAdvancedMode ? 'min-h-[320px]' : 'min-h-[240px]',
                     draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
                   )}
                 />
@@ -1740,7 +1741,7 @@ export default function NewsDashboardPage() {
                     setDraggingEditor(false);
                     void handleDroppedFiles(event.dataTransfer.files);
                   }}
-                  className="min-h-[320px] font-mono text-sm"
+                  className={cn('font-mono text-sm', isAdvancedMode ? 'min-h-[320px]' : 'min-h-[240px]')}
                   required
                 />
                 {draggingEditor && <span className="text-xs font-semibold text-leaf">Thả ảnh vào đây để tự upload và chèn HTML.</span>}
@@ -2174,7 +2175,7 @@ export default function NewsDashboardPage() {
           )}
         </form>
 
-        <aside className="space-y-4">
+        <aside className={cn('space-y-4', !isAdvancedMode && 'hidden xl:block')}>
           <Panel className="space-y-3">
             {isAdvancedMode ? (
               <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">

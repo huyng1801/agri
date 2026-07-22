@@ -98,6 +98,9 @@ export async function PublicFooter() {
                   <span>{profile.supportEmail}</span>
                 </a>
               </div>
+              <p className="rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-sm leading-6 text-white/75">
+                Náº¿u tra cá»©u QR Passport hoáº·c Ä‘Æ¡n hÃ ng gáº·p váº¥n Ä‘á», hÃ£y liÃªn há»‡ hotline hoáº·c email Ä‘á»ƒ Ä‘Æ°á»£c há»— trá»£ nhanh.
+              </p>
             </div>
 
             {profile.mapEmbedUrl ? (
