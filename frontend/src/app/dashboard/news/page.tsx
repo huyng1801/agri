@@ -1401,12 +1401,12 @@ export default function NewsDashboardPage() {
                     </div>
                     <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-9 px-3">
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-9 px-2.5 text-sm">
                       <FileText size={18} aria-hidden="true" />
                       Nhap bai ngay
                     </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-9 px-3">
+                    <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-9 px-2.5 text-sm">
                       <Image size={18} aria-hidden="true" />
                       Dan anh bia
                     </Button>
@@ -1578,8 +1578,8 @@ export default function NewsDashboardPage() {
                   placeholder="Ví dụ: Xoài Mỹ Xương vào vụ mới, sản lượng ổn định"
                   required
                 />
-                <span className={cn('text-xs font-semibold', lengthHintClass(titleLength, 35, 70))}>
-                  {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính ngay trên tiêu đề để hệ thống gợi ý slug và SEO tốt hơn.'}
+                <span className={cn('text-[11px] font-semibold leading-4', lengthHintClass(titleLength, 35, 70))}>
+                  {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính để hệ thống gợi ý slug và SEO tốt hơn.'}
                 </span>
               </label>
               {isAdvancedMode && <>
@@ -1628,15 +1628,15 @@ export default function NewsDashboardPage() {
               </>}
             </div>
             {!isAdvancedMode && (
-              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-4 shadow-sm">
+              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-3 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink va SEO nhanh</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Chon tu khoa chinh, copy link va dung cac nut goi y ngay canh editor.</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Chon tu khoa chinh va copy link truoc khi dang.</p>
                   </div>
                   <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
                 </div>
-                <div className="mt-3 grid gap-3">
+                <div className="mt-2.5 grid gap-2.5">
                   <label className="space-y-1 text-sm font-semibold">
                     <span>Tu khoa chinh</span>
                     <Input
@@ -1645,27 +1645,27 @@ export default function NewsDashboardPage() {
                       onChange={(event) => update('focusKeyword', event.target.value)}
                       placeholder="Vi du: xoai My Xuong"
                     />
-                    <span className="text-xs font-semibold text-slate-500">
+                    <span className="text-[11px] font-semibold leading-4 text-slate-500">
                       {form.focusKeyword.trim()
-                        ? 'Editor se cham title, mo ta, mat do va mo bai theo cum tu khoa nay.'
-                        : 'Chi can 1 cum tu khoa chinh de editor cham bai giong plugin SEO nhung don gian hon.'}
+                        ? 'Editor se cham title, mo ta va mo bai theo cum tu khoa nay.'
+                        : 'Chi can 1 cum tu khoa chinh de editor cham bai nhanh hon.'}
                     </span>
                   </label>
                   {focusKeywordSuggestions.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       {focusKeywordSuggestions.map((keyword) => (
                         <button
                           key={`simple-keyword-${keyword}`}
                           type="button"
                           className={cn(
-                            'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                            'rounded-full border px-2.5 py-1 text-[11px] font-semibold transition',
                             form.focusKeyword.trim().toLowerCase() === keyword.toLowerCase()
                               ? 'border-emerald-300 bg-emerald-50 text-emerald-800'
                               : 'border-slate-200 bg-white text-slate-700 hover:border-leaf hover:text-leaf'
                           )}
                           onClick={() => applyFocusKeywordSuggestion(keyword)}
                         >
-                          Dung: {keyword}
+                          {keyword}
                         </button>
                       ))}
                     </div>
@@ -1732,13 +1732,13 @@ export default function NewsDashboardPage() {
                       </div>
                     )}
                   </details>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2.5">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bai viet</p>
                     <div className="mt-1 rounded-xl border border-white/90 bg-white px-3 py-2">
                       <p className="truncate text-sm font-semibold text-emerald-700">{permalink}</p>
                     </div>
                     <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-10 px-3 justify-center">
+                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-9 px-3 justify-center">
                         <LinkIcon size={18} aria-hidden="true" />
                         Copy link
                       </Button>
@@ -1746,7 +1746,7 @@ export default function NewsDashboardPage() {
                         type="button"
                         variant="ghost"
                         onClick={() => setSimplePermalinkToolsExpanded((value) => !value)}
-                        className="min-h-10 px-3 justify-center"
+                        className="min-h-9 px-3 justify-center"
                         aria-expanded={simplePermalinkToolsExpanded}
                       >
                         {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
