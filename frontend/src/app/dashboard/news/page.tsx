@@ -2282,11 +2282,30 @@ export default function NewsDashboardPage() {
           </Panel>
 
           <Panel className="space-y-3">
-            <div className={cn('rounded-2xl border px-4 py-3', publishReadinessClass(publishReadiness.ratio))}>
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Trạng thái xuất bản</p>
-              <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
-              <p className="mt-1 text-sm leading-6 text-slate-700">{publishReadiness.detail}</p>
-            </div>
+            {isAdvancedMode ? (
+              <div className={cn('rounded-2xl border px-4 py-3', publishReadinessClass(publishReadiness.ratio))}>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Trạng thái xuất bản</p>
+                <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.label}</p>
+                <p className="mt-1 text-sm leading-6 text-slate-700">{publishReadiness.detail}</p>
+              </div>
+            ) : (
+              <div className={cn('rounded-2xl border px-4 py-3', publishReadinessClass(publishReadiness.ratio))}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Trạng thái xuất bản</p>
+                    <p className="mt-1 text-sm font-bold text-ink">{publishReadiness.label}</p>
+                  </div>
+                  <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-slate-700">
+                    {publishReadiness.completed}/{publishReadiness.total}
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-slate-700">
+                  {publishChecklistIssues > 0
+                    ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi public.`
+                    : 'Đã đủ khung cơ bản để tiếp tục xuất bản.'}
+                </p>
+              </div>
+            )}
             <details className="group rounded-2xl border border-slate-200 bg-white/95" open={publishChecklistOpen}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
