@@ -240,7 +240,9 @@ async function main() {
       currentMapEmbedUrl ===
         'https://maps.google.com/maps?hl=vi&q=S%E1%BB%91%20322%20%E1%BA%A4p%20M%E1%BB%B9%20Xu%C3%A2n%2C%20X%C3%A3%20M%E1%BB%B9%20Th%E1%BB%8D%2C%20T%E1%BB%89nh%20%C4%90%E1%BB%93ng%20Th%C3%A1p%2C%20Vi%E1%BB%87t%20Nam&z=16&output=embed' ||
       currentMapEmbedUrl.includes('S%E1%BB%91%20322') ||
-      currentMapEmbedUrl.includes('M%E1%BB%B9%20Xu%C3%A2n');
+      currentMapEmbedUrl.includes('M%E1%BB%B9%20Xu%C3%A2n') ||
+      currentMapEmbedUrl.includes('So%20322') ||
+      currentMapEmbedUrl.includes('My%20Xuan');
     const nextValue: Prisma.InputJsonObject = {
       ...current,
       hotline:

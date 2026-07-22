@@ -2,13 +2,14 @@ import type { PublicSiteProfile } from './public-site';
 
 export function buildPolicyContactSection(siteProfile: PublicSiteProfile, lead: string) {
   return {
-    title: 'Thông tin liên hệ',
+    title: 'Thong tin lien he',
     paragraphs: [lead],
     bullets: [
-      `Địa chỉ: ${siteProfile.address}`,
+      `Dia chi: ${siteProfile.address}`,
       `Hotline: ${siteProfile.hotlineDisplay}`,
       `Email: ${siteProfile.supportEmail}`,
-      'Website: htxonline.vn'
+      'Website: htxonline.vn',
+      'Thoi gian ho tro: Thu Hai den Thu Sau, 08:00 - 17:00 (Gio Viet Nam)'
     ]
   };
 }
