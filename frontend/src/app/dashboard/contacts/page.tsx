@@ -62,7 +62,7 @@ export default function ContactsPage() {
     <div className="space-y-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Liên hệ public</h1>
+          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Liên hệ từ trang công khai</h1>
           <p className="text-sm text-slate-600">Theo dõi lead từ sàn công khai, cập nhật trạng thái xử lý và ghi chú nội bộ.</p>
         </div>
         <Button type="button" variant="ghost" onClick={() => contacts.refetch()} aria-label="Tải lại">

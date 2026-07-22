@@ -47,7 +47,7 @@ export default function DashboardPage() {
         ['/dashboard/subscription-plans', 'Quản lý gói'],
         ['/dashboard/invoices', 'Hóa đơn'],
         ['/dashboard/orders', 'Đơn COD'],
-        ['/dashboard/contacts', 'Liên hệ public'],
+        ['/dashboard/contacts', 'Liên hệ từ trang công khai'],
         ['/dashboard/audit-logs', 'Nhật ký hệ thống'],
         ['/dashboard/backups', 'Sao lưu']
       ]

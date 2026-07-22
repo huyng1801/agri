@@ -137,7 +137,7 @@ export default function ZonesPage() {
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">
             Vùng trồng
           </h1>
-          <p className="text-sm text-slate-600">Quản lý vùng trồng, tọa độ, GeoJSON và trạng thái công khai trên sàn public.</p>
+          <p className="text-sm text-slate-600">Quản lý vùng trồng, tọa độ, GeoJSON và trạng thái công khai trên sàn.</p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => zones.refetch()} aria-label="Tải lại">
@@ -154,14 +154,14 @@ export default function ZonesPage() {
 
       <div className="grid gap-3 sm:grid-cols-4">
         <Metric label="Tổng vùng" value={stats.total} icon={MapPinned} />
-        <Metric label="Đang public" value={stats.publicCount} icon={Globe2} tone="leaf" />
+        <Metric label="Đang công khai" value={stats.publicCount} icon={Globe2} tone="leaf" />
         <Metric label="Đang hoạt động" value={stats.activeCount} icon={ShieldCheck} tone="sky" />
         <Metric label="Sản phẩm đang gắn" value={stats.productCount} icon={Layers3} tone="stone" />
       </div>
 
       {user && !canManage && (
         <Panel className="border-sky/30 bg-sky/10 text-sm text-slate-700">
-          Bạn đang ở chế độ chỉ đọc. Vai trò hiện tại có thể xem vùng trồng và trạng thái public, nhưng không thể tạo hoặc chỉnh sửa.
+          Bạn đang ở chế độ chỉ đọc. Vai trò hiện tại có thể xem vùng trồng và trạng thái công khai, nhưng không thể tạo hoặc chỉnh sửa.
         </Panel>
       )}
 
@@ -177,7 +177,7 @@ export default function ZonesPage() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-bold">{editingId ? 'Cập nhật vùng trồng' : 'Tạo vùng trồng mới'}</h2>
-                <p className="text-sm text-slate-500">Nên chỉ bật public cho vùng đã sẵn sàng hiển thị trên trang sản phẩm, HTX và QR Passport.</p>
+                <p className="text-sm text-slate-500">Nên chỉ bật công khai cho vùng đã sẵn sàng hiển thị trên trang sản phẩm, HTX và QR Passport.</p>
               </div>
               <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>
                 Đóng
@@ -225,15 +225,15 @@ export default function ZonesPage() {
 
                 <label className="flex min-h-11 items-center gap-3 rounded-md border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
                   <input data-testid="zone-public-switch" type="checkbox" checked={form.isPublic} onChange={(event) => update('isPublic', event.target.checked)} />
-                  Công khai vùng trồng này trên sàn public và QR Passport
+                  Công khai vùng trồng này trên sàn và QR Passport
                 </label>
               </div>
 
               <aside className="space-y-4">
                 <Panel className="space-y-3 bg-slate-50 shadow-none">
-                  <h3 className="font-bold">Tóm tắt public</h3>
+                  <h3 className="font-bold">Tóm tắt công khai</h3>
                   <div className="flex flex-wrap gap-2">
-                    <Badge className={form.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{form.isPublic ? 'Công khai' : 'Ẩn public'}</Badge>
+                    <Badge className={form.isPublic ? 'bg-mint text-leaf' : 'bg-stone-100 text-stone-700'}>{form.isPublic ? 'Công khai' : 'Đang ẩn'}</Badge>
                     <Badge className={statusTone(form.status)}>{statusLabel(form.status)}</Badge>
                   </div>
                   <Info label="Tên vùng" value={form.name || 'Chưa nhập'} />
@@ -294,8 +294,8 @@ export default function ZonesPage() {
           <option value="ARCHIVED">Lưu trữ</option>
         </Select>
         <Select data-testid="zone-public-filter" value={publicFilter} onChange={(event) => setPublicFilter(event.target.value)}>
-          <option value="">Tất cả trạng thái public</option>
-          <option value="true">Đang public</option>
+          <option value="">Tất cả trạng thái công khai</option>
+          <option value="true">Đang công khai</option>
           <option value="false">Đang ẩn</option>
         </Select>
       </div>
@@ -352,7 +352,7 @@ export default function ZonesPage() {
                   disabled={togglePublic.isPending}
                 >
                   {zone.isPublic ? <EyeOff size={16} aria-hidden="true" /> : <Globe2 size={16} aria-hidden="true" />}
-                  {zone.isPublic ? 'Ẩn public' : 'Bật public'}
+                  {zone.isPublic ? 'Ẩn công khai' : 'Bật công khai'}
                 </Button>
               )}
               <a

@@ -216,7 +216,7 @@ export default function CertificationsPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Metric label="Tổng chứng nhận" value={stats.total} />
-        <Metric label="Đang public" value={stats.publicCount} tone="leaf" />
+        <Metric label="Đang công khai" value={stats.publicCount} tone="leaf" />
         <Metric label="Sắp hết hạn 30 ngày" value={stats.expiringSoon} tone="rose" />
       </div>
 
@@ -280,7 +280,7 @@ export default function CertificationsPage() {
                   <Input data-testid="certification-file-input" value={form.fileUrl || form.fileObjectKey} readOnly placeholder="PDF hoặc ảnh chứng nhận" className="bg-slate-100 text-slate-600" />
                   <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                     <FileUp size={18} aria-hidden="true" />
-                    {uploading ? 'Đang upload' : 'Upload PDF/ảnh'}
+                    {uploading ? 'Đang tải tệp lên' : 'Tải PDF/ảnh lên'}
                     <input
                       className="sr-only"
                       type="file"
@@ -291,7 +291,7 @@ export default function CertificationsPage() {
                   {form.fileUrl && (
                     <a href={form.fileUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                       <Globe size={18} aria-hidden="true" />
-                      Xem file đã upload
+                      Xem tệp đã tải lên
                     </a>
                   )}
                 </Panel>
@@ -320,8 +320,8 @@ export default function CertificationsPage() {
           <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm tên chứng nhận, đơn vị cấp, sản phẩm" className="pl-10" />
         </div>
         <Select value={publicFilter} onChange={(event) => setPublicFilter(event.target.value)}>
-          <option value="">Tất cả trạng thái public</option>
-          <option value="true">Đang public</option>
+          <option value="">Tất cả trạng thái công khai</option>
+          <option value="true">Đang công khai</option>
           <option value="false">Đang ẩn</option>
         </Select>
       </div>

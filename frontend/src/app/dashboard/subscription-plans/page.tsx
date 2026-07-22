@@ -200,7 +200,7 @@ export default function SubscriptionPlansPage() {
               <Field label="Tên gói">
                 <Input data-testid="plan-name-input" value={form.name} onChange={(event) => update('name', event.target.value)} required />
               </Field>
-              <Field label="Slug">
+              <Field label="Đường dẫn rút gọn">
                 <Input data-testid="plan-slug-input" value={form.slug} onChange={(event) => update('slug', slugifyLocal(event.target.value))} required />
               </Field>
               <Field label="Giá tháng">
@@ -241,7 +241,7 @@ export default function SubscriptionPlansPage() {
       )}
 
       <div className="sticky top-[66px] z-10 grid gap-2 rounded-md border border-slate-200 bg-white p-2 lg:top-0 sm:grid-cols-[1fr_180px]">
-        <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm tên gói hoặc slug" />
+        <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm tên gói hoặc đường dẫn rút gọn" />
         <Select value={activeFilter} onChange={(event) => setActiveFilter(event.target.value)}>
           <option value="">Tất cả</option>
           <option value="true">Đang bật</option>

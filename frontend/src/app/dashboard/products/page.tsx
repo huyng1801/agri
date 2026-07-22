@@ -245,7 +245,7 @@ export default function ProductsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Sản phẩm</h1>
-          <p className="text-sm text-slate-600">Quản lý sản phẩm, ảnh R2, vùng trồng và trạng thái public của HTX.</p>
+          <p className="text-sm text-slate-600">Quản lý sản phẩm, ảnh R2, vùng trồng và trạng thái công khai của HTX.</p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => products.refetch()} aria-label="Tải lại">
@@ -260,7 +260,7 @@ export default function ProductsPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Metric label="Tổng sản phẩm" value={stats.total} />
-        <Metric label="Đang public" value={stats.published} tone="leaf" />
+        <Metric label="Đang công khai" value={stats.published} tone="leaf" />
         <Metric label="Có QR" value={stats.withQr} />
       </div>
 
@@ -273,7 +273,7 @@ export default function ProductsPage() {
                 <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>Đóng</Button>
                 {editingId && (
                   <Link href={`/san-pham/${form.slug}`} target="_blank">
-                    <Button type="button" variant="ghost">Xem trang public</Button>
+                    <Button type="button" variant="ghost">Xem trang công khai</Button>
                   </Link>
                 )}
               </div>
@@ -294,7 +294,7 @@ export default function ProductsPage() {
                   <Field label="Trạng thái">
                     <Select data-testid="product-status-select" value={form.status} onChange={(event) => update('status', event.target.value as ProductStatus)}>
                       <option value="DRAFT">Nháp</option>
-                      <option value="PUBLISHED">Đã publish</option>
+                      <option value="PUBLISHED">Đã công khai</option>
                       <option value="HIDDEN">Đang ẩn</option>
                       <option value="ARCHIVED">Lưu trữ</option>
                     </Select>
@@ -449,7 +449,7 @@ export default function ProductsPage() {
                   Sửa
                 </Button>
                 <Link href={`/san-pham/${product.slug}`} target="_blank">
-                <Button type="button" variant="ghost">Trang public</Button>
+                <Button type="button" variant="ghost">Trang công khai</Button>
                 </Link>
                 <Button type="button" variant="danger" onClick={() => archiveProduct.mutate(product.id)} disabled={archiveProduct.isPending}>
                   <Trash2 size={16} aria-hidden="true" />
