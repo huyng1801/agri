@@ -353,6 +353,7 @@ export default function NewsDashboardPage() {
   const bodyRef = useRef<HTMLTextAreaElement | null>(null);
   const visualEditorRef = useRef<HTMLDivElement | null>(null);
   const coverDropzoneRef = useRef<HTMLDivElement | null>(null);
+  const coverFileInputRef = useRef<HTMLInputElement | null>(null);
   const simpleSeoSectionRef = useRef<HTMLDivElement | null>(null);
   const simplePreviewSectionRef = useRef<HTMLDivElement | null>(null);
   const skipAutosaveRef = useRef(false);
@@ -2318,7 +2319,7 @@ export default function NewsDashboardPage() {
                   <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mo</span>
                 </div>
               </summary>
-                <div className="space-y-4 border-t border-slate-100 px-4 pb-4 pt-4">
+                <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                       <p className="text-sm font-semibold text-ink">Cover tốt giúp bài đẹp hơn trên trang chủ, mạng xã hội và Google.</p>
@@ -2330,20 +2331,22 @@ export default function NewsDashboardPage() {
                       Mẹo nhanh: chỉ cần paste ảnh vào khung bên dưới, hệ thống sẽ tự cập nhật cover và ưu tiên dùng cho Open Graph hoặc Twitter image khi các ô này còn trống.
                     </p>
                   </div>
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <label className="space-y-1 text-sm font-semibold">
-                      <span>Cover image URL</span>
-                    <Input data-testid="news-cover-image-input" value={form.coverImageUrl} onChange={(event) => update('coverImageUrl', event.target.value)} />
-                  </label>
                   <label className="space-y-1 text-sm font-semibold">
-                    <span>Alt cover</span>
+                    <span>Mo ta anh bia (alt)</span>
                     <Input data-testid="news-cover-image-alt-input" value={form.coverImageAlt} onChange={(event) => update('coverImageAlt', event.target.value)} />
                   </label>
-                  <label className="space-y-1 text-sm font-semibold md:col-span-2">
-                    <span>Upload cover</span>
-                    <Input type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'cover')} />
-                  </label>
-                </div>
+                  <details className="rounded-xl border border-slate-200 bg-white" open={isAdvancedMode}>
+                    <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">
+                      {isAdvancedMode ? 'URL cover va tuy chon nang cao' : 'Nhap URL cover neu can'}
+                    </summary>
+                    <div className="space-y-3 border-t border-slate-100 px-3 py-3">
+                      <label className="space-y-1 text-sm font-semibold">
+                        <span>Cover image URL</span>
+                        <Input data-testid="news-cover-image-input" value={form.coverImageUrl} onChange={(event) => update('coverImageUrl', event.target.value)} />
+                      </label>
+                      <p className="text-xs leading-5 text-slate-500">Neu khong co san link anh, ban chi can paste, tha hoac bam nut chon anh o khung phia duoi.</p>
+                    </div>
+                  </details>
                 <div
                   ref={coverDropzoneRef}
                   tabIndex={0}
@@ -2362,8 +2365,24 @@ export default function NewsDashboardPage() {
                   }}
                   className="rounded-xl border border-dashed border-leaf/30 bg-mint/40 px-4 py-3 text-sm text-slate-700 outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
                 >
-                  <p className="font-semibold text-ink">Dan hoac tha anh bia truc tiep</p>
-                  <p className="mt-1">Click vao khung nay roi bam `Ctrl+V`, hoac keo anh vao day de tu upload anh cover.</p>
+                  <p className="font-semibold text-ink">Dan, tha hoac paste anh bia</p>
+                  <p className="mt-1 text-xs leading-5">Click vao khung nay roi bam `Ctrl+V`, hoac keo anh vao day de tu upload anh cover.</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button type="button" variant="ghost" onClick={() => coverFileInputRef.current?.click()}>
+                      {coverUploadActive ? 'Dang upload anh...' : 'Chon anh tu may'}
+                    </Button>
+                    <input
+                      ref={coverFileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(event) => {
+                        if (!event.target.files?.[0]) return;
+                        void uploadFile(event.target.files[0], 'cover');
+                        event.currentTarget.value = '';
+                      }}
+                    />
+                  </div>
                 </div>
                 {coverUploadActive && (
                   <div className="rounded-xl border border-sky-200 bg-sky/50 px-3 py-3 text-sm text-sky-950">
