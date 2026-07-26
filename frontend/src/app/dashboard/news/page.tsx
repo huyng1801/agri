@@ -1315,7 +1315,7 @@ export default function NewsDashboardPage() {
                   <p className="mt-1.5 text-sm leading-5 text-slate-600">
                     {isAdvancedMode
                       ? 'Đây là luồng đăng bài đơn giản nhất cho người mới. Hệ thống sẽ tự điền đường dẫn, mô tả, tiêu đề SEO, ảnh chia sẻ, URL chuẩn và tag nếu bạn chưa nhập.'
-                      : 'Đăng nhanh trước, còn slug, meta, social và tag để editor tự điền hoặc bổ sung sau.'}
+                      : 'Đăng nhanh trước, còn đường dẫn, meta, social và tag để editor tự điền hoặc bổ sung sau.'}
                   </p>
                 </div>
                 {isAdvancedMode ? (<div className="flex flex-wrap gap-2">
@@ -1550,7 +1550,7 @@ export default function NewsDashboardPage() {
                   </summary>
                   <div className="grid gap-2 border-t border-slate-100 px-3 py-3 md:grid-cols-4">
                     {[
-                      ['1', 'Nhập tiêu đề', 'Hệ thống tự gợi ý slug và keyword.'],
+                      ['1', 'Nhập tiêu đề', 'Hệ thống tự gợi ý đường dẫn và từ khóa chính.'],
                       ['2', 'Dán nội dung', 'Có thể paste text và ảnh trực tiếp vào editor.'],
                       ['3', 'Thêm cover', 'Dán, thả hoặc upload ảnh bìa nhanh.'],
                       ['4', 'Kiểm tra rồi đăng', 'Checklist bên phải sẽ báo mục nào còn thiếu.']
@@ -1578,7 +1578,7 @@ export default function NewsDashboardPage() {
                   required
                 />
                 <span className={cn('text-[11px] font-semibold leading-4', lengthHintClass(titleLength, 35, 70))}>
-                  {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính để hệ thống gợi ý slug và SEO tốt hơn.'}
+                  {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính để hệ thống gợi ý đường dẫn và SEO tốt hơn.'}
                 </span>
               </label>
               {isAdvancedMode && <>
@@ -1979,7 +1979,7 @@ export default function NewsDashboardPage() {
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 1</p>
                     <p className="mt-1 text-sm font-bold text-ink">Nhập tiêu đề và mô tả</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">Hệ thống tự gợi ý slug, title SEO và mô tả nếu bạn chưa nhập.</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Hệ thống tự gợi ý đường dẫn, tiêu đề SEO và mô tả nếu bạn chưa nhập.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
@@ -2274,7 +2274,7 @@ export default function NewsDashboardPage() {
                 <p>Nếu chỉ muốn đăng bài đơn giản: giữ `Soạn trực quan`, bấm vào nội dung rồi gõ như soạn Word bình thường.</p>
                 <p>Nếu copy ảnh từ Zalo, Facebook, Word hoặc Excel: click vào editor rồi bấm `Ctrl+V`, ảnh sẽ tự upload vào bài.</p>
                 <p>Nếu copy cả đoạn từ Word hoặc Google Docs: cứ dán thẳng vào editor, rồi bấm `Làm sạch nội dung dán` nếu muốn hệ thống rút gọn thẻ rác thêm một lượt.</p>
-                <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá slug, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
+                <p>Nếu chưa rành SEO: bấm `Sửa nhanh SEO`, hệ thống sẽ tự vá đường dẫn, mô tả ngắn, thẻ meta, social và alt text cơ bản.</p>
               </div>
             </details>}
 
@@ -3597,9 +3597,9 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
       actionLabel: 'Nhập từ khóa'
     },
     {
-      label: 'Keyword trong title / slug / mô tả',
+      label: 'Từ khóa trong tiêu đề / đường dẫn / mô tả',
       ok: Boolean(keyword) && `${form.title} ${form.seoTitle}`.toLowerCase().includes(keyword) && form.slug.includes(slugifyLocal(keyword)) && form.seoDescription.toLowerCase().includes(keyword),
-      detail: 'Từ khóa chính nên xuất hiện trong title, slug và meta description.',
+      detail: 'Từ khóa chính nên xuất hiện trong tiêu đề, đường dẫn và meta description.',
       actionId: 'seo-defaults',
       actionLabel: 'Vá SEO nhanh'
     },
@@ -3885,7 +3885,7 @@ function buildNextStepSuggestions(form: NewsForm, seo: SeoScoreResult): NextStep
     suggestions.push({
       id: 'title',
       title: 'Thêm tiêu đề rõ ràng',
-      detail: 'Tiêu đề là nền cho slug, keyword và toàn bộ preview SEO/social. Hãy viết ngắn gọn, đúng ý chính của bài.',
+      detail: 'Tiêu đề là nền cho đường dẫn, từ khóa và toàn bộ phần xem trước SEO/social. Hãy viết ngắn gọn, đúng ý chính của bài.',
       actionLabel: 'Nhập tiêu đề'
     });
   }
@@ -4126,7 +4126,7 @@ function buildSeoSignals(form: NewsForm, seo: SeoScoreResult): SeoSignal[] {
     },
     {
       id: 'keyword-slug',
-      label: 'Từ khóa có trong slug',
+      label: 'Từ khóa có trong đường dẫn',
       ok: !keyword || slug.includes(slugifyLocal(keyword)),
       priority: 'should',
       detail: keyword
@@ -4135,7 +4135,7 @@ function buildSeoSignals(form: NewsForm, seo: SeoScoreResult): SeoSignal[] {
           : 'Đường dẫn chưa phản ánh rõ từ khóa chính. Nên để đường dẫn ngắn và bám sát chủ đề bài.'
         : 'Đường dẫn sẽ tốt hơn khi có từ khóa chính.',
       actionId: 'seo-defaults',
-      actionLabel: 'Sửa slug nhanh'
+      actionLabel: 'Sửa đường dẫn nhanh'
     },
     {
       id: 'keyword-intro',
@@ -4264,7 +4264,7 @@ function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
         id: 'title',
         label: 'Tiêu đề',
         ok: form.title.trim().length >= 12,
-        hint: form.title.trim() ? 'Đã có tiêu đề, có thể bấm để xem lại nếu cần.' : 'Nhập tiêu đề để hệ thống tạo slug, keyword và preview SEO.'
+        hint: form.title.trim() ? 'Đã có tiêu đề, có thể bấm để xem lại nếu cần.' : 'Nhập tiêu đề để hệ thống tạo đường dẫn, từ khóa và phần xem trước SEO.'
       },
       {
         id: 'content',

@@ -371,7 +371,7 @@ export default function ProductsPage() {
                 <Panel className="space-y-3 bg-slate-50 shadow-none">
                   <h3 className="font-bold">Tạo nhanh danh mục</h3>
                   <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
-                  <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="slug" />
+                  <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="đường dẫn" />
                   <Button type="button" variant="ghost" onClick={() => createCategory.mutate()} disabled={!categoryDraft.name || createCategory.isPending}>
                     <Plus size={18} aria-hidden="true" />
                     Thêm danh mục
