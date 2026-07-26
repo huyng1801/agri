@@ -27,7 +27,7 @@ test.describe('public contact page', () => {
     await page.getByTestId('contact-name-input').fill('Nguyen Van A');
     await page.getByTestId('contact-phone-input').fill('0912345678');
     await page.getByTestId('contact-email-input').fill('buyer@example.com');
-    await page.getByTestId('contact-message-input').fill('Toi can duoc tu van them ve giai phap QR truy xuat cho hop tac xa.');
+    await page.getByTestId('contact-message-input').fill('Tôi cần được tư vấn thêm về giải pháp QR truy xuất cho hợp tác xã.');
     await page.getByTestId('contact-submit-button').click();
 
     await expect(page.getByTestId('toast-success')).toBeVisible();
