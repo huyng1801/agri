@@ -5,7 +5,7 @@ import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Chính sách đổi trả | HTXONLINE',
+  title: 'Chính sách đổi trả',
   description: 'Điều kiện đổi trả, trách nhiệm xử lý và quy trình hỗ trợ đơn hàng trên HTXONLINE.',
   alternates: { canonical: 'https://htxonline.vn/chinh-sach-doi-tra' }
 };

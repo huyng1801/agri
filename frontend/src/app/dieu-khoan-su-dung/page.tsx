@@ -5,7 +5,7 @@ import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Điều khoản sử dụng | HTXONLINE',
+  title: 'Điều khoản sử dụng',
   description: 'Quy định sử dụng nền tảng HTXONLINE dành cho hợp tác xã, khách hàng và người truy cập.',
   alternates: { canonical: 'https://htxonline.vn/dieu-khoan-su-dung' }
 };

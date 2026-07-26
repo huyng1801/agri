@@ -10,7 +10,7 @@ import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
 
 export const metadata: Metadata = {
-  title: 'Danh sách HTX | HTXONLINE',
+  title: 'Danh sách HTX',
   description: 'Khám phá hợp tác xã đang bán sản phẩm nông nghiệp minh bạch trên sàn HTXONLINE.',
   alternates: { canonical: 'https://htxonline.vn/htx' }
 };

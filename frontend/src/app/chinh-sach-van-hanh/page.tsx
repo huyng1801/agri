@@ -5,7 +5,7 @@ import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Chính sách vận hành | HTXONLINE',
+  title: 'Chính sách vận hành',
   description: 'Nguyên tắc vận hành nền tảng HTXONLINE dành cho hợp tác xã, người mua và đối tác liên quan.',
   alternates: { canonical: 'https://htxonline.vn/chinh-sach-van-hanh' }
 };

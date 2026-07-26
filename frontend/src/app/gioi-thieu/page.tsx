@@ -6,7 +6,7 @@ import { Panel } from '@/components/ui';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Giới thiệu | HTXONLINE',
+  title: 'Giới thiệu',
   description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
   alternates: { canonical: 'https://htxonline.vn/gioi-thieu' }
 };

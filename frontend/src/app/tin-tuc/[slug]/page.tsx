@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const article = await fetchPublicNewsDetail(slug);
   if (!article) {
     return {
-      title: 'Không tìm thấy bài viết | HTXONLINE',
+      title: 'Không tìm thấy bài viết',
       robots: { index: false, follow: true }
     };
   }
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     : [article.focusKeyword, article.category?.name, 'tin tức HTXONLINE'].filter((value): value is string => Boolean(value));
 
   return {
-    title: `${title} | HTXONLINE`,
+    title,
     description,
     keywords,
     alternates: { canonical },

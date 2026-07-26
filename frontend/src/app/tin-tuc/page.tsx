@@ -8,7 +8,7 @@ import { Button, cn } from '@/components/ui';
 import { fetchPublicNews, fetchPublicNewsCategories } from '@/lib/news';
 
 export const metadata: Metadata = {
-  title: 'Tin tức | HTXONLINE',
+  title: 'Tin tức',
   description: 'Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc trên HTXONLINE.',
   keywords: ['tin tức HTX', 'tin nông sản', 'chuyển đổi số hợp tác xã', 'QR Passport', 'HTXONLINE'],
   alternates: {

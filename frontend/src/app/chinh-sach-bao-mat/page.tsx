@@ -5,7 +5,7 @@ import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Chính sách bảo mật | HTXONLINE',
+  title: 'Chính sách bảo mật',
   description: 'Cách HTXONLINE thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.',
   alternates: { canonical: 'https://htxonline.vn/chinh-sach-bao-mat' }
 };

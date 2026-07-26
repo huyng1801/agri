@@ -7,7 +7,7 @@ import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { Button } from '@/components/ui';
 
 export const metadata: Metadata = {
-  title: 'Sản phẩm | HTXONLINE',
+  title: 'Sản phẩm',
   description: 'Sàn sản phẩm nông nghiệp, đặc sản địa phương và sản phẩm có QR Passport từ các hợp tác xã trên HTXONLINE.',
   alternates: {
     canonical: 'https://htxonline.vn/san-pham'

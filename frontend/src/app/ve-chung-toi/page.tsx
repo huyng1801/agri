@@ -12,7 +12,7 @@ import { fetchPublicCatalog } from '@/lib/public-catalog';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Về chúng tôi | HTXONLINE',
+  title: 'Về chúng tôi',
   description: 'HTXONLINE mang đến sàn nông sản số, QR truy xuất và giải pháp vận hành cho hợp tác xã Việt Nam.',
   alternates: { canonical: 'https://htxonline.vn/ve-chung-toi' }
 };

@@ -16,10 +16,10 @@ export async function generateMetadata({ params }: CooperativeDetailPageProps): 
   const products = await fetchProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   if (!cooperative) {
-    return { title: 'Không tìm thấy HTX | HTXONLINE' };
+    return { title: 'Không tìm thấy HTX' };
   }
   return {
-    title: `${cooperative.name} | HTXONLINE`,
+    title: cooperative.name,
     description: `Xem sản phẩm, vùng trồng và thông tin công khai của ${cooperative.name} trên HTXONLINE.`,
     alternates: { canonical: `https://htxonline.vn/htx/${cooperative.code}` }
   };

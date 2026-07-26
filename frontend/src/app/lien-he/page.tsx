@@ -12,7 +12,7 @@ import { legalEntityProfile } from '@/lib/legal-entity';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
 
 export const metadata: Metadata = {
-  title: 'Liên hệ | HTXONLINE',
+  title: 'Liên hệ',
   description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
   alternates: { canonical: 'https://htxonline.vn/lien-he' }
 };

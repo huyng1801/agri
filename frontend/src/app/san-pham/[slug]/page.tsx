@@ -27,9 +27,9 @@ type ProductDetailPageProps = {
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: 'Không tìm thấy sản phẩm | HTXONLINE' };
+  if (!product) return { title: 'Không tìm thấy sản phẩm' };
   return {
-    title: `${product.name} | HTXONLINE`,
+    title: product.name,
     description: product.description || `Mua ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên HTXONLINE.`,
     alternates: { canonical: `https://htxonline.vn/san-pham/${product.slug}` }
   };
