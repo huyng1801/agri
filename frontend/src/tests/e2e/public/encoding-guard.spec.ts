@@ -6,6 +6,25 @@ const invalidLoginMessage = 'Email ho\u1eb7c m\u1eadt kh\u1ea9u kh\u00f4ng \u011
 const dashboardTitle = 'T\u1ed5ng quan';
 const contactErrorMessage = 'Kh\u00f4ng th\u1ec3 g\u1eedi li\u00ean h\u1ec7';
 const orderLookupErrorMessage = 'Kh\u00f4ng t\u00ecm th\u1ea5y \u0111\u01a1n h\u00e0ng';
+const adminRoutes = [
+  '/dashboard',
+  '/dashboard/contacts',
+  '/dashboard/invoices',
+  '/dashboard/orders',
+  '/dashboard/products',
+  '/dashboard/reports',
+  '/dashboard/settings',
+  '/dashboard/news'
+];
+const htxRoutes = [
+  '/dashboard',
+  '/dashboard/products',
+  '/dashboard/zones',
+  '/dashboard/farming-logs',
+  '/dashboard/passports',
+  '/dashboard/orders',
+  '/dashboard/reports'
+];
 
 test.describe('text encoding guard', () => {
   test.beforeEach(({}, testInfo) => {
@@ -151,6 +170,32 @@ test.describe('text encoding guard', () => {
     await expect(page.getByTestId('page-title')).toContainText(dashboardTitle);
     await expectNoMojibake(page, 'htx dashboard');
   });
+
+  test('@dashboard admin key routes keep accents intact', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await mockDashboardApis(page);
+
+    for (const route of adminRoutes) {
+      await page.goto(joinUrl(adminUrl, route), { waitUntil: 'networkidle' });
+      await page.waitForTimeout(250);
+      await expectNoMojibake(page, `admin ${route}`);
+    }
+  });
+
+  test('@dashboard htx key routes keep accents intact', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await mockDashboardApis(page);
+
+    for (const route of htxRoutes) {
+      await page.goto(joinUrl(htxUrl, route), { waitUntil: 'networkidle' });
+      await page.waitForTimeout(250);
+      await expectNoMojibake(page, `htx ${route}`);
+    }
+  });
 });
 
 async function expectNoMojibake(page: Page, label: string) {
@@ -169,4 +214,17 @@ function okEnvelope<T>(data: T) {
     contentType: 'application/json',
     body: JSON.stringify({ success: true, message: 'OK', data })
   };
+}
+
+async function mockDashboardApis(page: Page) {
+  await page.route('**/api/v1/**', async (route) => {
+    const url = route.request().url();
+
+    if (url.includes('/reports/overview')) {
+      await route.fulfill(okEnvelope({ metrics: [] }));
+      return;
+    }
+
+    await route.fulfill(okEnvelope([]));
+  });
 }
