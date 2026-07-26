@@ -49,7 +49,19 @@ test.describe('text encoding guard', () => {
   test('@public public content routes keep Vietnamese text intact', async ({ page }) => {
     const { publicUrl } = baseUrls();
 
-    for (const route of ['/gioi-thieu', '/ve-chung-toi', '/san-pham', '/tin-tuc', '/huong-dan-mua-hang']) {
+    for (const route of [
+      '/gio-hang',
+      '/htx',
+      '/gioi-thieu',
+      '/ve-chung-toi',
+      '/san-pham',
+      '/tin-tuc',
+      '/huong-dan-mua-hang',
+      '/dieu-khoan-su-dung',
+      '/chinh-sach-bao-mat',
+      '/chinh-sach-doi-tra',
+      '/chinh-sach-van-hanh'
+    ]) {
       await page.goto(joinUrl(publicUrl, route), { waitUntil: 'networkidle' });
       await page.waitForTimeout(300);
       await expectNoMojibake(page, route);
@@ -58,6 +70,14 @@ test.describe('text encoding guard', () => {
 
   test('@public product, passport, and news detail pages keep accents intact', async ({ page }) => {
     const { publicUrl } = baseUrls();
+
+    await page.goto(joinUrl(publicUrl, '/htx'), { waitUntil: 'networkidle' });
+    const htxDetailUrl = await firstHref(page, 'a[href*="/htx/"]');
+    expect(htxDetailUrl).toBeTruthy();
+
+    await page.goto(toAbsoluteUrl(publicUrl, htxDetailUrl!), { waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    await expectNoMojibake(page, 'public htx detail');
 
     await page.goto(joinUrl(publicUrl, '/san-pham'), { waitUntil: 'networkidle' });
     const productDetailUrl = await firstHref(page, 'a[href*="/san-pham/"]');
