@@ -46,6 +46,43 @@ test.describe('text encoding guard', () => {
     }
   });
 
+  test('@public public content routes keep Vietnamese text intact', async ({ page }) => {
+    const { publicUrl } = baseUrls();
+
+    for (const route of ['/gioi-thieu', '/ve-chung-toi', '/san-pham', '/tin-tuc', '/huong-dan-mua-hang']) {
+      await page.goto(joinUrl(publicUrl, route), { waitUntil: 'networkidle' });
+      await page.waitForTimeout(300);
+      await expectNoMojibake(page, route);
+    }
+  });
+
+  test('@public product, passport, and news detail pages keep accents intact', async ({ page }) => {
+    const { publicUrl } = baseUrls();
+
+    await page.goto(joinUrl(publicUrl, '/san-pham'), { waitUntil: 'networkidle' });
+    const productDetailUrl = await firstHref(page, 'a[href*="/san-pham/"]');
+    expect(productDetailUrl).toBeTruthy();
+
+    await page.goto(toAbsoluteUrl(publicUrl, productDetailUrl!), { waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    await expectNoMojibake(page, 'public product detail');
+
+    const passportDetailUrl = await firstHref(page, 'a[href*="/passport/"]');
+    expect(passportDetailUrl).toBeTruthy();
+
+    await page.goto(toAbsoluteUrl(publicUrl, passportDetailUrl!), { waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    await expectNoMojibake(page, 'public passport detail');
+
+    await page.goto(joinUrl(publicUrl, '/tin-tuc'), { waitUntil: 'networkidle' });
+    const newsDetailUrl = await firstHref(page, 'a[href*="/tin-tuc/"]');
+    expect(newsDetailUrl).toBeTruthy();
+
+    await page.goto(toAbsoluteUrl(publicUrl, newsDetailUrl!), { waitUntil: 'networkidle' });
+    await page.waitForTimeout(300);
+    await expectNoMojibake(page, 'public news detail');
+  });
+
   test('@public login error message keeps accents intact', async ({ page }) => {
     const { publicUrl } = baseUrls();
 
@@ -213,6 +250,16 @@ async function expectNoMojibake(page: Page, label: string) {
 
 function joinUrl(baseUrl: string, path: string) {
   return `${baseUrl.replace(/\/$/, '')}${path}`;
+}
+
+async function firstHref(page: Page, selector: string) {
+  const link = page.locator(selector).first();
+  await expect(link).toBeVisible();
+  return link.getAttribute('href');
+}
+
+function toAbsoluteUrl(baseUrl: string, href: string) {
+  return new URL(href, `${baseUrl.replace(/\/$/, '')}/`).toString();
 }
 
 function okEnvelope<T>(data: T) {
