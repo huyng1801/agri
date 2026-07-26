@@ -34,7 +34,7 @@ export default async function HomePage() {
   const featuredProducts = catalog.products.slice(0, 12);
   const featuredCooperatives = catalog.cooperatives.slice(0, 6);
   const stats: Array<[string, string | number, LucideIcon]> = [
-    ['Sản phẩm public', catalog.totalProducts, ShoppingBag],
+    ['Sản phẩm công khai', catalog.totalProducts, ShoppingBag],
     ['HTX đang hiển thị', catalog.cooperatives.length, Store],
     ['QR Passport', 'Truy xuất nhanh', QrCode]
   ];
@@ -189,7 +189,7 @@ export default async function HomePage() {
                     </div>
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
                       {[
-                        ['01', 'Sản phẩm public', 'Trang hiển thị rõ giá, HTX và QR nếu có'],
+                        ['01', 'Sản phẩm công khai', 'Trang hiển thị rõ giá, HTX và QR nếu có'],
                         ['02', 'Quét QR Passport', 'Xem vùng trồng, nhật ký và chứng nhận'],
                         ['03', 'Chốt đơn COD', 'Người mua gửi đơn, HTX chủ động xác nhận']
                       ].map(([step, title, text]) => (
@@ -208,18 +208,18 @@ export default async function HomePage() {
         </section>
 
         <PublicSection>
-          <PublicSectionHeader title="Sản phẩm nổi bật" description="Nông sản public từ các HTX trên hệ thống." href="/san-pham" linkLabel="Xem tất cả" />
+          <PublicSectionHeader title="Sản phẩm nổi bật" description="Nông sản công khai từ các HTX trên hệ thống." href="/san-pham" linkLabel="Xem tất cả" />
           {featuredProducts.length ? (
             <ProductSlider products={featuredProducts} />
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chưa có sản phẩm public" description="Khi HTX publish sản phẩm, sản phẩm sẽ xuất hiện tại đây." />
+              <EmptyPublicState title="Chưa có sản phẩm công khai" description="Khi HTX đăng công khai sản phẩm, sản phẩm sẽ xuất hiện tại đây." />
             </div>
           )}
         </PublicSection>
 
         <PublicSection band>
-          <PublicSectionHeader title="HTX nổi bật" description="Hồ sơ HTX đang có sản phẩm public." href="/htx" linkLabel="Xem HTX" />
+          <PublicSectionHeader title="HTX nổi bật" description="Hồ sơ HTX đang có sản phẩm công khai." href="/htx" linkLabel="Xem HTX" />
           {featuredCooperatives.length ? (
             <div className="mt-5 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
               {featuredCooperatives.map((cooperative, index) => (
@@ -228,7 +228,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chưa có HTX public" description="HTX sẽ xuất hiện khi có sản phẩm được publish." />
+              <EmptyPublicState title="Chưa có HTX công khai" description="HTX sẽ xuất hiện khi có sản phẩm được đăng công khai." />
             </div>
           )}
         </PublicSection>
@@ -236,7 +236,7 @@ export default async function HomePage() {
         <PublicSection>
           <div className="grid gap-4 md:grid-cols-3">
             {[
-              ['Minh bạch nguồn gốc', 'QR Passport giúp người mua kiểm tra nhật ký, vùng trồng và chứng nhận public.', QrCode],
+              ['Minh bạch nguồn gốc', 'QR Passport giúp người mua kiểm tra nhật ký, vùng trồng và chứng nhận công khai.', QrCode],
               ['Đặt hàng COD', 'Người mua gửi đơn nhanh, HTX liên hệ xác nhận và xử lý đơn.', ShoppingBag],
               ['HTX tự vận hành', 'Sản phẩm, vùng trồng, nhật ký và đơn hàng do từng HTX tự quản lý.', BadgeCheck]
             ].map(([title, text, Icon]) => (
@@ -261,7 +261,7 @@ export default async function HomePage() {
             </div>
           ) : (
             <div className="mt-5">
-              <EmptyPublicState title="Chưa có tin tức public" description="Tin tức do Super Admin publish sẽ xuất hiện tại đây." />
+              <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức do Super Admin đăng sẽ xuất hiện tại đây." />
             </div>
           )}
         </PublicSection>

@@ -23,8 +23,8 @@ export default async function AboutPage() {
     >
       <div className="grid gap-4 md:grid-cols-3">
         {[
-          { title: 'Kết nối HTX với người mua', icon: Store, text: 'HTX có thể publish sản phẩm, hồ sơ và bán hàng COD mà không cần xây website riêng.' },
-          { title: 'Minh bạch bằng QR Passport', icon: QrCode, text: 'Người mua quét QR để xem nhật ký, vùng trồng và chứng nhận public do HTX công bố.' },
+          { title: 'Kết nối HTX với người mua', icon: Store, text: 'HTX có thể đăng công khai sản phẩm, hồ sơ và bán hàng COD mà không cần xây website riêng.' },
+          { title: 'Minh bạch bằng QR Passport', icon: QrCode, text: 'Người mua quét QR để xem nhật ký, vùng trồng và chứng nhận công khai do HTX công bố.' },
           { title: 'Vận hành bán hàng COD', icon: ShoppingBag, text: 'Giỏ hàng, checkout và tra cứu đơn hàng được tích hợp sẵn trên cùng một nền tảng.' }
         ].map((item) => (
           <Panel key={item.title} className="h-full p-3.5 sm:p-5">

@@ -128,7 +128,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
             ))}
           </div>
         ) : (
-          <EmptyPublicState title="Chưa có tin tức public" description="Tin tức do Super Admin đăng sẽ hiển thị tại đây." />
+          <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức do Super Admin đăng sẽ hiển thị tại đây." />
         )}
       </PublicPageMain>
     </PublicShell>

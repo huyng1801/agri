@@ -237,7 +237,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                 <p className="mt-2 break-all font-mono text-sm font-bold text-ink">{passport.passportCode}</p>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận public</p>
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận công khai</p>
                 <p className="mt-2 text-base font-bold text-ink">{certifications.length}</p>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">

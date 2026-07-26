@@ -18,14 +18,14 @@ export const metadata: Metadata = {
 };
 
 const valuePillars = [
-  { title: 'Sàn thương mại cho HTX', description: 'Hiển thị sản phẩm public, hồ sơ HTX và kênh tiếp cận người mua trên toàn quốc mà không cần website riêng.', icon: Store },
+  { title: 'Sàn thương mại cho HTX', description: 'Hiển thị sản phẩm công khai, hồ sơ HTX và kênh tiếp cận người mua trên toàn quốc mà không cần website riêng.', icon: Store },
   { title: 'QR Passport truy xuất', description: 'Mỗi sản phẩm có mã QR để khách xem nhật ký canh tác, vùng trồng và chứng nhận đã công khai.', icon: QrCode },
   { title: 'Đặt hàng COD', description: 'Người mua gửi đơn nhanh, HTX chủ động liên hệ xác nhận và xử lý giao hàng thu tiền khi nhận.', icon: ShoppingBag },
   { title: 'Dashboard vận hành HTX', description: 'HTX tự quản lý sản phẩm, nông dân, vùng trồng, nhật ký và đơn hàng trên một hệ thống thống nhất.', icon: Users }
 ] as const;
 
 const coreValues = [
-  { title: 'Minh bạch', description: 'Nguồn gốc và dữ liệu public rõ ràng với người mua.', icon: ShieldCheck },
+  { title: 'Minh bạch', description: 'Nguồn gốc và dữ liệu công khai rõ ràng với người mua.', icon: ShieldCheck },
   { title: 'Đồng hành HTX', description: 'Hỗ trợ HTX số hóa và tiếp cận thị trường tốt hơn.', icon: Leaf },
   { title: 'Tin cậy', description: 'Quy trình bán hàng COD và truy xuất có kiểm soát.', icon: BadgeCheck },
   { title: 'Đơn giản', description: 'Dùng được ngay, không cần xây website riêng.', icon: Sparkles },
@@ -33,19 +33,19 @@ const coreValues = [
 ] as const;
 
 const journeySteps = [
-  { title: 'Công khai sản phẩm', description: 'HTX đưa sản phẩm, vùng trồng và chứng nhận public lên cùng một mặt bằng thương mại số.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
+  { title: 'Công khai sản phẩm', description: 'HTX đưa sản phẩm, vùng trồng và chứng nhận công khai lên cùng một mặt bằng thương mại số.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
   { title: 'Chuẩn hóa truy xuất', description: 'QR Passport gom nhật ký canh tác, mốc kiểm chứng và dữ liệu quan trọng thành một hành trình rõ ràng.', accent: 'bg-white border-slate-200', icon: QrCode },
   { title: 'Chốt đơn COD', description: 'Người mua đặt hàng nhanh, còn HTX chủ động xác nhận và xử lý vận hành theo quy trình phù hợp.', accent: 'bg-mint/70 border-mint/80', icon: ShoppingBag },
   { title: 'Theo dõi tăng trưởng', description: 'Dashboard giúp đội vận hành nhìn được sản phẩm, đơn hàng và niềm tin thị trường theo thời gian.', accent: 'bg-white border-slate-200', icon: Users }
 ] as const;
 
-const trustSignals = ['Sản phẩm public đã publish', 'QR mở trực tiếp cho khách', 'Quản lý vùng trồng tập trung', 'COD theo quy trình HTX'] as const;
+const trustSignals = ['Sản phẩm đã đăng công khai', 'QR mở trực tiếp cho khách', 'Quản lý vùng trồng tập trung', 'COD theo quy trình HTX'] as const;
 
 export default async function AboutUsPage() {
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile()]);
   const stats = [
     { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX đang hiển thị trên sàn' },
-    { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm public đang bán' },
+    { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm công khai đang bán' },
     { value: '100%', label: 'QR Passport xem được không cần đăng nhập' },
     { value: '1 nền tảng', label: 'Từ sản xuất đến bán hàng COD' }
   ];
@@ -279,7 +279,7 @@ export default async function AboutUsPage() {
                   <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Sứ mệnh</p>
                   <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">Số hóa bán hàng và truy xuất nguồn gốc cho HTX.</h3>
                   <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/85 sm:mt-3 sm:text-sm sm:leading-7">
-                    Chúng tôi mang đến công cụ thực tế: sàn public, QR Passport, dashboard vận hành và đơn COD để HTX phát triển bền vững hơn.
+                    Chúng tôi mang đến công cụ thực tế: sàn công khai, QR Passport, dashboard vận hành và đơn COD để HTX phát triển bền vững hơn.
                   </p>
                 </article>
               </div>

@@ -79,7 +79,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <PublicDetailMain className="max-w-3xl">
           <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
           <div className="space-y-4">
-            <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được publish hoặc đã được ẩn khỏi trang public." />
+            <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được đăng công khai hoặc đã bị ẩn khỏi trang công khai." />
             <Panel className="text-center">
               <h2 className="text-lg font-bold text-ink">Tiếp tục khám phá nội dung công khai</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">Bạn có thể quay về danh sách tin tức hoặc xem thêm sản phẩm đang hiển thị trên sàn.</p>
@@ -88,7 +88,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
                   Xem tin tức mới
                 </Link>
                 <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink">
-                  Xem sản phẩm public
+                  Xem sản phẩm công khai
                 </Link>
               </div>
             </Panel>
@@ -187,7 +187,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
           <h2 className="text-xl font-bold text-ink">Kết nối cùng HTXONLINE</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.</p>
           <Link href="/san-pham" className="mt-4 inline-block font-semibold text-leaf">
-            Xem sản phẩm public
+            Xem sản phẩm công khai
           </Link>
         </Panel>
       </PublicDetailMain>

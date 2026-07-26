@@ -119,7 +119,7 @@ export default function PassportsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">QR Passport</h1>
-          <p className="text-sm text-slate-600">Tạo, publish và theo dõi mã truy xuất nguồn gốc public cho sản phẩm đã publish.</p>
+          <p className="text-sm text-slate-600">Tạo, đăng công khai và theo dõi mã truy xuất nguồn gốc cho sản phẩm đã được công khai.</p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => passports.refetch()} aria-label="Tải lại">
@@ -134,7 +134,7 @@ export default function PassportsPage() {
 
       <div className="grid gap-3 sm:grid-cols-3">
         <Metric label="Tổng QR" value={stats.total} />
-        <Metric label="Đang public" value={stats.published} tone="leaf" />
+        <Metric label="Đang công khai" value={stats.published} tone="leaf" />
         <Metric label="Lượt xem" value={stats.views} />
       </div>
 
@@ -146,7 +146,7 @@ export default function PassportsPage() {
               <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>Đóng</Button>
             </div>
             <div className="grid gap-3 md:grid-cols-3">
-              <Field label="Sản phẩm đã publish">
+              <Field label="Sản phẩm đã công khai">
                 <Select
                   data-testid="passport-product-select"
                   value={form.productId}
@@ -163,7 +163,7 @@ export default function PassportsPage() {
               <Field label="Trạng thái">
                 <Select data-testid="passport-status-select" value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value as PassportStatus }))}>
                   <option value="DRAFT">Nháp</option>
-                  <option value="PUBLISHED">Đã publish</option>
+                  <option value="PUBLISHED">Đã công khai</option>
                   <option value="HIDDEN">Đang ẩn</option>
                   <option value="EXPIRED">Hết hạn</option>
                 </Select>
@@ -191,7 +191,7 @@ export default function PassportsPage() {
       <div className="sticky top-[66px] z-10 flex gap-2 rounded-md border border-slate-200 bg-white p-2 lg:top-0">
         <Select value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="PUBLISHED">Đã publish</option>
+          <option value="PUBLISHED">Đã công khai</option>
           <option value="DRAFT">Nháp</option>
           <option value="HIDDEN">Đang ẩn</option>
           <option value="EXPIRED">Hết hạn</option>

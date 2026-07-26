@@ -279,7 +279,7 @@ const articleTemplates = [
 <h2>Vì sao HTX tham gia HTXONLINE?</h2>
 <p>Chia sẻ ngắn về nhu cầu minh bạch thông tin, mở rộng thị trường hoặc quản lý đơn hàng hiệu quả hơn.</p>
 <h2>Sản phẩm nên xem ngay</h2>
-<p>Chèn liên kết hoặc mô tả 1-3 sản phẩm public mà bạn muốn đẩy traffic.</p>`
+<p>Chèn liên kết hoặc mô tả 1-3 sản phẩm công khai mà bạn muốn đẩy traffic.</p>`
   },
   {
     id: 'buyer-guide',
@@ -305,7 +305,7 @@ const articleTemplates = [
 ] as const;
 
 const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
-  { label: 'Trang sản phẩm', href: '/san-pham', description: 'Kéo traffic về danh sách sản phẩm public.' },
+  { label: 'Trang sản phẩm', href: '/san-pham', description: 'Kéo traffic về danh sách sản phẩm công khai.' },
   { label: 'Danh sách HTX', href: '/htx', description: 'Dẫn người đọc sang trang hợp tác xã công khai.' },
   { label: 'Liên hệ tư vấn', href: '/lien-he', description: 'Gắn CTA khi bài cần chốt lead nhanh.' },
   { label: 'Giới thiệu nền tảng', href: '/gioi-thieu', description: 'Phù hợp bài giải thích mô hình HTXONLINE.' },
@@ -835,7 +835,7 @@ export default function NewsDashboardPage() {
     setEditorAssist({
       kind: 'pasted-image',
       title: 'Ảnh vừa được chèn vào bài',
-      detail: 'Bạn có thể gõ tiếp nội dung, dùng ngay ảnh này làm cover nếu bài chưa có ảnh bìa, rồi bấm Chuẩn bị publish hoặc Đăng 1 chạm.'
+      detail: 'Bạn có thể gõ tiếp nội dung, dùng ngay ảnh này làm cover nếu bài chưa có ảnh bìa, rồi bấm Chuẩn bị đăng hoặc Đăng 1 chạm.'
     });
   }
 
@@ -873,7 +873,7 @@ export default function NewsDashboardPage() {
       title: html ? 'Nội dung đã được dán và làm sạch cơ bản' : 'Nội dung đã được chèn vào editor',
       detail: html
         ? 'Nếu đây là bài từ Word hoặc Google Docs, bạn nên bấm Tối ưu bài vừa dán để hệ thống dọn bố cục, thêm mở bài và sửa SEO nhanh.'
-        : 'Bạn có thể xem lại bố cục, thêm ảnh và bấm Chuẩn bị publish khi đã đủ nội dung.'
+        : 'Bạn có thể xem lại bố cục, thêm ảnh và bấm Chuẩn bị đăng khi đã đủ nội dung.'
     });
   }
 
@@ -1045,7 +1045,7 @@ export default function NewsDashboardPage() {
     setEditorAssist({
       kind: 'prepared-publish',
       title: 'Bản nháp đã được chuẩn bị để đăng',
-      detail: 'Slug, mô tả, social, alt text và một phần bố cục đã được tự bổ sung. Hãy xem lại nhanh rồi bấm Đăng 1 chạm.'
+      detail: 'Đường dẫn, mô tả, social, alt text và một phần bố cục đã được tự bổ sung. Hãy xem lại nhanh rồi bấm Đăng 1 chạm.'
     });
   }
 
@@ -1105,7 +1105,7 @@ export default function NewsDashboardPage() {
     setEditorAssist({
       kind: 'optimized-content',
       title: 'Nội dung đã được làm sạch',
-      detail: 'Thẻ rác từ Word/Docs đã được rút gọn. Nếu bài cần đăng nhanh, bạn có thể bấm SEO nhanh hoặc Chuẩn bị publish tiếp.'
+      detail: 'Thẻ rác từ Word/Docs đã được rút gọn. Nếu bài cần đăng nhanh, bạn có thể bấm SEO nhanh hoặc Chuẩn bị đăng tiếp.'
     });
   }
 
@@ -1236,7 +1236,7 @@ export default function NewsDashboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tin tức</h1>
-          <p className="text-sm text-slate-600">Đăng bài public cho htxonline.vn/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
+          <p className="text-sm text-slate-600">Đăng bài công khai cho htxonline.vn/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1">
@@ -1310,18 +1310,18 @@ export default function NewsDashboardPage() {
                 <div className="max-w-2xl">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Đăng bài cực nhanh</p>
                   <h2 className="mt-1 text-base font-bold text-ink sm:text-lg">
-                    {isAdvancedMode ? 'Chỉ cần tiêu đề, nội dung, ảnh bìa và bấm chuẩn bị publish' : 'Chỉ cần tiêu đề, nội dung và ảnh bìa'}
+                    {isAdvancedMode ? 'Chỉ cần tiêu đề, nội dung, ảnh bìa và bấm chuẩn bị đăng' : 'Chỉ cần tiêu đề, nội dung và ảnh bìa'}
                   </h2>
                   <p className="mt-1.5 text-sm leading-5 text-slate-600">
                     {isAdvancedMode
-                      ? 'Đây là luồng đăng bài đơn giản nhất cho người mới. Hệ thống sẽ tự điền slug, mô tả, SEO title, social image, canonical và tag nếu bạn chưa nhập.'
+                      ? 'Đây là luồng đăng bài đơn giản nhất cho người mới. Hệ thống sẽ tự điền đường dẫn, mô tả, tiêu đề SEO, ảnh chia sẻ, URL chuẩn và tag nếu bạn chưa nhập.'
                       : 'Đăng nhanh trước, còn slug, meta, social và tag để editor tự điền hoặc bổ sung sau.'}
                   </p>
                 </div>
                 {isAdvancedMode ? (<div className="flex flex-wrap gap-2">
                   <Button type="button" variant="ghost" onClick={preparePostForPublish}>
                     <Sparkles size={18} aria-hidden="true" />
-                    Chuẩn bị publish
+                    Chuẩn bị đăng
                   </Button>
                   <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
                     <Save size={18} aria-hidden="true" />
@@ -1553,7 +1553,7 @@ export default function NewsDashboardPage() {
                       ['1', 'Nhập tiêu đề', 'Hệ thống tự gợi ý slug và keyword.'],
                       ['2', 'Dán nội dung', 'Có thể paste text và ảnh trực tiếp vào editor.'],
                       ['3', 'Thêm cover', 'Dán, thả hoặc upload ảnh bìa nhanh.'],
-                      ['4', 'Kiểm tra rồi publish', 'Checklist bên phải sẽ báo mục nào còn thiếu.']
+                      ['4', 'Kiểm tra rồi đăng', 'Checklist bên phải sẽ báo mục nào còn thiếu.']
                     ].map(([step, title, text]) => (
                       <div key={step} className="rounded-xl border border-white/80 bg-white/88 p-3 shadow-sm">
                         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Bước {step}</p>
@@ -1583,7 +1583,7 @@ export default function NewsDashboardPage() {
               </label>
               {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
-                <span>Slug</span>
+                <span>Đường dẫn</span>
                 <Input
                   data-testid="news-slug-input"
                   value={form.slug}
@@ -1591,7 +1591,7 @@ export default function NewsDashboardPage() {
                   placeholder="xoai-my-xuong-vao-vu-moi"
                 />
                 <span className={cn('text-xs font-semibold', lengthHintClass(slugLength, 12, 80))}>
-                  {slugLength ? 'Slug nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo slug từ tiêu đề.'}
+                  {slugLength ? 'Đường dẫn nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo đường dẫn từ tiêu đề.'}
                 </span>
               </label>
               <label className="space-y-1 text-sm font-semibold">
@@ -1810,8 +1810,8 @@ export default function NewsDashboardPage() {
                   <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={preparePreviewOpen}>
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
-                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước sau khi chuẩn bị publish</p>
-                        <p className="mt-1 text-sm text-slate-600">{preparedDiffs.length} mục sẽ được tự bổ sung nếu bạn bấm chuẩn bị publish.</p>
+                        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước sau khi chuẩn bị đăng</p>
+                        <p className="mt-1 text-sm text-slate-600">{preparedDiffs.length} mục sẽ được tự bổ sung nếu bạn bấm chuẩn bị đăng.</p>
                       </div>
                       <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{preparedDiffs.length} mục</span>
                     </summary>
@@ -1908,7 +1908,7 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-lg font-bold text-ink">{readingMinutes} phút</p>
               </div>
               <div className="rounded-xl border border-white bg-white p-3">
-                <p className="text-slate-500">Sẵn sàng publish</p>
+                <p className="text-slate-500">Sẵn sàng đăng</p>
                 <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
               </div>
             </div>
@@ -1956,7 +1956,7 @@ export default function NewsDashboardPage() {
                   <div>
                     <p className="text-sm font-bold text-ink">Mẫu bài nhanh để đăng mà không cần viết từ đầu</p>
                     <p className="text-sm leading-6 text-slate-600">
-                      Chọn một mẫu bên dưới, sửa tiêu đề, mô tả, nội dung và thêm ảnh là có thể publish.
+                      Chọn một mẫu bên dưới, sửa tiêu đề, mô tả, nội dung và thêm ảnh là có thể đăng.
                     </p>
                   </div>
                   <div className="grid gap-2 md:grid-cols-3">
@@ -1988,7 +1988,7 @@ export default function NewsDashboardPage() {
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Xem điểm SEO rồi publish</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Xem điểm SEO rồi đăng</p>
                     <p className="mt-1 text-sm leading-6 text-slate-600">Checklist bên phải sẽ chấm title, keyword, heading, ảnh, liên kết và độ dễ đọc.</p>
                   </div>
                 </div>
@@ -2172,7 +2172,7 @@ export default function NewsDashboardPage() {
                       {(editorAssist.kind === 'pasted-image' || editorAssist.kind === 'optimized-content') && (
                         <Button type="button" variant="ghost" onClick={preparePostForPublish} className="min-h-8 px-2.5 text-sm">
                           <Sparkles size={18} aria-hidden="true" />
-                          Chuẩn bị publish
+                          Chuẩn bị đăng
                         </Button>
                       )}
                       {editorAssist.kind === 'pasted-image' && suggestedCover && !form.coverImageUrl.trim() && (
@@ -2420,7 +2420,7 @@ export default function NewsDashboardPage() {
                 <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
                   <div className="grid gap-2.5">
                     <label className="space-y-1 text-sm font-semibold">
-                      <span>Slug</span>
+                      <span>Đường dẫn</span>
                       <Input
                         className="h-11"
                         data-testid="news-slug-input"
@@ -2429,7 +2429,7 @@ export default function NewsDashboardPage() {
                         placeholder="xoai-my-xuong-vao-vu-moi"
                       />
                       <span className={cn('text-xs font-semibold', lengthHintClass(slugLength, 12, 80))}>
-                        {slugLength ? 'Slug nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo slug từ tiêu đề.'}
+                        {slugLength ? 'Đường dẫn nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo đường dẫn từ tiêu đề.'}
                       </span>
                     </label>
                     <label className="space-y-1 text-sm font-semibold">
@@ -2461,7 +2461,7 @@ export default function NewsDashboardPage() {
                         <p className="mt-1 text-sm font-semibold text-ink">
                           {autofillPlan.length > 0
                             ? `${autofillPlan.length} mục sẽ được editor tự điền nếu bạn để trống.`
-                            : 'Slug, mô tả ngắn và meta cơ bản đã khá đầy đủ.'}
+                            : 'Đường dẫn, mô tả ngắn và meta cơ bản đã khá đầy đủ.'}
                         </p>
                       </div>
                       <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-700">
@@ -2507,7 +2507,7 @@ export default function NewsDashboardPage() {
                       </Button>
                     </div>
                     <p className="mt-2.5 text-[11px] font-semibold text-slate-500">
-                      Trạng thái publish sẽ do các nút bên dưới quyết định, vì vậy simple mode không cần chọn tay ở đây nữa.
+                      Trạng thái đăng sẽ do các nút bên dưới quyết định, vì vậy simple mode không cần chọn tay ở đây nữa.
                     </p>
                   </div>
                 </div>
@@ -2765,7 +2765,7 @@ export default function NewsDashboardPage() {
                 </Button>
               </div>
               <label className="space-y-1 text-sm font-semibold">
-                <span>Ngày publish</span>
+                <span>Ngày đăng</span>
                 <Input type="datetime-local" value={form.publishedAt} onChange={(event) => update('publishedAt', event.target.value)} />
               </label>
               <label className="space-y-1 text-sm font-semibold">
@@ -2824,7 +2824,7 @@ export default function NewsDashboardPage() {
                   <p className="mt-2 text-[11px] font-semibold leading-5 text-slate-500">
                     {autofillPlan.length > 0
                           ? `Sau khi đăng, editor có thể tự bổ sung thêm: ${autofillPlan.slice(0, 4).map((item) => item.label).join(', ')}.`
-                      : 'Slug, mô tả ngắn và các thẻ SEO cơ bản đang khá đầy đủ hoặc sẵn sàng tự tạo.'}
+                      : 'Đường dẫn, mô tả ngắn và các thẻ SEO cơ bản đang khá đầy đủ hoặc sẵn sàng tự tạo.'}
                   </p>
                   <div className="mt-3 grid gap-2">
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -2842,7 +2842,7 @@ export default function NewsDashboardPage() {
                       <div className="flex items-center justify-between gap-3">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước chia sẻ</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
-                          {resolvedMetaPreview.ogImage && resolvedMetaPreview.ogImage !== 'Ảnh bìa public' ? 'Có ảnh' : 'Chưa có ảnh'}
+                          {resolvedMetaPreview.ogImage && resolvedMetaPreview.ogImage !== 'Ảnh bìa công khai' ? 'Có ảnh' : 'Chưa có ảnh'}
                         </span>
                       </div>
                       <p className="mt-2 text-sm font-semibold text-ink">{resolvedMetaPreview.ogTitle}</p>
@@ -2864,7 +2864,7 @@ export default function NewsDashboardPage() {
                   </Button>
                   <Button type="button" variant="ghost" onClick={preparePostForPublish}>
                     <Sparkles size={18} aria-hidden="true" />
-                    Chuẩn bị publish
+                    Chuẩn bị đăng
                   </Button>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
                     <Sparkles size={18} aria-hidden="true" />
@@ -2972,7 +2972,7 @@ export default function NewsDashboardPage() {
             {isAdvancedMode ? (
               <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Việc nên làm tiếp</p>
-                <p className="mt-1 text-lg font-bold text-ink">Editor sẽ gợi ý bước kế tiếp để bài nhanh đẹp và dễ publish hơn.</p>
+                <p className="mt-1 text-lg font-bold text-ink">Editor sẽ gợi ý bước kế tiếp để bài nhanh đẹp và dễ đăng hơn.</p>
                 <p className="mt-1 text-sm leading-6 text-slate-700">
                   {quickWinCount > 0
                     ? `Đang có ${quickWinCount} sửa nhanh nên xử lý trước.`
@@ -3128,7 +3128,7 @@ export default function NewsDashboardPage() {
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-700">
                   {publishChecklistIssues > 0
-                    ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi public.`
+                    ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi đăng công khai.`
                     : 'Đã đủ khung cơ bản để tiếp tục xuất bản.'}
                 </p>
               </div>
@@ -3140,7 +3140,7 @@ export default function NewsDashboardPage() {
                   <p className="text-sm text-slate-600">
                     {publishChecklistIssues > 0
                       ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi đăng.`
-                      : 'Đã đủ các mục cốt lõi để có thể publish.'}
+                      : 'Đã đủ các mục cốt lõi để có thể đăng.'}
                   </p>
                 </div>
                 <span
@@ -3317,8 +3317,8 @@ export default function NewsDashboardPage() {
             <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-bold text-ink">Khung bài sau khi chuẩn bị publish</p>
-                  <p className="text-sm text-slate-600">Editor soi trước bố cục, ảnh và điều hướng nội bộ để bạn biết bài sẽ lên trang public ra sao.</p>
+                  <p className="text-sm font-bold text-ink">Khung bài sau khi chuẩn bị đăng</p>
+                  <p className="text-sm text-slate-600">Editor soi trước bố cục, ảnh và điều hướng nội bộ để bạn biết bài sẽ lên trang công khai ra sao.</p>
                 </div>
                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">
                   {contentOutlinePreview.estimatedMinutes} phút đọc
@@ -3576,7 +3576,7 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
 
   const checks: SeoCheck[] = [
     {
-      label: 'Title SEO',
+      label: 'Tiêu đề SEO',
       ok: titleLength >= 35 && titleLength <= 65,
       detail: titleLength ? `Hiện tại ${titleLength} ký tự. Nên trong khoảng 35-65 ký tự.` : 'Chưa có title SEO.',
       actionId: 'seo-defaults',
@@ -3590,7 +3590,7 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
       actionLabel: 'Tạo mô tả SEO'
     },
     {
-      label: 'Focus keyword',
+      label: 'Từ khóa chính',
       ok: Boolean(keyword),
       detail: keyword ? `Đang theo dõi từ khóa: "${form.focusKeyword.trim()}".` : 'Nên nhập 1 từ khóa chính cho bài viết.',
       actionId: 'focus-keyword',
@@ -3620,7 +3620,7 @@ function clientSeoScore(form: NewsForm): SeoScoreResult {
     {
       label: 'Độ dài nội dung',
       ok: words >= 300,
-      detail: `Bài hiện có ${words} từ. Bài public nên có ít nhất 300 từ để đủ chiều sâu SEO.`,
+      detail: `Bài hiện có ${words} từ. Bài công khai nên có ít nhất 300 từ để đủ chiều sâu SEO.`,
       actionId: 'content',
       actionLabel: 'Viết thêm nội dung'
     },
@@ -3734,7 +3734,7 @@ function seoScoreBarClass(score: number) {
 }
 
 function seoScoreLabel(score: number) {
-  if (score >= 80) return 'Tốt, có thể tự tin publish';
+  if (score >= 80) return 'Tốt, có thể tự tin đăng';
   if (score >= 60) return 'Khá ổn, nên rà thêm vài mục';
   return 'Cần bổ sung trước khi đăng';
 }
@@ -3844,7 +3844,7 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
     { label: 'Ảnh đại diện', ok: Boolean(form.coverImageUrl.trim()) },
     { label: 'Từ khóa', ok: Boolean(form.focusKeyword.trim()) },
     { label: 'Nội dung', ok: seo.stats.words >= 180 },
-    { label: 'Slug', ok: Boolean(form.slug.trim()) }
+    { label: 'Đường dẫn', ok: Boolean(form.slug.trim()) }
   ];
   const completed = items.filter((item) => item.ok).length;
   const total = items.length;
@@ -3855,8 +3855,8 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
       completed,
       total,
       ratio,
-      label: 'Có thể publish ngay',
-      detail: 'Bài viết đã đủ các thành phần cốt lõi để lên trang public và tiếp tục tối ưu SEO chi tiết.'
+      label: 'Có thể đăng ngay',
+      detail: 'Bài viết đã đủ các thành phần cốt lõi để lên trang công khai và tiếp tục tối ưu SEO chi tiết.'
     };
   }
   if (ratio >= 0.67) {
@@ -3866,7 +3866,7 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
       total,
       ratio,
       label: 'Gần sẵn sàng',
-      detail: 'Khung bài đã khá đầy đủ. Chỉ cần bổ sung vài trường còn thiếu trước khi publish.'
+      detail: 'Khung bài đã khá đầy đủ. Chỉ cần bổ sung vài trường còn thiếu trước khi đăng.'
     };
   }
   return {
@@ -3875,7 +3875,7 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
     total,
     ratio,
     label: 'Cần bổ sung thêm',
-    detail: 'Nên hoàn thiện tiêu đề, mô tả, ảnh và nội dung trước khi đưa bài viết lên public.'
+    detail: 'Nên hoàn thiện tiêu đề, mô tả, ảnh và nội dung trước khi đưa bài viết lên trang công khai.'
   };
 }
 
@@ -3917,7 +3917,7 @@ function buildNextStepSuggestions(form: NewsForm, seo: SeoScoreResult): NextStep
     suggestions.push({
       id: 'seo',
       title: 'Điền nhanh SEO cơ bản',
-      detail: 'Bài chưa đủ keyword, SEO title hoặc meta description. Một cú bấm có thể tự vá những phần cơ bản còn thiếu.',
+      detail: 'Bài chưa đủ từ khóa chính, tiêu đề SEO hoặc meta description. Một cú bấm có thể tự vá những phần cơ bản còn thiếu.',
       actionLabel: 'Vá SEO nhanh'
     });
   }
@@ -3941,7 +3941,7 @@ function buildQuickWins(form: NewsForm, seo: SeoScoreResult, focusKeywordSuggest
     wins.push({
       id: 'title',
       title: 'Viết tiêu đề rõ ràng',
-      detail: 'Tiêu đề là điểm xuất phát cho slug, từ khóa, SEO title và preview chia sẻ.',
+      detail: 'Tiêu đề là điểm xuất phát cho đường dẫn, từ khóa, tiêu đề SEO và phần xem trước khi chia sẻ.',
       actionLabel: 'Nhập tiêu đề'
     });
   }
@@ -4020,14 +4020,14 @@ function buildAutofillPlan(form: NewsForm, seo: SeoScoreResult): AutofillItem[] 
   const keyword = (form.focusKeyword || form.title).trim();
   const introHasKeyword = keyword && bodyText.slice(0, 180).toLowerCase().includes(keyword.toLowerCase());
 
-  if (!form.slug.trim() && form.title.trim()) items.push({ id: 'slug', label: 'Slug từ tiêu đề' });
+  if (!form.slug.trim() && form.title.trim()) items.push({ id: 'slug', label: 'Đường dẫn từ tiêu đề' });
   if (!form.excerpt.trim() && bodyText) items.push({ id: 'excerpt', label: 'Mô tả ngắn từ nội dung' });
   if (!form.focusKeyword.trim() && form.title.trim()) items.push({ id: 'keyword', label: 'Từ khóa chính' });
-  if (!form.seoTitle.trim() && form.title.trim()) items.push({ id: 'seoTitle', label: 'SEO title' });
+  if (!form.seoTitle.trim() && form.title.trim()) items.push({ id: 'seoTitle', label: 'Tiêu đề SEO' });
   if (!form.seoDescription.trim() && (form.excerpt.trim() || bodyText)) items.push({ id: 'seoDescription', label: 'Meta description' });
-  if (!form.canonicalUrl.trim() && (form.slug.trim() || form.title.trim())) items.push({ id: 'canonical', label: 'Canonical URL' });
+  if (!form.canonicalUrl.trim() && (form.slug.trim() || form.title.trim())) items.push({ id: 'canonical', label: 'URL chuẩn' });
   if ((!form.ogTitle.trim() && !form.twitterTitle.trim()) || (!form.ogDescription.trim() && !form.twitterDescription.trim()) || (!form.ogImageUrl.trim() && !form.twitterImageUrl.trim())) {
-    items.push({ id: 'social', label: 'Preview social' });
+    items.push({ id: 'social', label: 'Xem trước mạng xã hội' });
   }
   if (!form.coverImageAlt.trim() && (form.coverImageUrl.trim() || form.title.trim())) items.push({ id: 'coverAlt', label: 'Alt ảnh bìa' });
   if (keyword && !introHasKeyword) items.push({ id: 'intro', label: 'Mở bài có từ khóa' });
@@ -4048,12 +4048,12 @@ function buildPreparedDiffs(form: NewsForm, prepared: NewsForm): PreparedDiffIte
     diffs.push({ id, label, before: cleanBefore, after: cleanAfter });
   };
 
-  addDiff('slug', 'Slug', form.slug, prepared.slug);
+  addDiff('slug', 'Đường dẫn', form.slug, prepared.slug);
   addDiff('excerpt', 'Mô tả ngắn', form.excerpt, prepared.excerpt);
   addDiff('keyword', 'Từ khóa chính', form.focusKeyword, prepared.focusKeyword);
-  addDiff('seoTitle', 'SEO title', form.seoTitle, prepared.seoTitle);
+  addDiff('seoTitle', 'Tiêu đề SEO', form.seoTitle, prepared.seoTitle);
   addDiff('seoDescription', 'Meta description', form.seoDescription, prepared.seoDescription);
-  addDiff('canonical', 'Canonical URL', form.canonicalUrl, prepared.canonicalUrl);
+  addDiff('canonical', 'URL chuẩn', form.canonicalUrl, prepared.canonicalUrl);
   addDiff('coverAlt', 'Alt ảnh bìa', form.coverImageAlt, prepared.coverImageAlt);
   addDiff('tags', 'Tags', form.tags, prepared.tags);
 
@@ -4078,7 +4078,7 @@ function buildResolvedMetaPreview(form: NewsForm): ResolvedMetaPreview {
   const description = (form.seoDescription || form.excerpt || stripHtml(form.bodyHtml).slice(0, 160) || 'Mô tả SEO').trim();
   const ogTitle = (form.ogTitle || title).trim();
   const ogDescription = (form.ogDescription || description).trim();
-  const ogImage = (form.ogImageUrl || form.coverImageUrl || 'Ảnh bìa public').trim();
+  const ogImage = (form.ogImageUrl || form.coverImageUrl || 'Ảnh bìa công khai').trim();
   const twitterTitle = (form.twitterTitle || ogTitle).trim();
   const twitterDescription = (form.twitterDescription || ogDescription).trim();
   const twitterImage = (form.twitterImageUrl || ogImage).trim();
@@ -4131,9 +4131,9 @@ function buildSeoSignals(form: NewsForm, seo: SeoScoreResult): SeoSignal[] {
       priority: 'should',
       detail: keyword
         ? slug.includes(slugifyLocal(keyword))
-          ? 'Slug đã chứa từ khóa chính và đang khá dễ đọc khi chia sẻ.'
-          : 'Slug chưa phản ánh rõ từ khóa chính. Nên để slug ngắn và bám sát chủ đề bài.'
-        : 'Slug sẽ tốt hơn khi có từ khóa chính.',
+          ? 'Đường dẫn đã chứa từ khóa chính và đang khá dễ đọc khi chia sẻ.'
+          : 'Đường dẫn chưa phản ánh rõ từ khóa chính. Nên để đường dẫn ngắn và bám sát chủ đề bài.'
+        : 'Đường dẫn sẽ tốt hơn khi có từ khóa chính.',
       actionId: 'seo-defaults',
       actionLabel: 'Sửa slug nhanh'
     },

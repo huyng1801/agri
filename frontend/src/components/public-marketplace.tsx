@@ -208,7 +208,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
       </Link>
 
       <div className="flex items-center justify-between gap-3 p-3 sm:p-4">
-        <p className="text-[0.95rem] font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+        <p className="text-[0.95rem] font-semibold text-leaf">{cooperative.productCount} sản phẩm công khai</p>
         <div className="flex shrink-0 gap-2">
           <Link href={`/htx/${cooperative.code}`}>
             <Button variant="ghost" className="min-h-9.5 px-3 py-2 text-[11px]">

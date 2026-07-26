@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: CooperativeDetailPageProps): 
   }
   return {
     title: `${cooperative.name} | HTXONLINE`,
-    description: `Xem sản phẩm, vùng trồng và thông tin public của ${cooperative.name} trên HTXONLINE.`,
+    description: `Xem sản phẩm, vùng trồng và thông tin công khai của ${cooperative.name} trên HTXONLINE.`,
     alternates: { canonical: `https://htxonline.vn/htx/${cooperative.code}` }
   };
 }
@@ -37,7 +37,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
       <PublicShell>
         <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
-            <h1 className="text-2xl font-bold text-ink">Không tìm thấy HTX public</h1>
+            <h1 className="text-2xl font-bold text-ink">Không tìm thấy HTX công khai</h1>
             <Link className="mt-4 inline-block font-semibold text-leaf" href="/htx">
               Quay lại danh sách HTX
             </Link>
@@ -81,7 +81,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                       <MapPin size={16} aria-hidden="true" />
                       {cooperative.province || 'Đang cập nhật địa phương'}
                     </p>
-                    <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm public</p>
+                    <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm công khai</p>
                   </div>
                 </div>
                 {cooperative.phone && (
@@ -94,7 +94,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                 )}
               </div>
               <p className="mt-4 max-w-3xl text-[0.98rem] leading-7 text-slate-700">
-                Hồ sơ public của HTX trên HTXONLINE. Người mua có thể xem sản phẩm, vùng trồng công khai và quét QR Passport để kiểm tra nguồn gốc.
+                Hồ sơ công khai của HTX trên HTXONLINE. Người mua có thể xem sản phẩm, vùng trồng công khai và quét QR Passport để kiểm tra nguồn gốc.
               </p>
             </div>
           </article>
@@ -110,7 +110,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                     <div key={zone.key} className="rounded-md bg-slate-50 p-4">
                       <p className="font-bold text-ink">{zone.name}</p>
                       <p className="mt-1 text-sm text-slate-600">{zone.address || 'Đang cập nhật địa chỉ vùng trồng'}</p>
-                      <p className="mt-2 text-sm font-semibold text-leaf">{zone.productCount} sản phẩm public</p>
+                      <p className="mt-2 text-sm font-semibold text-leaf">{zone.productCount} sản phẩm công khai</p>
                       {zone.areaM2 && <p className="mt-1 text-xs text-slate-500">Diện tích {formatArea(zone.areaM2)}</p>}
                     </div>
                   ))}
@@ -123,8 +123,8 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
             <Panel>
               <h2 className="text-xl font-bold text-ink">Cam kết minh bạch</h2>
               <div className="mt-4 grid gap-3 text-sm leading-6 text-slate-700">
-                <p>Chỉ sản phẩm đã publish mới xuất hiện trên trang HTX.</p>
-                <p>Vùng trồng bị tắt public sẽ không hiển thị ở đây và cũng không lộ trên trang sản phẩm hay QR Passport.</p>
+                <p>Chỉ sản phẩm đã đăng công khai mới xuất hiện trên trang HTX.</p>
+                <p>Vùng trồng bị tắt công khai sẽ không hiển thị ở đây và cũng không lộ trên trang sản phẩm hay QR Passport.</p>
                 <p>Nhật ký, chứng nhận và thông tin nội bộ chưa công khai vẫn được giữ riêng trong dashboard HTX.</p>
               </div>
             </Panel>
@@ -132,7 +132,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
         </PublicSection>
 
         <PublicSection>
-          <PublicSectionHeader title="Sản phẩm public của HTX" description="Danh sách sản phẩm đang được publish trên sàn." />
+          <PublicSectionHeader title="Sản phẩm công khai của HTX" description="Danh sách sản phẩm đang được đăng công khai trên sàn." />
           <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />

@@ -685,7 +685,7 @@ function CooperativeCard({
         <Link href={`/htx/${cooperative.code}`} target="_blank">
           <Button type="button" variant="ghost">
             <ExternalLink size={16} aria-hidden="true" />
-            Trang public
+            Trang công khai
           </Button>
         </Link>
         {canManagePlatform && cooperative.status !== 'ARCHIVED' && (

@@ -45,7 +45,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
       <PublicPageMain>
         <PublicPageHeader
           title="HTX trên HTXONLINE"
-          description={`${catalog.cooperatives.length} hợp tác xã đang có sản phẩm public trên sàn.`}
+          description={`${catalog.cooperatives.length} hợp tác xã đang có sản phẩm công khai trên sàn.`}
         />
 
         <section className="rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-4 shadow-[var(--shadow-card)] backdrop-blur sm:p-5">
@@ -54,7 +54,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
               <p className="text-sm font-semibold uppercase tracking-[0.24em] text-leaf/80">Danh sách HTX</p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Khám phá các hợp tác xã đã sẵn sàng công khai sản phẩm và tiếp cận người mua.</h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-                Mỗi hồ sơ HTX trên sàn là một điểm chạm thương hiệu: có ảnh đại diện, vùng hoạt động, số lượng sản phẩm public và lối dẫn rõ ràng sang trang chi tiết.
+                Mỗi hồ sơ HTX trên sàn là một điểm chạm thương hiệu: có ảnh đại diện, vùng hoạt động, số lượng sản phẩm công khai và lối dẫn rõ ràng sang trang chi tiết.
               </p>
               {topProvinces.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -90,7 +90,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           <PublicSearch placeholder="Tìm HTX theo tên hoặc tỉnh thành" action="/htx" />
           <div className="mt-3 flex flex-wrap gap-2 px-1">
             {[
-              { icon: Sparkles, text: 'Hồ sơ HTX gắn trực tiếp với sản phẩm public' },
+              { icon: Sparkles, text: 'Hồ sơ HTX gắn trực tiếp với sản phẩm công khai' },
               { icon: ShieldCheck, text: 'Người mua đi từ danh sách sang chi tiết nhanh hơn' }
             ].map((item) => (
               <div key={item.text} className="inline-flex items-center gap-2 rounded-full bg-mint/65 px-3 py-2 text-sm font-medium text-slate-700">
@@ -110,8 +110,8 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         ) : (
           <div className="mt-6">
             <EmptyPublicState
-              title={search ? 'Không tìm thấy HTX phù hợp' : 'Chưa có HTX public'}
-              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được publish lên sàn.'}
+              title={search ? 'Không tìm thấy HTX phù hợp' : 'Chưa có HTX công khai'}
+              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được đăng công khai lên sàn.'}
             />
           </div>
         )}

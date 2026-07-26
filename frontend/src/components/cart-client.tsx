@@ -43,7 +43,7 @@ export function CartClient() {
     return (
       <Panel data-testid="cart-empty" className="text-center">
         <h2 className="text-xl font-bold">Giỏ hàng đang trống</h2>
-        <p className="mt-2 text-sm text-slate-600">Chọn sản phẩm public từ HTX để bắt đầu đặt hàng.</p>
+        <p className="mt-2 text-sm text-slate-600">Chọn sản phẩm công khai từ HTX để bắt đầu đặt hàng.</p>
         <Link href="/san-pham" className="mt-4 inline-flex">
           <Button>Xem sản phẩm</Button>
         </Link>

@@ -70,7 +70,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       <PublicPageMain>
         <PublicPageHeader
           title="Sản phẩm"
-          description={`Sản phẩm public từ các HTX trên HTXONLINE${products.length ? ` · ${products.length} kết quả` : ''}.`}
+          description={`Sản phẩm công khai từ các HTX trên HTXONLINE${products.length ? ` · ${products.length} kết quả` : ''}.`}
         />
 
         <section className="rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-4 shadow-[var(--shadow-card)] backdrop-blur sm:p-5">
@@ -94,7 +94,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
               {[
-                { icon: Sparkles, title: 'Kết quả hiển thị', value: `${products.length}+`, note: 'Sản phẩm public đang mở bán' },
+                { icon: Sparkles, title: 'Kết quả hiển thị', value: `${products.length}+`, note: 'Sản phẩm công khai đang mở bán' },
                 { icon: QrCode, title: 'Có QR Passport', value: `${qrProducts}+`, note: 'Sản phẩm có thể truy xuất nhanh' },
                 { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+`, note: 'Tỉnh thành đang có mặt trên sàn' }
               ].map((item, index) => (
@@ -121,7 +121,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           </div>
         ) : (
           <div className="mt-6">
-            <EmptyPublicState title="Không tìm thấy sản phẩm" description="Thử tìm kiếm từ khóa khác hoặc quay lại sau khi HTX publish sản phẩm." />
+            <EmptyPublicState title="Không tìm thấy sản phẩm" description="Thử tìm kiếm từ khóa khác hoặc quay lại sau khi HTX đăng công khai sản phẩm." />
           </div>
         )}
       </PublicPageMain>

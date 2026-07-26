@@ -17,7 +17,7 @@ const steps = [
   },
   {
     title: 'Xem chi tiết và QR Passport',
-    description: 'Mở trang sản phẩm để xem mô tả, vùng trồng, chứng nhận public và quét QR Passport khi cần kiểm tra nguồn gốc.'
+    description: 'Mở trang sản phẩm để xem mô tả, vùng trồng, chứng nhận công khai và quét QR Passport khi cần kiểm tra nguồn gốc.'
   },
   {
     title: 'Thêm vào giỏ hàng',

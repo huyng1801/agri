@@ -288,7 +288,7 @@ export default function ProductsPage() {
                   <Field label="Tên sản phẩm">
                     <Input data-testid="product-name-input" value={form.name} onChange={(event) => update('name', event.target.value)} required />
                   </Field>
-                  <Field label="Slug">
+                  <Field label="Đường dẫn">
                     <Input data-testid="product-slug-input" value={form.slug} onChange={(event) => update('slug', slugifyLocal(event.target.value))} />
                   </Field>
                   <Field label="Trạng thái">
@@ -360,7 +360,7 @@ export default function ProductsPage() {
                       </div>
                     )}
                   </div>
-                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Tải ảnh lên R2 để tạo URL ảnh public" className="bg-slate-100 text-slate-600" />
+                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Tải ảnh lên R2 để tạo URL ảnh công khai" className="bg-slate-100 text-slate-600" />
                   <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
                     <ImagePlus size={18} aria-hidden="true" />
                     {uploading ? 'Đang tải ảnh lên' : 'Tải ảnh lên R2'}

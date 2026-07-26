@@ -144,7 +144,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <Panel>
               <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <h2 className="text-xl font-bold">Nhật ký public</h2>
+                  <h2 className="text-xl font-bold">Nhật ký công khai</h2>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Theo dõi các bước canh tác công khai được HTX đăng tải cho sản phẩm này.
                   </p>
@@ -176,7 +176,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-600">Chưa có nhật ký public.</p>
+                  <p className="text-sm text-slate-600">Chưa có nhật ký công khai.</p>
                 )}
               </div>
             </Panel>
@@ -191,7 +191,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   <p className="mt-2 text-base font-bold text-ink">{product.unit}</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận public</p>
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận công khai</p>
                   <p className="mt-2 text-base font-bold text-ink">{certifications.length}</p>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-4">
@@ -204,7 +204,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <Panel>
               <h2 className="text-xl font-bold">Chứng nhận</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Tổng hợp các chứng nhận public đi kèm sản phẩm để người mua kiểm tra nhanh.
+                Tổng hợp các chứng nhận công khai đi kèm sản phẩm để người mua kiểm tra nhanh.
               </p>
               <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
                 <div>
@@ -229,7 +229,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     </div>
                   ))
                 ) : (
-                  <p className="text-sm text-slate-600">Chưa có chứng nhận public.</p>
+                  <p className="text-sm text-slate-600">Chưa có chứng nhận công khai.</p>
                 )}
               </div>
             </Panel>

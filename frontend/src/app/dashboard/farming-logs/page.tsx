@@ -227,7 +227,7 @@ export default function FarmingLogsPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Nhật ký canh tác</h1>
-          <p className="text-sm text-slate-600">Ghi nhận hoạt động sản xuất, ảnh minh chứng R2 và dữ liệu public cho QR Passport.</p>
+          <p className="text-sm text-slate-600">Ghi nhận hoạt động sản xuất, ảnh minh chứng R2 và dữ liệu công khai cho QR Passport.</p>
         </div>
         <div className="flex gap-2">
           <Button type="button" variant="ghost" onClick={() => logs.refetch()} aria-label="Tải lại">
@@ -286,7 +286,7 @@ export default function FarmingLogsPage() {
                   <Field label="Trạng thái">
                     <Select data-testid="farming-log-status-select" value={form.status} onChange={(event) => update('status', event.target.value as LogStatus)}>
                       <option value="DRAFT">Nháp</option>
-                      <option value="PUBLISHED">Đã publish</option>
+                      <option value="PUBLISHED">Đã đăng công khai</option>
                       <option value="ARCHIVED">Lưu trữ</option>
                     </Select>
                   </Field>
@@ -354,7 +354,7 @@ export default function FarmingLogsPage() {
         </div>
         <Select value={status} onChange={(event) => setStatus(event.target.value)}>
           <option value="">Tất cả trạng thái</option>
-          <option value="PUBLISHED">Đã publish</option>
+          <option value="PUBLISHED">Đã đăng công khai</option>
           <option value="DRAFT">Nháp</option>
           <option value="ARCHIVED">Lưu trữ</option>
         </Select>
