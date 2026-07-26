@@ -75,7 +75,7 @@ export function PublicBottomNav() {
       data-testid="public-bottom-nav"
       aria-hidden={hidden}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.25rem)] left-1/2 z-30 w-[calc(100%-1.45rem)] max-w-[22rem] -translate-x-1/2 rounded-[1.3rem] border border-white/72 bg-white/64 px-1 py-0.75 shadow-[0_10px_22px_rgba(23,33,27,0.08)] backdrop-blur-xl transition duration-200 lg:hidden',
+        'fixed bottom-[calc(var(--safe-bottom)+0.35rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.35rem] border border-white/72 bg-white/78 px-1.5 py-1 shadow-[0_14px_28px_rgba(23,33,27,0.1)] backdrop-blur-xl transition duration-200 lg:hidden',
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
@@ -89,7 +89,7 @@ export function PublicBottomNav() {
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[38px] flex-col items-center justify-center gap-0 rounded-[0.9rem] px-1 text-[6.5px] font-semibold transition-colors',
+                'relative flex min-h-[42px] flex-col items-center justify-center gap-0.5 rounded-[0.95rem] px-1 text-[9px] font-semibold transition-colors',
                 active
                   ? 'bg-mint/72 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.07)]'
                   : 'text-slate-500/90'

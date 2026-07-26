@@ -37,14 +37,14 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
   }, [menuOpen]);
 
   return (
-    <header className="relative z-40 border-b border-white/60 bg-white/88 backdrop-blur-xl">
-      <div className="mx-auto flex min-h-[64px] max-w-6xl items-center justify-between gap-3 px-4 py-3 md:min-h-[76px]">
+    <header className="sticky top-0 z-40 border-b border-white/60 bg-white/88 backdrop-blur-xl supports-[backdrop-filter]:bg-white/72">
+      <div className="mx-auto flex min-h-[58px] max-w-6xl items-center justify-between gap-2.5 px-3.5 py-2 md:min-h-[76px] md:px-4 md:py-3">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2.5 text-base font-bold text-ink sm:text-lg"
+          className="flex min-w-0 items-center gap-2 text-[0.98rem] font-bold text-ink sm:gap-2.5 sm:text-lg"
           aria-label={`${appName} - Trang chủ`}
         >
-          <PublicLogo size={42} />
+          <PublicLogo size={36} className="sm:h-[42px] sm:w-[42px]" />
           <span className="max-w-[8.5rem] truncate sm:max-w-none">{appName}</span>
         </Link>
 
@@ -71,7 +71,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           <Link
             href="/gio-hang"
             aria-label="Giỏ hàng"
-            className="relative grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
+            className="relative grid h-10.5 w-10.5 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf sm:h-11 sm:w-11"
           >
             <ShoppingCart size={19} aria-hidden="true" />
             <CartCountBadge />
@@ -81,7 +81,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           </Link>
           <button
             type="button"
-            className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200 bg-white/92 shadow-sm md:hidden"
+            className="grid h-10.5 w-10.5 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 shadow-sm md:hidden sm:h-11 sm:w-11"
             aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -92,10 +92,10 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
       </div>
 
       {menuOpen && (
-        <div className="fixed inset-0 top-[64px] z-40 md:hidden">
+        <div className="fixed inset-0 top-[58px] z-40 md:hidden">
           <button type="button" className="absolute inset-0 bg-black/30" aria-label="Đóng menu" onClick={() => setMenuOpen(false)} />
           <nav
-            className="relative max-h-[calc(100vh-4rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 shadow-lg"
+            className="relative max-h-[calc(100vh-3.625rem)] overflow-y-auto border-t border-slate-200 bg-white px-3.5 py-3 shadow-lg"
             aria-label="Menu di động"
           >
             <div className="grid gap-1">

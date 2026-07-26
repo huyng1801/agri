@@ -19,11 +19,13 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at top left, rgba(244, 183, 64, 0.16), transparent 24%),
     radial-gradient(circle at top right, rgba(47, 125, 79, 0.14), transparent 30%),
@@ -56,6 +58,11 @@ button {
 .touch-target {
   min-height: 44px;
   min-width: 44px;
+}
+
+.mobile-app-scroll {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .no-scrollbar::-webkit-scrollbar {

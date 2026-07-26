@@ -83,7 +83,7 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicShell({ children }: { children: React.ReactNode }) {
   return (
-    <div id="top" className="min-h-screen bg-transparent text-ink">
+    <div id="top" className="mobile-app-scroll min-h-screen overflow-x-hidden bg-transparent text-ink">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
@@ -108,7 +108,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.35rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.05rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
@@ -116,10 +116,10 @@ export function PublicSearch({
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-10.5 w-full rounded-[0.95rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.98rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl sm:text-base"
+          className="min-h-10.5 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl sm:text-base"
         />
       </div>
-      <Button className="min-h-10.5 w-full rounded-[0.95rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
+      <Button className="min-h-10.5 w-full rounded-[0.85rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
     </form>
   );
 }
@@ -154,7 +154,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
         </Link>
 
         <div className="mt-2 border-t border-slate-100 pt-2 sm:mt-2.5 sm:pt-2.5">
-          <p className="text-[1.7rem] font-bold leading-none text-leaf sm:text-xl">{formatPrice(product.price)}</p>
+          <p className="text-[1.22rem] font-bold leading-none text-leaf sm:text-xl">{formatPrice(product.price)}</p>
           <p className="text-xs text-slate-500">/{product.unit}</p>
         </div>
 
@@ -208,7 +208,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
       </Link>
 
       <div className="flex items-center justify-between gap-3 p-3 sm:p-4">
-        <p className="text-[0.95rem] font-semibold text-leaf">{cooperative.productCount} sản phẩm công khai</p>
+        <p className="text-[0.86rem] font-semibold leading-tight text-leaf sm:text-[0.95rem]">{cooperative.productCount} sản phẩm công khai</p>
         <div className="flex shrink-0 gap-2">
           <Link href={`/htx/${cooperative.code}`}>
             <Button variant="ghost" className="min-h-9.5 px-3 py-2 text-[11px]">

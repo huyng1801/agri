@@ -8,7 +8,7 @@ export function PublicPageMain({ children, className }: { children: React.ReactN
   return (
     <main
       id="main-content"
-      className={cn(publicContainerClass, 'pb-[calc(11.25rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}
+      className={cn(publicContainerClass, 'pb-[calc(8.5rem+var(--safe-bottom))] pt-4 sm:pb-10 sm:pt-10 lg:py-12', className)}
     >
       {children}
     </main>
@@ -19,7 +19,7 @@ export function PublicDetailMain({ children, className }: { children: React.Reac
   return (
     <main
       id="main-content"
-      className={cn(publicContainerClass, 'pb-[calc(11.25rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}
+      className={cn(publicContainerClass, 'pb-[calc(8.5rem+var(--safe-bottom))] pt-4 sm:pb-10 sm:pt-10 lg:py-12', className)}
     >
       {children}
     </main>
@@ -45,11 +45,11 @@ export function PublicPageHeader({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-4 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-5">
+    <div className="mb-4 flex flex-col gap-3 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-5">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-leaf/80">HTXONLINE</p>
-        <h1 className="mt-2 max-w-[12ch] text-[1.92rem] font-bold leading-[0.98] tracking-tight text-ink sm:mt-3 sm:max-w-none sm:text-4xl sm:leading-none">{title}</h1>
-        <p className="mt-2 max-w-2xl text-[0.96rem] leading-[1.72] text-slate-600 sm:mt-3 sm:text-base">{description}</p>
+        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:text-sm sm:tracking-[0.24em]">HTXONLINE</p>
+        <h1 className="mt-1.5 max-w-[18ch] text-[1.42rem] font-bold leading-[1.06] tracking-normal text-ink sm:mt-3 sm:max-w-none sm:text-4xl sm:leading-none">{title}</h1>
+        <p className="mt-2 max-w-2xl text-[0.86rem] leading-[1.5] text-slate-600 sm:mt-3 sm:text-base sm:leading-[1.72]">{description}</p>
       </div>
       {action}
     </div>

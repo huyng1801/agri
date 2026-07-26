@@ -13,12 +13,12 @@ export async function PublicFooter() {
   const mapLocation = getPublicMapLocation(profile);
 
   return (
-    <footer className="mt-8 bg-[#1f5f3d] pb-[calc(7.75rem+var(--safe-bottom))] text-white lg:pb-0">
+    <footer className="mt-6 bg-[#1f5f3d] pb-[calc(6.5rem+var(--safe-bottom))] text-white lg:pb-0">
       <div className={publicContainerClass}>
-        <div className="grid gap-4 border-b border-white/15 py-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div className="grid gap-4 border-b border-white/15 py-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-6">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">HTXONLINE</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
+            <h2 className="mt-2 text-[1.55rem] font-bold leading-tight tracking-normal sm:text-2xl">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <a

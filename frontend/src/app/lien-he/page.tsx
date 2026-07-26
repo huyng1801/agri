@@ -36,24 +36,24 @@ export default async function ContactPage() {
           />
           <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-16 sm:text-center')}>
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-leaf/80 sm:text-sm sm:tracking-wide">Liên hệ</p>
-            <h1 className="mt-2 max-w-[18rem] text-[1.72rem] font-bold leading-[0.98] tracking-tight text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
+            <h1 className="mt-1.5 max-w-[20rem] text-[1.42rem] font-bold leading-[1.06] tracking-normal text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
               {siteProfile.pageContent.contactTitle}
             </h1>
-            <p className="mt-2.5 max-w-[19.5rem] text-[0.92rem] leading-[1.66] text-slate-700 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
+            <p className="mt-2 max-w-[20.5rem] text-[0.86rem] leading-[1.5] text-slate-700 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
               {siteProfile.pageContent.contactDescription}
             </p>
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'grid gap-3 py-4 sm:hidden')}>
-          <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm">
+        <section className={cn(publicContainerClass, 'grid gap-2.5 py-3.5 sm:hidden')}>
+          <a href={telHref(siteProfile.hotline)} className="flex items-center justify-between rounded-[1rem] bg-white px-4 py-3 shadow-sm">
             <span>
               <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Hotline</span>
               <span className="mt-1 block text-[1.05rem] font-medium text-ink">{siteProfile.hotlineDisplay}</span>
             </span>
             <PhoneCall className="text-leaf" size={22} aria-hidden="true" />
           </a>
-          <a href={`mailto:${siteProfile.supportEmail}`} className="flex items-center justify-between rounded-2xl bg-white px-4 py-3.5 shadow-sm">
+          <a href={`mailto:${siteProfile.supportEmail}`} className="flex items-center justify-between rounded-[1rem] bg-white px-4 py-3 shadow-sm">
             <span>
               <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Email</span>
               <span className="mt-1 block text-[1.05rem] font-bold text-ink">{siteProfile.supportEmail}</span>
@@ -272,7 +272,7 @@ export default async function ContactPage() {
           <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
             <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin pháp lý đối chiếu</p>
-              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
+              <h2 className="mt-2 text-[1.38rem] font-bold leading-[1.12] text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-2xl bg-[#f8faf7] p-4">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Mã số tổ hợp tác</p>
@@ -295,7 +295,7 @@ export default async function ContactPage() {
 
             <article className="rounded-2xl bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-5 shadow-sm sm:p-6">
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Lưu ý khi liên hệ</p>
-              <h2 className="mt-2 text-[1.65rem] font-bold leading-tight text-ink sm:text-3xl">Kênh hỗ trợ công khai và hồ sơ pháp lý được tách rõ</h2>
+              <h2 className="mt-2 text-[1.38rem] font-bold leading-[1.12] text-ink sm:text-3xl">Kênh hỗ trợ công khai và hồ sơ pháp lý được tách rõ</h2>
               <div className="mt-4 grid gap-3">
                 <div className="rounded-2xl bg-white p-4 shadow-sm">
                   <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline công khai trên website</p>

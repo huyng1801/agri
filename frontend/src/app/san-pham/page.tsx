@@ -73,16 +73,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           description={`Sản phẩm công khai từ các HTX trên HTXONLINE${products.length ? ` · ${products.length} kết quả` : ''}.`}
         />
 
-        <section className="rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-4 shadow-[var(--shadow-card)] backdrop-blur sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+        <section className="rounded-[1.25rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-3 shadow-[var(--shadow-card)] backdrop-blur sm:rounded-[2rem] sm:p-5">
+          <div className="grid gap-3 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-leaf/80">Bộ lọc thông minh</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Tìm nhanh sản phẩm phù hợp theo HTX, địa phương và tín hiệu truy xuất.</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:text-sm sm:tracking-[0.24em]">Bộ lọc thông minh</p>
+              <h2 className="mt-1.5 text-[1.2rem] font-bold leading-[1.12] tracking-normal text-ink sm:text-3xl">Tìm nhanh theo HTX, địa phương và QR Passport.</h2>
+              <p className="mt-2 hidden max-w-2xl text-[0.9rem] leading-[1.6] text-slate-600 sm:mt-3 sm:block sm:text-base sm:leading-7">
                 Từ đặc sản địa phương đến nông sản có QR Passport, người mua có thể lọc nhanh theo vùng, mức giá và mức độ minh bạch ngay trên cùng một màn hình.
               </p>
               {categoryHighlights.length > 0 && (
-                <div className="mt-4 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">
                   {categoryHighlights.map((category) => (
                     <span key={category} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm">
                       {category}
@@ -92,19 +92,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-1">
               {[
                 { icon: Sparkles, title: 'Kết quả hiển thị', value: `${products.length}+`, note: 'Sản phẩm công khai đang mở bán' },
                 { icon: QrCode, title: 'Có QR Passport', value: `${qrProducts}+`, note: 'Sản phẩm có thể truy xuất nhanh' },
                 { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+`, note: 'Tỉnh thành đang có mặt trên sàn' }
               ].map((item, index) => (
-                <article key={item.title} className={`rounded-2xl border border-slate-200/80 bg-white/86 p-3.5 shadow-sm sm:p-4 ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}>
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-leaf sm:h-11 sm:w-11">
-                    <item.icon size={20} aria-hidden="true" />
+                <article key={item.title} className="rounded-[1rem] border border-slate-200/80 bg-white/86 p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-[0.9rem] bg-mint text-leaf sm:h-11 sm:w-11">
+                    <item.icon size={16} aria-hidden="true" />
                   </span>
-                  <p className="mt-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:mt-3 sm:text-sm">{item.title}</p>
-                  <p className="mt-1 text-[1.85rem] font-bold text-ink sm:text-2xl">{item.value}</p>
-                  <p className="mt-1 text-sm leading-[1.6] text-slate-600">{item.note}</p>
+                  <p className="mt-1.5 text-[0.58rem] font-semibold uppercase tracking-[0.1em] text-slate-500 sm:mt-3 sm:text-sm">{item.title}</p>
+                  <p className="mt-0.5 text-[1.15rem] font-bold text-ink sm:text-2xl">{item.value}</p>
+                  <p className="mt-1 hidden text-sm leading-[1.6] text-slate-600 sm:block">{item.note}</p>
                 </article>
               ))}
             </div>
@@ -131,7 +131,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
 function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilters; hasActiveFilter: boolean }) {
   return (
-    <form className="mt-5 rounded-[2rem] border border-slate-200/80 bg-white/94 p-2.5 shadow-[var(--shadow-card)] backdrop-blur-xl sm:p-3" action="/san-pham">
+    <form className="mt-4 rounded-[1.35rem] border border-slate-200/80 bg-white/94 p-2.5 shadow-[var(--shadow-card)] backdrop-blur-xl sm:mt-5 sm:rounded-[2rem] sm:p-3" action="/san-pham">
       <div className="relative">
         <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
         <input

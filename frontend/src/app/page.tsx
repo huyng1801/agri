@@ -61,27 +61,27 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid items-center gap-5 pb-7 pt-4 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
+              'relative grid items-center gap-3.5 pb-4 pt-3.5 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
             )}
           >
-            <div className="space-y-4 sm:space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/88 px-3 py-1.5 text-[0.76rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
+            <div className="space-y-3 sm:space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/88 px-3 py-1.5 text-[0.7rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
                 <Leaf size={16} aria-hidden="true" />
                 {siteProfile.pageContent.homeBadge}
               </div>
 
-              <h1 className="max-w-[16ch] text-[1.38rem] font-bold leading-[1.03] tracking-[-0.03em] text-ink min-[390px]:text-[1.5rem] sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
+              <h1 className="max-w-[19ch] text-[1.36rem] font-bold leading-[1.06] tracking-normal text-ink min-[390px]:text-[1.48rem] sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
                 {siteProfile.pageContent.homeTitle}
               </h1>
 
-              <p className="max-w-[24.5rem] text-[0.95rem] leading-[1.72] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[24.5rem] text-[0.86rem] leading-[1.52] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
                 {siteProfile.pageContent.homeDescription}
               </p>
 
-              <div className="max-w-[24.5rem] rounded-[1.45rem] border border-white/85 bg-white/74 p-2 shadow-[0_18px_40px_rgba(148,163,184,0.14)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="grid gap-2.5 min-[430px]:grid-cols-[1.06fr_0.94fr] sm:flex sm:flex-wrap">
+              <div className="max-w-[24.5rem] rounded-[1.1rem] border border-white/85 bg-white/74 p-1.5 shadow-[0_14px_30px_rgba(148,163,184,0.12)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+                <div className="grid gap-2 min-[430px]:grid-cols-[1.06fr_0.94fr] sm:flex sm:flex-wrap">
                   <Link href="/san-pham" className="inline-flex sm:w-auto">
-                    <Button className="min-h-[3.1rem] w-full justify-center whitespace-nowrap rounded-2xl px-4 text-[0.92rem] shadow-[0_14px_28px_rgba(47,132,81,0.22)] sm:min-h-12 sm:w-auto sm:px-5">
+                    <Button className="min-h-[2.7rem] w-full justify-center whitespace-nowrap rounded-[0.95rem] px-4 text-[0.88rem] shadow-[0_14px_28px_rgba(47,132,81,0.22)] sm:min-h-12 sm:w-auto sm:px-5">
                       Xem sản phẩm
                       <ArrowRight size={18} aria-hidden="true" />
                     </Button>
@@ -89,24 +89,24 @@ export default async function HomePage() {
                   <Link href="/htx" className="inline-flex sm:w-auto">
                     <Button
                       variant="ghost"
-                      className="min-h-[3.1rem] w-full whitespace-nowrap justify-center rounded-2xl border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.92rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
+                      className="min-h-[2.7rem] w-full whitespace-nowrap justify-center rounded-[0.95rem] border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.88rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
                     >
                       Khám phá HTX
                     </Button>
                   </Link>
                 </div>
-                <p className="mt-2.5 px-1 text-[0.76rem] leading-5 text-slate-500 sm:hidden">
+                <p className="mt-2 px-1 text-[0.72rem] leading-5 text-slate-500 sm:hidden">
                   Mở nhanh sản phẩm, hồ sơ HTX và QR Passport theo một luồng gọn trên điện thoại.
                 </p>
               </div>
 
-              <div className="max-w-2xl rounded-[1.55rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_24px_60px_rgba(47,132,81,0.09)] backdrop-blur sm:p-2">
+              <div className="max-w-2xl rounded-[1.2rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_18px_44px_rgba(47,132,81,0.08)] backdrop-blur sm:p-2">
                 <PublicSearch />
               </div>
 
-              <div className="grid gap-2.5 sm:max-w-2xl sm:grid-cols-3">
+              <div className="grid gap-1.5 sm:max-w-2xl sm:grid-cols-3">
                 {heroSignals.map((item) => (
-                  <div key={item} className="rounded-[1.35rem] border border-white/80 bg-white/80 px-4 py-3.5 text-[0.9rem] leading-[1.62] text-slate-700 shadow-sm backdrop-blur sm:text-[0.95rem]">
+                  <div key={item} className="rounded-[0.95rem] border border-white/80 bg-white/80 px-3 py-2.5 text-[0.78rem] leading-[1.42] text-slate-700 shadow-sm backdrop-blur sm:text-[0.95rem] sm:leading-[1.62]">
                     {item}
                   </div>
                 ))}
