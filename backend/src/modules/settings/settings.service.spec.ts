@@ -63,4 +63,34 @@ describe('SettingsService', () => {
     });
     expect(profile.faqs).toEqual([{ question: 'Q1', answer: 'A1' }]);
   });
+
+  it('normalizes legacy public copy in configured values', async () => {
+    const findUnique = jest
+      .fn()
+      .mockResolvedValueOnce({
+        key: 'public.siteProfile',
+        value: {
+          address: 'Số 130, Tổ 8',
+          faqs: [{ question: 'Người mua có cần đăng nhập để xem QR?', answer: 'Không. QR Passport public được mở trực tiếp.' }],
+          pageContent: {
+            homeDescription: 'Công khai sản phẩm và publish QR Passport public cho người mua.'
+          }
+        }
+      })
+      .mockResolvedValueOnce(null);
+    const service = new SettingsService(
+      {
+        setting: {
+          findUnique
+        }
+      } as never,
+      { record: jest.fn() } as never,
+      { testConnection: jest.fn() } as never
+    );
+
+    const profile = await service.publicSiteProfile();
+
+    expect(profile.faqs[0]?.answer).toBe('Không. QR Passport công khai được mở trực tiếp.');
+    expect(profile.pageContent.homeDescription).toContain('đăng công khai QR Passport công khai');
+  });
 });

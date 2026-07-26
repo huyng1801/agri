@@ -35,11 +35,11 @@ export class SettingsService {
     const publicProfile = jsonObject(publicProfileSetting?.value);
     const systemProfile = jsonObject(systemProfileSetting?.value);
     return {
-      appName: stringValue(publicProfile.appName) || 'HTXONLINE',
+      appName: normalizePublicCopy(stringValue(publicProfile.appName)) || 'HTXONLINE',
       hotline: stringValue(publicProfile.hotline) || '0907001200',
       hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0907 001 200',
       supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'Agripassport@gmail.com',
-      address: stringValue(publicProfile.address) || 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
+      address: normalizePublicCopy(stringValue(publicProfile.address)) || 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
       zaloUrl: stringValue(publicProfile.zaloUrl),
       messengerUrl: stringValue(publicProfile.messengerUrl) || '',
       mapEmbedUrl: stringValue(publicProfile.mapEmbedUrl) || DEFAULT_MAP_EMBED_URL,
@@ -104,8 +104,8 @@ function faqItems(value: unknown) {
     ? value
         .map((item) => {
           if (!item || typeof item !== 'object') return null;
-          const question = stringValue((item as Record<string, unknown>).question);
-          const answer = stringValue((item as Record<string, unknown>).answer);
+          const question = normalizePublicCopy(stringValue((item as Record<string, unknown>).question));
+          const answer = normalizePublicCopy(stringValue((item as Record<string, unknown>).answer));
           if (!question || !answer) return null;
           return { question, answer };
         })
@@ -128,36 +128,51 @@ function faqItems(value: unknown) {
 function pageContentItems(value: unknown) {
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
   return {
-    homeBadge: stringValue(object.homeBadge) || 'Nền tảng số cho hợp tác xã',
-    homeTitle: stringValue(object.homeTitle) || 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
+    homeBadge: normalizePublicCopy(stringValue(object.homeBadge)) || 'Nền tảng số cho hợp tác xã',
+    homeTitle: normalizePublicCopy(stringValue(object.homeTitle)) || 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
     homeDescription:
-      stringValue(object.homeDescription) ||
+      normalizePublicCopy(stringValue(object.homeDescription)) ||
       'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
     homeImageUrl:
       stringValue(object.homeImageUrl) ||
       'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
-    homeImageAlt: stringValue(object.homeImageAlt) || 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
-    introTitle: stringValue(object.introTitle) || 'Giới thiệu HTXONLINE',
-    introDescription: stringValue(object.introDescription) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    homeImageAlt: normalizePublicCopy(stringValue(object.homeImageAlt)) || 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
+    introTitle: normalizePublicCopy(stringValue(object.introTitle)) || 'Giới thiệu HTXONLINE',
+    introDescription: normalizePublicCopy(stringValue(object.introDescription)) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
     introImageUrl:
       stringValue(object.introImageUrl) ||
       'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
-    introImageAlt: stringValue(object.introImageAlt) || 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
-    aboutTitle: stringValue(object.aboutTitle) || 'Chúng tôi là HTXONLINE',
+    introImageAlt: normalizePublicCopy(stringValue(object.introImageAlt)) || 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
+    aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || 'Chúng tôi là HTXONLINE',
     aboutDescription:
-      stringValue(object.aboutDescription) ||
+      normalizePublicCopy(stringValue(object.aboutDescription)) ||
       'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
     aboutImageUrl:
       stringValue(object.aboutImageUrl) ||
       'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
-    aboutImageAlt: stringValue(object.aboutImageAlt) || 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
-    contactTitle: stringValue(object.contactTitle) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
+    aboutImageAlt: normalizePublicCopy(stringValue(object.aboutImageAlt)) || 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
+    contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
     contactDescription:
-      stringValue(object.contactDescription) ||
+      normalizePublicCopy(stringValue(object.contactDescription)) ||
       'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
     contactImageUrl:
       stringValue(object.contactImageUrl) ||
       'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
-    contactImageAlt: stringValue(object.contactImageAlt) || 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
+    contactImageAlt: normalizePublicCopy(stringValue(object.contactImageAlt)) || 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
   };
+}
+
+function normalizePublicCopy(value: string) {
+  if (!value) return '';
+  return value
+    .replace(/\bQR Passport public\b/gi, 'QR Passport công khai')
+    .replace(/\btrang public\b/gi, 'trang công khai')
+    .replace(/\bsản phẩm public\b/gi, 'sản phẩm công khai')
+    .replace(/\bchứng nhận public\b/gi, 'chứng nhận công khai')
+    .replace(/\bHTX public\b/gi, 'HTX công khai')
+    .replace(/\bđã publish\b/gi, 'đã đăng công khai')
+    .replace(/\bpublish\b/gi, 'đăng công khai')
+    .replace(/\bpublic\b/gi, 'công khai')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }

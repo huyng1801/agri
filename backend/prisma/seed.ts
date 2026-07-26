@@ -214,7 +214,7 @@ async function main() {
           },
           {
             question: 'Người mua có cần tài khoản để xem QR không?',
-            answer: 'Không. QR Passport public được mở trực tiếp cho khách truy cập.'
+            answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
           },
           {
             question: 'Ai xác nhận đơn hàng COD?',
@@ -222,7 +222,7 @@ async function main() {
           }
         ]
       },
-      description: 'Thông tin public của HTXONLINE dùng cho contact/footer/floating actions'
+      description: 'Thông tin công khai của HTXONLINE dùng cho contact/footer/floating actions'
     },
     update: {}
   });
