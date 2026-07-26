@@ -21,6 +21,7 @@ COPY package.json package-lock.json ./
 COPY backend/package.json backend/package.json
 RUN npm ci --omit=dev --workspace backend
 COPY --from=builder /app/backend/dist ./backend/dist
+COPY --from=builder /app/backend/assets ./backend/assets
 COPY --from=builder /app/backend/prisma ./backend/prisma
 COPY --from=builder /app/backend/node_modules/.prisma ./node_modules/.prisma
 WORKDIR /app/backend

@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import ExcelJS from 'exceljs';
 import { AuthUser } from '../../common/types';
 import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
+import { buildUnicodePdf } from '../../common/utils/unicode-pdf';
 import { PrismaService } from '../prisma/prisma.service';
 
 type DateRange = { from?: Date; to?: Date };
@@ -167,13 +168,13 @@ export class ReportsService {
     const production = await this.production(user, query);
     if (type === 'excel') {
       const workbook = new ExcelJS.Workbook();
-      const sheet = workbook.addWorksheet('Bao cao');
-      sheet.addRow(['Chi so', 'Gia tri']);
+      const sheet = workbook.addWorksheet('Báo cáo');
+      sheet.addRow(['Chỉ số', 'Giá trị']);
       for (const metric of overview.metrics) {
         sheet.addRow([metric.label, metric.isCurrency ? Number(metric.value) : metric.value]);
       }
       sheet.addRow([]);
-      sheet.addRow(['Nhat ky theo hoat dong', 'So luong']);
+      sheet.addRow(['Nhật ký theo hoạt động', 'Số lượng']);
       for (const row of production.byActivity) {
         sheet.addRow([row.activityType, row.count]);
       }
@@ -185,10 +186,10 @@ export class ReportsService {
     }
 
     const lines = [
-      'HTXONLINE - BAO CAO TONG HOP',
+      'HTXONLINE - Báo cáo tổng hợp',
       ...overview.metrics.map((metric) => `${metric.label}: ${metric.isCurrency ? Number(metric.value).toLocaleString('vi-VN') : metric.value}`)
     ];
-    const buffer = this.simplePdf(lines);
+    const buffer = await buildUnicodePdf(lines);
     return new StreamableFile(buffer, {
       type: 'application/pdf',
       disposition: `attachment; filename="bao-cao-${Date.now()}.pdf"`
@@ -233,32 +234,4 @@ export class ReportsService {
     };
   }
 
-  private simplePdf(lines: string[]) {
-    const safeLines = lines.map((line) =>
-      line
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^\x20-\x7E]/g, '')
-        .replace(/[()\\]/g, (char) => `\\${char}`)
-    );
-    const content = ['BT', '/F1 18 Tf', '72 760 Td', `(${safeLines[0]}) Tj`, '/F1 11 Tf', ...safeLines.slice(1).flatMap((line) => ['0 -28 Td', `(${line}) Tj`]), 'ET'].join('\n');
-    const objects = [
-      '<< /Type /Catalog /Pages 2 0 R >>',
-      '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-      '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
-      '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
-      `<< /Length ${Buffer.byteLength(content, 'ascii')} >>\nstream\n${content}\nendstream`
-    ];
-    let pdf = '%PDF-1.4\n';
-    const offsets = [0];
-    objects.forEach((object, index) => {
-      offsets.push(Buffer.byteLength(pdf, 'ascii'));
-      pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
-    });
-    const xrefOffset = Buffer.byteLength(pdf, 'ascii');
-    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-    for (const offset of offsets.slice(1)) pdf += `${String(offset).padStart(10, '0')} 00000 n \n`;
-    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
-    return Buffer.from(pdf, 'ascii');
-  }
 }
