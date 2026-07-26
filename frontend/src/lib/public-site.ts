@@ -111,11 +111,11 @@ export async function getPublicSiteProfile() {
 
 export function normalizePublicSiteProfile(profile?: Partial<PublicSiteProfile> | null): PublicSiteProfile {
   return {
-    appName: stringValue(profile?.appName) || defaultPublicSiteProfile.appName,
+    appName: normalizePublicCopy(stringValue(profile?.appName)) || defaultPublicSiteProfile.appName,
     hotline: stringValue(profile?.hotline) || defaultPublicSiteProfile.hotline,
     hotlineDisplay: stringValue(profile?.hotlineDisplay) || stringValue(profile?.hotline) || defaultPublicSiteProfile.hotlineDisplay,
     supportEmail: stringValue(profile?.supportEmail) || defaultPublicSiteProfile.supportEmail,
-    address: stringValue(profile?.address) || defaultPublicSiteProfile.address,
+    address: normalizePublicCopy(stringValue(profile?.address)) || defaultPublicSiteProfile.address,
     zaloUrl: stringValue(profile?.zaloUrl),
     messengerUrl: stringValue(profile?.messengerUrl),
     mapEmbedUrl: stringValue(profile?.mapEmbedUrl) || defaultPublicSiteProfile.mapEmbedUrl,
@@ -157,8 +157,8 @@ function faqItems(value: unknown): PublicSiteFaq[] {
   const items = value
     .map((item) => {
       if (!item || typeof item !== 'object') return null;
-      const question = stringValue((item as PublicSiteFaq).question);
-      const answer = stringValue((item as PublicSiteFaq).answer);
+      const question = normalizePublicCopy(stringValue((item as PublicSiteFaq).question));
+      const answer = normalizePublicCopy(stringValue((item as PublicSiteFaq).answer));
       if (!question || !answer) return null;
       return { question, answer };
     })
@@ -169,28 +169,43 @@ function faqItems(value: unknown): PublicSiteFaq[] {
 function pageContentItems(value: unknown): PublicPageContent {
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Partial<PublicPageContent>) : {};
   return {
-    homeBadge: stringValue(object.homeBadge) || defaultPublicSiteProfile.pageContent.homeBadge,
-    homeTitle: stringValue(object.homeTitle) || defaultPublicSiteProfile.pageContent.homeTitle,
-    homeDescription: stringValue(object.homeDescription) || defaultPublicSiteProfile.pageContent.homeDescription,
+    homeBadge: normalizePublicCopy(stringValue(object.homeBadge)) || defaultPublicSiteProfile.pageContent.homeBadge,
+    homeTitle: normalizePublicCopy(stringValue(object.homeTitle)) || defaultPublicSiteProfile.pageContent.homeTitle,
+    homeDescription: normalizePublicCopy(stringValue(object.homeDescription)) || defaultPublicSiteProfile.pageContent.homeDescription,
     homeImageUrl: stringValue(object.homeImageUrl) || defaultPublicSiteProfile.pageContent.homeImageUrl,
-    homeImageAlt: stringValue(object.homeImageAlt) || defaultPublicSiteProfile.pageContent.homeImageAlt,
-    introTitle: stringValue(object.introTitle) || defaultPublicSiteProfile.pageContent.introTitle,
-    introDescription: stringValue(object.introDescription) || defaultPublicSiteProfile.pageContent.introDescription,
+    homeImageAlt: normalizePublicCopy(stringValue(object.homeImageAlt)) || defaultPublicSiteProfile.pageContent.homeImageAlt,
+    introTitle: normalizePublicCopy(stringValue(object.introTitle)) || defaultPublicSiteProfile.pageContent.introTitle,
+    introDescription: normalizePublicCopy(stringValue(object.introDescription)) || defaultPublicSiteProfile.pageContent.introDescription,
     introImageUrl: stringValue(object.introImageUrl) || defaultPublicSiteProfile.pageContent.introImageUrl,
-    introImageAlt: stringValue(object.introImageAlt) || defaultPublicSiteProfile.pageContent.introImageAlt,
-    aboutTitle: stringValue(object.aboutTitle) || defaultPublicSiteProfile.pageContent.aboutTitle,
-    aboutDescription: stringValue(object.aboutDescription) || defaultPublicSiteProfile.pageContent.aboutDescription,
+    introImageAlt: normalizePublicCopy(stringValue(object.introImageAlt)) || defaultPublicSiteProfile.pageContent.introImageAlt,
+    aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || defaultPublicSiteProfile.pageContent.aboutTitle,
+    aboutDescription: normalizePublicCopy(stringValue(object.aboutDescription)) || defaultPublicSiteProfile.pageContent.aboutDescription,
     aboutImageUrl: stringValue(object.aboutImageUrl) || defaultPublicSiteProfile.pageContent.aboutImageUrl,
-    aboutImageAlt: stringValue(object.aboutImageAlt) || defaultPublicSiteProfile.pageContent.aboutImageAlt,
-    contactTitle: stringValue(object.contactTitle) || defaultPublicSiteProfile.pageContent.contactTitle,
-    contactDescription: stringValue(object.contactDescription) || defaultPublicSiteProfile.pageContent.contactDescription,
+    aboutImageAlt: normalizePublicCopy(stringValue(object.aboutImageAlt)) || defaultPublicSiteProfile.pageContent.aboutImageAlt,
+    contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || defaultPublicSiteProfile.pageContent.contactTitle,
+    contactDescription: normalizePublicCopy(stringValue(object.contactDescription)) || defaultPublicSiteProfile.pageContent.contactDescription,
     contactImageUrl: stringValue(object.contactImageUrl) || defaultPublicSiteProfile.pageContent.contactImageUrl,
-    contactImageAlt: stringValue(object.contactImageAlt) || defaultPublicSiteProfile.pageContent.contactImageAlt
+    contactImageAlt: normalizePublicCopy(stringValue(object.contactImageAlt)) || defaultPublicSiteProfile.pageContent.contactImageAlt
   };
 }
 
 function stringValue(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function normalizePublicCopy(value: string) {
+  if (!value) return '';
+  return value
+    .replace(/\bQR Passport public\b/gi, 'QR Passport công khai')
+    .replace(/\btrang public\b/gi, 'trang công khai')
+    .replace(/\bsản phẩm public\b/gi, 'sản phẩm công khai')
+    .replace(/\bchứng nhận public\b/gi, 'chứng nhận công khai')
+    .replace(/\bHTX public\b/gi, 'HTX công khai')
+    .replace(/\bđã publish\b/gi, 'đã đăng công khai')
+    .replace(/\bpublish\b/gi, 'đăng công khai')
+    .replace(/\bpublic\b/gi, 'công khai')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
 }
 
 function parseCoordinates(value: string): PublicMapLocation | null {
