@@ -8,13 +8,18 @@ const contactErrorMessage = 'Kh\u00f4ng th\u1ec3 g\u1eedi li\u00ean h\u1ec7';
 const orderLookupErrorMessage = 'Kh\u00f4ng t\u00ecm th\u1ea5y \u0111\u01a1n h\u00e0ng';
 const adminRoutes = [
   '/dashboard',
+  '/dashboard/cooperatives',
   '/dashboard/contacts',
+  '/dashboard/audit-logs',
+  '/dashboard/backups',
   '/dashboard/invoices',
   '/dashboard/orders',
-  '/dashboard/products',
   '/dashboard/reports',
+  '/dashboard/roles',
   '/dashboard/settings',
-  '/dashboard/news'
+  '/dashboard/news',
+  '/dashboard/subscription-plans',
+  '/dashboard/users'
 ];
 const htxRoutes = [
   '/dashboard',
@@ -178,7 +183,8 @@ test.describe('text encoding guard', () => {
     await mockDashboardApis(page);
 
     for (const route of adminRoutes) {
-      await page.goto(joinUrl(adminUrl, route), { waitUntil: 'networkidle' });
+      await page.goto(joinUrl(adminUrl, route), { waitUntil: 'domcontentloaded' });
+      await page.waitForLoadState('load');
       await page.waitForTimeout(250);
       await expectNoMojibake(page, `admin ${route}`);
     }
@@ -191,7 +197,8 @@ test.describe('text encoding guard', () => {
     await mockDashboardApis(page);
 
     for (const route of htxRoutes) {
-      await page.goto(joinUrl(htxUrl, route), { waitUntil: 'networkidle' });
+      await page.goto(joinUrl(htxUrl, route), { waitUntil: 'domcontentloaded' });
+      await page.waitForLoadState('load');
       await page.waitForTimeout(250);
       await expectNoMojibake(page, `htx ${route}`);
     }
