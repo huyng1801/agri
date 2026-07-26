@@ -57,7 +57,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
         </div>
         <div className="absolute inset-x-0 bottom-[4.15rem] px-3 sm:px-4">
           <div className="rounded-2xl border border-white/45 bg-white/70 px-3 py-2 text-xs leading-5 text-ink/80 shadow-sm backdrop-blur">
-            Bản đồ được hiển thị theo điểm địa chỉ hỗ trợ để người mua nhận biết vị trí ngay trong footer, không phụ thuộc iframe bên ngoài.
+            Bản đồ được hiển thị theo điểm địa chỉ hỗ trợ để người mua nhận biết vị trí nhanh, kể cả khi khung nhúng tải chậm.
           </div>
         </div>
         <div className="absolute inset-x-0 bottom-0 p-3 sm:p-4">

@@ -140,13 +140,23 @@ export default async function ContactPage() {
             <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
               {siteProfile.mapEmbedUrl ? (
                 <div className="h-full p-3 sm:p-4">
-                  <PublicMapPreview
-                    address={siteProfile.address}
-                    location={mapLocation}
-                    mapSearchUrl={mapSearchUrl}
-                    className="h-full border-slate-200 bg-[#dbece1]"
-                    frameClassName="rounded-[1.45rem]"
-                  />
+                  <div className="overflow-hidden rounded-[1.6rem] border border-slate-200 bg-[#dbece1]">
+                    <div className="border-b border-slate-200 bg-white/75 px-4 py-3">
+                      <p className="text-sm font-semibold text-ink">Bản đồ và điểm hỗ trợ</p>
+                      <p className="mt-1 text-xs leading-5 text-slate-600">
+                        Xem nhanh vị trí ngay trong trang. Khi cần chỉ đường đầy đủ, bạn có thể mở Google Maps ngay bên dưới.
+                      </p>
+                    </div>
+                    <div className="p-3">
+                      <PublicMapPreview
+                        address={siteProfile.address}
+                        location={mapLocation}
+                        mapSearchUrl={mapSearchUrl}
+                        className="mt-3 border-slate-200 bg-[#dbece1]"
+                        frameClassName="rounded-[1.45rem]"
+                      />
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="relative grid min-h-[320px] overflow-hidden bg-[radial-gradient(circle_at_top,rgba(223,244,232,0.95),rgba(248,250,247,1)_60%)] p-6 lg:min-h-[420px]">
