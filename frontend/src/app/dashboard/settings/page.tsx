@@ -236,16 +236,16 @@ export default function SettingsPage() {
       {tab === 'public' && (
         <div className="space-y-4">
           <Panel className="space-y-3 border-mint/70 bg-mint/40">
-            <h2 className="text-lg font-bold text-ink">Cập nhật nội dung public không cần sửa code</h2>
+            <h2 className="text-lg font-bold text-ink">Cập nhật nội dung công khai không cần sửa code</h2>
             <p className="text-sm leading-6 text-slate-700">
-              Tab này dùng để sửa logo, hotline, email, địa chỉ, bản đồ, FAQ và nội dung hero các trang public. Hồ sơ HTX/sản phẩm sửa trong dashboard,
-              còn bài blog public sửa tại khu vực Tin tức của Super Admin.
+              Tab này dùng để sửa logo, hotline, email, địa chỉ, bản đồ, FAQ và nội dung hero các trang công khai. Hồ sơ HTX/sản phẩm sửa trong dashboard,
+              còn bài blog công khai sửa tại khu vực Tin tức của Super Admin.
             </p>
             <div className="grid gap-2 md:grid-cols-3">
               {[
                 ['1', 'Sửa liên hệ và footer', 'Cập nhật hotline, email, địa chỉ và bản đồ để hiển thị đồng nhất trên footer và trang liên hệ.'],
                 ['2', 'Dán ảnh vào từng mục', 'Chỉ cần Ctrl+V hoặc kéo thả ảnh vào ô ảnh là hệ thống tự upload và cập nhật URL.'],
-                ['3', 'Mở trang public để xem', 'Sau khi lưu, bấm các nút xem nhanh bên dưới để kiểm tra ngay trên mobile/desktop.']
+                ['3', 'Mở trang công khai để xem', 'Sau khi lưu, bấm các nút xem nhanh bên dưới để kiểm tra ngay trên mobile/desktop.']
               ].map(([step, title, text]) => (
                 <div key={step} className="rounded-2xl border border-white/80 bg-white/90 p-3 shadow-sm">
                   <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-leaf/75">Bước {step}</p>
@@ -272,8 +272,8 @@ export default function SettingsPage() {
               <div className="rounded-2xl border border-white/80 bg-white/92 p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng điều khiển nội dung public</p>
-                    <p className="mt-1 text-sm font-bold text-ink">Mỗi trang public chính đều có nút xem nhanh và mô tả ngắn để bạn sửa đúng chỗ, không cần nhớ cấu trúc code.</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng điều khiển nội dung công khai</p>
+                    <p className="mt-1 text-sm font-bold text-ink">Mỗi trang công khai chính đều có nút xem nhanh và mô tả ngắn để bạn sửa đúng chỗ, không cần nhớ cấu trúc code.</p>
                   </div>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{publicPageCards.length} trang chính</span>
                 </div>
@@ -393,7 +393,7 @@ export default function SettingsPage() {
                       contactImageAlt: values.contactImageAlt
                     }
                   },
-                  description: 'Thông tin public sàn'
+                  description: 'Thông tin công khai của sàn'
                 });
               })}
             >
@@ -598,7 +598,7 @@ export default function SettingsPage() {
             onSubmit={r2Form.handleSubmit((values) => saveMutation.mutate({ key: 'system.r2', value: values, description: 'Metadata R2' }))}
           >
             <Field label="Bucket lưu trữ"><Input {...r2Form.register('bucket')} placeholder={process.env.NEXT_PUBLIC_R2_BUCKET || 'agri-passport'} /></Field>
-            <Field label="URL public gốc"><Input {...r2Form.register('publicBaseUrl')} /></Field>
+            <Field label="URL công khai gốc"><Input {...r2Form.register('publicBaseUrl')} /></Field>
             <Field label="Ghi chú" className="sm:col-span-2"><Textarea {...r2Form.register('note')} /></Field>
             <div className="flex flex-wrap gap-2 sm:col-span-2">
               <SaveButton pending={saveMutation.isPending} />
@@ -638,7 +638,7 @@ export default function SettingsPage() {
           >
             <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('orderAlerts')} /> Cảnh báo đơn hàng mới</label>
             <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('invoiceAlerts')} /> Cảnh báo hóa đơn quá hạn</label>
-            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Cảnh báo liên hệ public</label>
+            <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" {...notificationsForm.register('contactAlerts')} /> Cảnh báo liên hệ từ trang công khai</label>
             <SaveButton pending={saveMutation.isPending} />
           </form>
         </Panel>
@@ -683,7 +683,7 @@ export default function SettingsPage() {
 
 const tabs: Array<{ id: TabId; label: string }> = [
   { id: 'profile', label: 'Hồ sơ sàn' },
-  { id: 'public', label: 'Liên hệ public' },
+  { id: 'public', label: 'Trang công khai' },
   { id: 'email', label: 'Email' },
   { id: 'r2', label: 'R2' },
   { id: 'security', label: 'Bảo mật' },
