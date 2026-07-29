@@ -56,7 +56,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'rounded-full px-4 py-2 transition-colors hover:bg-mint/60 hover:text-leaf',
+                  'inline-flex min-h-11 items-center rounded-full px-4 py-2 transition-colors hover:bg-mint/60 hover:text-leaf',
                   active && 'bg-mint text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.12)]'
                 )}
                 aria-current={active ? 'page' : undefined}
@@ -76,7 +76,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
             <ShoppingCart size={19} aria-hidden="true" />
             <CartCountBadge />
           </Link>
-          <Link href="/login" className="hidden sm:inline-flex">
+          <Link href="/login" className="hidden min-h-11 items-center sm:inline-flex">
             <Button>Đăng nhập</Button>
           </Link>
           <button
