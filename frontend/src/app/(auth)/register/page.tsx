@@ -67,11 +67,11 @@ export default function RegisterPage() {
             <UserPlus size={18} aria-hidden="true" />
             {form.formState.isSubmitting ? 'Đang tạo' : 'Tạo tài khoản'}
           </Button>
-          <div className="flex justify-between text-sm">
-            <Link className="font-semibold text-leaf" href="/login">
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 font-semibold text-leaf transition hover:border-leaf hover:bg-mint" href="/login">
               Đã có tài khoản
             </Link>
-            <Link className="font-semibold text-leaf" href="/">
+            <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 font-semibold text-leaf transition hover:border-leaf hover:bg-mint" href="/">
               Trang chủ
             </Link>
           </div>

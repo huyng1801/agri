@@ -5,7 +5,7 @@ export function PublicAuthShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-mint/35 via-white to-white">
       <header className="flex justify-center px-4 pt-8 pb-2">
-        <Link href="/" className="inline-flex items-center gap-2.5 text-lg font-bold text-ink" aria-label="HTXONLINE — Trang chủ">
+        <Link href="/" className="inline-flex min-h-12 items-center gap-2.5 rounded-2xl px-2 text-lg font-bold text-ink" aria-label="HTXONLINE — Trang chủ">
           <PublicLogo size={48} className="ring-1 ring-slate-200" />
           <span>HTXONLINE</span>
         </Link>
