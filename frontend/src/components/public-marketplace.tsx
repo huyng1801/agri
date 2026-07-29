@@ -108,7 +108,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.05rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.05rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.45rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
@@ -147,7 +147,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-3 sm:p-4">
+      <div className="flex flex-1 flex-col p-3 sm:p-3.5">
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-leaf">{product.category?.name ?? 'Nông sản'}</p>
         <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-[0.98rem] font-bold leading-[1.3] text-ink hover:text-leaf sm:text-base">
           {product.name}
@@ -161,7 +161,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
         {product.cooperative && (
           <Link
             href={`/htx/${product.cooperative.code}`}
-            className="mt-2 flex items-center gap-2 rounded-xl bg-slate-50 p-2 transition hover:bg-mint/50 sm:mt-2.5 sm:p-2.5"
+            className="mt-2 flex items-center gap-2 rounded-xl bg-slate-50 p-2 transition hover:bg-mint/50 sm:mt-2.5 sm:p-2"
           >
             <PublicImage
               src={product.cooperative.avatarUrl}

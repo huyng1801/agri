@@ -61,7 +61,7 @@ export default async function HomePage() {
           <div
             className={cn(
               publicContainerClass,
-              'relative grid items-center gap-3.5 pb-4 pt-3.5 sm:min-h-[78vh] sm:gap-10 sm:py-12 lg:grid-cols-[1.02fr_0.98fr]'
+              'relative grid items-start gap-3.5 pb-4 pt-3.5 sm:gap-10 sm:py-12 lg:min-h-[calc(100vh-76px)] lg:grid-cols-[0.95fr_1.05fr] lg:py-12'
             )}
           >
             <div className="space-y-3 sm:space-y-6">
@@ -70,11 +70,11 @@ export default async function HomePage() {
                 {siteProfile.pageContent.homeBadge}
               </div>
 
-              <h1 className="max-w-[19ch] text-[1.36rem] font-bold leading-[1.06] tracking-normal text-ink min-[390px]:text-[1.48rem] sm:max-w-3xl sm:text-5xl sm:leading-[0.98]">
+              <h1 className="max-w-[19ch] text-[1.36rem] font-bold leading-[1.06] tracking-normal text-ink min-[390px]:text-[1.48rem] sm:max-w-3xl sm:text-[3.35rem] sm:leading-[0.98] lg:text-[3.15rem] xl:text-[3.35rem]">
                 {siteProfile.pageContent.homeTitle}
               </h1>
 
-              <p className="max-w-[24.5rem] text-[0.86rem] leading-[1.52] text-slate-700 sm:max-w-2xl sm:text-lg sm:leading-8">
+              <p className="max-w-[24.5rem] text-[0.86rem] leading-[1.52] text-slate-700 sm:max-w-2xl sm:text-[1.05rem] sm:leading-8">
                 {siteProfile.pageContent.homeDescription}
               </p>
 
@@ -104,7 +104,7 @@ export default async function HomePage() {
                 <PublicSearch />
               </div>
 
-              <div className="grid gap-1.5 sm:max-w-2xl sm:grid-cols-3">
+              <div className="grid gap-1.5 sm:max-w-2xl sm:grid-cols-3 lg:max-w-xl">
                 {heroSignals.map((item) => (
                   <div key={item} className="rounded-[0.95rem] border border-white/80 bg-white/80 px-3 py-2.5 text-[0.78rem] leading-[1.42] text-slate-700 shadow-sm backdrop-blur sm:text-[0.95rem] sm:leading-[1.62]">
                     {item}
@@ -149,8 +149,8 @@ export default async function HomePage() {
 
             <div className="relative hidden lg:block">
               <div className="absolute -right-6 top-10 hidden h-28 w-28 rounded-full bg-mint/55 blur-3xl sm:block" aria-hidden="true" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur sm:p-5">
-                <div className="mb-4 overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/70 p-2">
+              <div className="relative overflow-hidden rounded-[1.8rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur">
+                <div className="mb-3 overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/70 p-2">
                   <PublicImage
                     src={siteProfile.pageContent.homeImageUrl}
                     alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
@@ -159,20 +159,20 @@ export default async function HomePage() {
                     priority
                   />
                 </div>
-                <div className="rounded-[1.7rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white sm:p-6">
+                <div className="rounded-[1.45rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white">
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/74">HTXONLINE</p>
-                      <h2 className="mt-2 max-w-xs text-2xl font-bold leading-tight sm:text-[2rem]">Một lớp trưng bày sản phẩm và truy xuất được thiết kế cho HTX.</h2>
+                      <h2 className="mt-2 max-w-md text-[1.65rem] font-bold leading-tight">Một lớp trưng bày sản phẩm và truy xuất được thiết kế cho HTX.</h2>
                     </div>
                     <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
                       <Sparkles size={20} aria-hidden="true" className="text-mint" />
                     </span>
                   </div>
 
-                  <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
                     {stats.map(([title, value, Icon]) => (
-                      <div key={String(title)} className="rounded-2xl bg-white/12 p-4 ring-1 ring-white/12">
+                      <div key={String(title)} className="rounded-2xl bg-white/12 p-3.5 ring-1 ring-white/12">
                         <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/14 text-mint">
                           <Icon size={18} aria-hidden="true" />
                         </span>
@@ -182,18 +182,18 @@ export default async function HomePage() {
                     ))}
                   </div>
 
-                  <div className="mt-5 rounded-[1.5rem] bg-black/12 p-4 ring-1 ring-white/10">
+                  <div className="mt-4 rounded-[1.35rem] bg-black/12 p-3.5 ring-1 ring-white/10">
                     <div className="flex items-center gap-2 text-sm font-semibold text-white/84">
                       <BadgeCheck size={16} aria-hidden="true" />
                       Hành trình mua hàng rõ ràng hơn
                     </div>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                    <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
                       {[
                         ['01', 'Sản phẩm công khai', 'Trang hiển thị rõ giá, HTX và QR nếu có'],
                         ['02', 'Quét QR Passport', 'Xem vùng trồng, nhật ký và chứng nhận'],
                         ['03', 'Chốt đơn COD', 'Người mua gửi đơn, HTX chủ động xác nhận']
                       ].map(([step, title, text]) => (
-                        <div key={title} className="rounded-2xl bg-white/10 p-4">
+                        <div key={title} className="rounded-2xl bg-white/10 p-3.5">
                           <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/62">{step}</p>
                           <p className="mt-2 text-base font-bold">{title}</p>
                           <p className="mt-2 text-sm leading-6 text-white/78">{text}</p>

@@ -34,9 +34,9 @@ export default async function ContactPage() {
               backgroundSize: 'auto, auto, 28px 28px, 28px 28px'
             }}
           />
-          <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-16 sm:text-center')}>
+          <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-10 lg:py-12 sm:text-center')}>
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-leaf/80 sm:text-sm sm:tracking-wide">Liên hệ</p>
-            <h1 className="mt-1.5 max-w-[20rem] text-[1.42rem] font-bold leading-[1.06] tracking-normal text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-4xl sm:leading-[1.04]">
+            <h1 className="mt-1.5 max-w-[20rem] text-[1.42rem] font-bold leading-[1.06] tracking-normal text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-[2.35rem] sm:leading-[1.04]">
               {siteProfile.pageContent.contactTitle}
             </h1>
             <p className="mt-2 max-w-[20.5rem] text-[0.86rem] leading-[1.5] text-slate-700 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
@@ -62,9 +62,9 @@ export default async function ContactPage() {
           </a>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-8 sm:py-10')}>
-          <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
-            <article className="flex flex-col justify-between rounded-2xl bg-mint p-5 shadow-sm sm:p-7">
+        <section className={cn(publicContainerClass, 'py-6 sm:py-9')}>
+          <div className="grid gap-4 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
+            <article className="flex flex-col justify-between rounded-[1.35rem] bg-mint p-4 shadow-sm sm:rounded-2xl sm:p-6">
               <div>
                 <div className="flex items-center gap-3">
                   <PublicLogo size={44} />
@@ -73,7 +73,7 @@ export default async function ContactPage() {
                     <p className="text-sm font-semibold text-leaf">Sàn nông sản số cho hợp tác xã</p>
                   </div>
                 </div>
-                <div className="mt-5 space-y-4 text-sm leading-6 text-slate-700">
+                <div className="mt-4 space-y-3.5 text-sm leading-6 text-slate-700">
                   <p className="flex items-start gap-3">
                     <MapPinned className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
                     <span>
@@ -96,7 +96,7 @@ export default async function ContactPage() {
                     </span>
                   </a>
                 </div>
-                <div className="mt-5 grid gap-2 sm:grid-cols-3">
+                <div className="mt-4 grid gap-2 sm:grid-cols-3">
                   <div className="rounded-xl bg-white/82 p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Phản hồi</p>
                     <p className="mt-1 text-lg font-bold text-ink">Trong ngày</p>
@@ -112,7 +112,7 @@ export default async function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-5 hidden rounded-xl bg-white p-4 shadow-sm sm:block">
+              <div className="mt-4 hidden rounded-xl bg-white p-3 shadow-sm sm:block">
                 <div className="overflow-hidden rounded-xl border border-slate-100 bg-white">
                   <PublicImage
                     src={siteProfile.pageContent.contactImageUrl}
@@ -137,17 +137,17 @@ export default async function ContactPage() {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <article className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
               {siteProfile.mapEmbedUrl ? (
-                <div className="h-full p-3 sm:p-4">
-                  <div className="overflow-hidden rounded-[1.6rem] border border-slate-200 bg-[#dbece1]">
+                <div className="h-full p-2.5 sm:p-3">
+                  <div className="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-[#dbece1] sm:rounded-[1.6rem]">
                     <div className="border-b border-slate-200 bg-white/75 px-4 py-3">
                       <p className="text-sm font-semibold text-ink">Bản đồ và điểm hỗ trợ</p>
                       <p className="mt-1 text-xs leading-5 text-slate-600">
                         Xem nhanh vị trí ngay trong trang. Khi cần chỉ đường đầy đủ, bạn có thể mở Google Maps ngay bên dưới.
                       </p>
                     </div>
-                    <div className="p-3">
+                    <div className="p-2.5 sm:p-3">
                       <PublicMapPreview
                         address={siteProfile.address}
                         location={mapLocation}

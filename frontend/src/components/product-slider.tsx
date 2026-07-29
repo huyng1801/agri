@@ -20,10 +20,10 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
     <div className="relative mt-4 sm:mt-5" data-testid="product-slider">
       <div
         ref={trackRef}
-        className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto scroll-smooth px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:gap-4 sm:px-0 [&::-webkit-scrollbar]:hidden"
       >
         {products.map((product, index) => (
-          <div key={product.id} data-slider-card className="w-[min(86vw,300px)] shrink-0 snap-start sm:w-[280px] lg:w-[300px]">
+          <div key={product.id} data-slider-card className="w-[min(82vw,292px)] shrink-0 snap-start sm:w-[276px] lg:w-[288px]">
             <ProductCard product={product} priority={index < 4} />
           </div>
         ))}

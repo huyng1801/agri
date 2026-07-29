@@ -58,7 +58,7 @@ export function PublicPageHeader({
 
 export function PublicSection({ children, band = false, className }: { children: React.ReactNode; band?: boolean; className?: string }) {
   return (
-    <section className={cn(band ? 'bg-white/88 py-9 backdrop-blur-sm sm:py-12' : 'py-9 sm:py-12', className)}>
+    <section className={cn(band ? 'bg-white/88 py-8 backdrop-blur-sm sm:py-11 lg:py-12' : 'py-8 sm:py-11 lg:py-12', className)}>
       <div className={publicContainerClass}>{children}</div>
     </section>
   );
@@ -78,7 +78,7 @@ export function PublicSectionHeader({
   return (
     <div className="flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight text-ink sm:text-[2rem]">{title}</h2>
+        <h2 className="text-[1.5rem] font-bold leading-tight tracking-normal text-ink sm:text-[2rem] sm:tracking-tight">{title}</h2>
         <p className="mt-2 text-sm leading-[1.75] text-slate-600">{description}</p>
       </div>
       {href && linkLabel ? (

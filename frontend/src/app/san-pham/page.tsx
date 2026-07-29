@@ -73,11 +73,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           description={`Sản phẩm công khai từ các HTX trên HTXONLINE${products.length ? ` · ${products.length} kết quả` : ''}.`}
         />
 
-        <section className="rounded-[1.25rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-3 shadow-[var(--shadow-card)] backdrop-blur sm:rounded-[2rem] sm:p-5">
-          <div className="grid gap-3 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
+        <section className="rounded-[1.25rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-3 shadow-[var(--shadow-card)] backdrop-blur sm:rounded-[2rem] sm:p-5 lg:p-5">
+          <div className="grid gap-3 lg:grid-cols-[0.88fr_1.12fr] lg:items-start xl:grid-cols-[0.8fr_1.2fr]">
             <div>
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:text-sm sm:tracking-[0.24em]">Bộ lọc thông minh</p>
-              <h2 className="mt-1.5 text-[1.2rem] font-bold leading-[1.12] tracking-normal text-ink sm:text-3xl">Tìm nhanh theo HTX, địa phương và QR Passport.</h2>
+              <h2 className="mt-1.5 text-[1.2rem] font-bold leading-[1.12] tracking-normal text-ink sm:text-2xl lg:text-[1.75rem]">Tìm nhanh theo HTX, địa phương và QR Passport.</h2>
               <p className="mt-2 hidden max-w-2xl text-[0.9rem] leading-[1.6] text-slate-600 sm:mt-3 sm:block sm:text-base sm:leading-7">
                 Từ đặc sản địa phương đến nông sản có QR Passport, người mua có thể lọc nhanh theo vùng, mức giá và mức độ minh bạch ngay trên cùng một màn hình.
               </p>
@@ -92,13 +92,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:grid-cols-1">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               {[
                 { icon: Sparkles, title: 'Kết quả hiển thị', value: `${products.length}+`, note: 'Sản phẩm công khai đang mở bán' },
                 { icon: QrCode, title: 'Có QR Passport', value: `${qrProducts}+`, note: 'Sản phẩm có thể truy xuất nhanh' },
                 { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+`, note: 'Tỉnh thành đang có mặt trên sàn' }
               ].map((item, index) => (
-                <article key={item.title} className="rounded-[1rem] border border-slate-200/80 bg-white/86 p-2.5 shadow-sm sm:rounded-2xl sm:p-4">
+                <article key={item.title} className="rounded-[1rem] border border-slate-200/80 bg-white/86 p-2.5 shadow-sm sm:rounded-2xl sm:p-4 lg:min-h-[132px]">
                   <span className="inline-flex h-8 w-8 items-center justify-center rounded-[0.9rem] bg-mint text-leaf sm:h-11 sm:w-11">
                     <item.icon size={16} aria-hidden="true" />
                   </span>
@@ -206,7 +206,7 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
         </label>
         {filters.category && <input type="hidden" name="category" value={filters.category} />}
         {filters.cooperative && <input type="hidden" name="cooperative" value={filters.cooperative} />}
-        <Button>Tìm sản phẩm</Button>
+        <Button className="min-h-10.5 px-5 lg:min-w-[150px]">Tìm sản phẩm</Button>
         {hasActiveFilter && (
           <Link href="/san-pham" className="inline-flex min-h-10.5 items-center justify-center rounded-md px-3 text-sm font-semibold text-slate-600 hover:bg-mint">
             Xóa lọc

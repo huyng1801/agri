@@ -18,7 +18,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
 
   return (
     <div className={cn('overflow-hidden rounded-[1.7rem] border border-white/18 bg-[#d9eadf]', className)}>
-      <div className={cn('relative isolate w-full overflow-hidden', compact ? 'aspect-[1.1/1]' : 'aspect-[1.28/1] min-h-[240px] sm:min-h-[280px]')}>
+      <div className={cn('relative isolate w-full overflow-hidden', compact ? 'aspect-[1.1/1]' : 'aspect-[1.28/1] min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]')}>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.42),transparent_42%),linear-gradient(140deg,rgba(235,247,239,0.96)_0%,rgba(199,228,208,0.92)_52%,rgba(143,186,155,0.96)_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.24)_1px,transparent_1px)] bg-[length:32px_32px]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_26%,rgba(255,255,255,0.48),transparent_18%),radial-gradient(circle_at_82%_72%,rgba(255,255,255,0.36),transparent_20%)]" />
