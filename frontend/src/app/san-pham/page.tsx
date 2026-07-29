@@ -193,12 +193,13 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
 
       <div className="mt-2.5 grid gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
         <label className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
-          <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="h-4 w-4 accent-leaf" />
+          <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="peer sr-only" />
+          <span className="relative h-5 w-5 shrink-0 rounded-md border border-slate-300 bg-white transition peer-checked:border-leaf peer-checked:bg-leaf peer-focus-visible:ring-4 peer-focus-visible:ring-mint after:absolute after:left-[4px] after:top-[5px] after:h-2 after:w-3 after:-rotate-45 after:border-b-2 after:border-l-2 after:border-white after:opacity-0 after:transition peer-checked:after:opacity-100" aria-hidden="true" />
           Có QR Passport
         </label>
         <label className="inline-flex min-h-11 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
           <SlidersHorizontal size={16} aria-hidden="true" />
-          <select name="sort" defaultValue={filters.sort ?? ''} className="bg-transparent outline-none">
+          <select name="sort" defaultValue={filters.sort ?? ''} className="min-h-11 bg-transparent pr-6 outline-none">
             <option value="">Mới nhất</option>
             <option value="price_asc">Giá tăng dần</option>
             <option value="price_desc">Giá giảm dần</option>
