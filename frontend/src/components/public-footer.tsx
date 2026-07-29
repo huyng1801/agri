@@ -5,7 +5,7 @@ import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
 
-const footerLinkClass = 'text-sm text-white/90 transition hover:text-white';
+const footerLinkClass = 'inline-flex min-h-11 items-center text-sm text-white/90 transition hover:text-white';
 
 export async function PublicFooter() {
   const profile = await getPublicSiteProfile();
@@ -89,11 +89,11 @@ export async function PublicFooter() {
                   <MapPin size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
                   <span>{profile.address}</span>
                 </p>
-                <a href={telHref(profile.hotline)} className="flex items-center gap-2 transition hover:text-white">
+                <a href={telHref(profile.hotline)} className="flex min-h-11 items-center gap-2 rounded-xl px-1 transition hover:text-white">
                   <Phone size={18} className="text-white" aria-hidden="true" />
                   <span>{profile.hotlineDisplay}</span>
                 </a>
-                <a href={`mailto:${profile.supportEmail}`} className="flex items-center gap-2 transition hover:text-white">
+                <a href={`mailto:${profile.supportEmail}`} className="flex min-h-11 items-center gap-2 rounded-xl px-1 transition hover:text-white">
                   <Mail size={18} aria-hidden="true" />
                   <span>{profile.supportEmail}</span>
                 </a>
@@ -153,7 +153,7 @@ export async function PublicFooter() {
               <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
                 <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
                 <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc hẹn lịch tư vấn phù hợp.</p>
-                <Link href="/lien-he" className="mt-3 font-semibold text-white underline-offset-2 hover:underline">
+                <Link href="/lien-he" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 px-4 font-semibold text-white underline-offset-2 hover:bg-white/10 hover:underline">
                   Xem thông tin liên hệ
                 </Link>
               </div>

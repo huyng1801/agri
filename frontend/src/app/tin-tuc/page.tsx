@@ -113,7 +113,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   {featured.title}
                 </Link>
                 <p className="mt-3 leading-7 text-slate-600">{featured.excerpt || featured.seoDescription || 'Tin tức HTXONLINE'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-5 font-semibold text-leaf">
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
                   Đọc bài viết
                 </Link>
               </div>

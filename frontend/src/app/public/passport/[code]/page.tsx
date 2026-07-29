@@ -82,7 +82,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
         <Panel className="max-w-md text-center">
           <QrCode className="mx-auto text-rose-600" size={44} aria-hidden="true" />
           <h1 className="mt-3 text-2xl font-bold">Không tìm thấy Passport</h1>
-          <Link className="mt-4 inline-block font-semibold text-leaf" href="/">
+          <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/">
             Về trang chủ
           </Link>
         </Panel>
@@ -269,7 +269,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                     {cert.issuer || 'Đơn vị cấp'} · Hết hạn {formatDate(cert.expiresAt)}
                   </span>
                   {cert.file?.publicUrl && (
-                    <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex font-semibold text-leaf">
+                    <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">
                       Xem tài liệu chứng nhận
                     </a>
                   )}

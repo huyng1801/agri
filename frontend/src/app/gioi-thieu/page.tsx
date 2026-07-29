@@ -39,11 +39,11 @@ export default async function AboutPage() {
       <Panel className="mt-4 p-3.5 text-[0.9rem] leading-[1.7] text-slate-700 sm:p-5 sm:text-sm sm:leading-7">
         <p>
           Tìm hiểu thêm về định hướng nền tảng tại{' '}
-          <Link href="/ve-chung-toi" className="font-semibold text-leaf">
+          <Link href="/ve-chung-toi" className="inline-flex min-h-10 items-center rounded-full bg-mint/80 px-3 align-middle font-semibold text-leaf">
             Về chúng tôi
           </Link>{' '}
           hoặc xem{' '}
-          <Link href="/huong-dan-mua-hang" className="font-semibold text-leaf">
+          <Link href="/huong-dan-mua-hang" className="inline-flex min-h-10 items-center rounded-full bg-mint/80 px-3 align-middle font-semibold text-leaf">
             hướng dẫn mua hàng
           </Link>
           .

@@ -38,7 +38,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
         <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
             <h1 className="text-2xl font-bold text-ink">Không tìm thấy HTX công khai</h1>
-            <Link className="mt-4 inline-block font-semibold text-leaf" href="/htx">
+            <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/htx">
               Quay lại danh sách HTX
             </Link>
           </Panel>
@@ -85,7 +85,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                   </div>
                 </div>
                 {cooperative.phone && (
-                  <a href={`tel:${cooperative.phone}`} className="w-full sm:w-auto">
+                  <a href={`tel:${cooperative.phone}`} className="inline-flex min-h-11 w-full sm:w-auto">
                     <Button className="w-full sm:w-auto">
                       <Phone size={18} aria-hidden="true" />
                       Gọi HTX

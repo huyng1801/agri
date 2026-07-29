@@ -149,7 +149,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
 
       <div className="flex flex-1 flex-col p-3 sm:p-3.5">
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-        <Link href={`/san-pham/${product.slug}`} className="mt-1 line-clamp-2 text-[0.98rem] font-bold leading-[1.3] text-ink hover:text-leaf sm:text-base">
+        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 py-1 line-clamp-2 text-[0.98rem] font-bold leading-[1.3] text-ink hover:text-leaf sm:text-base">
           {product.name}
         </Link>
 
@@ -210,8 +210,8 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
       <div className="flex items-center justify-between gap-3 p-3 sm:p-4">
         <p className="text-[0.86rem] font-semibold leading-tight text-leaf sm:text-[0.95rem]">{cooperative.productCount} sản phẩm công khai</p>
         <div className="flex shrink-0 gap-2">
-          <Link href={`/htx/${cooperative.code}`}>
-            <Button variant="ghost" className="min-h-9.5 px-3 py-2 text-[11px]">
+          <Link href={`/htx/${cooperative.code}`} className="inline-flex min-h-11 items-center">
+            <Button variant="ghost" className="min-h-11 px-3 py-2 text-[11px]">
               Xem HTX
               <ArrowRight size={14} aria-hidden="true" />
             </Button>
@@ -255,7 +255,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
             </span>
           )}
         </div>
-        <Link href={`/tin-tuc/${article.slug}`} className="mt-1.5 line-clamp-2 text-[1.02rem] font-bold leading-[1.35] text-ink hover:text-leaf sm:mt-2 sm:text-lg sm:leading-6">
+        <Link href={`/tin-tuc/${article.slug}`} className="mt-1.5 block min-h-11 py-1 line-clamp-2 text-[1.02rem] font-bold leading-[1.35] text-ink hover:text-leaf sm:mt-2 sm:text-lg sm:leading-6">
           {article.title}
         </Link>
         <p className="mt-auto line-clamp-3 pt-2 text-sm leading-[1.62] text-slate-600 sm:pt-3 sm:leading-[1.7]">

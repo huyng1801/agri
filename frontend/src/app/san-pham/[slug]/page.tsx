@@ -7,7 +7,7 @@ import { AddToCartButton } from '@/components/add-to-cart-button';
 import { PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
 import { formatDate } from '@/lib/format';
-import { Button, Panel } from '@/components/ui';
+import { Panel } from '@/components/ui';
 
 async function getProduct(slug: string) {
   try {
@@ -45,7 +45,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
             <h1 className="text-2xl font-bold">Không tìm thấy sản phẩm</h1>
-            <Link className="mt-4 inline-block font-semibold text-leaf" href="/san-pham">
+            <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/san-pham">
               Quay lại danh sách sản phẩm
             </Link>
           </Panel>
@@ -80,7 +80,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             <div>
               <p className="text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-leaf sm:text-sm">{product.category?.name ?? 'Nông sản'}</p>
               <h1 className="mt-1.5 text-[1.62rem] font-bold leading-[1.06] tracking-normal text-ink sm:mt-2 sm:text-4xl sm:tracking-tight">{product.name}</h1>
-              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-2.5 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
+              <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-2.5 inline-flex min-h-11 items-center gap-3 rounded-xl pr-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-50">
                 {coopAvatar && (
                   <PublicImage
                     src={product.cooperative?.avatarUrl}
@@ -115,11 +115,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
 
             {passport && (
-              <Link href={`/passport/${passport.passportCode}`}>
-                <Button variant="ghost" className="w-full">
-                  <QrCode size={18} aria-hidden="true" />
-                  Xem QR Passport
-                </Button>
+              <Link
+                href={`/passport/${passport.passportCode}`}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-50"
+              >
+                <QrCode size={18} aria-hidden="true" />
+                Xem QR Passport
               </Link>
             )}
           </section>
@@ -222,7 +223,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                         {cert.issuer || 'Đơn vị cấp'} · {formatDate(cert.expiresAt)}
                       </span>
                       {cert.file?.publicUrl && (
-                        <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex font-semibold text-leaf">
+                        <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">
                           Xem tài liệu chứng nhận
                         </a>
                       )}

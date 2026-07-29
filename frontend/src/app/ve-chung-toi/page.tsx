@@ -351,7 +351,7 @@ export default async function AboutUsPage() {
                   </div>
                 ))}
               </div>
-              <Link href="/htx" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-leaf sm:mt-5">
+              <Link href="/htx" className="mt-4 inline-flex min-h-11 items-center justify-center gap-1 rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:mt-5">
                 Xem danh sách HTX
                 <ArrowRight size={16} aria-hidden="true" />
               </Link>

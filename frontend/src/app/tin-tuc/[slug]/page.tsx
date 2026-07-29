@@ -187,7 +187,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <Panel className="mt-6 text-center sm:mt-8">
           <h2 className="text-xl font-bold text-ink">Kết nối cùng HTXONLINE</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.</p>
-          <Link href="/san-pham" className="mt-4 inline-block font-semibold text-leaf">
+          <Link href="/san-pham" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
             Xem sản phẩm công khai
           </Link>
         </Panel>

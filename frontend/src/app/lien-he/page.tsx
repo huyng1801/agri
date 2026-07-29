@@ -129,7 +129,7 @@ export default async function ContactPage() {
                       <p className="text-sm font-bold text-ink">Giới thiệu HTXONLINE</p>
                       <p className="text-xs text-slate-500">Xem giải pháp sàn + QR Passport cho HTX</p>
                     </div>
-                    <Link href="/gioi-thieu" className="shrink-0 text-sm font-semibold text-leaf hover:underline">
+                    <Link href="/gioi-thieu" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-mint px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5">
                       Xem ngay
                     </Link>
                   </div>
