@@ -142,3 +142,28 @@ button {
   font-size: 0.9rem;
   text-align: center;
 }
+
+@media (max-width: 640px) {
+  .news-body {
+    font-size: 0.98rem;
+    line-height: 1.72;
+  }
+
+  .news-body > * + * {
+    margin-top: 0.95rem;
+  }
+
+  .news-body h2 {
+    margin-top: 1.55rem;
+    font-size: 1.35rem;
+  }
+
+  .news-body h3 {
+    margin-top: 1.25rem;
+    font-size: 1.15rem;
+  }
+
+  .news-body blockquote {
+    padding: 0.8rem 0.9rem;
+  }
+}

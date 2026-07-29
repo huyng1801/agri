@@ -132,15 +132,16 @@ export default async function NewsDetailPage({ params }: PageProps) {
       <PublicDetailMain className="max-w-5xl">
         <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
 
-        <article className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-sm">
+        <article className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
           <PublicImage
             src={article.coverImageUrl || image}
             alt={article.coverImageAlt || article.title}
             fallback={DEFAULT_NEWS_IMAGE}
-            className="aspect-[16/8] w-full object-cover"
+            wrapperClassName="aspect-[16/9] w-full sm:aspect-[16/8]"
+            className="h-full w-full object-cover"
           />
           <div className="p-4 md:p-8">
-            <div className="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-slate-500">
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.82rem] text-slate-500 sm:mb-4 sm:text-sm">
               {article.category?.name && <Badge className="bg-mint text-leaf">{article.category.name}</Badge>}
               <span className="inline-flex items-center gap-1">
                 <Calendar size={15} aria-hidden="true" />
@@ -155,9 +156,9 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 {article.viewCount}
               </span>
             </div>
-            <h1 className="text-[1.9rem] font-bold leading-[1.03] tracking-tight text-ink sm:text-[2.55rem] md:text-5xl">{article.title}</h1>
+            <h1 className="text-[1.55rem] font-bold leading-[1.08] tracking-normal text-ink sm:text-[2.35rem] sm:leading-[1.04] md:text-5xl md:tracking-tight">{article.title}</h1>
             {(article.excerpt || article.seoDescription) && (
-              <p className="mt-3 text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">{article.excerpt || article.seoDescription}</p>
+              <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-lg sm:leading-8">{article.excerpt || article.seoDescription}</p>
             )}
             <div className="news-body mt-6 sm:mt-8" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
             {article.tagsJson?.length ? (

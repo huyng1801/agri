@@ -64,22 +64,22 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <PublicDetailMain>
         <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
 
-        <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-          <section className="overflow-hidden rounded-[1.7rem] border border-slate-200 bg-white shadow-[var(--shadow-card)]">
+        <div className="grid gap-4 lg:grid-cols-[1fr_0.9fr] lg:gap-5">
+          <section className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-[var(--shadow-card)] sm:rounded-[1.7rem]">
             <PublicImage
               src={product.thumbnail?.publicUrl}
               alt={product.name}
               fallback={productImage(product)}
               priority
-              wrapperClassName="aspect-[16/11] w-full sm:aspect-[4/3]"
+              wrapperClassName="aspect-[16/10] w-full sm:aspect-[4/3]"
               className="h-full w-full object-cover"
             />
           </section>
 
-          <section className="space-y-3.5">
+          <section className="space-y-3">
             <div>
-              <p className="text-sm font-semibold uppercase text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-              <h1 className="mt-1.5 text-[1.82rem] font-bold leading-[1.02] tracking-tight sm:mt-2 sm:text-4xl">{product.name}</h1>
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-leaf sm:text-sm">{product.category?.name ?? 'Nông sản'}</p>
+              <h1 className="mt-1.5 text-[1.62rem] font-bold leading-[1.06] tracking-normal text-ink sm:mt-2 sm:text-4xl sm:tracking-tight">{product.name}</h1>
               <Link href={`/htx/${product.cooperative?.code ?? ''}`} className="mt-2.5 inline-flex items-center gap-3 text-sm font-semibold text-slate-600">
                 {coopAvatar && (
                   <PublicImage
@@ -95,9 +95,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               </Link>
             </div>
 
-            <Panel className="p-4 sm:p-5">
+            <Panel className="p-3.5 sm:p-5">
               <p className="text-sm text-slate-500">Giá bán</p>
-              <p className="mt-1 text-[2rem] font-bold leading-none text-leaf sm:text-3xl">{formatPrice(product.price)}</p>
+              <p className="mt-1 text-[1.75rem] font-bold leading-none text-leaf sm:text-3xl">{formatPrice(product.price)}</p>
               <p className="text-sm text-slate-500">/{product.unit}</p>
             </Panel>
 
@@ -213,7 +213,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 </div>
                 <p className="max-w-[12rem] text-right text-xs leading-5 text-slate-500">Danh sách đầy đủ vẫn hiển thị ngay bên dưới để người mua kiểm tra trực tiếp.</p>
               </div>
-              <div className="mt-4 grid gap-3 xl:max-h-[42rem] xl:overflow-auto xl:pr-1">
+              <div className="mt-4 grid max-h-[28rem] gap-3 overflow-auto overscroll-contain pr-1 sm:max-h-[34rem] xl:max-h-[42rem]">
                 {certifications.length ? (
                   certifications.map((cert) => (
                     <div key={cert.id} className="rounded-xl border border-slate-200 bg-slate-50/90 p-4 text-sm">
