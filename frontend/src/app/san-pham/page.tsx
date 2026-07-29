@@ -149,21 +149,21 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
             name="province"
             defaultValue={filters.province ?? ''}
             placeholder="Tỉnh/thành"
-            className="min-h-10.5 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
             name="minPrice"
             defaultValue={filters.minPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá từ"
-            className="min-h-10.5 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
             name="maxPrice"
             defaultValue={filters.maxPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá đến"
-            className="min-h-10.5 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
         </div>
       </details>
@@ -192,11 +192,11 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
       </div>
 
       <div className="mt-2.5 grid gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
-        <label className="inline-flex min-h-10.5 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+        <label className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
           <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="h-4 w-4 accent-leaf" />
           Có QR Passport
         </label>
-        <label className="inline-flex min-h-10.5 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
+        <label className="inline-flex min-h-11 items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-700">
           <SlidersHorizontal size={16} aria-hidden="true" />
           <select name="sort" defaultValue={filters.sort ?? ''} className="bg-transparent outline-none">
             <option value="">Mới nhất</option>
@@ -206,9 +206,9 @@ function ProductFilterForm({ filters, hasActiveFilter }: { filters: ProductFilte
         </label>
         {filters.category && <input type="hidden" name="category" value={filters.category} />}
         {filters.cooperative && <input type="hidden" name="cooperative" value={filters.cooperative} />}
-        <Button className="min-h-10.5 px-5 lg:min-w-[150px]">Tìm sản phẩm</Button>
+        <Button className="min-h-11 px-5 lg:min-w-[150px]">Tìm sản phẩm</Button>
         {hasActiveFilter && (
-          <Link href="/san-pham" className="inline-flex min-h-10.5 items-center justify-center rounded-md px-3 text-sm font-semibold text-slate-600 hover:bg-mint">
+          <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-md px-3 text-sm font-semibold text-slate-600 hover:bg-mint">
             Xóa lọc
           </Link>
         )}

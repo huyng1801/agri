@@ -41,7 +41,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
       <div className="mx-auto flex min-h-[58px] max-w-6xl items-center justify-between gap-2.5 px-3.5 py-2 md:min-h-[76px] md:px-4 md:py-3">
         <Link
           href="/"
-          className="flex min-w-0 items-center gap-2 text-[0.98rem] font-bold text-ink sm:gap-2.5 sm:text-lg"
+          className="flex min-h-11 min-w-0 items-center gap-2 text-[0.98rem] font-bold text-ink sm:gap-2.5 sm:text-lg"
           aria-label={`${appName} - Trang chủ`}
         >
           <PublicLogo size={36} className="sm:h-[42px] sm:w-[42px]" />
@@ -71,7 +71,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           <Link
             href="/gio-hang"
             aria-label="Giỏ hàng"
-            className="relative grid h-10.5 w-10.5 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf sm:h-11 sm:w-11"
+            className="relative grid h-11 w-11 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
           >
             <ShoppingCart size={19} aria-hidden="true" />
             <CartCountBadge />
@@ -81,7 +81,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
           </Link>
           <button
             type="button"
-            className="grid h-10.5 w-10.5 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 shadow-sm md:hidden sm:h-11 sm:w-11"
+            className="grid h-11 w-11 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 shadow-sm md:hidden"
             aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}

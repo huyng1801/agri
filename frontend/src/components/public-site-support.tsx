@@ -12,10 +12,10 @@ export function FooterContactInfo() {
   return (
     <div className="grid gap-2 text-sm font-medium text-slate-700">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Liên hệ</p>
-      <a href={telHref(profile.hotline)} className="font-semibold text-ink hover:text-leaf">
+      <a href={telHref(profile.hotline)} className="inline-flex min-h-10 items-center font-semibold text-ink hover:text-leaf">
         Hotline: {profile.hotlineDisplay}
       </a>
-      <a href={`mailto:${profile.supportEmail}`} className="hover:text-leaf">
+      <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-10 items-center hover:text-leaf">
         {profile.supportEmail}
       </a>
       <p className="leading-6 text-slate-600">{profile.address}</p>
@@ -83,7 +83,7 @@ export function FloatingContactClient() {
   return (
     <div className="fixed bottom-[calc(6.4rem+var(--safe-bottom))] right-3 z-40 grid gap-2 lg:bottom-6 lg:right-4">
       {showHotline && (
-        <a href={telHref(siteProfile.hotline)} className="grid h-10 w-10 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
+        <a href={telHref(siteProfile.hotline)} className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white shadow-soft" aria-label="Gọi hotline">
           <Phone size={16} aria-hidden="true" />
         </a>
       )}
@@ -99,7 +99,7 @@ export function FloatingContactClient() {
         </a>
       )}
       {showTopButton ? (
-        <a href="#top" className="grid h-9 w-9 place-items-center rounded-full bg-white/96 text-ink shadow-soft ring-1 ring-slate-200/80" aria-label="Lên đầu trang">
+        <a href="#top" className="grid h-11 w-11 place-items-center rounded-full bg-white/96 text-ink shadow-soft ring-1 ring-slate-200/80" aria-label="Lên đầu trang">
           <ChevronUp size={16} aria-hidden="true" />
         </a>
       ) : null}

@@ -116,10 +116,10 @@ export function PublicSearch({
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-10.5 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl sm:text-base"
+          className="min-h-11 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl sm:text-base"
         />
       </div>
-      <Button className="min-h-10.5 w-full rounded-[0.85rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
+      <Button className="min-h-11 w-full rounded-[0.85rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
     </form>
   );
 }
@@ -178,7 +178,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           </Link>
         )}
 
-        <AddToCartButton product={product} className="mt-auto min-h-10.5 w-full pt-2 sm:pt-2.5" />
+        <AddToCartButton product={product} className="mt-auto min-h-11 w-full pt-2 sm:pt-2.5" />
       </div>
     </article>
   );

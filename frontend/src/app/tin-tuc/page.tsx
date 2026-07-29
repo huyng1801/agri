@@ -53,11 +53,11 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   name="search"
                   defaultValue={filters.search ?? ''}
                   placeholder="Tìm bài viết"
-                  className="min-h-10.5 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-11 sm:rounded-[0.95rem] sm:text-base"
+                  className="min-h-11 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:rounded-[0.95rem] sm:text-base"
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
-              <Button className="min-h-10.5 w-full sm:min-h-11 sm:w-auto">Tìm</Button>
+              <Button className="min-h-11 w-full sm:w-auto">Tìm</Button>
             </form>
           }
         />
