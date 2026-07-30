@@ -24,6 +24,7 @@ function isNavActive(pathname: string, href: string) {
 export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -101,6 +102,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
             <div className="grid gap-1">
               <Link
                 href="/"
+                onClick={closeMenu}
                 className={cn('rounded-xl px-4 py-3 text-base font-semibold', pathname === '/' ? 'bg-leaf text-white' : 'text-slate-700')}
               >
                 Trang chủ
@@ -111,6 +113,7 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={closeMenu}
                     className={cn('rounded-xl px-4 py-3 text-base font-semibold', active ? 'bg-leaf text-white' : 'text-slate-700')}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -120,17 +123,17 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
               })}
             </div>
             <div className="mt-4 grid gap-2 border-t border-slate-100 pt-4">
-              <Link href="/gio-hang" className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+              <Link href="/gio-hang" onClick={closeMenu} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
                 <span>Giỏ hàng</span>
                 <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
               </Link>
-              <Link href="/login">
+              <Link href="/login" onClick={closeMenu}>
                 <Button className="w-full">
                   <LogIn size={18} aria-hidden="true" />
                   Đăng nhập
                 </Button>
               </Link>
-              <Link href="/tra-cuu-don-hang" className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-slate-600">
+              <Link href="/tra-cuu-don-hang" onClick={closeMenu} className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-slate-600">
                 Tra cứu đơn hàng
               </Link>
             </div>
