@@ -230,7 +230,7 @@ export default async function AboutUsPage() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl bg-white p-4 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline</p>
-                    <p className="mt-2 text-lg font-bold text-ink">{siteProfile.hotlineDisplay}</p>
+                    <p className="mt-2 text-lg font-medium text-ink">{siteProfile.hotlineDisplay}</p>
                   </div>
                   <div className="rounded-2xl bg-white p-4 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email hỗ trợ</p>

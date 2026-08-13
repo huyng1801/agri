@@ -2,6 +2,24 @@ import { Prisma, PrismaClient, RoleSlug } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
+const defaultPublicFaqs = [
+  {
+    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và bán hàng COD trên cùng một nền tảng.'
+  },
+  {
+    question: 'Người mua có cần tài khoản để xem QR không?',
+    answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
+  },
+  {
+    question: 'Ai xác nhận đơn hàng COD?',
+    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+  },
+  {
+    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
+    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+  }
+] as const;
 
 const permissions = {
   SUPER_ADMIN: [
@@ -207,20 +225,7 @@ async function main() {
         zaloUrl: '',
         messengerUrl: '',
         mapEmbedUrl: siteMapEmbedUrl,
-        faqs: [
-          {
-            question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-            answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và bán hàng COD trên cùng một nền tảng.'
-          },
-          {
-            question: 'Người mua có cần tài khoản để xem QR không?',
-            answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
-          },
-          {
-            question: 'Ai xác nhận đơn hàng COD?',
-            answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
-          }
-        ]
+        faqs: defaultPublicFaqs
       },
       description: 'Thông tin công khai của HTXONLINE dùng cho contact/footer/floating actions'
     },
@@ -231,6 +236,18 @@ async function main() {
   if (existingSiteProfile?.value && typeof existingSiteProfile.value === 'object' && !Array.isArray(existingSiteProfile.value)) {
     const current = existingSiteProfile.value as Record<string, unknown>;
     const currentMapEmbedUrl = typeof current.mapEmbedUrl === 'string' ? current.mapEmbedUrl.trim() : '';
+    const currentFaqs = Array.isArray(current.faqs)
+      ? current.faqs
+          .map((item) => {
+            if (!item || typeof item !== 'object') return null;
+            const record = item as Record<string, unknown>;
+            const question = typeof record.question === 'string' ? record.question.trim() : '';
+            const answer = typeof record.answer === 'string' ? record.answer.trim() : '';
+            if (!question || !answer) return null;
+            return { question, answer };
+          })
+          .filter((item): item is { question: string; answer: string } => Boolean(item))
+      : [];
     const isLegacyMapEmbedUrl =
       !currentMapEmbedUrl ||
       currentMapEmbedUrl.includes('google.com/maps') ||
@@ -245,6 +262,11 @@ async function main() {
       currentMapEmbedUrl.includes('My%20Xuan') ||
       currentMapEmbedUrl.includes('M%E1%BB%B9%20X%C6%B0%C6%A1ng') ||
       currentMapEmbedUrl.includes('My%20Xuong');
+    const hasLookupSupportFaq = currentFaqs.some(
+      (item) => normalizePlainText(item.question) === normalizePlainText(defaultPublicFaqs[3].question)
+    );
+    const nextFaqs =
+      currentFaqs.length === 0 ? [...defaultPublicFaqs] : hasLookupSupportFaq ? currentFaqs : [...currentFaqs, defaultPublicFaqs[3]];
     const nextValue: Prisma.InputJsonObject = {
       ...current,
       hotline:
@@ -259,7 +281,8 @@ async function main() {
           : 'Agripassport@gmail.com',
       address: siteAddress,
       mapEmbedUrl: isLegacyMapEmbedUrl ? siteMapEmbedUrl : currentMapEmbedUrl,
-      zaloUrl: typeof current.zaloUrl === 'string' ? (current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl) : ''
+      zaloUrl: typeof current.zaloUrl === 'string' ? (current.zaloUrl === 'https://zalo.me' ? '' : current.zaloUrl) : '',
+      faqs: nextFaqs
     };
     if (
       current.hotline !== nextValue.hotline ||
@@ -267,7 +290,8 @@ async function main() {
       current.supportEmail !== nextValue.supportEmail ||
       current.address !== nextValue.address ||
       current.mapEmbedUrl !== nextValue.mapEmbedUrl ||
-      current.zaloUrl !== nextValue.zaloUrl
+      current.zaloUrl !== nextValue.zaloUrl ||
+      JSON.stringify(current.faqs ?? null) !== JSON.stringify(nextValue.faqs)
     ) {
       await prisma.setting.update({
         where: { key: 'public.siteProfile' },
@@ -320,3 +344,12 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+function normalizePlainText(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}

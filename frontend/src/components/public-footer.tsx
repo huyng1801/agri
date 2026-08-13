@@ -11,6 +11,7 @@ export async function PublicFooter() {
   const profile = await getPublicSiteProfile();
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
+  const showMapPreview = Boolean(profile.address.trim());
 
   return (
     <footer className="mt-6 bg-[#1f5f3d] pb-[calc(6.5rem+var(--safe-bottom))] text-white lg:pb-0">
@@ -53,7 +54,6 @@ export async function PublicFooter() {
             <div className="mt-4 grid gap-2">
               <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
               <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
-              <Link href="/tin-tuc" className={footerLinkClass}>Tin tức</Link>
               <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
               <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
             </div>
@@ -103,7 +103,7 @@ export async function PublicFooter() {
               </p>
             </div>
 
-            {profile.mapEmbedUrl ? (
+            {showMapPreview ? (
               <div className="overflow-hidden rounded-2xl border border-white/20 bg-[linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.08))] shadow-[0_18px_48px_rgba(15,23,42,0.16)]">
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 px-4 py-3">
                   <div>
@@ -167,6 +167,7 @@ export async function PublicFooter() {
                 </p>
               </div>
               <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
+              <p className="text-xs text-white/60">Được thiết kế và vận hành bởi Agri Passport.</p>
               <p className="text-xs text-white/60">Liên hệ hotline hoặc email để được đội vận hành HTXONLINE hỗ trợ nhanh.</p>
             </div>
           </div>

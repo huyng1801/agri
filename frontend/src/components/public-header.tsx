@@ -9,9 +9,9 @@ import { PublicLogo } from './public-logo';
 import { Button, cn } from './ui';
 
 const navItems = [
+  { href: '/ve-chung-toi', label: 'Về chúng tôi' },
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'HTX' },
-  { href: '/ve-chung-toi', label: 'Về chúng tôi' },
   { href: '/tin-tuc', label: 'Tin tức' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;

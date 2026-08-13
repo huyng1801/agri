@@ -21,6 +21,7 @@ export default async function ContactPage() {
   const siteProfile = await getPublicSiteProfile();
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
   const mapLocation = getPublicMapLocation(siteProfile);
+  const showMapPreview = Boolean(siteProfile.address.trim());
 
   return (
     <PublicShell>
@@ -138,7 +139,7 @@ export default async function ContactPage() {
             </article>
 
             <article className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
-              {siteProfile.mapEmbedUrl ? (
+              {showMapPreview ? (
                 <div className="h-full p-2.5 sm:p-3">
                   <div className="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-[#dbece1] sm:rounded-[1.6rem]">
                     <div className="border-b border-slate-200 bg-white/75 px-4 py-3">

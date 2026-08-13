@@ -43,6 +43,25 @@ export type PublicMapLocation = {
   longitude: number;
 };
 
+const defaultSupportFaqs: PublicSiteFaq[] = [
+  {
+    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
+  },
+  {
+    question: 'Người mua có cần đăng nhập để xem QR?',
+    answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
+  },
+  {
+    question: 'Ai xác nhận đơn hàng COD?',
+    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+  },
+  {
+    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
+    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+  }
+];
+
 export const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
@@ -60,16 +79,7 @@ export const defaultPublicSiteProfile: PublicSiteProfile = {
   zaloUrl: '',
   messengerUrl: '',
   mapEmbedUrl: defaultMapEmbedUrl,
-  faqs: [
-    {
-      question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-      answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
-    },
-    {
-      question: 'Người mua có cần đăng nhập để xem QR?',
-      answer: 'Không. QR Passport public được mở trực tiếp cho khách truy cập.'
-    }
-  ],
+  faqs: defaultSupportFaqs,
   pageContent: {
     homeBadge: 'Nền tảng số cho hợp tác xã',
     homeTitle: 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',

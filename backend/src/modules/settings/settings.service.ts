@@ -9,6 +9,24 @@ import { PrismaService } from '../prisma/prisma.service';
 const SECRET_KEYS = new Set(['system.r2', 'system.email', 'system.security']);
 const DEFAULT_MAP_EMBED_URL =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
+const DEFAULT_PUBLIC_FAQS = [
+  {
+    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
+  },
+  {
+    question: 'Người mua có cần đăng nhập để xem QR?',
+    answer: 'Không. Khách truy cập có thể xem QR Passport công khai trực tiếp.'
+  },
+  {
+    question: 'Ai xác nhận đơn hàng COD?',
+    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+  },
+  {
+    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
+    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+  }
+] as const;
 
 @Injectable()
 export class SettingsService {
@@ -113,16 +131,7 @@ function faqItems(value: unknown) {
     : [];
 
   if (items.length) return items;
-  return [
-    {
-      question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-      answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
-    },
-    {
-      question: 'Người mua có cần đăng nhập để xem QR?',
-      answer: 'Không. Khách truy cập có thể xem QR Passport public trực tiếp.'
-    }
-  ];
+  return [...DEFAULT_PUBLIC_FAQS];
 }
 
 function pageContentItems(value: unknown) {
