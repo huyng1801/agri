@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   isAliasPublicHost,
   marketplaceRedirectUrl,
+  normalizeHostname,
   passportRedirectUrl,
   publicSiteKeyFromHost,
   siteAreaFromHost
@@ -31,12 +32,13 @@ const PASSPORT_PATHS = ['/passport', '/qr'];
 const INTERNAL_MARKETPLACE_REDIRECT_PATHS = ['/san-pham', '/htx', '/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang', '/tin-tuc'];
 
 export function proxy(request: NextRequest) {
-  const area = siteAreaFromHost(request.nextUrl.hostname);
-  const siteKey = publicSiteKeyFromHost(request.nextUrl.hostname);
+  const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
+  const area = siteAreaFromHost(hostname);
+  const siteKey = publicSiteKeyFromHost(hostname);
   const pathname = request.nextUrl.pathname;
   const search = request.nextUrl.search;
 
-  if (area === 'public' && isAliasPublicHost(request.nextUrl.hostname)) {
+  if (area === 'public' && isAliasPublicHost(hostname)) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
 
