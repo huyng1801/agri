@@ -1,3 +1,4 @@
+import { type PublicSiteKey } from './domain';
 import { API_URL, type ApiEnvelope } from './api';
 
 export type PublicSiteFaq = {
@@ -43,25 +44,6 @@ export type PublicMapLocation = {
   longitude: number;
 };
 
-const defaultSupportFaqs: PublicSiteFaq[] = [
-  {
-    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
-  },
-  {
-    question: 'Người mua có cần đăng nhập để xem QR?',
-    answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
-  },
-  {
-    question: 'Ai xác nhận đơn hàng COD?',
-    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
-  },
-  {
-    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
-    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
-  }
-];
-
 export const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
@@ -70,67 +52,194 @@ export const defaultPublicMapLocation: PublicMapLocation = {
   longitude: 105.718
 };
 
-export const defaultPublicSiteProfile: PublicSiteProfile = {
-  appName: 'HTXONLINE',
+const sharedContactProfile = {
   hotline: '0907001200',
   hotlineDisplay: '0907 001 200',
   supportEmail: 'Agripassport@gmail.com',
   address: 'Số 130, Tổ 8, Ấp Mỹ Xương, Xã Mỹ Thọ, Tỉnh Đồng Tháp',
   zaloUrl: '',
   messengerUrl: '',
-  mapEmbedUrl: defaultMapEmbedUrl,
-  faqs: defaultSupportFaqs,
-  pageContent: {
-    homeBadge: 'Nền tảng số cho hợp tác xã',
-    homeTitle: 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
-    homeDescription:
-      'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
-    homeImageUrl:
-      'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
-    homeImageAlt: 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
-    introTitle: 'Giới thiệu HTXONLINE',
-    introDescription: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
-    introImageUrl:
-      'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
-    introImageAlt: 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
-    aboutTitle: 'Chúng tôi là HTXONLINE',
-    aboutDescription:
-      'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
-    aboutImageUrl:
-      'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
-    aboutImageAlt: 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
-    contactTitle: 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
-    contactDescription:
-      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
-    contactImageUrl:
-      'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
-    contactImageAlt: 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
+  mapEmbedUrl: defaultMapEmbedUrl
+} as const;
+
+const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> = {
+  htxonline: {
+    appName: 'HTXONLINE',
+    ...sharedContactProfile,
+    faqs: [
+      {
+        question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
+        answer: 'Quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và báo cáo vận hành nội bộ của hợp tác xã.'
+      },
+      {
+        question: 'HTXONLINE có phải sàn bán hàng công khai không?',
+        answer: 'Không. HTXONLINE giữ vai trò quản trị nội bộ và số hóa hoạt động của hợp tác xã.'
+      },
+      {
+        question: 'Dữ liệu sản phẩm được xử lý ở đâu?',
+        answer: 'Dữ liệu sản phẩm nông nghiệp, truy xuất và kênh công khai được đưa lên Agripassport để quản lý tập trung.'
+      },
+      {
+        question: 'Nếu cần hỗ trợ vận hành hệ thống thì liên hệ ai?',
+        answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ nhanh.'
+      }
+    ],
+    pageContent: {
+      homeBadge: 'Hệ thống quản trị nội bộ cho hợp tác xã',
+      homeTitle: 'HTXONLINE giúp hợp tác xã quản lý thành viên và vận hành nội bộ rõ ràng hơn.',
+      homeDescription:
+        'Tập trung hồ sơ xã viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và báo cáo điều hành trên một hệ thống số gọn, dễ theo dõi và dễ đối soát.',
+      homeImageUrl:
+        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageAlt: 'Hệ thống số hỗ trợ quản trị nội bộ cho hợp tác xã',
+      introTitle: 'Giới thiệu HTXONLINE',
+      introDescription: 'Nền tảng phục vụ quản trị thành viên, vận hành nội bộ và số hóa dữ liệu quản lý của hợp tác xã.',
+      introImageUrl:
+        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageAlt: 'Hoạt động điều hành nội bộ và dữ liệu quản trị hợp tác xã',
+      aboutTitle: 'HTXONLINE là lớp quản trị nội bộ của hợp tác xã',
+      aboutDescription:
+        'Nền tảng tập trung vào thành viên, dịch vụ, thu chi, xuất nhập và lịch sử hoạt động, thay vì lấy bán hàng công khai làm chức năng cốt lõi.',
+      aboutImageUrl:
+        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageAlt: 'Quản trị nội bộ hợp tác xã theo hướng số hóa',
+      contactTitle: 'Cần tư vấn triển khai quản trị số cho hợp tác xã?',
+      contactDescription:
+        'Đội vận hành sẽ hỗ trợ chuẩn hóa quy trình quản lý nội bộ, phân quyền và luồng đồng bộ dữ liệu giữa HTXONLINE và Agripassport.',
+      contactImageUrl:
+        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageAlt: 'Tư vấn triển khai chuyển đổi số cho hợp tác xã'
+    }
+  },
+  agripassport: {
+    appName: 'AGRIPASSPORT',
+    ...sharedContactProfile,
+    faqs: [
+      {
+        question: 'Agripassport hỗ trợ gì cho hợp tác xã?',
+        answer: 'Quản lý sản phẩm, vùng trồng, nhật ký, chứng nhận, QR truy xuất và kênh công khai tiêu thụ trên cùng một nền tảng.'
+      },
+      {
+        question: 'Người mua có cần đăng nhập để xem QR không?',
+        answer: 'Không. QR truy xuất và thông tin công khai có thể được mở trực tiếp cho khách truy cập.'
+      },
+      {
+        question: 'Ai xác nhận đơn hàng COD?',
+        answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+      },
+      {
+        question: 'Nếu tra cứu QR hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
+        answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+      }
+    ],
+    pageContent: {
+      homeBadge: 'Nền tảng dữ liệu sản phẩm nông nghiệp',
+      homeTitle: 'AGRIPASSPORT giúp hợp tác xã công khai sản phẩm và QR truy xuất đồng bộ hơn.',
+      homeDescription:
+        'Chuẩn hóa tên hợp tác xã, dữ liệu sản phẩm, vùng trồng, chứng nhận và hồ sơ truy xuất để thuận lợi cho công khai, kết nối tiêu thụ và làm hồ sơ phù hợp quy định.',
+      homeImageUrl:
+        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageAlt: 'Nền tảng dữ liệu sản phẩm nông nghiệp và truy xuất số',
+      introTitle: 'Giới thiệu AGRIPASSPORT',
+      introDescription: 'Nền tảng chuyên trách cho dữ liệu sản phẩm nông nghiệp, QR truy xuất và kênh công khai tiêu thụ.',
+      introImageUrl:
+        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageAlt: 'Dữ liệu sản phẩm, vùng trồng và truy xuất được chuẩn hóa',
+      aboutTitle: 'Chúng tôi là AGRIPASSPORT',
+      aboutDescription:
+        'Nền tảng tập trung quản lý thông tin sản phẩm, vùng trồng, nhật ký, chứng nhận và hộ chiếu số để hỗ trợ minh bạch và kết nối thị trường.',
+      aboutImageUrl:
+        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageAlt: 'Sản phẩm nông nghiệp và dữ liệu truy xuất trên nền tảng số',
+      contactTitle: 'Hãy để AGRIPASSPORT đồng hành cùng dữ liệu sản phẩm của hợp tác xã bạn',
+      contactDescription:
+        'Tư vấn chuẩn hóa danh mục sản phẩm, vùng trồng, QR truy xuất, chứng nhận và luồng công khai dữ liệu phục vụ kết nối tiêu thụ.',
+      contactImageUrl:
+        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageAlt: 'Không gian hỗ trợ chuẩn hóa dữ liệu sản phẩm nông nghiệp'
+    }
+  },
+  passport: {
+    appName: 'HỘ CHIẾU NÔNG NGHIỆP',
+    ...sharedContactProfile,
+    faqs: [
+      {
+        question: 'Hộ chiếu nông nghiệp là gì?',
+        answer: 'Đây là hồ sơ số gắn với sản phẩm, lô sản phẩm hoặc vùng trồng để phục vụ truy xuất và minh bạch thông tin.'
+      },
+      {
+        question: 'Tra cứu bằng cách nào?',
+        answer: 'Quét QR Code hoặc mở đường dẫn hồ sơ công khai để xem nguồn gốc, vùng trồng, nhật ký và chứng nhận khi có.'
+      },
+      {
+        question: 'Dữ liệu hộ chiếu được lấy từ đâu?',
+        answer: 'Hộ chiếu số được tạo từ dữ liệu sản phẩm trên Agripassport và chỉ hiển thị thông tin đã được HTX phê duyệt công khai.'
+      },
+      {
+        question: 'Nếu QR không mở đúng hồ sơ thì liên hệ ai?',
+        answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+      }
+    ],
+    pageContent: {
+      homeBadge: 'Hồ sơ số gắn với sản phẩm và lô sản phẩm',
+      homeTitle: 'HỘ CHIẾU NÔNG NGHIỆP giúp người mua truy xuất nguồn gốc nhanh và rõ hơn.',
+      homeDescription:
+        'Mỗi QR mở ra một hồ sơ công khai về sản phẩm, vùng trồng, quá trình canh tác và chứng nhận phù hợp để minh bạch thông tin với người tiêu dùng và đối tác.',
+      homeImageUrl:
+        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageAlt: 'QR truy xuất cho sản phẩm nông nghiệp',
+      introTitle: 'Giới thiệu Hộ chiếu nông nghiệp',
+      introDescription: 'Hồ sơ số được tạo từ dữ liệu sản phẩm trên Agripassport để phục vụ truy xuất và minh bạch thông tin.',
+      introImageUrl:
+        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageAlt: 'Hồ sơ QR và truy xuất nguồn gốc nông nghiệp',
+      aboutTitle: 'Mỗi QR là một hồ sơ nguồn gốc công khai',
+      aboutDescription:
+        'Người mua, đối tác và các bên được phép tra cứu có thể xem vùng trồng, nhật ký, chứng nhận và dữ liệu nguồn gốc theo phạm vi HTX công khai.',
+      aboutImageUrl:
+        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageAlt: 'Minh bạch nguồn gốc thông qua hồ sơ số',
+      contactTitle: 'Cần tư vấn triển khai QR và hộ chiếu số cho sản phẩm?',
+      contactDescription:
+        'Đội vận hành hỗ trợ chuẩn hóa dữ liệu truy xuất, cấu trúc QR và phạm vi thông tin công khai để hồ sơ số rõ ràng, đáng tin hơn.',
+      contactImageUrl:
+        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageAlt: 'Hỗ trợ triển khai QR và hồ sơ số cho nông sản'
+    }
   }
 };
 
-export async function getPublicSiteProfile() {
+export const defaultPublicSiteProfile = siteDefaults.agripassport;
+
+export function defaultPublicSiteProfileForSite(siteKey: PublicSiteKey) {
+  return siteDefaults[siteKey === 'local' ? 'agripassport' : siteKey];
+}
+
+export async function getPublicSiteProfile(siteKey: PublicSiteKey = 'agripassport') {
   try {
     const response = await fetch(`${API_URL}/settings/public/site-profile`, { cache: 'no-store' });
-    if (!response.ok) return defaultPublicSiteProfile;
+    if (!response.ok) return defaultPublicSiteProfileForSite(siteKey);
     const body = (await response.json()) as ApiEnvelope<Partial<PublicSiteProfile>>;
-    return normalizePublicSiteProfile(body.data);
+    return normalizePublicSiteProfile(body.data, siteKey);
   } catch {
-    return defaultPublicSiteProfile;
+    return defaultPublicSiteProfileForSite(siteKey);
   }
 }
 
-export function normalizePublicSiteProfile(profile?: Partial<PublicSiteProfile> | null): PublicSiteProfile {
+export function normalizePublicSiteProfile(profile?: Partial<PublicSiteProfile> | null, siteKey: PublicSiteKey = 'agripassport'): PublicSiteProfile {
+  const defaults = defaultPublicSiteProfileForSite(siteKey);
+  const allowMarketingOverrides = siteKey === 'agripassport';
   return {
-    appName: normalizePublicCopy(stringValue(profile?.appName)) || defaultPublicSiteProfile.appName,
-    hotline: stringValue(profile?.hotline) || defaultPublicSiteProfile.hotline,
-    hotlineDisplay: stringValue(profile?.hotlineDisplay) || stringValue(profile?.hotline) || defaultPublicSiteProfile.hotlineDisplay,
-    supportEmail: stringValue(profile?.supportEmail) || defaultPublicSiteProfile.supportEmail,
-    address: normalizePublicCopy(stringValue(profile?.address)) || defaultPublicSiteProfile.address,
+    appName: defaults.appName,
+    hotline: stringValue(profile?.hotline) || defaults.hotline,
+    hotlineDisplay: stringValue(profile?.hotlineDisplay) || stringValue(profile?.hotline) || defaults.hotlineDisplay,
+    supportEmail: stringValue(profile?.supportEmail) || defaults.supportEmail,
+    address: normalizeBrandCopy(stringValue(profile?.address), siteKey) || defaults.address,
     zaloUrl: stringValue(profile?.zaloUrl),
     messengerUrl: stringValue(profile?.messengerUrl),
-    mapEmbedUrl: stringValue(profile?.mapEmbedUrl) || defaultPublicSiteProfile.mapEmbedUrl,
-    faqs: faqItems(profile?.faqs),
-    pageContent: pageContentItems(profile?.pageContent)
+    mapEmbedUrl: stringValue(profile?.mapEmbedUrl) || defaults.mapEmbedUrl,
+    faqs: faqItems(profile?.faqs, defaults, siteKey, allowMarketingOverrides),
+    pageContent: pageContentItems(profile?.pageContent, defaults, siteKey, allowMarketingOverrides)
   };
 }
 
@@ -162,40 +271,46 @@ export function getPublicMapLocation(profile?: Pick<PublicSiteProfile, 'mapEmbed
   return defaultPublicMapLocation;
 }
 
-function faqItems(value: unknown): PublicSiteFaq[] {
-  if (!Array.isArray(value)) return defaultPublicSiteProfile.faqs;
+function faqItems(value: unknown, defaults: PublicSiteProfile, siteKey: PublicSiteKey, allowOverrides: boolean): PublicSiteFaq[] {
+  if (!allowOverrides || !Array.isArray(value)) return defaults.faqs;
   const items = value
     .map((item) => {
       if (!item || typeof item !== 'object') return null;
-      const question = normalizePublicCopy(stringValue((item as PublicSiteFaq).question));
-      const answer = normalizePublicCopy(stringValue((item as PublicSiteFaq).answer));
+      const question = normalizeBrandCopy(stringValue((item as PublicSiteFaq).question), siteKey);
+      const answer = normalizeBrandCopy(stringValue((item as PublicSiteFaq).answer), siteKey);
       if (!question || !answer) return null;
       return { question, answer };
     })
     .filter((item): item is PublicSiteFaq => Boolean(item));
-  return items.length ? items : defaultPublicSiteProfile.faqs;
+  return items.length ? items : defaults.faqs;
 }
 
-function pageContentItems(value: unknown): PublicPageContent {
+function pageContentItems(
+  value: unknown,
+  defaults: PublicSiteProfile,
+  siteKey: PublicSiteKey,
+  allowOverrides: boolean
+): PublicPageContent {
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Partial<PublicPageContent>) : {};
+  if (!allowOverrides) return defaults.pageContent;
   return {
-    homeBadge: normalizePublicCopy(stringValue(object.homeBadge)) || defaultPublicSiteProfile.pageContent.homeBadge,
-    homeTitle: normalizePublicCopy(stringValue(object.homeTitle)) || defaultPublicSiteProfile.pageContent.homeTitle,
-    homeDescription: normalizePublicCopy(stringValue(object.homeDescription)) || defaultPublicSiteProfile.pageContent.homeDescription,
-    homeImageUrl: stringValue(object.homeImageUrl) || defaultPublicSiteProfile.pageContent.homeImageUrl,
-    homeImageAlt: normalizePublicCopy(stringValue(object.homeImageAlt)) || defaultPublicSiteProfile.pageContent.homeImageAlt,
-    introTitle: normalizePublicCopy(stringValue(object.introTitle)) || defaultPublicSiteProfile.pageContent.introTitle,
-    introDescription: normalizePublicCopy(stringValue(object.introDescription)) || defaultPublicSiteProfile.pageContent.introDescription,
-    introImageUrl: stringValue(object.introImageUrl) || defaultPublicSiteProfile.pageContent.introImageUrl,
-    introImageAlt: normalizePublicCopy(stringValue(object.introImageAlt)) || defaultPublicSiteProfile.pageContent.introImageAlt,
-    aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || defaultPublicSiteProfile.pageContent.aboutTitle,
-    aboutDescription: normalizePublicCopy(stringValue(object.aboutDescription)) || defaultPublicSiteProfile.pageContent.aboutDescription,
-    aboutImageUrl: stringValue(object.aboutImageUrl) || defaultPublicSiteProfile.pageContent.aboutImageUrl,
-    aboutImageAlt: normalizePublicCopy(stringValue(object.aboutImageAlt)) || defaultPublicSiteProfile.pageContent.aboutImageAlt,
-    contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || defaultPublicSiteProfile.pageContent.contactTitle,
-    contactDescription: normalizePublicCopy(stringValue(object.contactDescription)) || defaultPublicSiteProfile.pageContent.contactDescription,
-    contactImageUrl: stringValue(object.contactImageUrl) || defaultPublicSiteProfile.pageContent.contactImageUrl,
-    contactImageAlt: normalizePublicCopy(stringValue(object.contactImageAlt)) || defaultPublicSiteProfile.pageContent.contactImageAlt
+    homeBadge: normalizeBrandCopy(stringValue(object.homeBadge), siteKey) || defaults.pageContent.homeBadge,
+    homeTitle: normalizeBrandCopy(stringValue(object.homeTitle), siteKey) || defaults.pageContent.homeTitle,
+    homeDescription: normalizeBrandCopy(stringValue(object.homeDescription), siteKey) || defaults.pageContent.homeDescription,
+    homeImageUrl: stringValue(object.homeImageUrl) || defaults.pageContent.homeImageUrl,
+    homeImageAlt: normalizeBrandCopy(stringValue(object.homeImageAlt), siteKey) || defaults.pageContent.homeImageAlt,
+    introTitle: normalizeBrandCopy(stringValue(object.introTitle), siteKey) || defaults.pageContent.introTitle,
+    introDescription: normalizeBrandCopy(stringValue(object.introDescription), siteKey) || defaults.pageContent.introDescription,
+    introImageUrl: stringValue(object.introImageUrl) || defaults.pageContent.introImageUrl,
+    introImageAlt: normalizeBrandCopy(stringValue(object.introImageAlt), siteKey) || defaults.pageContent.introImageAlt,
+    aboutTitle: normalizeBrandCopy(stringValue(object.aboutTitle), siteKey) || defaults.pageContent.aboutTitle,
+    aboutDescription: normalizeBrandCopy(stringValue(object.aboutDescription), siteKey) || defaults.pageContent.aboutDescription,
+    aboutImageUrl: stringValue(object.aboutImageUrl) || defaults.pageContent.aboutImageUrl,
+    aboutImageAlt: normalizeBrandCopy(stringValue(object.aboutImageAlt), siteKey) || defaults.pageContent.aboutImageAlt,
+    contactTitle: normalizeBrandCopy(stringValue(object.contactTitle), siteKey) || defaults.pageContent.contactTitle,
+    contactDescription: normalizeBrandCopy(stringValue(object.contactDescription), siteKey) || defaults.pageContent.contactDescription,
+    contactImageUrl: stringValue(object.contactImageUrl) || defaults.pageContent.contactImageUrl,
+    contactImageAlt: normalizeBrandCopy(stringValue(object.contactImageAlt), siteKey) || defaults.pageContent.contactImageAlt
   };
 }
 
@@ -216,6 +331,26 @@ function normalizePublicCopy(value: string) {
     .replace(/\bpublic\b/gi, 'công khai')
     .replace(/\s{2,}/g, ' ')
     .trim();
+}
+
+function normalizeBrandCopy(value: string, siteKey: PublicSiteKey) {
+  const normalized = normalizePublicCopy(value);
+  if (!normalized) return '';
+  if (siteKey === 'htxonline') {
+    return normalized
+      .replace(/\bAGRIPASSPORT\b/gi, 'HTXONLINE')
+      .replace(/\bAgri Passport\b/gi, 'HTXONLINE');
+  }
+  if (siteKey === 'passport') {
+    return normalized
+      .replace(/\bHTXONLINE\b/gi, 'Hộ chiếu nông nghiệp')
+      .replace(/\bAGRIPASSPORT\b/gi, 'Hộ chiếu nông nghiệp')
+      .replace(/\bAgri Passport\b/gi, 'Hộ chiếu nông nghiệp')
+      .replace(/\bQR Passport\b/gi, 'hộ chiếu số');
+  }
+  return normalized
+    .replace(/\bHTXONLINE\b/gi, 'AGRIPASSPORT')
+    .replace(/\bAgri Passport\b/gi, 'AGRIPASSPORT');
 }
 
 function parseCoordinates(value: string): PublicMapLocation | null {

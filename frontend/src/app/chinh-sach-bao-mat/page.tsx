@@ -1,17 +1,21 @@
-import type { Metadata } from 'next';
 import { PublicPolicyBody } from '@/components/public-policy-body';
 import { PublicStaticPage } from '@/components/public-static-page';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Chính sách bảo mật',
-  description: 'Cách HTXONLINE thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.',
-  alternates: { canonical: 'https://htxonline.vn/chinh-sach-bao-mat' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Chính sách bảo mật',
+    description: 'Cách HTXONLINE thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.',
+    path: '/chinh-sach-bao-mat'
+  });
+}
 
 export default async function PrivacyPolicyPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   const sections = [
     {
       title: '1. Mục đích và phạm vi thu thập thông tin',
@@ -87,7 +91,7 @@ export default async function PrivacyPolicyPage() {
         'Mọi thay đổi sẽ được công bố trên website và có hiệu lực từ thời điểm đăng tải. Việc tiếp tục sử dụng dịch vụ sau khi cập nhật đồng nghĩa với việc người dùng chấp nhận nội dung sửa đổi.'
       ]
     },
-    buildPolicyContactSection(siteProfile, 'Mọi thắc mắc hoặc yêu cầu liên quan đến Chính sách bảo mật, vui lòng liên hệ HTXONLINE qua các kênh dưới đây.')
+    buildPolicyContactSection(siteProfile, `Mọi thắc mắc hoặc yêu cầu liên quan đến Chính sách bảo mật, vui lòng liên hệ ${siteProfile.appName} qua các kênh dưới đây.`, siteKey)
   ];
 
   return (

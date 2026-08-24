@@ -1,8 +1,10 @@
 import type { MetadataRoute } from 'next';
+import { getRequestPublicOrigin } from '@/lib/request-site';
 
-const baseUrl = 'https://htxonline.vn';
+export const dynamic = 'force-dynamic';
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const baseUrl = await getRequestPublicOrigin();
   return {
     rules: {
       userAgent: '*',

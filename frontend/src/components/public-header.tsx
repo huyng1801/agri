@@ -2,16 +2,24 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogIn, Menu, ShoppingCart, X } from 'lucide-react';
+import { Briefcase, LogIn, Menu, ShoppingCart, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
 import { PublicLogo } from './public-logo';
 import { Button, cn } from './ui';
+import type { PublicSiteKey } from '@/lib/domain';
 
-const navItems = [
+const marketplaceNavItems = [
   { href: '/ve-chung-toi', label: 'Về chúng tôi' },
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'HTX' },
+  { href: '/tin-tuc', label: 'Tin tức' },
+  { href: '/lien-he', label: 'Liên hệ' }
+] as const;
+
+const internalNavItems = [
+  { href: '/ve-chung-toi', label: 'Về hệ thống' },
+  { href: '/gioi-thieu', label: 'Vai trò nền tảng' },
   { href: '/tin-tuc', label: 'Tin tức' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
@@ -21,10 +29,18 @@ function isNavActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
+export function PublicHeader({
+  appName = 'AGRIPASSPORT',
+  siteKey = 'agripassport'
+}: {
+  appName?: string;
+  siteKey?: PublicSiteKey;
+}) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
+  const navItems = siteKey === 'htxonline' ? internalNavItems : marketplaceNavItems;
+  const showCart = siteKey !== 'htxonline';
 
   useEffect(() => {
     setMenuOpen(false);
@@ -69,14 +85,24 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          <Link
-            href="/gio-hang"
-            aria-label="Giỏ hàng"
-            className="relative grid h-11 w-11 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
-          >
-            <ShoppingCart size={19} aria-hidden="true" />
-            <CartCountBadge />
-          </Link>
+          {showCart ? (
+            <Link
+              href="/gio-hang"
+              aria-label="Giỏ hàng"
+              className="relative grid h-11 w-11 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
+            >
+              <ShoppingCart size={19} aria-hidden="true" />
+              <CartCountBadge />
+            </Link>
+          ) : (
+            <Link
+              href="/gioi-thieu"
+              aria-label="Vai trò nền tảng"
+              className="grid h-11 w-11 place-items-center rounded-[1rem] border border-slate-200 bg-white/92 text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-leaf hover:text-leaf"
+            >
+              <Briefcase size={18} aria-hidden="true" />
+            </Link>
+          )}
           <Link href="/login" className="hidden min-h-11 items-center sm:inline-flex">
             <Button>Đăng nhập</Button>
           </Link>
@@ -123,19 +149,28 @@ export function PublicHeader({ appName = 'HTXONLINE' }: { appName?: string }) {
               })}
             </div>
             <div className="mt-4 grid gap-2 border-t border-slate-100 pt-4">
-              <Link href="/gio-hang" onClick={closeMenu} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
-                <span>Giỏ hàng</span>
-                <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
-              </Link>
+              {showCart ? (
+                <Link href="/gio-hang" onClick={closeMenu} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                  <span>Giỏ hàng</span>
+                  <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
+                </Link>
+              ) : (
+                <Link href="/gioi-thieu" onClick={closeMenu} className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-700">
+                  <span>Vai trò nền tảng</span>
+                  <Briefcase size={16} aria-hidden="true" />
+                </Link>
+              )}
               <Link href="/login" onClick={closeMenu}>
                 <Button className="w-full">
                   <LogIn size={18} aria-hidden="true" />
                   Đăng nhập
                 </Button>
               </Link>
-              <Link href="/tra-cuu-don-hang" onClick={closeMenu} className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-slate-600">
-                Tra cứu đơn hàng
-              </Link>
+              {showCart ? (
+                <Link href="/tra-cuu-don-hang" onClick={closeMenu} className="block rounded-md px-3 py-2 text-center text-sm font-semibold text-slate-600">
+                  Tra cứu đơn hàng
+                </Link>
+              ) : null}
             </div>
           </nav>
         </div>

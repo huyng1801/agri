@@ -1,12 +1,14 @@
-import type { Metadata } from 'next';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { CartClient } from '@/components/cart-client';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'Giỏ hàng',
-  description: 'Xem sản phẩm đã thêm, điều chỉnh số lượng và chuyển sang thanh toán COD.',
-  alternates: { canonical: 'https://htxonline.vn/gio-hang' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Giỏ hàng',
+    description: 'Xem sản phẩm đã thêm, điều chỉnh số lượng và chuyển sang thanh toán COD.',
+    path: '/gio-hang'
+  });
+}
 
 export default function CartPage() {
   return (

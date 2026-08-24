@@ -1,33 +1,50 @@
 import type { MetadataRoute } from 'next';
 import { fetchPublicNews } from '@/lib/news';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
+import { getRequestPublicOrigin, getRequestPublicSiteKey } from '@/lib/request-site';
 
-const baseUrl = 'https://htxonline.vn';
+export const dynamic = 'force-dynamic';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [catalog, news] = await Promise.all([fetchPublicCatalog(200), fetchPublicNews('/news/public?limit=200')]);
+  const siteKey = await getRequestPublicSiteKey();
+  const baseUrl = await getRequestPublicOrigin();
+  const staticPaths =
+    siteKey === 'htxonline'
+      ? ['', '/gioi-thieu', '/ve-chung-toi', '/lien-he', '/dieu-khoan-su-dung', '/chinh-sach-bao-mat', '/chinh-sach-doi-tra', '/chinh-sach-van-hanh']
+      : siteKey === 'passport'
+        ? ['', '/gioi-thieu', '/ve-chung-toi', '/lien-he', '/dieu-khoan-su-dung', '/chinh-sach-bao-mat', '/chinh-sach-doi-tra', '/chinh-sach-van-hanh']
+        : [
+            '',
+            '/san-pham',
+            '/htx',
+            '/tin-tuc',
+            '/ve-chung-toi',
+            '/gioi-thieu',
+            '/huong-dan-mua-hang',
+            '/gio-hang',
+            '/thanh-toan',
+            '/tra-cuu-don-hang',
+            '/lien-he',
+            '/dieu-khoan-su-dung',
+            '/chinh-sach-bao-mat',
+            '/chinh-sach-doi-tra',
+            '/chinh-sach-van-hanh'
+          ];
 
   const staticPages: MetadataRoute.Sitemap = [
-    '',
-    '/san-pham',
-    '/htx',
-    '/tin-tuc',
-    '/ve-chung-toi',
-    '/gioi-thieu',
-    '/huong-dan-mua-hang',
-    '/thanh-toan',
-    '/tra-cuu-don-hang',
-    '/lien-he',
-    '/dieu-khoan-su-dung',
-    '/chinh-sach-bao-mat',
-    '/chinh-sach-doi-tra',
-    '/chinh-sach-van-hanh'
+    ...staticPaths
   ].map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
     changeFrequency: path === '' ? 'daily' : 'weekly',
     priority: path === '' ? 1 : 0.7
   }));
+
+  if (siteKey !== 'agripassport' && siteKey !== 'local') {
+    return staticPages;
+  }
+
+  const [catalog, news] = await Promise.all([fetchPublicCatalog(200), fetchPublicNews('/news/public?limit=200')]);
 
   const productPages: MetadataRoute.Sitemap = catalog.products.map((product) => ({
     url: `${baseUrl}/san-pham/${product.slug}`,

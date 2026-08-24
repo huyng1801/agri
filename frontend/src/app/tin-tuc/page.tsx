@@ -1,28 +1,24 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Search, Sparkles } from 'lucide-react';
-import { EmptyPublicState, NewsCard, PublicShell } from '@/components/public-marketplace';
+import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicNews, fetchPublicNewsCategories } from '@/lib/news';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'Tin tức',
-  description: 'Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc trên HTXONLINE.',
-  keywords: ['tin tức HTX', 'tin nông sản', 'chuyển đổi số hợp tác xã', 'QR Passport', 'HTXONLINE'],
-  alternates: {
-    canonical: 'https://htxonline.vn/tin-tuc'
-  },
-  openGraph: {
-    title: 'Tin tức HTXONLINE',
-    description: 'Cập nhật kiến thức, thị trường và chuyển đổi số cho hợp tác xã nông nghiệp.',
-    url: 'https://htxonline.vn/tin-tuc',
-    siteName: 'HTXONLINE',
-    locale: 'vi_VN',
-    type: 'website'
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    title: 'Tin tức',
+    description: 'Tin về hợp tác xã, dữ liệu sản phẩm, truy xuất, thị trường và chuyển đổi số nông nghiệp.',
+    path: '/tin-tuc',
+    keywords: ['tin tức hợp tác xã', 'tin nông sản', 'chuyển đổi số hợp tác xã', 'QR truy xuất', 'dữ liệu sản phẩm'],
+    openGraphTitle: 'Tin tức và cập nhật nền tảng',
+    openGraphDescription: 'Cập nhật kiến thức, thị trường, truy xuất và chuyển đổi số cho hợp tác xã nông nghiệp.'
+  });
+}
 
 type NewsPageProps = {
   searchParams?: Promise<{ search?: string; category?: string }>;

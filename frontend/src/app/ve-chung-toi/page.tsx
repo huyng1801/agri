@@ -1,21 +1,24 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Leaf, QrCode, ShieldCheck, ShoppingBag, Sparkles, Store, Target, Users } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
-import { PublicShell } from '@/components/public-marketplace';
 import { publicContainerClass } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Về chúng tôi',
-  description: 'HTXONLINE mang đến sàn nông sản số, QR truy xuất và giải pháp vận hành cho hợp tác xã Việt Nam.',
-  alternates: { canonical: 'https://htxonline.vn/ve-chung-toi' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Về chúng tôi',
+    description: 'HTXONLINE mang đến sàn nông sản số, QR truy xuất và giải pháp vận hành cho hợp tác xã Việt Nam.',
+    path: '/ve-chung-toi'
+  });
+}
 
 const valuePillars = [
   { title: 'Sàn thương mại cho HTX', description: 'Hiển thị sản phẩm công khai, hồ sơ HTX và kênh tiếp cận người mua trên toàn quốc mà không cần website riêng.', icon: Store },
@@ -42,7 +45,8 @@ const journeySteps = [
 const trustSignals = ['Sản phẩm đã đăng công khai', 'QR mở trực tiếp cho khách', 'Quản lý vùng trồng tập trung', 'COD theo quy trình HTX'] as const;
 
 export default async function AboutUsPage() {
-  const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile()]);
+  const siteKey = await getRequestPublicSiteKey();
+  const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
   const stats = [
     { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX đang hiển thị trên sàn' },
     { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm công khai đang bán' },
@@ -96,7 +100,7 @@ export default async function AboutUsPage() {
                 <div className="flex items-center gap-3">
                   <PublicLogo size={34} />
                   <div>
-                    <p className="text-[0.82rem] font-bold">HTXONLINE</p>
+                    <p className="text-[0.82rem] font-bold">{siteProfile.appName}</p>
                     <p className="text-[11px] text-slate-500">Số hóa gọn hơn trên mobile</p>
                   </div>
                 </div>
@@ -124,7 +128,7 @@ export default async function AboutUsPage() {
                     <div className="flex items-center gap-3">
                       <PublicLogo size={42} />
                       <div>
-                        <p className="text-sm font-bold">HTXONLINE</p>
+                        <p className="text-sm font-bold">{siteProfile.appName}</p>
                         <p className="text-xs text-white/75">Đồng hành số hóa cho hợp tác xã</p>
                       </div>
                     </div>
@@ -160,7 +164,7 @@ export default async function AboutUsPage() {
             <article className="rounded-[1.6rem] border border-slate-200 bg-white p-4 text-ink shadow-sm sm:p-7">
               <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf/80 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
               <p className="mt-3 text-[0.96rem] leading-[1.7] text-slate-700 sm:text-base sm:leading-[1.8]">
-                HTXONLINE ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
+                {siteProfile.appName} ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
                 QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
               </p>
               <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-slate-600 sm:mt-3 sm:text-sm sm:leading-[1.75]">
@@ -217,7 +221,7 @@ export default async function AboutUsPage() {
             </article>
 
             <article className="rounded-[1.7rem] bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin công khai trên HTXONLINE</p>
+              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin công khai trên {siteProfile.appName}</p>
               <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Kênh liên hệ dành cho khách hàng và HTX</h2>
               <p className="mt-2.5 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
                 Bộ thông tin này đang được dùng đồng nhất ở footer, liên hệ và các trang chính sách theo nội dung bạn cung cấp trong tài liệu cập nhật.
@@ -247,7 +251,7 @@ export default async function AboutUsPage() {
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Thành công được tạo dựng từ giá trị khác biệt</h2>
               <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                HTXONLINE giúp HTX hiện diện trên thị trường số bằng dữ liệu minh bạch, quy trình bán hàng rõ ràng và trải nghiệm mua sắm đơn giản.
+                {siteProfile.appName} giúp HTX hiện diện trên thị trường số bằng dữ liệu minh bạch, quy trình bán hàng rõ ràng và trải nghiệm mua sắm đơn giản.
               </p>
             </div>
             <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-2 md:gap-4">
@@ -312,7 +316,7 @@ export default async function AboutUsPage() {
           <div className={publicContainerClass}>
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Giá trị cốt lõi</h2>
-              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">Những nguyên tắc định hướng mọi sản phẩm và dịch vụ trên HTXONLINE.</p>
+              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">Những nguyên tắc định hướng mọi sản phẩm và dịch vụ trên {siteProfile.appName}.</p>
             </div>
             <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 lg:grid-cols-5">
               {coreValues.map((item) => (
@@ -342,7 +346,7 @@ export default async function AboutUsPage() {
               <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Đối tác & niềm tin</p>
                <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{catalog.cooperatives.length || 12}+ HTX đồng hành</h2>
               <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                Cảm ơn các hợp tác xã và người mua đã tin tưởng HTXONLINE để kết nối nông sản minh bạch trên môi trường số.
+                Cảm ơn các hợp tác xã và người mua đã tin tưởng {siteProfile.appName} để kết nối nông sản minh bạch trên môi trường số.
               </p>
               <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
                 {featuredCooperatives.map((coop) => (
@@ -364,7 +368,7 @@ export default async function AboutUsPage() {
             <div className="border-b border-slate-100 bg-mint/70 px-4 py-4 sm:px-8 sm:py-6">
               <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
                 <div>
-                  <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bắt đầu cùng HTXONLINE</p>
+                  <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bắt đầu cùng {siteProfile.appName}</p>
                   <h2 className="mt-2 max-w-2xl text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?</h2>
                 </div>
                 <p className="max-w-md text-[0.84rem] leading-[1.6] text-slate-600 sm:text-sm sm:leading-6">

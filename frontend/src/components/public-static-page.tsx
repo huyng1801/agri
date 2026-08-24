@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { PublicShell } from './public-marketplace';
 import { PublicImage } from './public-image';
 import { PublicPageHeader, PublicPageMain } from './public-layout';
+import { PublicShell } from './public-shell';
 import { Panel } from './ui';
 
 export function PublicStaticPage({

@@ -1,12 +1,8 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar, Phone, QrCode, Search } from 'lucide-react';
 import { AddToCartButton } from './add-to-cart-button';
-import { PublicBottomNav } from './public-bottom-nav';
-import { PublicFooter } from './public-footer';
-import { PublicHeader } from './public-header';
 import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_NEWS_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { publicCardClass } from './public-layout';
-import { FloatingContactClient } from './public-site-support';
 import type { NewsArticle } from '@/lib/news';
 import { Button, Panel, cn } from './ui';
 
@@ -79,24 +75,6 @@ const defaultCooperativeAvatar = DEFAULT_COOPERATIVE_IMAGE;
 
 export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUrl'>) {
   return cooperative.avatarUrl || defaultCooperativeAvatar;
-}
-
-export function PublicShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div id="top" className="mobile-app-scroll min-h-screen bg-transparent text-ink">
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-leaf focus:shadow-md"
-      >
-        Bỏ qua đến nội dung chính
-      </a>
-      <PublicHeader />
-      {children}
-      <FloatingContactClient />
-      <PublicBottomNav />
-      <PublicFooter />
-    </div>
-  );
 }
 
 export function PublicSearch({

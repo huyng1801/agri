@@ -3,17 +3,20 @@ import { Building2, MapPin, ShieldCheck, Sparkles } from 'lucide-react';
 import {
   CooperativeCard,
   EmptyPublicState,
-  PublicSearch,
-  PublicShell
+  PublicSearch
 } from '@/components/public-marketplace';
 import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
 
-export const metadata: Metadata = {
-  title: 'Danh sách HTX',
-  description: 'Khám phá hợp tác xã đang bán sản phẩm nông nghiệp minh bạch trên sàn HTXONLINE.',
-  alternates: { canonical: 'https://htxonline.vn/htx' }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    title: 'Danh sách HTX',
+    description: 'Khám phá hợp tác xã đang công khai dữ liệu sản phẩm, QR hoặc hồ sơ truy xuất trên nền tảng.',
+    path: '/htx'
+  });
+}
 
 type CooperativesPageProps = {
   searchParams?: Promise<{ search?: string }>;

@@ -16,6 +16,11 @@ export class PassportsService {
     private readonly audit: AuditLogsService
   ) {}
 
+  private publicPassportUrl(code: string) {
+    const baseUrl = (process.env.PASSPORT_PUBLIC_URL || process.env.FRONTEND_URL || 'https://hochieunongnghiep.com').replace(/\/+$/, '');
+    return `${baseUrl}/passport/${code}`;
+  }
+
   async list(user: AuthUser, query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
     const where: Prisma.TraceabilityPassportWhereInput = {
@@ -59,7 +64,7 @@ export class PassportsService {
 
     const code = `AP-${nanoid(10).toUpperCase()}`;
     const publicSlug = `${product.slug}-${code.toLowerCase()}`;
-    const url = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${code}`;
+    const url = this.publicPassportUrl(code);
     const qrDataUrl = await QRCode.toDataURL(url, {
       errorCorrectionLevel: 'M',
       margin: 1,
@@ -183,7 +188,7 @@ export class PassportsService {
         farmingLogs
       },
       verified: true,
-      publicUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/passport/${passport.passportCode}`
+      publicUrl: this.publicPassportUrl(passport.passportCode)
     };
   }
 

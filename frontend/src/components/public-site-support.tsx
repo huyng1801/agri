@@ -4,7 +4,8 @@ import { ChevronUp, MessageCircle, Phone } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
-import { defaultPublicSiteProfile, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
+import type { PublicSiteKey } from '@/lib/domain';
+import { defaultPublicSiteProfileForSite, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
 
 export function FooterContactInfo() {
   const profile = usePublicSiteProfile();
@@ -23,9 +24,9 @@ export function FooterContactInfo() {
   );
 }
 
-export function FloatingContactClient() {
+export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const pathname = usePathname();
-  const siteProfile = usePublicSiteProfile();
+  const siteProfile = usePublicSiteProfile(siteKey);
   const [showTop, setShowTop] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
@@ -111,8 +112,8 @@ export function FloatingContactClient() {
   );
 }
 
-function usePublicSiteProfile() {
-  const [profile, setProfile] = useState<PublicSiteProfile>(defaultPublicSiteProfile);
+function usePublicSiteProfile(siteKey: PublicSiteKey = 'agripassport') {
+  const [profile, setProfile] = useState<PublicSiteProfile>(defaultPublicSiteProfileForSite(siteKey));
 
   useEffect(() => {
     let active = true;
@@ -123,7 +124,7 @@ function usePublicSiteProfile() {
         if (!response.ok) return;
         const body = (await response.json()) as ApiEnvelope<Partial<PublicSiteProfile>>;
         if (!active) return;
-        setProfile(normalizePublicSiteProfile(body.data));
+        setProfile(normalizePublicSiteProfile(body.data, siteKey));
       } catch {
         // Keep default public profile when API is unavailable.
       }
@@ -133,7 +134,7 @@ function usePublicSiteProfile() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [siteKey]);
 
   return profile;
 }

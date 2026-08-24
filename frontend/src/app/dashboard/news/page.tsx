@@ -27,6 +27,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react';
 import { API_URL, apiFetch } from '@/lib/api';
+import { marketplaceUrl } from '@/lib/domain';
 import { formatDate } from '@/lib/format';
 import type { NewsArticle, NewsCategory, NewsList } from '@/lib/news';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
@@ -231,7 +232,7 @@ const editorSnippets: Array<[LucideIcon, string]> = [
   [Heading3, '<h3>Tiêu đề H3</h3>'],
   [Bold, '<strong>chữ đậm</strong>'],
   [Italic, '<em>chữ nghiêng</em>'],
-  [LinkIcon, '<a href="https://htxonline.vn">liên kết</a>'],
+  [LinkIcon, '<a href="https://agripassport.com">liên kết</a>'],
   [List, '<ul><li>Mục</li></ul>'],
   [ListOrdered, '<ol><li>Mục</li></ol>'],
   [Quote, '<blockquote>Trích dẫn</blockquote>']
@@ -264,7 +265,7 @@ const articleTemplates = [
     label: 'Giới thiệu HTX',
     description: 'Dùng cho bài kể câu chuyện HTX, vùng trồng, con người và sản phẩm nổi bật.',
     categoryHint: 'Danh mục gợi ý: Câu chuyện HTX',
-    title: 'Câu chuyện từ một hợp tác xã đang chuyển đổi số cùng HTXONLINE',
+    title: 'Câu chuyện từ một hợp tác xã đang chuẩn hóa dữ liệu cùng Agripassport',
     excerpt: 'Giới thiệu ngắn về HTX, sản phẩm chủ lực và điều gì khiến đơn vị này khác biệt trên thị trường.',
     schemaType: 'Article',
     bodyHtml: `<h2>HTX là ai?</h2>
@@ -276,7 +277,7 @@ const articleTemplates = [
   <li>Quy trình truy xuất:</li>
   <li>Cam kết chất lượng:</li>
 </ul>
-<h2>Vì sao HTX tham gia HTXONLINE?</h2>
+<h2>Vì sao HTX đưa dữ liệu lên Agripassport?</h2>
 <p>Chia sẻ ngắn về nhu cầu minh bạch thông tin, mở rộng thị trường hoặc quản lý đơn hàng hiệu quả hơn.</p>
 <h2>Sản phẩm nên xem ngay</h2>
 <p>Chèn liên kết hoặc mô tả 1-3 sản phẩm công khai mà bạn muốn đẩy traffic.</p>`
@@ -286,7 +287,7 @@ const articleTemplates = [
     label: 'Hướng dẫn mua hàng',
     description: 'Dùng cho bài hướng dẫn thao tác, cách đặt hàng, cách quét QR và xem thông tin công khai.',
     categoryHint: 'Danh mục gợi ý: Hướng dẫn mua hàng',
-    title: 'Cách chọn sản phẩm và đặt hàng nhanh trên HTXONLINE',
+    title: 'Cách chọn sản phẩm và đặt hàng nhanh trên Agripassport',
     excerpt: 'Bài hướng dẫn ngắn giúp người mua tìm sản phẩm, kiểm tra QR Passport và gửi đơn hàng thuận tiện.',
     schemaType: 'BlogPosting',
     bodyHtml: `<h2>Bước 1: Tìm đúng sản phẩm</h2>
@@ -308,9 +309,13 @@ const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
   { label: 'Trang sản phẩm', href: '/san-pham', description: 'Kéo traffic về danh sách sản phẩm công khai.' },
   { label: 'Danh sách HTX', href: '/htx', description: 'Dẫn người đọc sang trang hợp tác xã công khai.' },
   { label: 'Liên hệ tư vấn', href: '/lien-he', description: 'Gắn CTA khi bài cần chốt lead nhanh.' },
-  { label: 'Giới thiệu nền tảng', href: '/gioi-thieu', description: 'Phù hợp bài giải thích mô hình HTXONLINE.' },
-  { label: 'Tin tức HTXONLINE', href: '/tin-tuc', description: 'Dùng để liên kết lại hub nội dung chính.' }
+  { label: 'Giới thiệu nền tảng', href: '/gioi-thieu', description: 'Phù hợp bài giải thích mô hình Agripassport.' },
+  { label: 'Tin tức Agripassport', href: '/tin-tuc', description: 'Dùng để liên kết lại hub nội dung chính.' }
 ];
+
+function buildPublicNewsUrl(slug: string) {
+  return marketplaceUrl(`/tin-tuc/${slug}`);
+}
 
 function buildPreparedNewsForm(form: NewsForm): NewsForm {
   const preparedBodyHtml = buildPreparedBodyHtml(form);
@@ -335,7 +340,7 @@ function buildPreparedNewsForm(form: NewsForm): NewsForm {
     focusKeyword: form.focusKeyword || form.title.trim(),
     seoTitle: form.seoTitle || seoTitle,
     seoDescription: form.seoDescription || fallbackDescription,
-    canonicalUrl: form.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+    canonicalUrl: form.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
     ogTitle: form.ogTitle || socialTitle,
     ogDescription: form.ogDescription || form.seoDescription || fallbackDescription,
     ogImageUrl: form.ogImageUrl || form.coverImageUrl,
@@ -387,7 +392,7 @@ export default function NewsDashboardPage() {
   const seo = useMemo(() => clientSeoScore(form), [form]);
   const articleItems = articles.data?.data.data ?? [];
   const categoryItems = categories.data?.data ?? [];
-  const permalink = form.canonicalUrl || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`;
+  const permalink = form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug');
   const excerptLength = form.excerpt.trim().length;
   const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
@@ -707,7 +712,7 @@ export default function NewsDashboardPage() {
       return;
     }
     if (snippet.startsWith('<a ')) {
-      const url = window.prompt('Nhập liên kết cần chèn', 'https://htxonline.vn');
+      const url = window.prompt('Nhập liên kết cần chèn', marketplaceUrl('/'));
       if (!url) return;
       focusVisualEditor();
       document.execCommand('createLink', false, url);
@@ -949,7 +954,7 @@ export default function NewsDashboardPage() {
         focusKeyword: current.focusKeyword || current.title.trim(),
         seoTitle: current.seoTitle || title,
         seoDescription: current.seoDescription || fallbackDescription,
-        canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+        canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
         ogTitle: current.ogTitle || title,
         ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
         ogImageUrl: current.ogImageUrl || current.coverImageUrl,
@@ -998,7 +1003,7 @@ export default function NewsDashboardPage() {
       focusKeyword: current.focusKeyword || current.title.trim(),
       seoTitle,
       seoDescription: current.seoDescription || fallbackDescription,
-      canonicalUrl: current.canonicalUrl || (canonicalSlug ? `https://htxonline.vn/tin-tuc/${canonicalSlug}` : ''),
+      canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
       ogTitle: current.ogTitle || socialTitle,
       ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
       ogImageUrl: current.ogImageUrl || current.coverImageUrl,
@@ -1236,7 +1241,7 @@ export default function NewsDashboardPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tin tức</h1>
-          <p className="text-sm text-slate-600">Đăng bài công khai cho htxonline.vn/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
+          <p className="text-sm text-slate-600">Đăng bài công khai cho agripassport.com/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1">
@@ -2632,7 +2637,7 @@ export default function NewsDashboardPage() {
                       data-testid="news-canonical-url-input"
                       value={form.canonicalUrl}
                       onChange={(event) => update('canonicalUrl', event.target.value)}
-                      placeholder="https://htxonline.vn/tin-tuc/ten-bai-viet"
+                      placeholder="https://agripassport.com/tin-tuc/ten-bai-viet"
                     />
                   </label>
                   <label className="space-y-1 text-sm font-semibold">
@@ -3293,7 +3298,7 @@ export default function NewsDashboardPage() {
 
             <div data-testid="news-preview-google" className="mt-4 rounded-md border border-slate-200 p-3">
               <p className="truncate text-lg text-blue-700">{form.seoTitle || form.title || 'Tiêu đề SEO'}</p>
-              <p className="truncate text-sm text-emerald-700">{form.canonicalUrl || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`}</p>
+              <p className="truncate text-sm text-emerald-700">{form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug')}</p>
               <p className="mt-1 text-sm text-slate-600">{form.seoDescription || form.excerpt || 'Meta description'}</p>
             </div>
 
@@ -4073,7 +4078,7 @@ function buildPreparedDiffs(form: NewsForm, prepared: NewsForm): PreparedDiffIte
 }
 
 function buildResolvedMetaPreview(form: NewsForm): ResolvedMetaPreview {
-  const canonical = form.canonicalUrl.trim() || `https://htxonline.vn/tin-tuc/${form.slug || 'slug'}`;
+  const canonical = form.canonicalUrl.trim() || buildPublicNewsUrl(form.slug || 'slug');
   const title = (form.seoTitle || form.title || 'Tiêu đề SEO').trim();
   const description = (form.seoDescription || form.excerpt || stripHtml(form.bodyHtml).slice(0, 160) || 'Mô tả SEO').trim();
   const ogTitle = (form.ogTitle || title).trim();
@@ -4397,7 +4402,7 @@ function suggestPrimaryInternalLink(form: NewsForm) {
     };
   }
   return {
-    label: 'Khám phá thêm sản phẩm và hợp tác xã trên HTXONLINE',
+    label: 'Khám phá thêm sản phẩm và hợp tác xã trên Agripassport',
     href: '/san-pham'
   };
 }

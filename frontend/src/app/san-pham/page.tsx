@@ -2,25 +2,21 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, QrCode, Search, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { EmptyPublicState, ProductCard, PublicProduct, PublicShell, publicListItems } from '@/components/public-marketplace';
+import { EmptyPublicState, ProductCard, PublicProduct, publicListItems } from '@/components/public-marketplace';
 import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { Button } from '@/components/ui';
 
-export const metadata: Metadata = {
-  title: 'Sản phẩm',
-  description: 'Sàn sản phẩm nông nghiệp, đặc sản địa phương và sản phẩm có QR Passport từ các hợp tác xã trên HTXONLINE.',
-  alternates: {
-    canonical: 'https://htxonline.vn/san-pham'
-  },
-  openGraph: {
-    title: 'Sản phẩm HTXONLINE',
-    description: 'Tìm kiếm sản phẩm nông nghiệp từ hợp tác xã, lọc theo giá, địa phương và QR Passport.',
-    url: 'https://htxonline.vn/san-pham',
-    siteName: 'HTXONLINE',
-    locale: 'vi_VN',
-    type: 'website'
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPublicMetadata({
+    title: 'Sản phẩm',
+    description: 'Danh mục sản phẩm nông nghiệp, đặc sản địa phương và sản phẩm có QR truy xuất từ các hợp tác xã trên nền tảng.',
+    path: '/san-pham',
+    openGraphTitle: 'Danh mục sản phẩm công khai',
+    openGraphDescription: 'Tìm kiếm sản phẩm nông nghiệp từ hợp tác xã, lọc theo giá, địa phương và trạng thái QR truy xuất.'
+  });
+}
 
 type ProductList = {
   data: PublicProduct[];

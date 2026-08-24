@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Calendar, Eye, UserRound } from 'lucide-react';
-import { EmptyPublicState, NewsCard, PublicShell } from '@/components/public-marketplace';
+import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import {
   articleDescription,
   articleImage,
@@ -13,6 +14,9 @@ import {
   type NewsArticle
 } from '@/lib/news';
 import { formatDate } from '@/lib/format';
+import { getPublicSiteProfile } from '@/lib/public-site';
+import { brandizeSiteText } from '@/lib/page-metadata';
+import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 import { Badge, Panel } from '@/components/ui';
 
 type PageProps = {
@@ -33,11 +37,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = articleTitle(article);
   const description = articleDescription(article);
-  const canonical = article.canonicalUrl || `https://htxonline.vn/tin-tuc/${article.slug}`;
+  const siteKey = await getRequestPublicSiteKey();
+  const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const image = articleImage(article);
   const keywords = article.tagsJson?.length
     ? article.tagsJson
-    : [article.focusKeyword, article.category?.name, 'tin tức HTXONLINE'].filter((value): value is string => Boolean(value));
+    : [article.focusKeyword, article.category?.name, brandizeSiteText('tin tức nền tảng', siteKey)].filter((value): value is string => Boolean(value));
 
   return {
     title,
@@ -49,10 +54,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       follow: !article.robotsNoFollow
     },
     openGraph: {
-      title: article.ogTitle || title,
-      description: article.ogDescription || description,
+      title: brandizeSiteText(article.ogTitle || title, siteKey),
+      description: brandizeSiteText(article.ogDescription || description, siteKey),
       url: canonical,
-      siteName: 'HTXONLINE',
+      siteName: brandizeSiteText('AGRIPASSPORT', siteKey),
       locale: 'vi_VN',
       type: 'article',
       publishedTime: article.publishedAt ?? undefined,
@@ -73,6 +78,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function NewsDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const article = await fetchPublicNewsDetail(slug);
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   if (!article) {
     return (
       <PublicShell>
@@ -99,7 +106,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
   }
 
   const related = await getRelatedArticles(article);
-  const canonical = article.canonicalUrl || `https://htxonline.vn/tin-tuc/${article.slug}`;
+  const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
+  const logoUrl = await getRequestAbsoluteUrl('/logo.png');
   const image = articleImage(article);
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -114,14 +122,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
     mainEntityOfPage: canonical,
     author: {
       '@type': 'Person',
-      name: article.author?.fullName || 'HTXONLINE'
+      name: article.author?.fullName || siteProfile.appName
     },
     publisher: {
       '@type': 'Organization',
-      name: 'HTXONLINE',
+      name: siteProfile.appName,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://htxonline.vn/logo.png'
+        url: logoUrl
       }
     }
   };
@@ -149,7 +157,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
               </span>
               <span className="inline-flex items-center gap-1">
                 <UserRound size={15} aria-hidden="true" />
-                {article.author?.fullName || 'HTXONLINE'}
+                {article.author?.fullName || siteProfile.appName}
               </span>
               <span className="inline-flex items-center gap-1">
                 <Eye size={15} aria-hidden="true" />
@@ -185,8 +193,8 @@ export default async function NewsDetailPage({ params }: PageProps) {
         )}
 
         <Panel className="mt-6 text-center sm:mt-8">
-          <h2 className="text-xl font-bold text-ink">Kết nối cùng HTXONLINE</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.</p>
+          <h2 className="text-xl font-bold text-ink">{brandizeSiteText('Kết nối cùng HTXONLINE', siteKey)}</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">{brandizeSiteText('Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.', siteKey)}</p>
           <Link href="/san-pham" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
             Xem sản phẩm công khai
           </Link>

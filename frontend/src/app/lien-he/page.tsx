@@ -1,27 +1,37 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Clock3, Download, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicMapPreview } from '@/components/public-map-preview';
-import { PublicShell } from '@/components/public-marketplace';
 import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Liên hệ',
-  description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
-  alternates: { canonical: 'https://htxonline.vn/lien-he' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Liên hệ',
+    description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
+    path: '/lien-he'
+  });
+}
 
 export default async function ContactPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
   const mapLocation = getPublicMapLocation(siteProfile);
   const showMapPreview = Boolean(siteProfile.address.trim());
+  const supportTagline =
+    siteKey === 'htxonline'
+      ? 'Hệ thống quản trị nội bộ cho hợp tác xã'
+      : siteKey === 'passport'
+        ? 'Hồ sơ QR công khai cho nông sản'
+        : 'Sàn nông sản số cho hợp tác xã';
 
   return (
     <PublicShell>
@@ -71,7 +81,7 @@ export default async function ContactPage() {
                   <PublicLogo size={44} />
                   <div>
                     <h2 className="text-lg font-bold text-ink sm:text-xl">{siteProfile.appName}</h2>
-                    <p className="text-sm font-semibold text-leaf">Sàn nông sản số cho hợp tác xã</p>
+                    <p className="text-sm font-semibold text-leaf">{supportTagline}</p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-3.5 text-sm leading-6 text-slate-700">
@@ -127,7 +137,7 @@ export default async function ContactPage() {
                       <Download size={18} aria-hidden="true" />
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-bold text-ink">Giới thiệu HTXONLINE</p>
+                      <p className="text-sm font-bold text-ink">Giới thiệu {siteProfile.appName}</p>
                       <p className="text-xs text-slate-500">Xem giải pháp sàn + QR Passport cho HTX</p>
                     </div>
                     <Link href="/gioi-thieu" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-mint px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5">
@@ -177,7 +187,7 @@ export default async function ContactPage() {
                           <MapPinned size={14} aria-hidden="true" />
                           Điểm hỗ trợ
                         </p>
-                        <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">Văn phòng hỗ trợ HTXONLINE</h3>
+                        <h3 className="mt-4 max-w-sm text-[1.9rem] font-bold leading-tight text-ink">Văn phòng hỗ trợ {siteProfile.appName}</h3>
                         <p className="mt-3 max-w-md text-sm leading-6 text-slate-600">
                           Bản đồ đang được cập nhật. Bạn vẫn có thể liên hệ trước để được đội vận hành hướng dẫn đường đi hoặc hẹn lịch tư vấn phù hợp.
                         </p>
@@ -231,7 +241,7 @@ export default async function ContactPage() {
                   <PublicLogo size={52} />
                   <div>
                     <p className="text-sm font-semibold uppercase tracking-wide text-leaf">Form tư vấn</p>
-                    <h2 className="text-2xl font-bold text-ink">Kết nối với đội vận hành HTXONLINE</h2>
+                    <h2 className="text-2xl font-bold text-ink">Kết nối với đội vận hành {siteProfile.appName}</h2>
                   </div>
                 </div>
                 <p className="max-w-md text-sm leading-6 text-slate-600">Điền thông tin bên dưới. Chúng tôi sẽ phản hồi qua điện thoại hoặc email trong thời gian sớm nhất.</p>
@@ -307,7 +317,7 @@ export default async function ContactPage() {
                   <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-6 text-slate-600">
-                  Thông tin công khai đang phục vụ tư vấn và hỗ trợ người dùng trên HTXONLINE. Khi cần xác minh pháp lý, bạn có thể đối chiếu thêm với bộ hồ sơ ở cột bên cạnh.
+                  Thông tin công khai đang phục vụ tư vấn và hỗ trợ người dùng trên {siteProfile.appName}. Khi cần xác minh pháp lý, bạn có thể đối chiếu thêm với bộ hồ sơ ở cột bên cạnh.
                 </p>
               </div>
             </article>

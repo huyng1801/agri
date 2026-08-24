@@ -1,17 +1,21 @@
-import type { Metadata } from 'next';
 import { PublicPolicyBody } from '@/components/public-policy-body';
 import { PublicStaticPage } from '@/components/public-static-page';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Điều khoản sử dụng',
-  description: 'Quy định sử dụng nền tảng HTXONLINE dành cho hợp tác xã, khách hàng và người truy cập.',
-  alternates: { canonical: 'https://htxonline.vn/dieu-khoan-su-dung' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Điều khoản sử dụng',
+    description: 'Quy định sử dụng nền tảng HTXONLINE dành cho hợp tác xã, khách hàng và người truy cập.',
+    path: '/dieu-khoan-su-dung'
+  });
+}
 
 export default async function TermsPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   const sections = [
     {
       title: '1. Giới thiệu và phạm vi áp dụng',
@@ -78,7 +82,7 @@ export default async function TermsPage() {
         'Mọi tranh chấp phát sinh sẽ được ưu tiên giải quyết thông qua thương lượng. Nếu sau 30 ngày các bên không đạt được thỏa thuận, tranh chấp sẽ được giải quyết tại Tòa án có thẩm quyền tại Việt Nam theo quy định của pháp luật.'
       ]
     },
-    buildPolicyContactSection(siteProfile, 'Mọi thắc mắc liên quan đến Điều khoản sử dụng, vui lòng liên hệ HTXONLINE qua các kênh dưới đây.')
+    buildPolicyContactSection(siteProfile, `Mọi thắc mắc liên quan đến Điều khoản sử dụng, vui lòng liên hệ ${siteProfile.appName} qua các kênh dưới đây.`, siteKey)
   ];
 
   return (

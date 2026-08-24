@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Newspaper, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
+import { Briefcase, Home, LogIn, Newspaper, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
 import { cn } from './ui';
+import type { PublicSiteKey } from '@/lib/domain';
 
-const items = [
+const marketplaceItems = [
   { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
   { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
   { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
@@ -15,10 +16,19 @@ const items = [
   { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
 ] as const;
 
-export function PublicBottomNav() {
+const internalItems = [
+  { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
+  { href: '/gioi-thieu', label: 'Vai trò', icon: Briefcase, match: (path: string) => path.startsWith('/gioi-thieu') || path.startsWith('/ve-chung-toi') },
+  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') },
+  { href: '/lien-he', label: 'Liên hệ', icon: Store, match: (path: string) => path.startsWith('/lien-he') },
+  { href: '/login', label: 'Đăng nhập', icon: LogIn, match: (path: string) => path.startsWith('/login') }
+] as const;
+
+export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const pathname = usePathname();
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
+  const items = siteKey === 'htxonline' ? internalItems : marketplaceItems;
   const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
   useEffect(() => {
@@ -97,7 +107,7 @@ export function PublicBottomNav() {
             >
               <span className="relative">
                 <Icon size={15} aria-hidden="true" />
-                {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
+                {item.href === '/gio-hang' && siteKey !== 'htxonline' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>
             </Link>

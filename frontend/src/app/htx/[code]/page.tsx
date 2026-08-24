@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Phone } from 'lucide-react';
-import { ProductCard, PublicShell, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
+import { ProductCard, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
 import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import { Button, Panel } from '@/components/ui';
+import { brandizeSiteText } from '@/lib/page-metadata';
 import { fetchProductsForCooperative } from '@/lib/public-catalog';
+import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 
 type CooperativeDetailPageProps = {
   params: Promise<{ code: string }>;
@@ -18,10 +21,11 @@ export async function generateMetadata({ params }: CooperativeDetailPageProps): 
   if (!cooperative) {
     return { title: 'Không tìm thấy HTX' };
   }
+  const siteKey = await getRequestPublicSiteKey();
   return {
     title: cooperative.name,
-    description: `Xem sản phẩm, vùng trồng và thông tin công khai của ${cooperative.name} trên HTXONLINE.`,
-    alternates: { canonical: `https://htxonline.vn/htx/${cooperative.code}` }
+    description: brandizeSiteText(`Xem dữ liệu sản phẩm và thông tin công khai của ${cooperative.name} trên nền tảng.`, siteKey),
+    alternates: { canonical: await getRequestAbsoluteUrl(`/htx/${cooperative.code}`) }
   };
 }
 

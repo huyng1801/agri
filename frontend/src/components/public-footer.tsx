@@ -1,25 +1,102 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
+import type { PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
 
 const footerLinkClass = 'inline-flex min-h-11 items-center text-sm text-white/90 transition hover:text-white';
 
-export async function PublicFooter() {
-  const profile = await getPublicSiteProfile();
+export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
+  const profile = await getPublicSiteProfile(siteKey);
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
   const showMapPreview = Boolean(profile.address.trim());
+  const isInternal = siteKey === 'htxonline';
+  const isPassport = siteKey === 'passport';
+  const footerHeadline = isInternal
+    ? 'Chuẩn hóa vận hành nội bộ của hợp tác xã bằng một hệ thống số rõ ràng và dễ đối soát.'
+    : isPassport
+      ? 'Mở QR để xem hồ sơ số, nguồn gốc và thông tin công khai của sản phẩm nhanh hơn.'
+      : 'Đưa dữ liệu sản phẩm nông nghiệp lên một nền tảng thống nhất, rõ ràng và dễ kết nối tiêu thụ.';
+  const brandTagline = isInternal
+    ? 'Nền tảng quản trị nội bộ cho hợp tác xã'
+    : isPassport
+      ? 'QR và hồ sơ số cho sản phẩm nông nghiệp'
+      : 'Nền tảng dữ liệu sản phẩm nông nghiệp';
+  const brandDescription = isInternal
+    ? 'Tập trung hồ sơ thành viên, lịch sử sử dụng dịch vụ, thu chi, xuất nhập và báo cáo quản trị nội bộ cho hợp tác xã.'
+    : isPassport
+      ? 'Hiển thị hồ sơ sản phẩm, vùng trồng, nhật ký và chứng nhận công khai để người mua và đối tác truy xuất nhanh hơn.'
+      : 'Chuẩn hóa thông tin hợp tác xã, sản phẩm, vùng trồng, nhật ký, chứng nhận và QR truy xuất trên một hệ thống công khai thống nhất.';
+  const serviceTitle = isInternal ? 'Điểm truy cập nhanh' : isPassport ? 'Luồng truy xuất' : 'Giải pháp và dữ liệu';
+  const serviceLinks = isInternal
+    ? [
+        { href: '/login', label: 'Đăng nhập quản trị' },
+        { href: '/gioi-thieu', label: 'Vai trò nền tảng' },
+        { href: '/tin-tuc', label: 'Tin tức vận hành' },
+        { href: '/lien-he', label: 'Liên hệ triển khai' }
+      ]
+    : isPassport
+      ? [
+          { href: '/passport/DEMO-PASSPORT', label: 'Mở hồ sơ mẫu' },
+          { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
+          { href: '/ve-chung-toi', label: 'Cách hoạt động' },
+          { href: '/lien-he', label: 'Liên hệ hỗ trợ' }
+        ]
+      : [
+          { href: '/san-pham', label: 'Danh mục sản phẩm' },
+          { href: '/htx', label: 'Hợp tác xã' },
+          { href: '/san-pham?hasQr=true', label: 'QR truy xuất' },
+          { href: '/thanh-toan', label: 'Đặt hàng COD' }
+        ];
+  const processLinks = isInternal
+    ? [
+        { href: '/ve-chung-toi', label: 'Về chúng tôi' },
+        { href: '/gioi-thieu', label: 'Vai trò HTXONLINE' },
+        { href: '/tin-tuc', label: 'Tin tức' },
+        { href: '/lien-he', label: 'Liên hệ' }
+      ]
+    : [
+        { href: '/ve-chung-toi', label: 'Về chúng tôi' },
+        { href: '/gioi-thieu', label: 'Giới thiệu nền tảng' },
+        { href: '/huong-dan-mua-hang', label: 'Hướng dẫn' },
+        { href: '/tra-cuu-don-hang', label: 'Tra cứu đơn hàng' }
+      ];
+  const supportNote = isInternal
+    ? 'Nếu cần hỗ trợ quản trị, phân quyền hoặc đồng bộ dữ liệu giữa các lớp hệ thống, hãy liên hệ hotline hoặc email.'
+    : isPassport
+      ? 'Nếu quét QR không ra hồ sơ hoặc thông tin truy xuất chưa đúng, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.'
+      : 'Nếu tra cứu QR hoặc đơn hàng gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.';
+  const mapHint = isInternal
+    ? 'Xem nhanh vị trí hỗ trợ triển khai, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.'
+    : isPassport
+      ? 'Xem nhanh vị trí hỗ trợ hồ sơ số, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.'
+      : 'Xem nhanh vị trí hỗ trợ nền tảng, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.';
+  const emptyMapText = isInternal
+    ? 'Liên hệ HTXONLINE để được hỗ trợ tư vấn triển khai và vận hành nội bộ phù hợp.'
+    : isPassport
+      ? 'Liên hệ đội vận hành Hộ chiếu nông nghiệp để được hỗ trợ cấu hình QR và hồ sơ số.'
+      : 'Liên hệ AGRIPASSPORT để được hỗ trợ chuẩn hóa dữ liệu sản phẩm và truy xuất.';
+  const transparencyText = isInternal
+    ? 'HTXONLINE hỗ trợ hợp tác xã số hóa vận hành nội bộ, còn dữ liệu sản phẩm và truy xuất được kết nối sang AGRIPASSPORT khi cần công khai.'
+    : isPassport
+      ? 'Hộ chiếu nông nghiệp hiển thị hồ sơ công khai được tạo từ dữ liệu sản phẩm trên AGRIPASSPORT.'
+      : 'AGRIPASSPORT hỗ trợ hợp tác xã chuẩn hóa dữ liệu sản phẩm, vùng trồng, nhật ký và QR truy xuất để tăng tính minh bạch.';
+  const operatorLine = isInternal
+    ? 'Dữ liệu sản phẩm và hồ sơ công khai được kết nối với AGRIPASSPORT khi cần công khai hoặc tiêu thụ.'
+    : isPassport
+      ? 'Được tạo từ dữ liệu sản phẩm và truy xuất trên AGRIPASSPORT.'
+      : 'Liên hệ hotline hoặc email để được đội vận hành AGRIPASSPORT hỗ trợ nhanh.';
 
   return (
     <footer className="mt-6 bg-[#1f5f3d] pb-[calc(6.5rem+var(--safe-bottom))] text-white lg:pb-0">
       <div className={publicContainerClass}>
         <div className="grid gap-4 border-b border-white/15 py-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:py-6">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">HTXONLINE</p>
-            <h2 className="mt-2 text-[1.55rem] font-bold leading-tight tracking-normal sm:text-2xl">Đưa sản phẩm HTX lên sàn với trải nghiệm rõ ràng, đáng tin và dễ chốt đơn.</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/70">{profile.appName}</p>
+            <h2 className="mt-2 text-[1.55rem] font-bold leading-tight tracking-normal sm:text-2xl">{footerHeadline}</h2>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <a
@@ -41,31 +118,33 @@ export async function PublicFooter() {
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-2 text-xl font-bold">
               <PublicLogo size={40} className="ring-2 ring-white/30" />
-              HTXONLINE
+              {profile.appName}
             </div>
-            <p className="mt-3 text-sm font-bold uppercase tracking-wide text-white/95">Sàn nông sản số cho hợp tác xã</p>
+            <p className="mt-3 text-sm font-bold uppercase tracking-wide text-white/95">{brandTagline}</p>
             <p className="mt-3 max-w-sm text-sm leading-6 text-white/85">
-              Kết nối người mua với sản phẩm HTX minh bạch, QR truy xuất nguồn gốc và đặt hàng COD trên một nền tảng thống nhất.
+              {brandDescription}
             </p>
           </div>
 
           <div>
-            <p className="text-sm font-bold uppercase tracking-wide text-white">Dịch vụ HTXONLINE</p>
+            <p className="text-sm font-bold uppercase tracking-wide text-white">{serviceTitle}</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/san-pham" className={footerLinkClass}>Sản phẩm nông sản</Link>
-              <Link href="/htx" className={footerLinkClass}>Danh sách HTX</Link>
-              <Link href="/san-pham?hasQr=true" className={footerLinkClass}>QR Passport truy xuất</Link>
-              <Link href="/thanh-toan" className={footerLinkClass}>Đặt hàng COD</Link>
+              {serviceLinks.map((item) => (
+                <Link key={item.href} href={item.href} className={footerLinkClass}>
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
           <div>
             <p className="text-sm font-bold uppercase tracking-wide text-white">Giải pháp và quy trình</p>
             <div className="mt-4 grid gap-2">
-              <Link href="/ve-chung-toi" className={footerLinkClass}>Về chúng tôi</Link>
-              <Link href="/gioi-thieu" className={footerLinkClass}>Giới thiệu nền tảng</Link>
-              <Link href="/huong-dan-mua-hang" className={footerLinkClass}>Hướng dẫn mua hàng</Link>
-              <Link href="/tra-cuu-don-hang" className={footerLinkClass}>Tra cứu đơn hàng</Link>
+              {processLinks.map((item) => (
+                <Link key={item.href} href={item.href} className={footerLinkClass}>
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
@@ -99,7 +178,7 @@ export async function PublicFooter() {
                 </a>
               </div>
               <p className="rounded-2xl border border-white/15 bg-white/8 px-3 py-2 text-sm leading-6 text-white/75">
-                Nếu tra cứu QR Passport hoặc đơn hàng gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.
+                {supportNote}
               </p>
             </div>
 
@@ -109,7 +188,7 @@ export async function PublicFooter() {
                   <div>
                     <p className="text-sm font-semibold text-white/90">Điểm hỗ trợ và bản đồ</p>
                     <p className="mt-1 text-xs text-white/70">
-                      Xem nhanh vị trí ngay trong footer, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.
+                      {mapHint}
                     </p>
                   </div>
                   <a
@@ -152,7 +231,7 @@ export async function PublicFooter() {
             ) : (
               <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-white/30 bg-white/5 p-6 text-center text-sm text-white/80">
                 <MapPin size={28} className="mb-2 text-white/60" aria-hidden="true" />
-                <p>Liên hệ HTXONLINE để được hỗ trợ tìm đường đến văn phòng hoặc hẹn lịch tư vấn phù hợp.</p>
+                <p>{emptyMapText}</p>
                 <Link href="/lien-he" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl border border-white/20 px-4 font-semibold text-white underline-offset-2 hover:bg-white/10 hover:underline">
                   Xem thông tin liên hệ
                 </Link>
@@ -163,12 +242,12 @@ export async function PublicFooter() {
               <div>
                 <p className="font-semibold text-white">Cam kết minh bạch</p>
                 <p className="mt-2 leading-6">
-                  HTXONLINE hỗ trợ hợp tác xã số hóa sản phẩm, vùng trồng, nhật ký canh tác và QR Passport để người mua tin tưởng nguồn gốc.
+                  {transparencyText}
                 </p>
               </div>
-              <p className="text-xs text-white/70">© {new Date().getFullYear()} HTXONLINE. Sàn nông sản số cho hợp tác xã Việt Nam.</p>
+              <p className="text-xs text-white/70">© {new Date().getFullYear()} {profile.appName}.</p>
               <p className="text-xs text-white/60">Được thiết kế và vận hành bởi Agri Passport.</p>
-              <p className="text-xs text-white/60">Liên hệ hotline hoặc email để được đội vận hành HTXONLINE hỗ trợ nhanh.</p>
+              <p className="text-xs text-white/60">{operatorLine}</p>
             </div>
           </div>
         </div>

@@ -1,18 +1,34 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { QrCode, ShoppingBag, Store } from 'lucide-react';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { Panel } from '@/components/ui';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Giới thiệu',
-  description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
-  alternates: { canonical: 'https://htxonline.vn/gioi-thieu' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Giới thiệu',
+    description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    path: '/gioi-thieu'
+  });
+}
 
 export default async function AboutPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
+  const highlightItems =
+    siteKey === 'htxonline'
+      ? [
+          { title: 'Quản trị xã viên tập trung', icon: Store, text: 'Tập trung hồ sơ thành viên, trạng thái tham gia và dữ liệu hoạt động nội bộ của hợp tác xã trên một nơi dễ theo dõi.' },
+          { title: 'Theo dõi dịch vụ, thu chi, xuất nhập', icon: ShoppingBag, text: 'Ghi nhận mức độ sử dụng dịch vụ, các khoản thu chi và biến động nhập xuất để hỗ trợ đối soát tốt hơn.' },
+          { title: 'Đồng bộ dữ liệu sản phẩm', icon: QrCode, text: 'Danh mục sản phẩm thực tế của HTX có thể được chuẩn hóa để đưa sang Agripassport và tạo hộ chiếu số khi cần.' }
+        ]
+      : [
+          { title: 'Kết nối HTX với người mua', icon: Store, text: 'HTX có thể đăng công khai sản phẩm, hồ sơ và bán hàng COD mà không cần xây website riêng.' },
+          { title: 'Minh bạch bằng QR Passport', icon: QrCode, text: 'Người mua quét QR để xem nhật ký, vùng trồng và chứng nhận công khai do HTX công bố.' },
+          { title: 'Vận hành bán hàng COD', icon: ShoppingBag, text: 'Giỏ hàng, checkout và tra cứu đơn hàng được tích hợp sẵn trên cùng một nền tảng.' }
+        ];
 
   return (
     <PublicStaticPage
@@ -22,11 +38,7 @@ export default async function AboutPage() {
       heroImageAlt={siteProfile.pageContent.introImageAlt}
     >
       <div className="grid gap-4 md:grid-cols-3">
-        {[
-          { title: 'Kết nối HTX với người mua', icon: Store, text: 'HTX có thể đăng công khai sản phẩm, hồ sơ và bán hàng COD mà không cần xây website riêng.' },
-          { title: 'Minh bạch bằng QR Passport', icon: QrCode, text: 'Người mua quét QR để xem nhật ký, vùng trồng và chứng nhận công khai do HTX công bố.' },
-          { title: 'Vận hành bán hàng COD', icon: ShoppingBag, text: 'Giỏ hàng, checkout và tra cứu đơn hàng được tích hợp sẵn trên cùng một nền tảng.' }
-        ].map((item) => (
+        {highlightItems.map((item) => (
           <Panel key={item.title} className="h-full p-3.5 sm:p-5">
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-mint text-leaf sm:h-12 sm:w-12">
               <item.icon size={21} aria-hidden="true" />

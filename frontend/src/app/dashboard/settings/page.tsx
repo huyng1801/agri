@@ -621,7 +621,7 @@ export default function SettingsPage() {
             <Field label="Phiên đăng nhập (giờ)"><Input {...securityForm.register('sessionHours')} /></Field>
             <Field label="Giới hạn request tối đa"><Input {...securityForm.register('rateLimitMax')} /></Field>
             <Field label="Nguồn CORS" className="sm:col-span-2">
-              <Textarea {...securityForm.register('corsOrigins')} placeholder="https://htxonline.vn,https://admin.htxonline.vn" />
+              <Textarea {...securityForm.register('corsOrigins')} placeholder="https://agripassport.com,https://htxonline.vn,https://admin.htxonline.vn" />
             </Field>
             <SaveButton pending={saveMutation.isPending} />
           </form>

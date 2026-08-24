@@ -2,11 +2,14 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Calendar, MapPin, Phone, QrCode } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { PublicProduct, PublicShell, cooperativeAvatar, productImage } from '@/components/public-marketplace';
+import { PublicProduct, cooperativeAvatar, productImage } from '@/components/public-marketplace';
 import { AddToCartButton } from '@/components/add-to-cart-button';
 import { PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
 import { formatDate } from '@/lib/format';
+import { brandizeSiteText } from '@/lib/page-metadata';
+import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 import { Panel } from '@/components/ui';
 
 async function getProduct(slug: string) {
@@ -28,10 +31,11 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) return { title: 'Không tìm thấy sản phẩm' };
+  const siteKey = await getRequestPublicSiteKey();
   return {
     title: product.name,
-    description: product.description || `Mua ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên HTXONLINE.`,
-    alternates: { canonical: `https://htxonline.vn/san-pham/${product.slug}` }
+    description: brandizeSiteText(product.description || `Xem ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên nền tảng công khai.`, siteKey),
+    alternates: { canonical: await getRequestAbsoluteUrl(`/san-pham/${product.slug}`) }
   };
 }
 

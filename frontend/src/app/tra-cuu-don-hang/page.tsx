@@ -1,19 +1,23 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Mail, PhoneCall } from 'lucide-react';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { OrderLookupClient } from '@/components/order-lookup-client';
 import { Panel } from '@/components/ui';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Tra cứu đơn hàng',
-  description: 'Nhập mã đơn hàng và số điện thoại để xem trạng thái đơn COD trên HTXONLINE.',
-  alternates: { canonical: 'https://htxonline.vn/tra-cuu-don-hang' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Tra cứu đơn hàng',
+    description: 'Nhập mã đơn hàng và số điện thoại để xem trạng thái đơn COD trên HTXONLINE.',
+    path: '/tra-cuu-don-hang'
+  });
+}
 
 export default async function OrderLookupPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
 
   return (
     <PublicStaticPage title="Tra cứu đơn hàng" description="Nhập mã đơn hàng và số điện thoại để xem trạng thái đơn COD.">

@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Be_Vietnam_Pro } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/components/query-provider';
+import { defaultPublicSiteProfileForSite } from '@/lib/public-site';
+import { getRequestPublicOrigin, getRequestPublicSiteKey } from '@/lib/request-site';
 
 const beVietnamPro = Be_Vietnam_Pro({
   subsets: ['vietnamese', 'latin'],
@@ -10,18 +12,23 @@ const beVietnamPro = Be_Vietnam_Pro({
   display: 'swap'
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: 'HTXONLINE',
-    template: '%s | HTXONLINE'
-  },
-  description: 'Sàn nông sản số cho hợp tác xã Việt Nam — sản phẩm minh bạch, QR truy xuất và đặt hàng COD.',
-  manifest: '/manifest.webmanifest',
-  icons: {
-    icon: '/logo.png',
-    apple: '/logo.png'
-  }
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const siteKey = await getRequestPublicSiteKey();
+  const profile = defaultPublicSiteProfileForSite(siteKey);
+  return {
+    metadataBase: new URL(await getRequestPublicOrigin()),
+    title: {
+      default: profile.appName,
+      template: `%s | ${profile.appName}`
+    },
+    description: profile.pageContent.homeDescription,
+    manifest: '/manifest.webmanifest',
+    icons: {
+      icon: '/logo.png',
+      apple: '/logo.png'
+    }
+  };
+}
 
 export const viewport: Viewport = {
   width: 'device-width',

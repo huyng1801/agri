@@ -1,17 +1,21 @@
-import type { Metadata } from 'next';
 import { PublicPolicyBody } from '@/components/public-policy-body';
 import { PublicStaticPage } from '@/components/public-static-page';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 import { buildPolicyContactSection } from '@/lib/policy-contact';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export const metadata: Metadata = {
-  title: 'Chính sách đổi trả',
-  description: 'Điều kiện đổi trả, trách nhiệm xử lý và quy trình hỗ trợ đơn hàng trên HTXONLINE.',
-  alternates: { canonical: 'https://htxonline.vn/chinh-sach-doi-tra' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Chính sách đổi trả',
+    description: 'Điều kiện đổi trả, trách nhiệm xử lý và quy trình hỗ trợ đơn hàng trên HTXONLINE.',
+    path: '/chinh-sach-doi-tra'
+  });
+}
 
 export default async function ReturnPolicyPage() {
-  const siteProfile = await getPublicSiteProfile();
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   const sections = [
     {
       title: '1. Mục đích',
@@ -68,7 +72,7 @@ export default async function ReturnPolicyPage() {
         'HTXONLINE không trực tiếp sản xuất, kinh doanh hoặc sở hữu hàng hóa, do đó quyết định đổi trả thuộc trách nhiệm của HTX bán hàng theo quy định của pháp luật và chính sách riêng của HTX.'
       ]
     },
-    buildPolicyContactSection(siteProfile, 'Mọi thắc mắc về đổi trả, vui lòng liên hệ HTX hoặc bộ phận hỗ trợ của HTXONLINE qua các kênh dưới đây.')
+    buildPolicyContactSection(siteProfile, `Mọi thắc mắc về đổi trả, vui lòng liên hệ HTX hoặc bộ phận hỗ trợ của ${siteProfile.appName} qua các kênh dưới đây.`, siteKey)
   ];
 
   return (

@@ -1,14 +1,16 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { PublicStaticPage } from '@/components/public-static-page';
 import { PublicGuideSteps } from '@/components/public-policy-body';
 import { Panel } from '@/components/ui';
+import { buildPublicMetadata } from '@/lib/page-metadata';
 
-export const metadata: Metadata = {
-  title: 'Hướng dẫn mua hàng',
-  description: 'Hướng dẫn tìm sản phẩm, thêm giỏ hàng, đặt hàng COD và tra cứu đơn hàng trên HTXONLINE.',
-  alternates: { canonical: 'https://htxonline.vn/huong-dan-mua-hang' }
-};
+export async function generateMetadata() {
+  return buildPublicMetadata({
+    title: 'Hướng dẫn mua hàng',
+    description: 'Hướng dẫn tìm sản phẩm, thêm giỏ hàng, đặt hàng COD và tra cứu đơn hàng trên HTXONLINE.',
+    path: '/huong-dan-mua-hang'
+  });
+}
 
 const steps = [
   {
