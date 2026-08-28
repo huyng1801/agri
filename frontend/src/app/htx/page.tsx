@@ -9,6 +9,8 @@ import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
+import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
@@ -24,7 +26,8 @@ type CooperativesPageProps = {
 
 export default async function CooperativesPublicPage({ searchParams }: CooperativesPageProps) {
   const filters = (await searchParams) ?? {};
-  const catalog = await fetchPublicCatalog(100);
+  const siteKey = await getRequestPublicSiteKey();
+  const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
   const search = filters.search?.trim().toLowerCase();
   const cooperatives = search
     ? catalog.cooperatives.filter((cooperative) =>
@@ -42,27 +45,47 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
   )
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'vi'))
     .slice(0, 4);
+  const provinceCount = new Set(cooperatives.map((item) => item.province).filter(Boolean)).size || 1;
+  const pageTitle =
+    siteKey === 'passport'
+      ? 'HTX có hồ sơ truy xuất'
+      : siteKey === 'htxonline'
+        ? 'HTX đang kết nối dữ liệu'
+        : `HTX trong hệ sinh thái ${siteProfile.appName}`;
+  const pageDescription =
+    siteKey === 'passport'
+      ? 'Những hợp tác xã đang có sản phẩm, QR hoặc hồ sơ truy xuất công khai để người mua tra cứu nhanh hơn.'
+      : siteKey === 'htxonline'
+        ? 'Danh sách HTX đang có dữ liệu sản phẩm công khai, đồng bộ từ lớp quản trị nội bộ sang hệ sinh thái số.'
+        : `${catalog.cooperatives.length} hợp tác xã đang công khai dữ liệu sản phẩm, vùng hoạt động và lối dẫn rõ ràng sang trang chi tiết.`;
 
   return (
     <PublicShell>
       <PublicPageMain>
-        <PublicPageHeader
-          title="HTX trên HTXONLINE"
-          description={`${catalog.cooperatives.length} hợp tác xã đang có sản phẩm công khai trên sàn.`}
-        />
+        <PublicPageHeader title={pageTitle} description={pageDescription} />
 
-        <section className="rounded-[2rem] border border-white/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.94)_0%,rgba(244,250,243,0.94)_100%)] p-4 shadow-[var(--shadow-card)] backdrop-blur sm:p-5">
-          <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
+        <section className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#0c1020_0%,#122033_38%,#245f3e_100%)] p-4 text-white shadow-[0_32px_70px_rgba(12,16,32,0.16)] sm:p-5">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 opacity-80"
+            style={{
+              background:
+                'radial-gradient(circle at left top, rgba(255,255,255,0.16), transparent 26%), radial-gradient(circle at 84% 16%, rgba(255,255,255,0.1), transparent 18%)'
+            }}
+          />
+          <div className="relative grid gap-4 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-leaf/80">Danh sách HTX</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-ink sm:text-3xl">Khám phá các hợp tác xã đã sẵn sàng công khai sản phẩm và tiếp cận người mua.</h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-                Mỗi hồ sơ HTX trên sàn là một điểm chạm thương hiệu: có ảnh đại diện, vùng hoạt động, số lượng sản phẩm công khai và lối dẫn rõ ràng sang trang chi tiết.
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-white/66">Danh sách HTX</p>
+              <h2 className="mt-2 text-[1.85rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-white sm:text-[2.55rem]">
+                Khám phá các hợp tác xã đã sẵn sàng công khai sản phẩm và tiếp cận người mua.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/78 sm:text-base">
+                Mỗi hồ sơ HTX là một điểm chạm thương hiệu trong hệ sinh thái {siteProfile.appName}: có ảnh đại diện, địa phương, sản phẩm công khai và lối dẫn rõ ràng sang trang chi tiết.
               </p>
               {topProvinces.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {topProvinces.map(([province, count]) => (
-                    <span key={province} className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm">
+                    <span key={province} className="rounded-full border border-white/14 bg-white/10 px-3 py-1.5 text-sm font-semibold text-white/88">
                       {province} · {count} HTX
                     </span>
                   ))}
@@ -73,16 +96,19 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
               {[
                 { icon: Building2, title: 'HTX hiển thị', value: `${cooperatives.length}+`, note: 'Hồ sơ đang có mặt trên sàn' },
-                { icon: MapPin, title: 'Tỉnh thành', value: `${new Set(cooperatives.map((item) => item.province).filter(Boolean)).size || 1}+`, note: 'Khu vực hoạt động được công khai' },
+                { icon: MapPin, title: 'Tỉnh thành', value: `${provinceCount}+`, note: 'Khu vực hoạt động được công khai' },
                 { icon: ShieldCheck, title: 'Tín hiệu tin cậy', value: 'Công khai', note: 'Dẫn thẳng tới sản phẩm, QR và thông tin liên hệ' }
               ].map((item, index) => (
-                <article key={item.title} className={`rounded-2xl border border-slate-200/80 bg-white/86 p-3.5 shadow-sm sm:p-4 ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}>
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-mint text-leaf sm:h-11 sm:w-11">
+                <article
+                  key={item.title}
+                  className={`rounded-[1.45rem] border border-white/12 bg-white/10 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:p-4 ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}
+                >
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-white/12 text-[#d9f99d] sm:h-11 sm:w-11">
                     <item.icon size={20} aria-hidden="true" />
                   </span>
-                  <p className="mt-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:mt-3 sm:text-sm">{item.title}</p>
-                  <p className="mt-1 text-[1.85rem] font-bold text-ink sm:text-2xl">{item.value}</p>
-                  <p className="mt-1 text-sm leading-[1.6] text-slate-600">{item.note}</p>
+                  <p className="mt-2.5 text-[0.78rem] font-semibold uppercase tracking-[0.16em] text-white/58 sm:mt-3 sm:text-sm">{item.title}</p>
+                  <p className="mt-1 text-[1.85rem] font-bold text-white sm:text-2xl">{item.value}</p>
+                  <p className="mt-1 text-sm leading-[1.6] text-white/76">{item.note}</p>
                 </article>
               ))}
             </div>

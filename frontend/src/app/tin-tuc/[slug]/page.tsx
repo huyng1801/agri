@@ -140,17 +140,26 @@ export default async function NewsDetailPage({ params }: PageProps) {
       <PublicDetailMain className="max-w-5xl">
         <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
 
-        <article className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
-          <PublicImage
-            src={article.coverImageUrl || image}
-            alt={article.coverImageAlt || article.title}
-            fallback={DEFAULT_NEWS_IMAGE}
-            wrapperClassName="aspect-[16/9] w-full sm:aspect-[16/8]"
-            className="h-full w-full object-cover"
-          />
-          <div className="p-4 md:p-8">
-            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.82rem] text-slate-500 sm:mb-4 sm:text-sm">
-              {article.category?.name && <Badge className="bg-mint text-leaf">{article.category.name}</Badge>}
+        <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5">
+          <article className="order-2 overflow-hidden rounded-[1.7rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] shadow-[var(--shadow-card)] backdrop-blur-sm lg:order-1">
+            <div className="p-2.5 sm:p-3">
+              <PublicImage
+                src={article.coverImageUrl || image}
+                alt={article.coverImageAlt || article.title}
+                fallback={DEFAULT_NEWS_IMAGE}
+                wrapperClassName="aspect-[16/10] w-full rounded-[1.45rem] sm:aspect-[16/9]"
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="border-t border-[#eadfce] p-4 sm:p-5">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Tóm tắt bài viết</p>
+              <p className="mt-2 text-[0.96rem] leading-7 text-slate-700">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
+            </div>
+          </article>
+
+          <article className="order-1 rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.82rem] text-white/68 sm:mb-4 sm:text-sm">
+              {article.category?.name && <Badge className="bg-white/12 text-white">{article.category.name}</Badge>}
               <span className="inline-flex items-center gap-1">
                 <Calendar size={15} aria-hidden="true" />
                 {formatDate(article.publishedAt || article.createdAt)}
@@ -164,21 +173,33 @@ export default async function NewsDetailPage({ params }: PageProps) {
                 {article.viewCount}
               </span>
             </div>
-            <h1 className="text-[1.55rem] font-bold leading-[1.08] tracking-normal text-ink sm:text-[2.35rem] sm:leading-[1.04] md:text-5xl md:tracking-tight">{article.title}</h1>
-            {(article.excerpt || article.seoDescription) && (
-              <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-lg sm:leading-8">{article.excerpt || article.seoDescription}</p>
-            )}
-            <div className="news-body mt-6 sm:mt-8" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            <h1 className="text-[1.72rem] font-extrabold leading-[1.03] tracking-[-0.03em] text-white sm:text-[2.55rem]">{article.title}</h1>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {[
+                { label: 'Danh mục', value: article.category?.name ?? 'Tin nền tảng' },
+                { label: 'Lượt xem', value: `${article.viewCount}` },
+                { label: 'Miền hiển thị', value: siteProfile.appName }
+              ].map((item) => (
+                <div key={item.label} className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">{item.label}</p>
+                  <p className="mt-1.5 text-sm font-bold text-white">{item.value}</p>
+                </div>
+              ))}
+            </div>
             {article.tagsJson?.length ? (
-              <div className="mt-6 flex flex-wrap gap-2 sm:mt-8">
+              <div className="mt-5 flex flex-wrap gap-2">
                 {article.tagsJson.map((tag) => (
-                  <Badge key={tag} className="bg-slate-100 text-slate-700">
+                  <Badge key={tag} className="bg-black/14 text-white">
                     {tag}
                   </Badge>
                 ))}
               </div>
             ) : null}
-          </div>
+          </article>
+        </div>
+
+        <article className="mt-6 overflow-hidden rounded-[1.7rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] backdrop-blur-sm md:p-8">
+          <div className="news-body" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
         </article>
 
         {related.length > 0 && (

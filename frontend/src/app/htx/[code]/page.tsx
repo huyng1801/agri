@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { MapPin, Phone } from 'lucide-react';
 import { ProductCard, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
 import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
-import { PublicBreadcrumb, PublicDetailMain, PublicSection, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
+import { PublicBreadcrumb, PublicDetailMain, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { Button, Panel } from '@/components/ui';
 import { brandizeSiteText } from '@/lib/page-metadata';
@@ -53,97 +53,134 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
 
   return (
     <PublicShell>
-      <main id="main-content" className="pb-[calc(8.5rem+var(--safe-bottom))] lg:pb-0">
-        <PublicSection band className="!py-6 sm:!py-8">
-          <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
+      <PublicDetailMain>
+        <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
+
+        <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5">
           <article className={publicCardClass}>
-            <div className="relative h-44 overflow-hidden sm:h-60">
+            <div className="relative h-52 overflow-hidden sm:h-72">
               <PublicImage
-                    src={cooperative.avatarUrl}
-                    alt={cooperative.name}
-                    fallback={avatarFallback}
-                    priority
-                    wrapperClassName="h-full w-full"
-                    className="h-full w-full object-cover"
-                  />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
-            </div>
-            <div className="p-4 sm:p-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
-                  <PublicImage
-                    src={cooperative.avatarUrl}
-                    alt={cooperative.name}
-                    fallback={avatarFallback}
-                    decorative
-                    wrapperClassName="h-14 w-14 shrink-0 -mt-8 rounded-md border-2 border-white shadow-sm sm:h-16 sm:w-16 sm:-mt-12"
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="pt-0.5 sm:pt-1">
-                    <h1 className="text-[1.8rem] font-bold leading-[1.02] tracking-tight text-ink sm:text-3xl">{cooperative.name}</h1>
-                    <p className="mt-2 flex items-center gap-2 text-slate-600">
-                      <MapPin size={16} aria-hidden="true" />
-                      {cooperative.province || 'Đang cập nhật địa phương'}
-                    </p>
-                    <p className="mt-2 text-sm font-semibold text-leaf">{cooperative.productCount} sản phẩm công khai</p>
-                  </div>
-                </div>
-                {cooperative.phone && (
-                  <a href={`tel:${cooperative.phone}`} className="inline-flex min-h-11 w-full sm:w-auto">
-                    <Button className="w-full sm:w-auto">
-                      <Phone size={18} aria-hidden="true" />
-                      Gọi HTX
-                    </Button>
-                  </a>
-                )}
+                src={cooperative.avatarUrl}
+                alt={cooperative.name}
+                fallback={avatarFallback}
+                priority
+                wrapperClassName="h-full w-full"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/70">Hồ sơ HTX</p>
+                <h1 className="mt-2 max-w-[14ch] text-[1.85rem] font-extrabold leading-[1.02] tracking-[-0.03em] sm:max-w-[16ch] sm:text-[2.8rem]">
+                  {cooperative.name}
+                </h1>
               </div>
-              <p className="mt-4 max-w-3xl text-[0.98rem] leading-7 text-slate-700">
-                Hồ sơ công khai của HTX trên HTXONLINE. Người mua có thể xem sản phẩm, vùng trồng công khai và quét QR Passport để kiểm tra nguồn gốc.
+            </div>
+            <div className="p-4 sm:p-5">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-[1.2rem] bg-[var(--surface-0)] px-3.5 py-3">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Địa phương</p>
+                  <p className="mt-1 inline-flex items-center gap-2 text-sm font-bold text-ink">
+                    <MapPin size={15} aria-hidden="true" className="text-leaf" />
+                    {cooperative.province || 'Đang cập nhật địa phương'}
+                  </p>
+                </div>
+                <div className="rounded-[1.2rem] bg-[var(--surface-0)] px-3.5 py-3">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Sản phẩm công khai</p>
+                  <p className="mt-1 text-sm font-bold text-ink">{cooperative.productCount} sản phẩm</p>
+                </div>
+              </div>
+              <p className="mt-4 max-w-3xl text-[0.96rem] leading-7 text-slate-700">
+                Hồ sơ công khai này gom các sản phẩm, vùng trồng và tín hiệu minh bạch quan trọng để người mua đi từ HTX sang từng sản phẩm theo một hành trình rõ ràng hơn.
               </p>
             </div>
           </article>
-        </PublicSection>
 
-        <PublicSection className="!pt-0">
-          <div className="grid gap-4 lg:grid-cols-2">
-            <Panel>
-              <h2 className="text-xl font-bold text-ink">Vùng trồng công khai</h2>
-              {zones.length ? (
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {zones.map((zone) => (
-                    <div key={zone.key} className="rounded-md bg-slate-50 p-4">
-                      <p className="font-bold text-ink">{zone.name}</p>
-                      <p className="mt-1 text-sm text-slate-600">{zone.address || 'Đang cập nhật địa chỉ vùng trồng'}</p>
-                      <p className="mt-2 text-sm font-semibold text-leaf">{zone.productCount} sản phẩm công khai</p>
-                      {zone.areaM2 && <p className="mt-1 text-xs text-slate-500">Diện tích {formatArea(zone.areaM2)}</p>}
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-3 text-sm text-slate-600">HTX chưa công khai vùng trồng nào trên sàn.</p>
-              )}
-            </Panel>
-
-            <Panel>
-              <h2 className="text-xl font-bold text-ink">Cam kết minh bạch</h2>
-              <div className="mt-4 grid gap-3 text-sm leading-6 text-slate-700">
-                <p>Chỉ sản phẩm đã đăng công khai mới xuất hiện trên trang HTX.</p>
-                <p>Vùng trồng bị tắt công khai sẽ không hiển thị ở đây và cũng không lộ trên trang sản phẩm hay QR Passport.</p>
-                <p>Nhật ký, chứng nhận và thông tin nội bộ chưa công khai vẫn được giữ riêng trong dashboard HTX.</p>
+          <article className="rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/66">Trust Snapshot</p>
+            <h2 className="mt-3 text-[1.55rem] font-extrabold leading-[1.04] sm:text-[2rem]">Công khai đủ để tin, gọn đủ để xem nhanh trên mobile.</h2>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">HTX</p>
+                <p className="mt-1.5 text-sm font-bold text-white">{cooperative.name}</p>
               </div>
-            </Panel>
-          </div>
-        </PublicSection>
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Vùng trồng</p>
+                <p className="mt-1.5 text-sm font-bold text-white">{zones.length || 'Đang cập nhật'} khu vực</p>
+              </div>
+              <div className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">Sản phẩm</p>
+                <p className="mt-1.5 text-sm font-bold text-white">{cooperative.productCount} công khai</p>
+              </div>
+            </div>
+            <div className="mt-5 grid gap-2.5">
+              {[
+                'Chỉ sản phẩm đã mở công khai mới xuất hiện trên hồ sơ HTX.',
+                'Vùng trồng bị tắt công khai sẽ không lộ trên trang sản phẩm hoặc QR.',
+                'Nhật ký và chứng nhận nội bộ chưa công khai vẫn được giữ riêng trong dashboard.'
+              ].map((item) => (
+                <div key={item} className="rounded-[1.15rem] border border-white/10 bg-black/14 px-3.5 py-3 text-sm leading-6 text-white/82">
+                  {item}
+                </div>
+              ))}
+            </div>
+            {cooperative.phone && (
+              <a href={`tel:${cooperative.phone}`} className="mt-5 inline-flex min-h-12 w-full">
+                <Button className="w-full justify-center rounded-[1.15rem]">
+                  <Phone size={18} aria-hidden="true" />
+                  Gọi HTX
+                </Button>
+              </a>
+            )}
+          </article>
+        </div>
 
-        <PublicSection>
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <Panel>
+            <h2 className="text-xl font-bold text-ink">Vùng trồng công khai</h2>
+            {zones.length ? (
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {zones.map((zone) => (
+                  <div key={zone.key} className="rounded-[1.3rem] border border-[#eadfce] bg-[var(--surface-0)] p-4">
+                    <p className="font-bold text-ink">{zone.name}</p>
+                    <p className="mt-1 text-sm text-slate-600">{zone.address || 'Đang cập nhật địa chỉ vùng trồng'}</p>
+                    <p className="mt-2 text-sm font-semibold text-leaf">{zone.productCount} sản phẩm công khai</p>
+                    {zone.areaM2 && <p className="mt-1 text-xs text-slate-500">Diện tích {formatArea(zone.areaM2)}</p>}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-slate-600">HTX chưa công khai vùng trồng nào trên sàn.</p>
+            )}
+          </Panel>
+
+          <Panel>
+            <h2 className="text-xl font-bold text-ink">Điểm minh bạch nổi bật</h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {[
+                { title: 'Sản phẩm công khai', value: `${cooperative.productCount}`, note: 'Đã sẵn sàng để người mua xem' },
+                { title: 'Vùng trồng', value: `${zones.length}`, note: 'Khu vực được phép hiển thị công khai' },
+                { title: 'Điện thoại liên hệ', value: cooperative.phone ? 'Sẵn sàng' : 'Đang cập nhật', note: 'Kênh liên hệ trực tiếp với HTX' },
+                { title: 'Luồng đi tiếp', value: 'Sản phẩm', note: 'Từ hồ sơ HTX sang từng mặt hàng chỉ bằng một chạm' }
+              ].map((item) => (
+                <div key={item.title} className="rounded-[1.3rem] bg-[var(--surface-0)] p-4">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">{item.title}</p>
+                  <p className="mt-2 text-lg font-bold text-ink">{item.value}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">{item.note}</p>
+                </div>
+              ))}
+            </div>
+          </Panel>
+        </div>
+
+        <section className="mt-6">
           <PublicSectionHeader title="Sản phẩm công khai của HTX" description="Danh sách sản phẩm đang được đăng công khai trên sàn." />
           <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-        </PublicSection>
-      </main>
+        </section>
+      </PublicDetailMain>
     </PublicShell>
   );
 }

@@ -1,0 +1,145 @@
+import { ArrowRight, Boxes, QrCode, Store, type LucideIcon } from 'lucide-react';
+import { cn } from './ui';
+import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
+
+type EcosystemCard = {
+  key: Exclude<PublicSiteKey, 'local'>;
+  name: string;
+  label: string;
+  description: string;
+  href: string;
+  icon: LucideIcon;
+  gradientClassName: string;
+  signal: string;
+};
+
+const ecosystemCards: EcosystemCard[] = [
+  {
+    key: 'htxonline',
+    name: 'HTXONLINE',
+    label: 'Cho hợp tác xã',
+    description: 'Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.',
+    href: htxonlineUrl('/'),
+    icon: Store,
+    gradientClassName: 'bg-[linear-gradient(135deg,#090d1d_0%,#131935_46%,#1b2450_100%)]',
+    signal: 'Quản trị nội bộ'
+  },
+  {
+    key: 'agripassport',
+    name: 'AGRIPASSPORT',
+    label: 'Cho sản phẩm & bán hàng',
+    description: 'Nền tảng trung tâm để chuẩn hóa tên HTX, sản phẩm nông nghiệp, mở kênh công khai, bán hàng và đồng bộ dữ liệu sang các lớp hiển thị khác.',
+    href: marketplaceUrl('/'),
+    icon: Boxes,
+    gradientClassName: 'bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]',
+    signal: 'Sản phẩm công khai'
+  },
+  {
+    key: 'passport',
+    name: 'HỘ CHIẾU NÔNG NGHIỆP',
+    label: 'Cho truy xuất QR',
+    description: 'Tạo hồ sơ số và QR cho từng sản phẩm hoặc lô sản phẩm, giúp người mua truy xuất nguồn gốc, nhật ký canh tác và thông tin công khai rõ ràng.',
+    href: passportUrl('/'),
+    icon: QrCode,
+    gradientClassName: 'bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]',
+    signal: 'QR truy xuất'
+  }
+];
+
+export function PublicEcosystemShowcase({
+  siteKey,
+  className,
+  compact = false,
+  showHeading = true
+}: {
+  siteKey: PublicSiteKey;
+  className?: string;
+  compact?: boolean;
+  showHeading?: boolean;
+}) {
+  return (
+    <section className={className}>
+      {showHeading ? (
+        <div className={cn('mb-4 sm:mb-5', compact && 'mb-3')}>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm">Hệ sinh thái Agri</p>
+          <h2 className={cn('mt-2 text-[1.82rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#24283a] sm:text-[2.7rem]', compact && 'text-[1.35rem] sm:text-[1.8rem]')}>
+            Ba nền tảng đi cùng một luồng dữ liệu, nhưng mỗi nền tảng giữ một vai trò rất rõ.
+          </h2>
+          <p className={cn('mt-2 max-w-3xl text-[0.95rem] leading-7 text-slate-600 sm:text-base', compact && 'max-w-2xl text-sm leading-6')}>
+            Phần này được dựng lại theo nhịp card màu lớn như Demeter: dễ quét bằng mắt, nhìn phát hiểu ngay HTXONLINE, AGRIPASSPORT và Hộ chiếu nông nghiệp khác nhau ở đâu.
+          </p>
+        </div>
+      ) : null}
+
+      <div className="grid gap-4">
+        {ecosystemCards.map((card, index) => {
+          const Icon = card.icon;
+          const isCurrent = siteKey === card.key;
+          return (
+            <a
+              key={card.key}
+              href={card.href}
+              className={cn(
+                'group relative overflow-hidden rounded-[2rem] shadow-[0_28px_60px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1',
+                compact && 'rounded-[1.6rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)]'
+              )}
+            >
+              <div className={cn('relative overflow-hidden px-5 py-5 text-white sm:px-7 sm:py-6', card.gradientClassName, compact && 'px-4 py-4')}>
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-80"
+                  style={{
+                    background:
+                      'radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(255,255,255,0.12), transparent 24%)'
+                  }}
+                />
+
+                <div className="relative grid gap-5 md:grid-cols-[8.5rem_1fr] md:items-center lg:grid-cols-[10rem_1fr]">
+                  <div
+                    className={cn(
+                      'flex h-[6.8rem] w-[6.8rem] shrink-0 items-center justify-center rounded-full border border-white/16 bg-white/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] md:h-[7.4rem] md:w-[7.4rem]',
+                      compact && 'h-[5rem] w-[5rem]'
+                    )}
+                  >
+                    <Icon size={compact ? 34 : 54} strokeWidth={1.8} aria-hidden="true" />
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/72">
+                      <span>{card.label}</span>
+                      <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
+                      <span>0{index + 1}</span>
+                      {isCurrent ? (
+                        <>
+                          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
+                          <span>Đang mở</span>
+                        </>
+                      ) : null}
+                    </div>
+
+                    <h3 className={cn('mt-3 text-[1.55rem] font-extrabold leading-[1.05] tracking-[-0.03em] sm:text-[2.2rem]', compact && 'text-[1.15rem] sm:text-[1.45rem]')}>
+                      {card.name}
+                    </h3>
+                    <p className={cn('mt-2 max-w-3xl text-[0.96rem] leading-[1.78] text-white/88 sm:text-[1.06rem]', compact && 'text-sm leading-6')}>
+                      {card.description}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-3">
+                      <span className="inline-flex min-h-10 items-center rounded-full border border-white/14 bg-black/16 px-4 text-sm font-semibold text-white/90">
+                        {card.signal}
+                      </span>
+                      <span className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-white">
+                        Mở nền tảng
+                        <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+  );
+}

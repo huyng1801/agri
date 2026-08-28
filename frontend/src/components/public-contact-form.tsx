@@ -73,10 +73,15 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
   if (isHero) {
     return (
-      <form className="grid gap-8 lg:grid-cols-2 lg:gap-10" onSubmit={submit}>
-        <div className="min-w-0">
-          <h2 className="text-xl font-bold leading-snug text-ink sm:text-2xl">Bạn muốn HTXONLINE hỗ trợ gì?</h2>
-          <p className="mt-2 text-sm leading-6 text-slate-600">Chọn nhu cầu phù hợp để đội vận hành tư vấn nhanh hơn.</p>
+      <form className="grid gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:gap-5" onSubmit={submit}>
+        <div className="min-w-0 rounded-[1.8rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_38%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6">
+          <div className="inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/80">
+            Tư vấn nhanh
+          </div>
+          <h2 className="mt-3 text-[1.45rem] font-extrabold leading-[1.05] sm:text-[1.9rem]">Bạn muốn đội vận hành hỗ trợ phần nào trước?</h2>
+          <p className="mt-3 text-sm leading-7 text-white/78 sm:text-[0.96rem]">
+            Chọn đúng nhu cầu để chúng tôi phản hồi nhanh hơn, ưu tiên triển khai sát mô hình HTX hoặc sản phẩm của bạn.
+          </p>
           <div className="mt-5 grid gap-3">
             {HELP_TOPICS.map((item) => {
               const selected = topic === item.id;
@@ -84,16 +89,16 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
                 <label
                   key={item.id}
                   className={cn(
-                    'flex cursor-pointer items-start gap-3 rounded-xl border px-3.5 py-3.5 text-sm transition',
+                    'flex cursor-pointer items-start gap-3 rounded-[1.25rem] border px-3.5 py-3.5 text-sm transition',
                     selected
-                      ? 'border-leaf bg-mint text-ink shadow-sm'
-                      : 'border-slate-200 bg-white text-slate-700 hover:border-leaf/40 hover:bg-mint/40'
+                      ? 'border-white/18 bg-white/16 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]'
+                      : 'border-white/10 bg-black/16 text-white/82 hover:border-white/18 hover:bg-white/10'
                   )}
                 >
                   <span
                     className={cn(
                       'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2',
-                      selected ? 'border-leaf bg-leaf' : 'border-slate-300 bg-white'
+                      selected ? 'border-[#d9f99d] bg-[#d9f99d]' : 'border-white/35 bg-transparent'
                     )}
                     aria-hidden="true"
                   >
@@ -112,16 +117,34 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               );
             })}
           </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+            {[
+              { label: 'Phản hồi', value: 'Trong ngày' },
+              { label: 'Triển khai', value: 'Sàn + QR' },
+              { label: 'Ưu tiên', value: 'Mobile-first' }
+            ].map((item) => (
+              <div key={item.label} className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">{item.label}</p>
+                <p className="mt-1.5 text-sm font-bold text-white">{item.value}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="grid min-w-0 gap-4">
+        <div className="grid min-w-0 gap-4 rounded-[1.8rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] sm:p-5">
+          <div>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Điền thông tin</p>
+            <h3 className="mt-2 text-[1.25rem] font-extrabold leading-tight text-ink sm:text-[1.6rem]">Chúng tôi sẽ liên hệ lại sớm nhất.</h3>
+          </div>
+
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Họ tên / Tên HTX</span>
             <Input
               data-testid="contact-name-input"
               name="fullName"
               required
-              className="bg-white"
+              className="bg-[var(--surface-0)]"
               placeholder="VD: HTX Lúa ST25 Đồng Tháp"
             />
           </label>
@@ -132,7 +155,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               name="phone"
               required
               inputMode="tel"
-              className="bg-white"
+              className="bg-[var(--surface-0)]"
               placeholder="0907 001 200"
             />
           </label>
@@ -142,7 +165,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               data-testid="contact-email-input"
               name="email"
               type="email"
-              className="bg-white"
+              className="bg-[var(--surface-0)]"
               placeholder="ban@htx.vn"
             />
           </label>
@@ -152,13 +175,21 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               data-testid="contact-message-input"
               name="message"
               required
-              className="min-h-28 bg-white"
+              className="min-h-32 bg-[var(--surface-0)]"
               placeholder="Mô tả ngắn nhu cầu của bạn..."
             />
           </label>
-          {success && <div data-testid="toast-success" className="rounded-xl bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
-          {error && <div data-testid="toast-error" className="rounded-xl bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-          <Button data-testid="contact-submit-button" type="submit" className="mt-1 w-full sm:w-max" disabled={submitting}>
+          {success && (
+            <div data-testid="toast-success" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
+              {success}
+            </div>
+          )}
+          {error && (
+            <div data-testid="toast-error" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+              {error}
+            </div>
+          )}
+          <Button data-testid="contact-submit-button" type="submit" className="mt-1 min-h-12 w-full justify-center rounded-[1.15rem]" disabled={submitting}>
             {submitting ? 'Đang gửi' : 'Liên hệ ngay'}
             <ArrowRight size={18} aria-hidden="true" />
           </Button>
@@ -168,7 +199,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
   }
 
   return (
-    <form className="grid gap-3" onSubmit={submit}>
+    <form className="grid gap-3 rounded-[1.6rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] sm:p-5" onSubmit={submit}>
       <label className="space-y-1 text-sm font-semibold">
         <span>Họ tên</span>
         <Input data-testid="contact-name-input" name="fullName" required />
@@ -185,9 +216,9 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
         <span>Nội dung</span>
         <Textarea data-testid="contact-message-input" name="message" required />
       </label>
-      {success && <div data-testid="toast-success" className="rounded-md bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
-      {error && <div data-testid="toast-error" className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-      <Button data-testid="contact-submit-button" type="submit" className="sm:w-max" disabled={submitting}>
+      {success && <div data-testid="toast-success" className="rounded-[1.1rem] bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
+      {error && <div data-testid="toast-error" className="rounded-[1.1rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
+      <Button data-testid="contact-submit-button" type="submit" className="min-h-11 justify-center sm:w-max" disabled={submitting}>
         {submitting ? 'Đang gửi' : 'Gửi liên hệ'}
       </Button>
     </form>

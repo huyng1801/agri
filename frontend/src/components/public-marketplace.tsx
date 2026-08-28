@@ -86,7 +86,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.05rem] border border-slate-200/80 bg-white/94 p-1.25 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.45rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.4rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-1.5 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
@@ -94,10 +94,10 @@ export function PublicSearch({
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-11 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-xl sm:text-base"
+          className="min-h-11 w-full rounded-[1rem] border-0 bg-[var(--surface-0)] pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-[1.1rem] sm:text-base"
         />
       </div>
-      <Button className="min-h-11 w-full rounded-[0.85rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-xl">Tìm</Button>
+      <Button className="min-h-11 w-full rounded-[1rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-[1.1rem]">Tìm</Button>
     </form>
   );
 }
@@ -106,7 +106,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col bg-[rgba(255,253,248,0.98)] transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
       <Link href={`/san-pham/${product.slug}`} className="relative block overflow-hidden">
         <PublicImage
           src={product.thumbnail?.publicUrl}
@@ -118,7 +118,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
         {hasQr && (
-          <span className="absolute left-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-leaf shadow-sm">
+          <span className="absolute left-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full bg-[rgba(255,253,248,0.95)] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-ink shadow-sm">
             <QrCode size={12} aria-hidden="true" />
             QR Passport
           </span>
@@ -126,20 +126,20 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
       </Link>
 
       <div className="flex flex-1 flex-col p-3 sm:p-3.5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-leaf">{product.category?.name ?? 'Nông sản'}</p>
-        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 py-1 line-clamp-2 text-[0.98rem] font-bold leading-[1.3] text-ink hover:text-leaf sm:text-base">
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">{product.category?.name ?? 'Nông sản'}</p>
+        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 py-1 line-clamp-2 text-[1rem] font-extrabold leading-[1.25] text-ink hover:text-leaf sm:text-[1.05rem]">
           {product.name}
         </Link>
 
-        <div className="mt-2 border-t border-slate-100 pt-2 sm:mt-2.5 sm:pt-2.5">
-          <p className="text-[1.22rem] font-bold leading-none text-leaf sm:text-xl">{formatPrice(product.price)}</p>
+        <div className="mt-2 rounded-[1.15rem] bg-[var(--surface-0)] px-3 py-2.5 sm:mt-2.5">
+          <p className="text-[1.22rem] font-extrabold leading-none text-ink sm:text-xl">{formatPrice(product.price)}</p>
           <p className="text-xs text-slate-500">/{product.unit}</p>
         </div>
 
         {product.cooperative && (
           <Link
             href={`/htx/${product.cooperative.code}`}
-            className="mt-2 flex items-center gap-2 rounded-xl bg-slate-50 p-2 transition hover:bg-mint/50 sm:mt-2.5 sm:p-2"
+            className="mt-2 flex items-center gap-2 rounded-[1.15rem] border border-[#eadfce] bg-white p-2 transition hover:bg-[var(--surface-0)] sm:mt-2.5 sm:p-2.5"
           >
             <PublicImage
               src={product.cooperative.avatarUrl}
@@ -150,7 +150,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
               className="h-full w-full object-cover"
             />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-semibold text-ink">{product.cooperative.name}</span>
+              <span className="block truncate text-xs font-bold text-ink">{product.cooperative.name}</span>
               <span className="block truncate text-[11px] text-slate-500">{product.cooperative.province || 'HTX địa phương'}</span>
             </span>
           </Link>
@@ -168,7 +168,7 @@ export function productImage(product: PublicProduct) {
 
 export function CooperativeCard({ cooperative, priority = false }: { cooperative: PublicCooperative; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden bg-[rgba(255,253,248,0.98)] transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
       <Link href={`/htx/${cooperative.code}`} className="relative block overflow-hidden">
         <PublicImage
           src={cooperative.avatarUrl}
@@ -186,7 +186,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
       </Link>
 
       <div className="flex items-center justify-between gap-3 p-3 sm:p-4">
-        <p className="text-[0.86rem] font-semibold leading-tight text-leaf sm:text-[0.95rem]">{cooperative.productCount} sản phẩm công khai</p>
+        <p className="rounded-full bg-[var(--surface-0)] px-3 py-1.5 text-[0.82rem] font-semibold leading-tight text-ink sm:text-[0.92rem]">{cooperative.productCount} sản phẩm công khai</p>
         <div className="flex shrink-0 gap-2">
           <Link href={`/htx/${cooperative.code}`} className="inline-flex min-h-11 items-center">
             <Button variant="ghost" className="min-h-11 px-3 py-2 text-[11px]">
@@ -197,7 +197,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           {cooperative.phone && (
             <a
               href={`tel:${cooperative.phone}`}
-              className="hidden h-10 w-10 place-items-center rounded-xl border border-slate-200 bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf sm:grid"
+              className="hidden h-10 w-10 place-items-center rounded-[1rem] border border-[#e4d8c3] bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf sm:grid"
               aria-label="Gọi HTX"
             >
               <Phone size={17} aria-hidden="true" />
@@ -211,7 +211,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
 
 export function NewsCard({ article, priority = false }: { article: NewsArticle; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col transition-shadow hover:shadow-md')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col bg-[rgba(255,253,248,0.98)] transition-shadow hover:shadow-md')}>
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
         <PublicImage
           src={article.coverImageUrl}
@@ -224,7 +224,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
       </Link>
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-leaf">
+        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-slate-500">
           {article.category?.name && <span>{article.category.name}</span>}
           {article.publishedAt && (
             <span className="inline-flex items-center gap-1 text-slate-500">
@@ -233,7 +233,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
             </span>
           )}
         </div>
-        <Link href={`/tin-tuc/${article.slug}`} className="mt-1.5 block min-h-11 py-1 line-clamp-2 text-[1.02rem] font-bold leading-[1.35] text-ink hover:text-leaf sm:mt-2 sm:text-lg sm:leading-6">
+        <Link href={`/tin-tuc/${article.slug}`} className="mt-1.5 block min-h-11 py-1 line-clamp-2 text-[1.02rem] font-extrabold leading-[1.3] text-ink hover:text-leaf sm:mt-2 sm:text-lg sm:leading-6">
           {article.title}
         </Link>
         <p className="mt-auto line-clamp-3 pt-2 text-sm leading-[1.62] text-slate-600 sm:pt-3 sm:leading-[1.7]">
@@ -247,7 +247,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
 export function EmptyPublicState({ title, description }: { title: string; description: string }) {
   return (
     <Panel className="text-center">
-      <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-mint text-leaf text-xl font-bold" aria-hidden="true">
+      <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[var(--surface-0)] text-ink text-xl font-bold" aria-hidden="true">
         HTX
       </span>
       <h2 className="mt-3 text-xl font-bold text-ink">{title}</h2>

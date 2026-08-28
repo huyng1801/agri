@@ -59,8 +59,13 @@ export function PublicImage({
   }, [currentSrc, fallback]);
 
   return (
-    <div className={cn('relative overflow-hidden bg-slate-100', wrapperClassName)}>
-      {!loaded && <div className="absolute inset-0 z-[1] animate-pulse bg-slate-200" aria-hidden="true" />}
+    <div className={cn('relative overflow-hidden bg-[var(--surface-0)]', wrapperClassName)}>
+      {!loaded && (
+        <div
+          className="absolute inset-0 z-[1] animate-pulse bg-[linear-gradient(135deg,rgba(255,252,246,0.96)_0%,rgba(242,236,224,0.98)_48%,rgba(233,244,236,0.96)_100%)]"
+          aria-hidden="true"
+        />
+      )}
       <img
         ref={imgRef}
         data-testid={testId}

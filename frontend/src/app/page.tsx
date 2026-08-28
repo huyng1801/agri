@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Boxes, Leaf, QrCode, ShoppingBag, Sparkles, Store, Users, type LucideIcon } from 'lucide-react';
+import { ArrowRight, BadgeCheck, Boxes, Leaf, QrCode, ShoppingBag, Store, Users, type LucideIcon } from 'lucide-react';
 import { ProductSlider } from '@/components/product-slider';
 import { CooperativeCard, EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-marketplace';
+import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
 import { PublicImage } from '@/components/public-image';
-import { PublicSection, PublicSectionHeader, publicContainerClass } from '@/components/public-layout';
+import { PublicSection, PublicSectionHeader, publicCardClass, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
-import { Button, Panel, cn } from '@/components/ui';
+import { cn } from '@/components/ui';
 import { marketplaceUrl } from '@/lib/domain';
 import { fetchPublicNews } from '@/lib/news';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
@@ -39,6 +40,13 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+type HighlightTile = {
+  label: string;
+  value: string | number;
+  description: string;
+  icon: LucideIcon;
+};
+
 export default async function HomePage() {
   const siteKey = await getRequestPublicSiteKey();
   const isInternal = siteKey === 'htxonline';
@@ -51,40 +59,6 @@ export default async function HomePage() {
 
   const featuredProducts = (isPassport ? catalog.products.filter((product) => Boolean(product.passports?.length)) : catalog.products).slice(0, 12);
   const featuredCooperatives = catalog.cooperatives.slice(0, 6);
-  const stats: Array<[string, string | number, LucideIcon]> = isInternal
-    ? [
-        ['Thành viên', 'Hồ sơ tập trung', Users],
-        ['Vận hành', 'Thu chi - xuất nhập', Boxes],
-        ['Kết nối', 'Đồng bộ sang Agripassport', QrCode]
-      ]
-    : isPassport
-      ? [
-          ['QR truy xuất', 'Mở nhanh', QrCode],
-          ['Sản phẩm có hồ sơ', featuredProducts.length, ShoppingBag],
-          ['Công khai', 'Theo phạm vi phê duyệt', BadgeCheck]
-        ]
-      : [
-          ['Sản phẩm công khai', catalog.totalProducts, ShoppingBag],
-          ['HTX đang hiển thị', catalog.cooperatives.length, Store],
-          ['QR truy xuất', 'Mở nhanh', QrCode]
-        ];
-  const heroSignals = isInternal
-    ? [
-        'Tập trung hồ sơ thành viên, xã viên và lịch sử hoạt động trên cùng một hệ thống',
-        'Theo dõi mức độ sử dụng dịch vụ, thu chi, xuất nhập và dữ liệu đối soát nội bộ',
-        'Đồng bộ dữ liệu sản phẩm thực tế sang AGRIPASSPORT khi cần công khai và truy xuất'
-      ]
-    : isPassport
-      ? [
-          'Mỗi QR mở ra hồ sơ số gắn với sản phẩm, lô sản phẩm hoặc vùng trồng',
-          'Hiển thị vùng trồng, nhật ký, chứng nhận và nguồn gốc theo phạm vi được công khai',
-          'Tạo từ dữ liệu sản phẩm trên AGRIPASSPORT để người mua tra cứu nhanh hơn'
-        ]
-      : [
-          'Chuẩn hóa thông tin hợp tác xã, sản phẩm và nhận diện trên cùng một nền tảng',
-          'Mở QR truy xuất cho người mua mà không cần đăng nhập',
-          'Công khai dữ liệu sản phẩm và kết nối tiêu thụ thuận tiện hơn'
-        ];
   const primaryCta = isInternal
     ? { href: '/login', label: 'Đăng nhập quản trị' }
     : isPassport
@@ -95,284 +69,268 @@ export default async function HomePage() {
     : isPassport
       ? { href: '/ve-chung-toi', label: 'Cách hoạt động', external: false }
       : { href: '/htx', label: 'Khám phá HTX', external: false };
-  const heroNote = isInternal
-    ? 'HTXONLINE giữ vai trò quản trị nội bộ. Dữ liệu sản phẩm công khai và QR truy xuất được đẩy sang AGRIPASSPORT.'
-    : isPassport
-      ? 'Mở nhanh hồ sơ QR, thông tin nguồn gốc và các dữ liệu công khai theo một luồng gọn trên điện thoại.'
-      : 'Mở nhanh sản phẩm, hồ sơ HTX và QR truy xuất theo một luồng gọn trên điện thoại.';
-  const spotlightLabel = isInternal ? 'HTXONLINE' : siteProfile.appName;
-  const spotlightTitle = isInternal
-    ? 'Một lớp quản trị nội bộ được thiết kế để HTX nắm thành viên, dịch vụ và vận hành rõ ràng hơn.'
-    : isPassport
-      ? 'Một lớp hồ sơ số giúp QR truy xuất rõ ràng hơn cho người mua và đối tác.'
-      : 'Một lớp dữ liệu sản phẩm và truy xuất được thiết kế để HTX công khai minh bạch hơn.';
-  const spotlightSteps = isInternal
+  const heroSignals = isInternal
     ? [
-        ['01', 'Hồ sơ xã viên', 'Quản lý thông tin thành viên, trạng thái tham gia và dữ liệu sử dụng dịch vụ'],
-        ['02', 'Vận hành nội bộ', 'Theo dõi thu chi, xuất nhập và lịch sử hoạt động theo từng nhu cầu quản trị'],
-        ['03', 'Đồng bộ sản phẩm', 'Đưa dữ liệu sản phẩm thực tế sang AGRIPASSPORT khi cần công khai và truy xuất']
+        'Tập trung hồ sơ xã viên, lịch sử tham gia và các dịch vụ nội bộ trên cùng một lớp dữ liệu.',
+        'Theo dõi thu chi, xuất nhập và các báo cáo quản trị mà không phải gom dữ liệu thủ công.',
+        'Khi cần công khai sản phẩm hoặc tạo QR, dữ liệu thực được đồng bộ sang AGRIPASSPORT.'
       ]
     : isPassport
       ? [
-          ['01', 'Quét QR', 'Mở nhanh hồ sơ số của sản phẩm hoặc lô sản phẩm'],
-          ['02', 'Xem nguồn gốc', 'Kiểm tra vùng trồng, nhật ký và chứng nhận công khai'],
-          ['03', 'Đối chiếu hồ sơ', 'Sử dụng dữ liệu rõ ràng hơn với người mua, đối tác và cơ quan liên quan']
+          'Mỗi QR mở ra một hồ sơ số rõ vùng trồng, nhật ký và chứng nhận theo phạm vi công khai.',
+          'Ưu tiên trải nghiệm tra cứu nhanh, rõ và đáng tin trên điện thoại cho người mua cuối.',
+          'Dữ liệu hồ sơ được sinh từ lớp sản phẩm đã chuẩn hóa trên AGRIPASSPORT.'
         ]
       : [
-          ['01', 'Chuẩn hóa dữ liệu', 'Đồng bộ tên HTX, sản phẩm và thông tin nhận diện trên một nền tảng'],
-          ['02', 'Mở QR truy xuất', 'Xem vùng trồng, nhật ký và chứng nhận theo phạm vi công khai'],
-          ['03', 'Kết nối tiêu thụ', 'Công khai dữ liệu sản phẩm để hỗ trợ kênh tiêu thụ phù hợp']
+          'Chuẩn hóa tên HTX, sản phẩm, vùng trồng và thông tin truy xuất trên cùng một nền tảng.',
+          'Mở kênh công khai, đặt hàng và giỏ hàng mà không cần dựng thêm website riêng cho mỗi HTX.',
+          'Liên kết sang Hộ chiếu nông nghiệp khi người mua cần tra cứu sâu hơn bằng QR.'
         ];
+  const stats: Array<[string, string | number, LucideIcon]> = isInternal
+    ? [
+        ['Thành viên', 'Hồ sơ tập trung', Users],
+        ['Vận hành', 'Thu chi - xuất nhập', Boxes],
+        ['Kết nối', 'Sang AGRIPASSPORT', QrCode]
+      ]
+    : isPassport
+      ? [
+          ['QR công khai', 'Mở nhanh', QrCode],
+          ['Hồ sơ số', featuredProducts.length, ShoppingBag],
+          ['Độ tin cậy', 'Theo phạm vi duyệt', BadgeCheck]
+        ]
+      : [
+          ['Sản phẩm công khai', catalog.totalProducts, ShoppingBag],
+          ['HTX hiển thị', catalog.cooperatives.length, Store],
+          ['QR truy xuất', 'Mở nhanh', QrCode]
+        ];
+  const heroTiles: HighlightTile[] = stats.map(([label, value, icon], index) => ({
+    label: String(label),
+    value,
+    description: heroSignals[index] ?? '',
+    icon
+  }));
   const featureCards = isInternal
     ? [
-        ['Hồ sơ thành viên', 'Lưu trữ tập trung thông tin xã viên, trạng thái tham gia và dữ liệu quản trị cần thiết.', Users],
-        ['Thu chi - xuất nhập', 'Theo dõi các khoản thu chi, nhập xuất và lịch sử biến động phục vụ đối soát nội bộ.', Boxes],
-        ['Kết nối dữ liệu sản phẩm', 'Khi cần công khai hoặc truy xuất, dữ liệu thực tế sẽ được đồng bộ sang AGRIPASSPORT.', QrCode]
+        ['Hồ sơ thành viên', 'Lưu trữ tập trung thông tin xã viên, trạng thái tham gia và lịch sử sử dụng dịch vụ quan trọng.', Users],
+        ['Thu chi - xuất nhập', 'Theo dõi khoản thu chi, biến động nhập xuất và tình hình vận hành nội bộ của hợp tác xã.', Boxes],
+        ['Đồng bộ sản phẩm', 'Khi cần đưa sản phẩm ra ngoài thị trường hoặc tạo QR, dữ liệu được đẩy sang AGRIPASSPORT.', QrCode]
       ]
     : isPassport
       ? [
-          ['QR truy xuất rõ ràng', 'Mỗi mã QR dẫn tới một hồ sơ số có vùng trồng, nhật ký và chứng nhận công khai.', QrCode],
-          ['Nguồn gốc minh bạch', 'Người mua và đối tác xem dữ liệu theo đúng phạm vi mà HTX đã phê duyệt.', BadgeCheck],
-          ['Dữ liệu từ AGRIPASSPORT', 'Hồ sơ số được tạo từ dữ liệu sản phẩm đã chuẩn hóa trên nền tảng trung tâm.', ShoppingBag]
+          ['QR truy xuất rõ ràng', 'Mỗi mã QR dẫn tới một hồ sơ số công khai gọn, dễ đọc và phù hợp cho màn hình điện thoại.', QrCode],
+          ['Nguồn gốc minh bạch', 'Người mua và đối tác có thể xem vùng trồng, nhật ký và chứng nhận theo đúng phạm vi HTX mở.', BadgeCheck],
+          ['Kết nối dữ liệu trung tâm', 'Hồ sơ số lấy dữ liệu từ AGRIPASSPORT để đảm bảo một nguồn dữ liệu thống nhất.', ShoppingBag]
         ]
       : [
-          ['Minh bạch nguồn gốc', 'QR truy xuất giúp người mua kiểm tra nhật ký, vùng trồng và chứng nhận công khai.', QrCode],
-          ['Công khai sản phẩm', 'Dữ liệu sản phẩm, hợp tác xã và thông tin nhận diện được trình bày đồng bộ hơn.', ShoppingBag],
-          ['Kết nối tiêu thụ', 'Sản phẩm có thể được dùng cho các kênh công khai và kết nối tiêu thụ phù hợp.', BadgeCheck]
+          ['Chuẩn hóa danh mục', 'Tên HTX, sản phẩm, vùng trồng và dữ liệu nhận diện được quản lý thống nhất trước khi công khai.', ShoppingBag],
+          ['Bán hàng và công khai', 'Sản phẩm, giỏ hàng và thông tin HTX được trình bày rõ ràng hơn để tăng khả năng ra quyết định.', Store],
+          ['Liên kết QR truy xuất', 'Khi cần truy xuất sâu hơn, mỗi sản phẩm có thể mở sang hồ sơ số trên Hộ chiếu nông nghiệp.', QrCode]
         ];
-  const internalFlow = [
-    ['Bước 1', 'HTXONLINE', 'Hợp tác xã quản lý thông tin thành viên, dịch vụ và hoạt động nội bộ trên HTXONLINE.'],
-    ['Bước 2', 'Danh mục thực tế', 'Hợp tác xã xác định danh mục sản phẩm thực tế cần số hóa và công khai.'],
-    ['Bước 3', 'AGRIPASSPORT', 'Dữ liệu sản phẩm được đưa lên AGRIPASSPORT để thống nhất tên HTX, chủ thể và tên sản phẩm.'],
-    ['Bước 4', 'Truy xuất', 'Bổ sung vùng trồng, nhật ký, chứng nhận và các dữ liệu truy xuất phù hợp trên AGRIPASSPORT.'],
-    ['Bước 5', 'Hộ chiếu số', 'Tạo QR và hồ sơ số gắn với sản phẩm hoặc lô sản phẩm trên HỘ CHIẾU NÔNG NGHIỆP.'],
-    ['Bước 6', 'Công khai - kết nối', 'Người mua hoặc đối tác quét QR để xem thông tin được phép công khai và kết nối tiêu thụ phù hợp.']
-  ] as const;
+  const journeyCards = isInternal
+    ? [
+        ['Bước 1', 'HTXONLINE', 'Quản lý xã viên, dịch vụ và dữ liệu vận hành nội bộ của hợp tác xã.'],
+        ['Bước 2', 'Xác định sản phẩm thực', 'Chọn những sản phẩm hoặc lô sản phẩm cần số hóa và công khai ra bên ngoài.'],
+        ['Bước 3', 'Đồng bộ sang AGRIPASSPORT', 'Chuẩn hóa tên sản phẩm, hình ảnh, vùng trồng và thông tin bán hàng trên nền tảng trung tâm.'],
+        ['Bước 4', 'Mở Hộ chiếu nông nghiệp', 'Sinh QR và hồ sơ số để truy xuất minh bạch khi cần làm thị trường hoặc hồ sơ.']
+      ]
+    : isPassport
+      ? [
+          ['Bước 1', 'Chuẩn hóa dữ liệu gốc', 'Sản phẩm được tạo và duyệt từ lớp dữ liệu trung tâm trước khi sinh hồ sơ công khai.'],
+          ['Bước 2', 'Tạo hồ sơ số', 'QR liên kết trực tiếp tới vùng trồng, nhật ký, chứng nhận và dữ liệu nền tảng đã cho phép hiển thị.'],
+          ['Bước 3', 'Người mua tra cứu', 'Điện thoại mở ra một hành trình truy xuất gọn, rõ và ít thao tác hơn.']
+        ]
+      : [
+          ['Bước 1', 'Chuẩn hóa HTX và sản phẩm', 'Thiết lập dữ liệu nhận diện, tên gọi, hình ảnh và thông tin cần công khai trên cùng hệ thống.'],
+          ['Bước 2', 'Đăng lên AGRIPASSPORT', 'Mở kênh công khai sản phẩm, giỏ hàng và nội dung giới thiệu HTX cho thị trường.'],
+          ['Bước 3', 'Liên kết QR', 'Khi người mua cần xem sâu hơn, sản phẩm tiếp tục mở sang Hộ chiếu nông nghiệp.']
+        ];
   const newsDescription = isInternal
-    ? 'Tin về vận hành HTX, chuẩn hóa dữ liệu và chuyển đổi số nội bộ từ đội triển khai.'
+    ? 'Tin về vận hành HTX, số hóa nội bộ và kinh nghiệm triển khai thực tế từ đội vận hành.'
     : isPassport
       ? 'Tin về truy xuất, hồ sơ số và chuẩn hóa dữ liệu công khai cho sản phẩm nông nghiệp.'
       : 'Tin về sản phẩm, truy xuất, thị trường và chuẩn hóa dữ liệu nông nghiệp từ đội vận hành.';
+  const heroNote = isInternal
+    ? 'HTXONLINE là lớp quản trị nội bộ. Khi cần công khai hoặc truy xuất, dữ liệu sẽ được đẩy sang AGRIPASSPORT và Hộ chiếu nông nghiệp theo đúng vai trò.'
+    : isPassport
+      ? 'Hộ chiếu nông nghiệp ưu tiên trải nghiệm truy xuất cho người mua, còn dữ liệu gốc vẫn được chuẩn hóa từ AGRIPASSPORT.'
+      : 'AGRIPASSPORT là lớp trung tâm của hệ sinh thái, kết nối dữ liệu sản phẩm, công khai bán hàng và QR truy xuất.';
+  const sectionIntro = isInternal
+    ? 'Các khối chức năng quan trọng của HTXONLINE'
+    : isPassport
+      ? 'Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số'
+      : 'Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng';
+  const sectionDescription = isInternal
+    ? 'Bám sát đúng mô tả nghiệp vụ: thành viên, dịch vụ, thu chi, xuất nhập và đồng bộ ra lớp công khai khi cần.'
+    : isPassport
+      ? 'Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng.'
+      : 'Theo hướng trình bày gần Demeter hơn: rõ khối chức năng, card lớn và hành trình công khai bám sát người dùng cuối.';
+  const journeyTitle = isInternal ? 'Luồng dữ liệu từ quản trị nội bộ ra thị trường' : 'Luồng triển khai từ dữ liệu gốc đến người mua';
+  const journeyDescription = isInternal
+    ? 'HTXONLINE đứng ở lớp đầu vào, AGRIPASSPORT là lớp công khai trung tâm và Hộ chiếu nông nghiệp là lớp truy xuất minh bạch.'
+    : 'Ba nền tảng không chồng lấn vai trò; chúng nối tiếp nhau để tạo một hành trình dữ liệu rõ ràng hơn.';
+  const heroSearchPlaceholder = isPassport ? 'Tìm hồ sơ có QR, sản phẩm hoặc HTX' : 'Tìm sản phẩm, HTX hoặc vùng trồng';
+  const closingPrimaryCta = isInternal
+    ? { href: '/lien-he', label: 'Nhận tư vấn triển khai', external: false }
+    : isPassport
+      ? { href: '/san-pham?hasQr=true', label: 'Mở danh mục QR', external: false }
+      : { href: '/san-pham', label: 'Tới danh mục công khai', external: false };
+  const closingSecondaryCta = isInternal
+    ? { href: marketplaceUrl('/'), label: 'Mở AGRIPASSPORT', external: true }
+    : { href: '/lien-he', label: 'Liên hệ đội vận hành', external: false };
 
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f4faf3_0%,#eff8f2_42%,#ffffff_100%)]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-90"
-            style={{
-              background:
-                'radial-gradient(circle at top left, rgba(255,255,255,0.96), transparent 32%), radial-gradient(circle at 85% 18%, rgba(47,132,81,0.16), transparent 24%), radial-gradient(circle at 18% 78%, rgba(188,230,204,0.6), transparent 28%)'
-            }}
-          />
-          <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-white/70" />
-
-          <div
-            className={cn(
-              publicContainerClass,
-              'relative grid items-start gap-3.5 pb-4 pt-3.5 sm:gap-10 sm:py-12 lg:min-h-[calc(100vh-76px)] lg:grid-cols-[0.95fr_1.05fr] lg:py-12'
-            )}
-          >
-            <div className="space-y-3 sm:space-y-6">
-              <div className="inline-flex items-center gap-2 rounded-full border border-leaf/10 bg-white/88 px-3 py-1.5 text-[0.7rem] font-semibold text-leaf shadow-sm backdrop-blur sm:text-sm">
-                <Leaf size={16} aria-hidden="true" />
-                {siteProfile.pageContent.homeBadge}
-              </div>
-
-              <h1 className="max-w-[19ch] text-[1.36rem] font-bold leading-[1.06] tracking-normal text-ink min-[390px]:text-[1.48rem] sm:max-w-3xl sm:text-[3.35rem] sm:leading-[0.98] lg:text-[3.15rem] xl:text-[3.35rem]">
-                {siteProfile.pageContent.homeTitle}
-              </h1>
-
-              <p className="max-w-[24.5rem] text-[0.86rem] leading-[1.52] text-slate-700 sm:max-w-2xl sm:text-[1.05rem] sm:leading-8">
-                {siteProfile.pageContent.homeDescription}
-              </p>
-
-              <div className="max-w-[24.5rem] rounded-[1.1rem] border border-white/85 bg-white/74 p-1.5 shadow-[0_14px_30px_rgba(148,163,184,0.12)] backdrop-blur sm:max-w-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="grid gap-2 min-[430px]:grid-cols-[1.06fr_0.94fr] sm:flex sm:flex-wrap">
-                  <Link href={primaryCta.href} className="inline-flex sm:w-auto">
-                    <Button className="min-h-[2.7rem] w-full justify-center whitespace-nowrap rounded-[0.95rem] px-4 text-[0.88rem] shadow-[0_14px_28px_rgba(47,132,81,0.22)] sm:min-h-12 sm:w-auto sm:px-5">
-                      {primaryCta.label}
-                      <ArrowRight size={18} aria-hidden="true" />
-                    </Button>
-                  </Link>
-                  {secondaryCta.external ? (
-                    <a href={secondaryCta.href} className="inline-flex sm:w-auto">
-                      <Button
-                        variant="ghost"
-                        className="min-h-[2.7rem] w-full whitespace-nowrap justify-center rounded-[0.95rem] border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.88rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
-                      >
-                        {secondaryCta.label}
-                      </Button>
-                    </a>
-                  ) : (
-                    <Link href={secondaryCta.href} className="inline-flex sm:w-auto">
-                      <Button
-                        variant="ghost"
-                        className="min-h-[2.7rem] w-full whitespace-nowrap justify-center rounded-[0.95rem] border border-leaf/10 bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf7_100%)] px-4 text-[0.88rem] font-semibold text-leaf shadow-[0_12px_24px_rgba(148,163,184,0.12)] ring-1 ring-white/85 hover:border-leaf/30 hover:bg-[#f7fbf8] hover:text-leaf sm:min-h-12 sm:w-auto sm:px-5"
-                      >
-                        {secondaryCta.label}
-                      </Button>
-                    </Link>
-                  )}
-                </div>
-                <p className="mt-2 px-1 text-[0.72rem] leading-5 text-slate-500 sm:hidden">{heroNote}</p>
-              </div>
-
-              {!isInternal ? (
-                <div className="max-w-2xl rounded-[1.2rem] border border-white/70 bg-white/82 p-1.5 shadow-[0_18px_44px_rgba(47,132,81,0.08)] backdrop-blur sm:p-2">
-                  <PublicSearch placeholder={isPassport ? 'Tìm hồ sơ có QR, sản phẩm hoặc HTX' : 'Tìm sản phẩm, HTX, vùng trồng'} />
-                </div>
-              ) : null}
-
-              <div className="grid gap-1.5 sm:max-w-2xl sm:grid-cols-3 lg:max-w-xl">
-                {heroSignals.map((item) => (
-                  <div key={item} className="rounded-[0.95rem] border border-white/80 bg-white/80 px-3 py-2.5 text-[0.78rem] leading-[1.42] text-slate-700 shadow-sm backdrop-blur sm:text-[0.95rem] sm:leading-[1.62]">
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="overflow-hidden rounded-[1.65rem] border border-white/75 bg-white/78 p-2 shadow-[0_22px_60px_rgba(15,23,42,0.08)] lg:hidden">
+        <section className="border-b border-[#ece8dd] bg-white">
+          <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
+            <div className="overflow-hidden rounded-[2rem] border border-[#e8e4d8] bg-white shadow-[0_28px_68px_rgba(15,23,42,0.08)]">
+              <div className="relative isolate">
                 <PublicImage
                   src={siteProfile.pageContent.homeImageUrl}
                   alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                  wrapperClassName="aspect-[16/10] rounded-[1.15rem]"
+                  wrapperClassName="aspect-[5/4] sm:aspect-[16/8] lg:aspect-[21/9]"
                   className="h-full w-full object-cover"
                   priority
                 />
-              </div>
+                <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(11,20,18,0.88)_0%,rgba(11,20,18,0.68)_40%,rgba(11,20,18,0.16)_78%,rgba(11,20,18,0.04)_100%)]" />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-90"
+                  style={{
+                    background:
+                      'radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 18%, rgba(255,255,255,0.12), transparent 20%)'
+                  }}
+                />
 
-              <div className="overflow-hidden rounded-[1.65rem] border border-white/75 bg-[linear-gradient(145deg,#246d45_0%,#2f8451_100%)] p-3.5 text-white shadow-[0_24px_70px_rgba(25,58,40,0.15)] lg:hidden">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/74">{spotlightLabel}</p>
-                    <h2 className="mt-1.5 text-[1.28rem] font-bold leading-[1.08]">{spotlightTitle}</h2>
-                  </div>
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[1rem] bg-white/12 ring-1 ring-white/15">
-                    <Sparkles size={16} aria-hidden="true" className="text-mint" />
-                  </span>
-                </div>
-
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {stats.map(([title, value, Icon]) => (
-                    <div key={String(title)} className="rounded-[1rem] bg-white/10 p-2.5 ring-1 ring-white/10">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-[0.9rem] bg-white/14 text-mint">
-                        <Icon size={15} aria-hidden="true" />
-                      </span>
-                      <p className="mt-1.5 text-[0.58rem] font-semibold uppercase tracking-[0.12em] text-white/68">{String(title)}</p>
-                      <p className="mt-0.5 text-[0.98rem] font-bold leading-tight">{String(value)}</p>
+                <div className="relative z-10 flex h-full items-center sm:items-end">
+                  <div className="w-full max-w-[44rem] p-5 text-white sm:p-7 lg:p-10">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/88 backdrop-blur">
+                      <Leaf size={15} aria-hidden="true" className="text-[#a9f29b]" />
+                      {siteProfile.pageContent.homeBadge}
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
 
-            <div className="relative hidden lg:block">
-              <div className="absolute -right-6 top-10 hidden h-28 w-28 rounded-full bg-mint/55 blur-3xl sm:block" aria-hidden="true" />
-              <div className="relative overflow-hidden rounded-[1.8rem] border border-white/75 bg-white/82 p-4 shadow-[0_28px_80px_rgba(25,58,40,0.14)] backdrop-blur">
-                <div className="mb-3 overflow-hidden rounded-[1.35rem] border border-white/60 bg-white/70 p-2">
-                  <PublicImage
-                    src={siteProfile.pageContent.homeImageUrl}
-                    alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                    wrapperClassName="aspect-[16/10] rounded-[1.1rem]"
-                    className="h-full w-full object-cover"
-                    priority
-                  />
-                </div>
-                <div className="rounded-[1.45rem] bg-[linear-gradient(145deg,#1f5f3d_0%,#2f8451_52%,#4f9b65_100%)] p-5 text-white">
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/74">{spotlightLabel}</p>
-                      <h2 className="mt-2 max-w-md text-[1.65rem] font-bold leading-tight">{spotlightTitle}</h2>
+                    <h1 className="mt-4 max-w-[13ch] text-[2.2rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-white sm:max-w-[14ch] sm:text-[3.35rem] lg:text-[4.15rem]">
+                      {siteProfile.pageContent.homeTitle}
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-[0.98rem] leading-7 text-white/88 sm:text-[1.05rem] sm:leading-8">
+                      {siteProfile.pageContent.homeDescription}
+                    </p>
+
+                    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                      <Link
+                        href={primaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_34px_rgba(31,155,75,0.26)] transition hover:-translate-y-0.5"
+                      >
+                        {primaryCta.label}
+                        <ArrowRight size={17} aria-hidden="true" />
+                      </Link>
+                      {secondaryCta.external ? (
+                        <a
+                          href={secondaryCta.href}
+                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur transition hover:bg-white/16"
+                        >
+                          {secondaryCta.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={secondaryCta.href}
+                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur transition hover:bg-white/16"
+                        >
+                          {secondaryCta.label}
+                        </Link>
+                      )}
                     </div>
-                    <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/12 ring-1 ring-white/15">
-                      <Sparkles size={20} aria-hidden="true" className="text-mint" />
-                    </span>
-                  </div>
 
-                  <div className="mt-5 grid gap-2.5 sm:grid-cols-3">
-                    {stats.map(([title, value, Icon]) => (
-                      <div key={String(title)} className="rounded-2xl bg-white/12 p-3.5 ring-1 ring-white/12">
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/14 text-mint">
-                          <Icon size={18} aria-hidden="true" />
-                        </span>
-                        <p className="mt-3 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-white/72">{String(title)}</p>
-                        <p className="mt-1 text-2xl font-bold">{String(value)}</p>
+                    {!isInternal ? (
+                      <div className="mt-5 max-w-xl rounded-[1.7rem] bg-white/92 p-1.5 shadow-[0_18px_44px_rgba(15,23,42,0.1)] backdrop-blur">
+                        <PublicSearch placeholder={heroSearchPlaceholder} />
                       </div>
-                    ))}
-                  </div>
+                    ) : null}
 
-                  <div className="mt-4 rounded-[1.35rem] bg-black/12 p-3.5 ring-1 ring-white/10">
-                    <div className="flex items-center gap-2 text-sm font-semibold text-white/84">
-                      <BadgeCheck size={16} aria-hidden="true" />
-                      {isInternal ? 'Luồng đồng bộ nhiều lớp rõ ràng hơn' : isPassport ? 'Hành trình tra cứu rõ ràng hơn' : 'Luồng dữ liệu và công khai rõ ràng hơn'}
-                    </div>
-                    <div className="mt-3 grid gap-2.5 sm:grid-cols-3">
-                      {spotlightSteps.map(([step, title, text]) => (
-                        <div key={title} className="rounded-2xl bg-white/10 p-3.5">
-                          <p className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-white/62">{step}</p>
-                          <p className="mt-2 text-base font-bold">{title}</p>
-                          <p className="mt-2 text-sm leading-6 text-white/78">{text}</p>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="mt-4 max-w-3xl text-sm leading-6 text-white/76">{heroNote}</p>
                   </div>
                 </div>
+              </div>
+
+              <div className="grid gap-3 border-t border-[#ece8dd] bg-[#fbfaf6] px-4 py-4 sm:grid-cols-3 sm:px-6 sm:py-5">
+                {heroTiles.map((tile) => {
+                  const Icon = tile.icon;
+                  return (
+                    <article key={tile.label} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
+                      <div className="flex items-start gap-3">
+                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                          <Icon size={20} aria-hidden="true" />
+                        </span>
+                        <div>
+                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{tile.label}</p>
+                          <p className="mt-1 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(tile.value)}</p>
+                        </div>
+                      </div>
+                      <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
+                    </article>
+                  );
+                })}
               </div>
             </div>
           </div>
         </section>
 
-        {isInternal ? (
-          <>
-            <PublicSection>
-              <PublicSectionHeader
-                title="Những lớp dữ liệu trọng tâm của HTXONLINE"
-                description="Bám theo tài liệu mô tả: thành viên, dịch vụ, thu chi, xuất nhập và dữ liệu vận hành nội bộ phải được quản lý tập trung trước khi công khai sản phẩm."
-              />
-              <div className="mt-5 grid gap-4 md:grid-cols-3">
-                {featureCards.map(([title, text, Icon]) => (
-                  <Panel key={String(title)} className="h-full p-3.5 sm:p-5">
-                    <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-mint text-leaf sm:h-12 sm:w-12 sm:rounded-2xl">
-                      <Icon size={21} aria-hidden="true" />
-                    </span>
-                    <h3 className="mt-3 text-[1.02rem] font-bold leading-tight text-ink sm:mt-3.5 sm:text-lg">{String(title)}</h3>
-                    <p className="mt-1.5 text-[0.84rem] leading-[1.62] text-slate-600 sm:mt-2 sm:text-sm sm:leading-[1.75]">{String(text)}</p>
-                  </Panel>
-                ))}
-              </div>
-            </PublicSection>
+        <section className="bg-white py-10 sm:py-12 lg:py-14">
+          <div className={publicContainerClass}>
+            <PublicEcosystemShowcase siteKey={siteKey} />
+          </div>
+        </section>
 
+        <PublicSection band>
+          <PublicSectionHeader title={sectionIntro} description={sectionDescription} />
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
+            {featureCards.map(([title, text, Icon], index) => (
+              <article key={String(title)} className={cn(publicCardClass, 'flex h-full flex-col rounded-[2rem] p-5 sm:p-6')}>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">0{index + 1}</span>
+                  <span className="grid h-14 w-14 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                    <Icon size={26} aria-hidden="true" />
+                  </span>
+                </div>
+                <h2 className="mt-5 text-[1.22rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.38rem]">{String(title)}</h2>
+                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{String(text)}</p>
+              </article>
+            ))}
+          </div>
+        </PublicSection>
+
+        <PublicSection>
+          <PublicSectionHeader title={journeyTitle} description={journeyDescription} />
+          <div className={cn('mt-6 grid gap-4', isInternal ? 'md:grid-cols-2 xl:grid-cols-4' : 'md:grid-cols-3')}>
+            {journeyCards.map(([step, title, text]) => (
+              <article key={`${step}-${title}`} className={cn(publicCardClass, 'h-full rounded-[2rem] p-5 sm:p-6')}>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{step}</p>
+                <h2 className="mt-3 text-[1.12rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.28rem]">{title}</h2>
+                <p className="mt-3 text-[0.92rem] leading-7 text-slate-600">{text}</p>
+              </article>
+            ))}
+          </div>
+        </PublicSection>
+
+        {!isInternal ? (
+          <>
             <PublicSection band>
               <PublicSectionHeader
-                title="Luồng kết nối giữa HTXONLINE, AGRIPASSPORT và HỘ CHIẾU NÔNG NGHIỆP"
-                description="Dữ liệu nội bộ không đứng riêng lẻ: nó là đầu vào để chuẩn hóa sản phẩm, tạo hồ sơ QR và phục vụ công khai đúng vai trò từng hệ thống."
-              />
-              <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                {internalFlow.map(([step, title, text]) => (
-                  <Panel key={step} className="h-full p-4 sm:p-5">
-                    <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-leaf/80">{step}</p>
-                    <h3 className="mt-2 text-lg font-bold text-ink">{title}</h3>
-                    <p className="mt-2 text-sm leading-7 text-slate-600">{text}</p>
-                  </Panel>
-                ))}
-              </div>
-            </PublicSection>
-          </>
-        ) : (
-          <>
-            <PublicSection>
-              <PublicSectionHeader
                 title={isPassport ? 'Sản phẩm đang có QR hoặc hồ sơ công khai' : 'Sản phẩm nổi bật'}
-                description={isPassport ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.' : 'Dữ liệu sản phẩm nông nghiệp đang được công khai từ các HTX trên hệ thống.'}
+                description={
+                  isPassport
+                    ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.'
+                    : 'Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.'
+                }
                 href="/san-pham"
                 linkLabel="Xem tất cả"
               />
               {featuredProducts.length ? (
-                <ProductSlider products={featuredProducts} />
+                <div className="mt-6">
+                  <ProductSlider products={featuredProducts} />
+                </div>
               ) : (
-                <div className="mt-5">
+                <div className="mt-6">
                   <EmptyPublicState
                     title={isPassport ? 'Chưa có sản phẩm có QR công khai' : 'Chưa có sản phẩm công khai'}
                     description={isPassport ? 'Khi HTX tạo QR và mở phạm vi công khai, hồ sơ sẽ xuất hiện tại đây.' : 'Khi HTX công khai dữ liệu sản phẩm, sản phẩm sẽ xuất hiện tại đây.'}
@@ -381,21 +339,25 @@ export default async function HomePage() {
               )}
             </PublicSection>
 
-            <PublicSection band>
+            <PublicSection>
               <PublicSectionHeader
-                title={isPassport ? 'Hợp tác xã đang có hồ sơ truy xuất' : 'HTX nổi bật'}
-                description={isPassport ? 'Những HTX đã có sản phẩm, QR hoặc dữ liệu công khai phục vụ truy xuất.' : 'Hồ sơ HTX đang có dữ liệu sản phẩm công khai.'}
+                title={isPassport ? 'HTX đang có hồ sơ truy xuất' : 'HTX tiêu biểu trong hệ sinh thái'}
+                description={
+                  isPassport
+                    ? 'Những HTX đã có sản phẩm, QR hoặc dữ liệu công khai phục vụ truy xuất.'
+                    : 'Thay cho cảm giác danh sách khô, phần này được giữ thoáng hơn để đóng vai trò gần với cụm đối tác trên landing page.'
+                }
                 href="/htx"
                 linkLabel="Xem HTX"
               />
               {featuredCooperatives.length ? (
-                <div className="mt-5 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-6 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
                   {featuredCooperatives.map((cooperative, index) => (
                     <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
                   ))}
                 </div>
               ) : (
-                <div className="mt-5">
+                <div className="mt-6">
                   <EmptyPublicState
                     title={isPassport ? 'Chưa có HTX công khai hồ sơ truy xuất' : 'Chưa có HTX công khai'}
                     description={isPassport ? 'HTX sẽ xuất hiện khi đã có sản phẩm hoặc QR được mở công khai.' : 'HTX sẽ xuất hiện khi có dữ liệu sản phẩm được đăng công khai.'}
@@ -404,32 +366,54 @@ export default async function HomePage() {
               )}
             </PublicSection>
           </>
-        )}
+        ) : null}
 
-        <PublicSection>
-          <div className="grid gap-4 md:grid-cols-3">
-            {featureCards.map(([title, text, Icon]) => (
-              <Panel key={String(title)} className="h-full p-3.5 sm:p-5">
-                <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-mint text-leaf sm:h-12 sm:w-12 sm:rounded-2xl">
-                  <Icon size={21} aria-hidden="true" />
-                </span>
-                <h3 className="mt-3 text-[1.02rem] font-bold leading-tight text-ink sm:mt-3.5 sm:text-lg">{String(title)}</h3>
-                <p className="mt-1.5 text-[0.84rem] leading-[1.62] text-slate-600 sm:mt-2 sm:text-sm sm:leading-[1.75]">{String(text)}</p>
-              </Panel>
-            ))}
+        <PublicSection band>
+          <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(120deg,#1d7f3e_0%,#25a34d_55%,#2db95a_100%)] px-5 py-6 text-white shadow-[0_28px_60px_rgba(31,155,75,0.2)] sm:px-7 sm:py-8">
+            <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+              <div>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/78">Tối ưu trải nghiệm công khai</p>
+                <h2 className="mt-2 text-[1.8rem] font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-[2.5rem]">
+                  Giao diện public đang được dựng lại theo hướng gần landing page native hơn, gọn hơn và dễ hiểu hơn.
+                </h2>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+                <Link
+                  href={closingPrimaryCta.href}
+                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#1f9b4b] shadow-[0_16px_32px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5"
+                >
+                  {closingPrimaryCta.label}
+                </Link>
+                {closingSecondaryCta.external ? (
+                  <a
+                    href={closingSecondaryCta.href}
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                  >
+                    {closingSecondaryCta.label}
+                  </a>
+                ) : (
+                  <Link
+                    href={closingSecondaryCta.href}
+                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                  >
+                    {closingSecondaryCta.label}
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </PublicSection>
 
-        <PublicSection band>
+        <PublicSection>
           <PublicSectionHeader title="Tin tức mới nhất" description={newsDescription} href="/tin-tuc" linkLabel="Xem tin tức" />
           {news.data.length ? (
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="mt-6 grid gap-4 md:grid-cols-3">
               {news.data.map((article, index) => (
                 <NewsCard key={article.id} article={article} priority={index === 0} />
               ))}
             </div>
           ) : (
-            <div className="mt-5">
+            <div className="mt-6">
               <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức do đội vận hành đăng sẽ xuất hiện tại đây." />
             </div>
           )}

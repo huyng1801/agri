@@ -29,9 +29,20 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
   const items = siteKey === 'htxonline' ? internalItems : marketplaceItems;
+  const enableBottomNav =
+    siteKey !== 'htxonline' &&
+    (pathname.startsWith('/san-pham') || pathname.startsWith('/gio-hang') || pathname.startsWith('/thanh-toan') || pathname.startsWith('/tra-cuu-don-hang'));
   const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
   useEffect(() => {
+    if (!enableBottomNav) {
+      setFooterVisible(false);
+      setScrollHidden(false);
+    }
+  }, [enableBottomNav]);
+
+  useEffect(() => {
+    if (!enableBottomNav) return;
     const footer = document.querySelector('footer');
     if (!footer) return;
 
@@ -44,9 +55,10 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
 
     observer.observe(footer);
     return () => observer.disconnect();
-  }, []);
+  }, [enableBottomNav]);
 
   useEffect(() => {
+    if (!enableBottomNav) return;
     let lastY = window.scrollY;
 
     const onScroll = () => {
@@ -76,7 +88,9 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
     };
-  }, []);
+  }, [enableBottomNav]);
+
+  if (!enableBottomNav) return null;
 
   const hidden = footerVisible || scrollHidden;
 
@@ -85,7 +99,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
       data-testid="public-bottom-nav"
       aria-hidden={hidden}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.35rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.35rem] border border-white/72 bg-white/78 px-1.5 py-1 shadow-[0_14px_28px_rgba(23,33,27,0.1)] backdrop-blur-xl transition duration-200 lg:hidden',
+        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.55rem] border border-[#eadfce] bg-[rgba(255,251,244,0.92)] px-1.5 py-1.5 shadow-[0_16px_34px_rgba(26,22,16,0.12)] backdrop-blur-xl transition duration-200 lg:hidden',
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
@@ -99,15 +113,15 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[42px] flex-col items-center justify-center gap-0.5 rounded-[0.95rem] px-1 text-[9px] font-semibold transition-colors',
+                'relative flex min-h-[46px] flex-col items-center justify-center gap-1 rounded-[1rem] px-1 text-[9px] font-semibold transition-colors',
                 active
-                  ? 'bg-mint/72 text-leaf shadow-[inset_0_0_0_1px_rgba(47,132,81,0.07)]'
+                  ? 'bg-[#132031] text-white shadow-[0_14px_24px_rgba(19,32,49,0.18)]'
                   : 'text-slate-500/90'
               )}
             >
               <span className="relative">
                 <Icon size={15} aria-hidden="true" />
-                {item.href === '/gio-hang' && siteKey !== 'htxonline' && <CartCountBadge className="-right-2 -top-2" />}
+                {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>
             </Link>

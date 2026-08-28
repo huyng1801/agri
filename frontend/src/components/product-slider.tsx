@@ -33,7 +33,7 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
           <button
             type="button"
             onClick={() => scrollByCards(-1)}
-            className={cn('grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-ink shadow-sm transition hover:border-leaf hover:text-leaf')}
+            className={cn('grid h-10 w-10 place-items-center rounded-full border border-[#e4d8c3] bg-[rgba(255,253,248,0.96)] text-ink shadow-sm transition hover:border-leaf hover:text-leaf')}
             aria-label="Xem sản phẩm trước"
           >
             <ChevronLeft size={20} aria-hidden="true" />
@@ -41,7 +41,7 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
           <button
             type="button"
             onClick={() => scrollByCards(1)}
-            className={cn('grid h-10 w-10 place-items-center rounded-full border border-slate-200 bg-white text-ink shadow-sm transition hover:border-leaf hover:text-leaf')}
+            className={cn('grid h-10 w-10 place-items-center rounded-full border border-[#e4d8c3] bg-[rgba(255,253,248,0.96)] text-ink shadow-sm transition hover:border-leaf hover:text-leaf')}
             aria-label="Xem sản phẩm tiếp theo"
           >
             <ChevronRight size={20} aria-hidden="true" />
