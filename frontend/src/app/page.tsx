@@ -5,7 +5,7 @@ import { ProductSlider } from '@/components/product-slider';
 import { CooperativeCard, EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-marketplace';
 import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
 import { PublicImage } from '@/components/public-image';
-import { PublicSection, PublicSectionHeader, publicCardClass, publicContainerClass } from '@/components/public-layout';
+import { PublicSection, publicCardClass, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { marketplaceUrl } from '@/lib/domain';
@@ -43,6 +43,13 @@ export async function generateMetadata(): Promise<Metadata> {
 type HighlightTile = {
   label: string;
   value: string | number;
+  description: string;
+  icon: LucideIcon;
+};
+
+type OutcomeTile = {
+  title: string;
+  value: string;
   description: string;
   icon: LucideIcon;
 };
@@ -155,12 +162,12 @@ export default async function HomePage() {
       ? 'Hộ chiếu nông nghiệp ưu tiên trải nghiệm truy xuất cho người mua, còn dữ liệu gốc vẫn được chuẩn hóa từ AGRIPASSPORT.'
       : 'AGRIPASSPORT là lớp trung tâm của hệ sinh thái, kết nối dữ liệu sản phẩm, công khai bán hàng và QR truy xuất.';
   const sectionIntro = isInternal
-    ? 'Các khối chức năng quan trọng của HTXONLINE'
+    ? 'Giải pháp dịch vụ tiêu biểu'
     : isPassport
       ? 'Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số'
       : 'Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng';
   const sectionDescription = isInternal
-    ? 'Bám sát đúng mô tả nghiệp vụ: thành viên, dịch vụ, thu chi, xuất nhập và đồng bộ ra lớp công khai khi cần.'
+    ? 'Giữ vai trò đầu vào dữ liệu, nhưng giao diện public được kéo về nhịp sáng và card ngang như một landing page dịch vụ mobile-first.'
     : isPassport
       ? 'Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng.'
       : 'Theo hướng trình bày gần Demeter hơn: rõ khối chức năng, card lớn và hành trình công khai bám sát người dùng cuối.';
@@ -177,284 +184,386 @@ export default async function HomePage() {
   const closingSecondaryCta = isInternal
     ? { href: marketplaceUrl('/'), label: 'Mở AGRIPASSPORT', external: true }
     : { href: '/lien-he', label: 'Liên hệ đội vận hành', external: false };
-  const ecosystemTitle = isInternal ? 'Ba lớp hệ thống trong hệ sinh thái Agri' : 'Giải pháp dịch vụ tiêu biểu';
-  const ecosystemDescription = isInternal
-    ? 'HTXONLINE quản trị nội bộ, AGRIPASSPORT công khai dữ liệu trung tâm và Hộ chiếu nông nghiệp phụ trách lớp truy xuất QR.'
-    : 'Kéo giao diện về nhịp card lớn, nền sáng và phân vai rõ như một landing page mobile-first dễ quét hơn.';
+
+  const heroLeadTitle = isInternal
+    ? 'Luồng dữ liệu rõ ràng cho hợp tác xã'
+    : isPassport
+      ? 'HỘ CHIẾU NÔNG NGHIỆP giúp tra cứu QR rõ ràng hơn trên điện thoại'
+      : 'AGRIPASSPORT chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp';
+  const heroLeadDescription = isInternal
+    ? 'Giữ lớp quản trị nội bộ cho xã viên, dịch vụ và vận hành, nhưng vẫn mở được một giao diện public sáng, thoáng và dễ hiểu khi cần kết nối thị trường.'
+    : isPassport
+      ? 'Tập trung vào trải nghiệm quét mã, mở hồ sơ số và đọc nhanh những thông tin công khai quan trọng nhất trên di động.'
+      : 'Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng dữ liệu để công khai bán hàng rõ ràng hơn.';
+  const outcomeTitle = isInternal ? 'Vận hành rõ ràng cùng hợp tác xã' : 'Thắng lợi cùng nhà nông';
+  const outcomeDescription = isInternal
+    ? 'Giữ đúng bản chất HTXONLINE là lớp vận hành nội bộ, nhưng trình bày lợi ích bằng nhịp icon lớn và câu ngắn như landing page dịch vụ.'
+    : 'Các tín hiệu quan trọng được kéo về nhịp icon, headline ngắn và khoảng thở lớn để trông gần ứng dụng native hơn trên mobile.';
+  const serviceTabs = isInternal
+    ? ['Tất cả', 'Quản trị nội bộ', 'Đồng bộ sản phẩm', 'Báo cáo điều hành']
+    : isPassport
+      ? ['Tất cả', 'QR truy xuất', 'Hồ sơ số', 'Nguồn gốc minh bạch']
+      : ['Tất cả', 'Dữ liệu sản phẩm', 'Bán hàng công khai', 'Liên kết QR'];
+  const featuredProductCategories = Array.from(
+    new Set(
+      featuredProducts
+        .map((product) => product.category?.name?.trim())
+        .filter((name): name is string => Boolean(name))
+    )
+  ).slice(0, 5);
+  const productTabs = featuredProductCategories.length
+    ? featuredProductCategories
+    : isInternal
+      ? ['Nông sản công khai', 'Sản phẩm đã đồng bộ', 'HTX đang hiển thị']
+      : isPassport
+        ? ['Sản phẩm có QR', 'Hồ sơ công khai', 'Vùng trồng minh bạch']
+        : ['Nông sản nổi bật', 'Sản phẩm truy xuất', 'Đặt hàng công khai'];
+  const productSectionTitle = isInternal
+    ? 'Khám phá các sản phẩm sau lớp quản trị'
+    : isPassport
+      ? 'Khám phá hồ sơ số và sản phẩm QR'
+      : 'Khám phá các sản phẩm';
+  const productSectionDescription = isInternal
+    ? 'Sau khi HTX quản trị dữ liệu nội bộ và xác định sản phẩm thực, các sản phẩm công khai sẽ hiển thị tại đây để tiếp cận thị trường.'
+    : isPassport
+      ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.'
+      : 'Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.';
+  const partnerTitle = isInternal ? 'HTX tiêu biểu trong hệ sinh thái' : 'Đối tác và HTX công khai';
+  const partnerDescription = isInternal
+    ? 'Thay cho một cụm logo khô, phần này dùng avatar HTX thật để người xem liên hệ ngay giữa hệ quản trị và lớp công khai.'
+    : 'Phần này đóng vai trò như một dải nhận diện đối tác và HTX đang hiển thị công khai trong hệ sinh thái.';
+  const partnerItems = featuredCooperatives.length ? featuredCooperatives : catalog.cooperatives.slice(0, 6);
+  const serviceAction = isInternal ? '/gioi-thieu' : '/san-pham';
+  const outcomeTiles: OutcomeTile[] = isInternal
+    ? [
+        { title: 'Hồ sơ xã viên', value: '01 nơi theo dõi', description: 'Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ.', icon: Users },
+        { title: 'Thu chi nội bộ', value: 'Đối soát gọn hơn', description: 'Theo dõi khoản thu chi và chi tiết vận hành mà không gom tay nhiều bảng.', icon: Boxes },
+        { title: 'Xuất nhập', value: 'Dữ liệu liền mạch', description: 'Biến động nhập xuất đi cùng một luồng vận hành duy nhất.', icon: ShoppingBag },
+        { title: 'Sản phẩm thực', value: 'Chọn đúng đầu ra', description: 'Khoanh vùng các sản phẩm hoặc lô cần mang ra lớp công khai.', icon: Store },
+        { title: 'Liên kết QR', value: 'Sẵn sàng truy xuất', description: 'Khi cần minh bạch sâu hơn, dữ liệu được mở sang lớp QR và hồ sơ số.', icon: QrCode },
+        { title: 'Kiểm soát minh bạch', value: 'Vai trò rõ ràng', description: 'Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo.', icon: BadgeCheck }
+      ]
+    : isPassport
+      ? [
+          { title: 'QR công khai', value: 'Mở nhanh', description: 'Điện thoại quét mã và vào thẳng hồ sơ số công khai đã được duyệt.', icon: QrCode },
+          { title: 'Hồ sơ số', value: `${featuredProducts.length} hồ sơ`, description: 'Tập trung vào sản phẩm đã có lớp truy xuất rõ ràng và dễ đọc.', icon: ShoppingBag },
+          { title: 'Nguồn gốc', value: 'Xem theo phạm vi', description: 'Chỉ hiển thị vùng trồng, nhật ký và chứng nhận theo quyền công khai.', icon: BadgeCheck },
+          { title: 'Dữ liệu trung tâm', value: 'Một nguồn dữ liệu', description: 'Hồ sơ số lấy dữ liệu từ AGRIPASSPORT để tránh lệch thông tin.', icon: Store },
+          { title: 'Trải nghiệm mobile', value: 'Đọc nhanh hơn', description: 'Cấu trúc ưu tiên điện thoại thay vì dồn mọi thứ vào một trang dài.', icon: Users },
+          { title: 'Niềm tin thị trường', value: 'Hiểu đúng hơn', description: 'Thông tin quan trọng được sắp lại để người mua ra quyết định nhanh hơn.', icon: Leaf }
+        ]
+      : [
+          { title: 'Sản phẩm công khai', value: `${catalog.totalProducts}+`, description: 'Danh mục công khai được kéo về bố cục dễ quét và dễ so sánh.', icon: ShoppingBag },
+          { title: 'HTX hiển thị', value: `${catalog.cooperatives.length} HTX`, description: 'Mỗi HTX có nhận diện rõ hơn thay vì chìm trong một bảng danh sách.', icon: Store },
+          { title: 'QR truy xuất', value: 'Mở nhanh', description: 'Khi cần truy xuất sâu hơn, sản phẩm tiếp tục mở sang hồ sơ số.', icon: QrCode },
+          { title: 'Dữ liệu chuẩn hóa', value: 'Một mặt bằng dữ liệu', description: 'Tên HTX, vùng trồng và sản phẩm được chuẩn hóa trước khi công khai.', icon: BadgeCheck },
+          { title: 'Bán hàng công khai', value: 'Giỏ hàng gọn hơn', description: 'Giữ hành vi lướt, xem và thêm giỏ gần với một app thương mại điện tử.', icon: Boxes },
+          { title: 'Niềm tin người mua', value: 'Hiểu nhanh hơn', description: 'Thông tin được sắp theo nhịp card lớn, khoảng thở rộng và CTA rõ hơn.', icon: Users }
+        ];
 
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#f2f7ef_0%,#ffffff_56%,#ffffff_100%)]">
+        <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#eff6ee_0%,#ffffff_64%,#ffffff_100%)]">
           <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
-            <div className="overflow-hidden rounded-[2.2rem] border border-[#e8e4d8] bg-white/95 shadow-[0_30px_72px_rgba(15,23,42,0.08)] backdrop-blur">
-              <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[0.94fr_1.06fr] lg:items-center lg:p-8">
-                <div className="order-2 lg:order-1">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                    <Leaf size={15} aria-hidden="true" className="text-[#1f9b4b]" />
-                    {siteProfile.pageContent.homeBadge}
-                  </div>
-
-                  <h1 className="mt-4 max-w-[11ch] text-[2.5rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:text-[3.35rem] lg:text-[4.2rem]">
-                    {siteProfile.pageContent.homeTitle}
-                  </h1>
-                  <p className="mt-4 max-w-2xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
-                    {siteProfile.pageContent.homeDescription}
-                  </p>
-
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <Link
-                      href={primaryCta.href}
-                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_34px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
-                    >
-                      {primaryCta.label}
-                      <ArrowRight size={17} aria-hidden="true" />
-                    </Link>
-                    {secondaryCta.external ? (
-                      <a
-                        href={secondaryCta.href}
-                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-6 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-                      >
-                        {secondaryCta.label}
-                      </a>
-                    ) : (
-                      <Link
-                        href={secondaryCta.href}
-                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-6 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-                      >
-                        {secondaryCta.label}
-                      </Link>
-                    )}
-                  </div>
-
-                  {!isInternal ? (
-                    <div className="mt-5 max-w-xl rounded-[1.7rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                      <PublicSearch placeholder={heroSearchPlaceholder} />
-                    </div>
-                  ) : null}
-
-                  <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                    {heroSignals.map((signal, index) => (
-                      <article key={signal} className="rounded-[1.45rem] border border-[#e7e3d7] bg-[#fbfaf6] px-4 py-4 shadow-[0_14px_30px_rgba(15,23,42,0.04)]">
-                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">0{index + 1}</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">{signal}</p>
-                      </article>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 rounded-[1.65rem] border border-[#dfe9dc] bg-[linear-gradient(135deg,#f7fbf4_0%,#edf6ef_100%)] px-4 py-4 shadow-[0_16px_34px_rgba(15,23,42,0.04)]">
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Vai trò nền tảng</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{heroNote}</p>
-                  </div>
+            <div className="overflow-hidden rounded-[2.35rem] border border-[#e8e4d8] bg-white shadow-[0_30px_72px_rgba(15,23,42,0.08)]">
+              <div className="relative isolate overflow-hidden border-b border-[#ece8dd]">
+                <PublicImage
+                  src={siteProfile.pageContent.homeImageUrl}
+                  alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+                  wrapperClassName="aspect-[16/10] sm:aspect-[18/8] lg:aspect-[21/8]"
+                  className="h-full w-full object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(9,17,18,0.18)_100%)]" />
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 opacity-80"
+                  style={{
+                    background:
+                      'radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)'
+                  }}
+                />
+                <div className="absolute inset-x-3 top-3 flex flex-wrap items-center gap-2 sm:inset-x-5 sm:top-5">
+                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e] shadow-sm backdrop-blur">
+                    {siteProfile.appName}
+                  </span>
+                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-white/72 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
+                    Hệ sinh thái Agri
+                  </span>
                 </div>
-
-                <div className="order-1 lg:order-2">
-                  <div className="rounded-[2rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#f8fbf5_0%,#f3f8f1_100%)] p-3 shadow-[0_24px_58px_rgba(15,23,42,0.08)] sm:p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex min-h-10 items-center rounded-full border border-[#d9e7d6] bg-white px-4 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
-                        {siteProfile.appName}
-                      </span>
-                      <span className="inline-flex min-h-10 items-center rounded-full border border-[#d9e7d6] bg-white px-4 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        Hệ sinh thái Agri
-                      </span>
-                    </div>
-
-                    <div className="relative mt-3 overflow-hidden rounded-[1.8rem] border border-[#dbe6d9] bg-white shadow-[0_20px_42px_rgba(15,23,42,0.08)]">
-                      <PublicImage
-                        src={siteProfile.pageContent.homeImageUrl}
-                        alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                        wrapperClassName="aspect-[5/4] sm:aspect-[16/10] lg:aspect-[5/4]"
-                        className="h-full w-full object-cover"
-                        priority
-                      />
-                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.14)_100%)]" />
-                      <div className="absolute inset-x-4 top-4 flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center rounded-full border border-white/80 bg-white/88 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e] shadow-sm backdrop-blur">
-                          Luồng dữ liệu số
-                        </span>
+                <div className="absolute inset-x-3 bottom-3 sm:inset-x-5 sm:bottom-5 lg:inset-x-6">
+                  <div className="rounded-[1.85rem] border border-white/70 bg-white/90 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur sm:p-5">
+                    <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+                      <div>
+                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+                          {isInternal ? 'Luồng nội bộ ra công khai' : isPassport ? 'Hồ sơ số công khai' : 'Dữ liệu công khai trung tâm'}
+                        </p>
+                        <p className="mt-1 text-[1.1rem] font-extrabold leading-tight text-[#1f2233] sm:text-[1.45rem]">
+                          {String(heroTiles[0].value)}
+                        </p>
+                        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{heroNote}</p>
                       </div>
-                      <div className="absolute inset-x-4 bottom-4 rounded-[1.6rem] border border-white/75 bg-white/92 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur">
-                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{heroTiles[0].label}</p>
-                        <p className="mt-1 text-[1.2rem] font-extrabold leading-tight text-[#1f2233]">{String(heroTiles[0].value)}</p>
-                        <p className="mt-2 text-sm leading-6 text-slate-600">{heroTiles[0].description}</p>
+                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
+                        <Link
+                          href={primaryCta.href}
+                          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+                        >
+                          {primaryCta.label}
+                          <ArrowRight size={16} aria-hidden="true" />
+                        </Link>
+                        {secondaryCta.external ? (
+                          <a
+                            href={secondaryCta.href}
+                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                          >
+                            {secondaryCta.label}
+                          </a>
+                        ) : (
+                          <Link
+                            href={secondaryCta.href}
+                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                          >
+                            {secondaryCta.label}
+                          </Link>
+                        )}
                       </div>
-                    </div>
-
-                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                      {heroTiles.slice(1).map((tile) => {
-                        const Icon = tile.icon;
-                        return (
-                          <article key={tile.label} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                            <div className="flex items-start gap-3">
-                              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
-                                <Icon size={20} aria-hidden="true" />
-                              </span>
-                              <div>
-                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{tile.label}</p>
-                                <p className="mt-1 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(tile.value)}</p>
-                              </div>
-                            </div>
-                            <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
-                          </article>
-                        );
-                      })}
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid gap-3 border-t border-[#ece8dd] bg-[#fbfaf6] px-4 py-4 sm:grid-cols-3 sm:px-6 sm:py-5">
-                {featureCards.map(([title, text, Icon], index) => (
-                  <article key={String(title)} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">0{index + 1}</p>
-                        <p className="mt-2 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(title)}</p>
-                      </div>
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
-                        <Icon size={19} aria-hidden="true" />
-                      </span>
-                    </div>
-                    <p className="mt-3 text-sm leading-6 text-slate-600">{String(text)}</p>
-                  </article>
-                ))}
+              <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                  <Leaf size={15} aria-hidden="true" className="text-[#1f9b4b]" />
+                  {siteProfile.pageContent.homeBadge}
+                </div>
+                <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
+                  {heroLeadTitle}
+                </h1>
+                <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
+                  {heroLeadDescription}
+                </p>
+                {!isInternal ? (
+                  <div className="mx-auto mt-6 max-w-2xl rounded-[1.8rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                    <PublicSearch placeholder={heroSearchPlaceholder} />
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
         </section>
 
+        <PublicSection>
+          <div className="mx-auto max-w-5xl text-center">
+            <h2 className="text-[2rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:text-[3.1rem]">
+              {outcomeTitle}
+            </h2>
+            <p className="mx-auto mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+              {outcomeDescription}
+            </p>
+          </div>
+
+          <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
+            {outcomeTiles.map((tile) => {
+              const Icon = tile.icon;
+              return (
+                <article key={`${tile.title}-${tile.value}`} className="text-center">
+                  <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                    <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
+                  </span>
+                  <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">{tile.value}</p>
+                  <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">{tile.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{tile.description}</p>
+                </article>
+              );
+            })}
+          </div>
+        </PublicSection>
+
         <PublicSection band>
-          <PublicSectionHeader title={ecosystemTitle} description={ecosystemDescription} />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{sectionIntro}</h2>
+              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{sectionDescription}</p>
+            </div>
+            <Link
+              href={serviceAction}
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+            >
+              Khám phá thêm
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-2">
+            {serviceTabs.map((tab, index) => (
+              <span
+                key={tab}
+                className={cn(
+                  'inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold shadow-sm',
+                  index === 0 ? 'border-[#1f9b4b] bg-[#1f9b4b] text-white' : 'border-[#dce6d8] bg-white text-slate-600'
+                )}
+              >
+                {tab}
+              </span>
+            ))}
+          </div>
+
           <div className="mt-6">
             <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
           </div>
         </PublicSection>
 
         <PublicSection>
-          <PublicSectionHeader title={sectionIntro} description={sectionDescription} />
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {featureCards.map(([title, text, Icon], index) => (
-              <article key={String(title)} className={cn(publicCardClass, 'flex h-full flex-col rounded-[2rem] p-5 sm:p-6')}>
-                <div className="flex items-center justify-between gap-3">
-                  <span className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">0{index + 1}</span>
-                  <span className="grid h-14 w-14 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
-                    <Icon size={26} aria-hidden="true" />
-                  </span>
-                </div>
-                <h2 className="mt-5 text-[1.22rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.38rem]">{String(title)}</h2>
-                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{String(text)}</p>
-              </article>
-            ))}
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{journeyTitle}</h2>
+              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{journeyDescription}</p>
+            </div>
           </div>
-        </PublicSection>
 
-        <PublicSection>
-          <PublicSectionHeader title={journeyTitle} description={journeyDescription} />
           <div className={cn('mt-6 grid gap-4', isInternal ? 'md:grid-cols-2 xl:grid-cols-4' : 'md:grid-cols-3')}>
             {journeyCards.map(([step, title, text]) => (
               <article key={`${step}-${title}`} className={cn(publicCardClass, 'h-full rounded-[2rem] p-5 sm:p-6')}>
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{step}</p>
-                <h2 className="mt-3 text-[1.12rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.28rem]">{title}</h2>
-                <p className="mt-3 text-[0.92rem] leading-7 text-slate-600">{text}</p>
+                <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">{title}</h2>
+                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{text}</p>
               </article>
             ))}
           </div>
         </PublicSection>
 
-        {!isInternal ? (
-          <>
-            <PublicSection band>
-              <PublicSectionHeader
-                title={isPassport ? 'Sản phẩm đang có QR hoặc hồ sơ công khai' : 'Sản phẩm nổi bật'}
-                description={
-                  isPassport
-                    ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.'
-                    : 'Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.'
-                }
-                href="/san-pham"
-                linkLabel="Xem tất cả"
-              />
-              {featuredProducts.length ? (
-                <div className="mt-6">
-                  <ProductSlider products={featuredProducts} />
-                </div>
-              ) : (
-                <div className="mt-6">
-                  <EmptyPublicState
-                    title={isPassport ? 'Chưa có sản phẩm có QR công khai' : 'Chưa có sản phẩm công khai'}
-                    description={isPassport ? 'Khi HTX tạo QR và mở phạm vi công khai, hồ sơ sẽ xuất hiện tại đây.' : 'Khi HTX công khai dữ liệu sản phẩm, sản phẩm sẽ xuất hiện tại đây.'}
-                  />
-                </div>
-              )}
-            </PublicSection>
+        <PublicSection band>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{productSectionTitle}</h2>
+              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{productSectionDescription}</p>
+            </div>
+            <Link
+              href="/san-pham"
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+            >
+              Khám phá thêm
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
 
-            <PublicSection>
-              <PublicSectionHeader
-                title={isPassport ? 'HTX đang có hồ sơ truy xuất' : 'HTX tiêu biểu trong hệ sinh thái'}
-                description={
-                  isPassport
-                    ? 'Những HTX đã có sản phẩm, QR hoặc dữ liệu công khai phục vụ truy xuất.'
-                    : 'Thay cho cảm giác danh sách khô, phần này được giữ thoáng hơn để đóng vai trò gần với cụm đối tác trên landing page.'
-                }
-                href="/htx"
-                linkLabel="Xem HTX"
+          <div className="mt-5 flex flex-wrap gap-2">
+            {productTabs.map((tab, index) => (
+              <span
+                key={tab}
+                className={cn(
+                  'inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold shadow-sm',
+                  index === 0 ? 'border-[#1f9b4b] bg-[#1f9b4b] text-white' : 'border-[#dce6d8] bg-white text-slate-600'
+                )}
+              >
+                {tab}
+              </span>
+            ))}
+          </div>
+
+          {featuredProducts.length ? (
+            <div className="mt-6">
+              <ProductSlider products={featuredProducts} />
+            </div>
+          ) : (
+            <div className="mt-6">
+              <EmptyPublicState
+                title={isPassport ? 'Chưa có sản phẩm có QR công khai' : 'Chưa có sản phẩm công khai'}
+                description={isPassport ? 'Khi HTX tạo QR và mở phạm vi công khai, hồ sơ sẽ xuất hiện tại đây.' : 'Khi HTX công khai dữ liệu sản phẩm, sản phẩm sẽ xuất hiện tại đây.'}
               />
-              {featuredCooperatives.length ? (
-                <div className="mt-6 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
-                  {featuredCooperatives.map((cooperative, index) => (
-                    <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
-                  ))}
-                </div>
-              ) : (
-                <div className="mt-6">
-                  <EmptyPublicState
-                    title={isPassport ? 'Chưa có HTX công khai hồ sơ truy xuất' : 'Chưa có HTX công khai'}
-                    description={isPassport ? 'HTX sẽ xuất hiện khi đã có sản phẩm hoặc QR được mở công khai.' : 'HTX sẽ xuất hiện khi có dữ liệu sản phẩm được đăng công khai.'}
-                  />
-                </div>
-              )}
-            </PublicSection>
-          </>
-        ) : null}
+            </div>
+          )}
+        </PublicSection>
+
+        <PublicSection>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{partnerTitle}</h2>
+              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{partnerDescription}</p>
+            </div>
+            <Link
+              href="/htx"
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+            >
+              Xem HTX
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+
+          {partnerItems.length ? (
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {partnerItems.map((cooperative, index) => (
+                <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
+              ))}
+            </div>
+          ) : (
+            <div className="mt-6">
+              <EmptyPublicState title="Chưa có HTX công khai" description="HTX sẽ xuất hiện khi có dữ liệu sản phẩm được đăng công khai." />
+            </div>
+          )}
+        </PublicSection>
 
         <PublicSection band>
-          <div className="overflow-hidden rounded-[2rem] bg-[linear-gradient(120deg,#1d7f3e_0%,#25a34d_55%,#2db95a_100%)] px-5 py-6 text-white shadow-[0_28px_60px_rgba(31,155,75,0.2)] sm:px-7 sm:py-8">
-            <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <div>
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/78">Tối ưu trải nghiệm công khai</p>
-                <h2 className="mt-2 text-[1.8rem] font-extrabold leading-[1.02] tracking-[-0.03em] sm:text-[2.5rem]">
-                  Giao diện public đang được dựng lại theo hướng gần landing page native hơn, gọn hơn và dễ hiểu hơn.
+          <div className="relative isolate overflow-hidden rounded-[2.25rem] border border-[#dce6d8] shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
+            <PublicImage
+              src={siteProfile.pageContent.homeImageUrl}
+              alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+              wrapperClassName="aspect-[16/11] sm:aspect-[18/7] lg:aspect-[21/7]"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,31,26,0.26)_0%,rgba(16,31,26,0.58)_100%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%)]" />
+            <div className="absolute inset-0 flex items-center justify-center px-5 py-8 text-center text-white sm:px-8">
+              <div className="max-w-3xl">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/76">Kết nối công nghệ</p>
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-[2.9rem]">
+                  {isInternal ? 'Đưa vận hành nội bộ ra thị trường bằng một luồng dữ liệu rõ ràng.' : 'Kéo dữ liệu nông nghiệp lên một giao diện công khai gọn, rõ và dễ hiểu hơn.'}
                 </h2>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <Link
-                  href={closingPrimaryCta.href}
-                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#1f9b4b] shadow-[0_16px_32px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5"
-                >
-                  {closingPrimaryCta.label}
-                </Link>
-                {closingSecondaryCta.external ? (
-                  <a
-                    href={closingSecondaryCta.href}
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
-                  >
-                    {closingSecondaryCta.label}
-                  </a>
-                ) : (
+                <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
                   <Link
-                    href={closingSecondaryCta.href}
-                    className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/22 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                    href={closingPrimaryCta.href}
+                    className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#1f9b4b] shadow-[0_16px_32px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5"
                   >
-                    {closingSecondaryCta.label}
+                    {closingPrimaryCta.label}
                   </Link>
-                )}
+                  {closingSecondaryCta.external ? (
+                    <a
+                      href={closingSecondaryCta.href}
+                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                    >
+                      {closingSecondaryCta.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={closingSecondaryCta.href}
+                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                    >
+                      {closingSecondaryCta.label}
+                    </Link>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </PublicSection>
 
         <PublicSection>
-          <PublicSectionHeader title="Tin tức mới nhất" description={newsDescription} href="/tin-tuc" linkLabel="Xem tin tức" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="max-w-3xl">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">Tin tức mới nhất</h2>
+              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{newsDescription}</p>
+            </div>
+            <Link
+              href="/tin-tuc"
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+            >
+              Xem tin tức
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </div>
+
           {news.data.length ? (
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {news.data.map((article, index) => (
