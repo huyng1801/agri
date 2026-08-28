@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
+  isAliasPublicHost,
   marketplaceRedirectUrl,
   normalizeHostname,
   passportRedirectUrl,
@@ -36,6 +37,10 @@ export function proxy(request: NextRequest) {
   const siteKey = publicSiteKeyFromHost(hostname);
   const pathname = request.nextUrl.pathname;
   const search = request.nextUrl.search;
+
+  if (area === 'public' && isAliasPublicHost(hostname)) {
+    return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
+  }
 
   if ((area === 'admin' || area === 'htx') && pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url));

@@ -9,11 +9,14 @@ export const MARKETPLACE_HOST = 'agripassport.com';
 export const MARKETPLACE_WWW_HOST = 'www.agripassport.com';
 export const PASSPORT_HOST = 'hochieunongnghiep.com';
 export const PASSPORT_WWW_HOST = 'www.hochieunongnghiep.com';
+export const MARKETPLACE_ALIAS_HOST = 'ketnoinongnghiep.vn';
+export const MARKETPLACE_ALIAS_WWW_HOST = 'www.ketnoinongnghiep.vn';
 
 const HTXONLINE_HOSTS = new Set([HTXONLINE_HOST, HTXONLINE_WWW_HOST]);
-const MARKETPLACE_HOSTS = new Set([MARKETPLACE_HOST, MARKETPLACE_WWW_HOST]);
+const MARKETPLACE_HOSTS = new Set([MARKETPLACE_HOST, MARKETPLACE_WWW_HOST, MARKETPLACE_ALIAS_HOST, MARKETPLACE_ALIAS_WWW_HOST]);
 const PASSPORT_HOSTS = new Set([PASSPORT_HOST, PASSPORT_WWW_HOST]);
 const PUBLIC_HOSTS = new Set([...HTXONLINE_HOSTS, ...MARKETPLACE_HOSTS, ...PASSPORT_HOSTS]);
+const MARKETPLACE_ALIAS_HOSTS = new Set([MARKETPLACE_ALIAS_HOST, MARKETPLACE_ALIAS_WWW_HOST]);
 
 export const HTXONLINE_ORIGIN = `https://${HTXONLINE_HOST}`;
 export const MARKETPLACE_ORIGIN = `https://${MARKETPLACE_HOST}`;
@@ -49,6 +52,10 @@ export function publicOriginForSite(siteKey: PublicSiteKey) {
 
 export function publicOriginFromHost(hostname: string) {
   return publicOriginForSite(publicSiteKeyFromHost(hostname));
+}
+
+export function isAliasPublicHost(hostname: string) {
+  return MARKETPLACE_ALIAS_HOSTS.has(normalizeHostname(hostname));
 }
 
 export function siteAreaFromHost(hostname: string): SiteArea {
