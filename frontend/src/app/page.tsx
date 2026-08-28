@@ -177,111 +177,160 @@ export default async function HomePage() {
   const closingSecondaryCta = isInternal
     ? { href: marketplaceUrl('/'), label: 'Mở AGRIPASSPORT', external: true }
     : { href: '/lien-he', label: 'Liên hệ đội vận hành', external: false };
+  const ecosystemTitle = isInternal ? 'Ba lớp hệ thống trong hệ sinh thái Agri' : 'Giải pháp dịch vụ tiêu biểu';
+  const ecosystemDescription = isInternal
+    ? 'HTXONLINE quản trị nội bộ, AGRIPASSPORT công khai dữ liệu trung tâm và Hộ chiếu nông nghiệp phụ trách lớp truy xuất QR.'
+    : 'Kéo giao diện về nhịp card lớn, nền sáng và phân vai rõ như một landing page mobile-first dễ quét hơn.';
 
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="border-b border-[#ece8dd] bg-white">
+        <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#f2f7ef_0%,#ffffff_56%,#ffffff_100%)]">
           <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
-            <div className="overflow-hidden rounded-[2rem] border border-[#e8e4d8] bg-white shadow-[0_28px_68px_rgba(15,23,42,0.08)]">
-              <div className="relative isolate">
-                <PublicImage
-                  src={siteProfile.pageContent.homeImageUrl}
-                  alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                  wrapperClassName="aspect-[5/4] sm:aspect-[16/8] lg:aspect-[21/9]"
-                  className="h-full w-full object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(110deg,rgba(11,20,18,0.88)_0%,rgba(11,20,18,0.68)_40%,rgba(11,20,18,0.16)_78%,rgba(11,20,18,0.04)_100%)]" />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 opacity-90"
-                  style={{
-                    background:
-                      'radial-gradient(circle at top left, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 18%, rgba(255,255,255,0.12), transparent 20%)'
-                  }}
-                />
+            <div className="overflow-hidden rounded-[2.2rem] border border-[#e8e4d8] bg-white/95 shadow-[0_30px_72px_rgba(15,23,42,0.08)] backdrop-blur">
+              <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[0.94fr_1.06fr] lg:items-center lg:p-8">
+                <div className="order-2 lg:order-1">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                    <Leaf size={15} aria-hidden="true" className="text-[#1f9b4b]" />
+                    {siteProfile.pageContent.homeBadge}
+                  </div>
 
-                <div className="relative z-10 flex h-full items-center sm:items-end">
-                  <div className="w-full max-w-[44rem] p-5 text-white sm:p-7 lg:p-10">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/88 backdrop-blur">
-                      <Leaf size={15} aria-hidden="true" className="text-[#a9f29b]" />
-                      {siteProfile.pageContent.homeBadge}
-                    </div>
+                  <h1 className="mt-4 max-w-[11ch] text-[2.5rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:text-[3.35rem] lg:text-[4.2rem]">
+                    {siteProfile.pageContent.homeTitle}
+                  </h1>
+                  <p className="mt-4 max-w-2xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
+                    {siteProfile.pageContent.homeDescription}
+                  </p>
 
-                    <h1 className="mt-4 max-w-[13ch] text-[2.2rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-white sm:max-w-[14ch] sm:text-[3.35rem] lg:text-[4.15rem]">
-                      {siteProfile.pageContent.homeTitle}
-                    </h1>
-                    <p className="mt-4 max-w-2xl text-[0.98rem] leading-7 text-white/88 sm:text-[1.05rem] sm:leading-8">
-                      {siteProfile.pageContent.homeDescription}
-                    </p>
-
-                    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                      <Link
-                        href={primaryCta.href}
-                        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_34px_rgba(31,155,75,0.26)] transition hover:-translate-y-0.5"
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                    <Link
+                      href={primaryCta.href}
+                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_34px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+                    >
+                      {primaryCta.label}
+                      <ArrowRight size={17} aria-hidden="true" />
+                    </Link>
+                    {secondaryCta.external ? (
+                      <a
+                        href={secondaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-6 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
                       >
-                        {primaryCta.label}
-                        <ArrowRight size={17} aria-hidden="true" />
+                        {secondaryCta.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={secondaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-6 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                      >
+                        {secondaryCta.label}
                       </Link>
-                      {secondaryCta.external ? (
-                        <a
-                          href={secondaryCta.href}
-                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur transition hover:bg-white/16"
-                        >
-                          {secondaryCta.label}
-                        </a>
-                      ) : (
-                        <Link
-                          href={secondaryCta.href}
-                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white backdrop-blur transition hover:bg-white/16"
-                        >
-                          {secondaryCta.label}
-                        </Link>
-                      )}
+                    )}
+                  </div>
+
+                  {!isInternal ? (
+                    <div className="mt-5 max-w-xl rounded-[1.7rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                      <PublicSearch placeholder={heroSearchPlaceholder} />
+                    </div>
+                  ) : null}
+
+                  <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                    {heroSignals.map((signal, index) => (
+                      <article key={signal} className="rounded-[1.45rem] border border-[#e7e3d7] bg-[#fbfaf6] px-4 py-4 shadow-[0_14px_30px_rgba(15,23,42,0.04)]">
+                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">0{index + 1}</p>
+                        <p className="mt-2 text-sm leading-6 text-slate-600">{signal}</p>
+                      </article>
+                    ))}
+                  </div>
+
+                  <div className="mt-5 rounded-[1.65rem] border border-[#dfe9dc] bg-[linear-gradient(135deg,#f7fbf4_0%,#edf6ef_100%)] px-4 py-4 shadow-[0_16px_34px_rgba(15,23,42,0.04)]">
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Vai trò nền tảng</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{heroNote}</p>
+                  </div>
+                </div>
+
+                <div className="order-1 lg:order-2">
+                  <div className="rounded-[2rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#f8fbf5_0%,#f3f8f1_100%)] p-3 shadow-[0_24px_58px_rgba(15,23,42,0.08)] sm:p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex min-h-10 items-center rounded-full border border-[#d9e7d6] bg-white px-4 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+                        {siteProfile.appName}
+                      </span>
+                      <span className="inline-flex min-h-10 items-center rounded-full border border-[#d9e7d6] bg-white px-4 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">
+                        Hệ sinh thái Agri
+                      </span>
                     </div>
 
-                    {!isInternal ? (
-                      <div className="mt-5 max-w-xl rounded-[1.7rem] bg-white/92 p-1.5 shadow-[0_18px_44px_rgba(15,23,42,0.1)] backdrop-blur">
-                        <PublicSearch placeholder={heroSearchPlaceholder} />
+                    <div className="relative mt-3 overflow-hidden rounded-[1.8rem] border border-[#dbe6d9] bg-white shadow-[0_20px_42px_rgba(15,23,42,0.08)]">
+                      <PublicImage
+                        src={siteProfile.pageContent.homeImageUrl}
+                        alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+                        wrapperClassName="aspect-[5/4] sm:aspect-[16/10] lg:aspect-[5/4]"
+                        className="h-full w-full object-cover"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.02)_0%,rgba(255,255,255,0.14)_100%)]" />
+                      <div className="absolute inset-x-4 top-4 flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center rounded-full border border-white/80 bg-white/88 px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e] shadow-sm backdrop-blur">
+                          Luồng dữ liệu số
+                        </span>
                       </div>
-                    ) : null}
+                      <div className="absolute inset-x-4 bottom-4 rounded-[1.6rem] border border-white/75 bg-white/92 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur">
+                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{heroTiles[0].label}</p>
+                        <p className="mt-1 text-[1.2rem] font-extrabold leading-tight text-[#1f2233]">{String(heroTiles[0].value)}</p>
+                        <p className="mt-2 text-sm leading-6 text-slate-600">{heroTiles[0].description}</p>
+                      </div>
+                    </div>
 
-                    <p className="mt-4 max-w-3xl text-sm leading-6 text-white/76">{heroNote}</p>
+                    <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                      {heroTiles.slice(1).map((tile) => {
+                        const Icon = tile.icon;
+                        return (
+                          <article key={tile.label} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                            <div className="flex items-start gap-3">
+                              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                                <Icon size={20} aria-hidden="true" />
+                              </span>
+                              <div>
+                                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{tile.label}</p>
+                                <p className="mt-1 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(tile.value)}</p>
+                              </div>
+                            </div>
+                            <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
+                          </article>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="grid gap-3 border-t border-[#ece8dd] bg-[#fbfaf6] px-4 py-4 sm:grid-cols-3 sm:px-6 sm:py-5">
-                {heroTiles.map((tile) => {
-                  const Icon = tile.icon;
-                  return (
-                    <article key={tile.label} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-                      <div className="flex items-start gap-3">
-                        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
-                          <Icon size={20} aria-hidden="true" />
-                        </span>
-                        <div>
-                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{tile.label}</p>
-                          <p className="mt-1 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(tile.value)}</p>
-                        </div>
+                {featureCards.map(([title, text, Icon], index) => (
+                  <article key={String(title)} className="rounded-[1.55rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">0{index + 1}</p>
+                        <p className="mt-2 text-[1.08rem] font-extrabold leading-tight text-[#1f2233]">{String(title)}</p>
                       </div>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
-                    </article>
-                  );
-                })}
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                        <Icon size={19} aria-hidden="true" />
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{String(text)}</p>
+                  </article>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        <section className="bg-white py-10 sm:py-12 lg:py-14">
-          <div className={publicContainerClass}>
-            <PublicEcosystemShowcase siteKey={siteKey} />
-          </div>
-        </section>
-
         <PublicSection band>
+          <PublicSectionHeader title={ecosystemTitle} description={ecosystemDescription} />
+          <div className="mt-6">
+            <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
+          </div>
+        </PublicSection>
+
+        <PublicSection>
           <PublicSectionHeader title={sectionIntro} description={sectionDescription} />
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {featureCards.map(([title, text, Icon], index) => (
