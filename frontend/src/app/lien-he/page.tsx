@@ -36,21 +36,21 @@ export default async function ContactPage() {
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#f7fbf7_0%,#eef7f1_58%,#e5f2e8_100%)]">
+        <section className="relative overflow-hidden bg-[linear-gradient(180deg,#ffffff_0%,#f7fbf6_100%)]">
           <div
             className="absolute inset-0 opacity-70"
             style={{
               background:
-                'radial-gradient(circle at top left, rgba(255,255,255,0.96), transparent 34%), radial-gradient(circle at 86% 12%, rgba(47,132,81,0.12), transparent 24%), linear-gradient(135deg, rgba(47,132,81,0.04) 1px, transparent 1px), linear-gradient(45deg, rgba(47,132,81,0.03) 1px, transparent 1px)',
+                'radial-gradient(circle at top left, rgba(255,255,255,0.96), transparent 34%), radial-gradient(circle at 86% 12%, rgba(47,132,81,0.1), transparent 24%), linear-gradient(135deg, rgba(47,132,81,0.03) 1px, transparent 1px), linear-gradient(45deg, rgba(47,132,81,0.02) 1px, transparent 1px)',
               backgroundSize: 'auto, auto, 28px 28px, 28px 28px'
             }}
           />
           <div className={cn(publicContainerClass, 'relative py-4 text-left sm:py-10 lg:py-12 sm:text-center')}>
-            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-leaf/80 sm:text-sm sm:tracking-wide">Liên hệ</p>
-            <h1 className="mt-1.5 max-w-[20rem] text-[1.42rem] font-bold leading-[1.06] tracking-normal text-ink sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-[2.35rem] sm:leading-[1.04]">
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm sm:tracking-wide">Liên hệ</p>
+            <h1 className="mt-1.5 max-w-[20rem] text-[1.5rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-[#1f2233] sm:mx-auto sm:mt-3 sm:max-w-3xl sm:text-[2.7rem] sm:leading-[1.02]">
               {siteProfile.pageContent.contactTitle}
             </h1>
-            <p className="mt-2 max-w-[20.5rem] text-[0.86rem] leading-[1.5] text-slate-700 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
+            <p className="mt-2 max-w-[20.5rem] text-[0.9rem] leading-[1.65] text-slate-600 sm:mx-auto sm:mt-4 sm:max-w-2xl sm:text-[1.02rem] sm:leading-7">
               {siteProfile.pageContent.contactDescription}
             </p>
           </div>
@@ -75,13 +75,13 @@ export default async function ContactPage() {
 
         <section className={cn(publicContainerClass, 'py-6 sm:py-9')}>
           <div className="grid gap-4 lg:grid-cols-[0.94fr_1.06fr] lg:items-start">
-            <article className="flex flex-col justify-between rounded-[1.35rem] bg-mint p-4 shadow-sm sm:rounded-2xl sm:p-6">
+            <article className="flex flex-col justify-between rounded-[1.7rem] border border-[#e8e4d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[2rem] sm:p-6">
               <div>
                 <div className="flex items-center gap-3">
                   <PublicLogo size={44} />
                   <div>
-                    <h2 className="text-lg font-bold text-ink sm:text-xl">{siteProfile.appName}</h2>
-                    <p className="text-sm font-semibold text-leaf">{supportTagline}</p>
+                    <h2 className="text-lg font-extrabold text-[#1f2233] sm:text-xl">{siteProfile.appName}</h2>
+                    <p className="text-sm font-semibold text-[#2b8a3e]">{supportTagline}</p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-3.5 text-sm leading-6 text-slate-700">
@@ -108,23 +108,23 @@ export default async function ContactPage() {
                   </a>
                 </div>
                 <div className="mt-4 grid gap-2 sm:grid-cols-3">
-                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                  <div className="rounded-xl border border-[#e8e4d8] bg-[#f8fbf7] p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Phản hồi</p>
-                    <p className="mt-1 text-lg font-bold text-ink">Trong ngày</p>
+                    <p className="mt-1 text-lg font-bold text-[#1f2233]">Trong ngày</p>
                   </div>
-                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                  <div className="rounded-xl border border-[#e8e4d8] bg-[#f8fbf7] p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Triển khai</p>
-                    <p className="mt-1 text-lg font-bold text-ink">QR Passport</p>
+                    <p className="mt-1 text-lg font-bold text-[#1f2233]">QR Passport</p>
                   </div>
-                  <div className="rounded-xl bg-white/82 p-3 shadow-sm">
+                  <div className="rounded-xl border border-[#e8e4d8] bg-[#f8fbf7] p-3 shadow-sm">
                     <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hỗ trợ</p>
-                    <p className="mt-1 text-lg font-bold text-ink">Đơn COD</p>
+                    <p className="mt-1 text-lg font-bold text-[#1f2233]">Đơn COD</p>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 hidden rounded-xl bg-white p-3 shadow-sm sm:block">
-                <div className="overflow-hidden rounded-xl border border-slate-100 bg-white">
+              <div className="mt-4 hidden rounded-xl bg-[#f8fbf7] p-3 shadow-sm sm:block">
+                <div className="overflow-hidden rounded-xl border border-[#e8e4d8] bg-white">
                   <PublicImage
                     src={siteProfile.pageContent.contactImageUrl}
                     alt={siteProfile.pageContent.contactImageAlt || siteProfile.pageContent.contactTitle}
@@ -140,7 +140,7 @@ export default async function ContactPage() {
                       <p className="text-sm font-bold text-ink">Giới thiệu {siteProfile.appName}</p>
                       <p className="text-xs text-slate-500">Xem giải pháp sàn + QR Passport cho HTX</p>
                     </div>
-                    <Link href="/gioi-thieu" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-xl bg-mint px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5">
+                    <Link href="/gioi-thieu" className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-full bg-[#eef7ef] px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5">
                       Xem ngay
                     </Link>
                   </div>
@@ -148,7 +148,7 @@ export default async function ContactPage() {
               </div>
             </article>
 
-            <article className="overflow-hidden rounded-[1.35rem] border border-slate-200 bg-white shadow-sm sm:rounded-2xl">
+            <article className="overflow-hidden rounded-[1.7rem] border border-[#e8e4d8] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[2rem]">
               {showMapPreview ? (
                 <div className="h-full p-2.5 sm:p-3">
                   <div className="overflow-hidden rounded-[1.25rem] border border-slate-200 bg-[#dbece1] sm:rounded-[1.6rem]">
@@ -234,8 +234,8 @@ export default async function ContactPage() {
         </section>
 
         <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
-            <div className="border-b border-slate-100 bg-mint/70 px-5 py-5 sm:px-8 sm:py-6">
+          <div className="overflow-hidden rounded-[2rem] border border-[#e8e4d8] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+            <div className="border-b border-[#e8e4d8] bg-[#f6fbf4] px-5 py-5 sm:px-8 sm:py-6">
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                   <PublicLogo size={52} />
@@ -254,7 +254,7 @@ export default async function ContactPage() {
         </section>
 
         <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
-          <div className="grid gap-3 rounded-2xl bg-leaf p-4 text-white shadow-sm sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/20 sm:p-0">
+          <div className="grid gap-3 rounded-[2rem] bg-[linear-gradient(120deg,#1d7f3e_0%,#25a34d_55%,#2db95a_100%)] p-4 text-white shadow-[0_22px_44px_rgba(31,155,75,0.18)] sm:grid-cols-3 sm:gap-0 sm:divide-x sm:divide-white/20 sm:p-0">
             <div className="flex items-center justify-center gap-3 rounded-xl px-4 py-4 sm:rounded-none sm:rounded-l-2xl">
               <MapPinned size={22} aria-hidden="true" />
               <span>

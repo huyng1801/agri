@@ -42,14 +42,14 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           title="Tin tức"
           description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
           action={
-            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-[1.05rem] border border-slate-200 bg-white p-1.5 shadow-sm sm:flex-row sm:rounded-[1.2rem] sm:p-2 lg:w-[420px]">
+            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-[1.15rem] border border-[#e8e4d8] bg-white p-1.5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:flex-row sm:rounded-[1.3rem] sm:p-2 lg:w-[420px]">
               <div className="relative flex-1">
                 <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                 <input
                   name="search"
                   defaultValue={filters.search ?? ''}
                   placeholder="Tìm bài viết"
-                  className="min-h-11 w-full rounded-[0.85rem] border-0 bg-slate-50 pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:rounded-[0.95rem] sm:text-base"
+                  className="min-h-11 w-full rounded-[0.95rem] border-0 bg-[#f7faf4] pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:rounded-[1.05rem] sm:text-base"
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
@@ -59,7 +59,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         />
 
         {categories.length > 0 && (
-          <section className="mb-5 overflow-hidden rounded-[1.2rem] border border-white/80 bg-white/65 p-3 shadow-sm backdrop-blur sm:mb-6 sm:rounded-[1.55rem] sm:p-4">
+          <section className="mb-5 overflow-hidden rounded-[1.4rem] border border-[#e8e4d8] bg-white p-3 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:mb-6 sm:rounded-[1.7rem] sm:p-4">
             <div className="mb-2.5 flex items-center gap-2 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:mb-3 sm:text-sm">
               <Sparkles size={16} aria-hidden="true" />
               Chủ đề nổi bật
@@ -91,25 +91,25 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {featured && !filters.search && (
-          <article className={cn(publicCardClass, 'mb-6 overflow-hidden')}>
-            <div className="grid gap-0 lg:grid-cols-[1.2fr_0.8fr]">
+          <article className={cn(publicCardClass, 'mb-6 overflow-hidden rounded-[2rem]')}>
+            <div className="grid gap-0 lg:grid-cols-[1.12fr_0.88fr]">
               <Link href={`/tin-tuc/${featured.slug}`} className="block">
                 <PublicImage
                   src={featured.coverImageUrl}
                   alt={featured.coverImageAlt || featured.title}
                   fallback={DEFAULT_NEWS_IMAGE}
                   priority
-                  wrapperClassName="aspect-[16/9] w-full lg:min-h-[280px] lg:aspect-auto lg:h-full"
+                  wrapperClassName="aspect-[16/10] w-full lg:min-h-[320px] lg:aspect-auto lg:h-full"
                   className="h-full w-full object-cover"
                 />
               </Link>
-              <div className="flex flex-col justify-center p-5">
-                <p className="text-sm font-semibold uppercase text-leaf">{featured.category?.name ?? 'Tin HTXONLINE'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-3 text-[1.35rem] font-bold leading-tight text-ink sm:text-3xl">
+              <div className="flex flex-col justify-center p-5 sm:p-6">
+                <p className="text-[0.76rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">{featured.category?.name ?? 'Tin nền tảng'}</p>
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-3 text-[1.35rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[2.2rem]">
                   {featured.title}
                 </Link>
-                <p className="mt-3 leading-7 text-slate-600">{featured.excerpt || featured.seoDescription || 'Tin tức HTXONLINE'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
+                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-leaf px-5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
                   Đọc bài viết
                 </Link>
               </div>

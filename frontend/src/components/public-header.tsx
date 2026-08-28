@@ -43,10 +43,10 @@ export function PublicHeader({
   const showCart = siteKey !== 'htxonline';
   const supportText =
     siteKey === 'htxonline'
-      ? 'Hệ thống số giúp hợp tác xã quản trị thành viên, dịch vụ và vận hành nội bộ rõ ràng hơn.'
+      ? 'Hệ thống số quản trị nội bộ cho hợp tác xã.'
       : siteKey === 'passport'
-        ? 'QR truy xuất và hồ sơ số giúp người mua xem nguồn gốc nông sản nhanh hơn trên di động.'
-        : 'Nền tảng dữ liệu sản phẩm, QR truy xuất và công khai nông sản trong một hệ sinh thái thống nhất.';
+        ? 'QR truy xuất và hồ sơ số cho nông sản.'
+        : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
   const searchTarget = siteKey === 'htxonline' ? '/tin-tuc' : '/san-pham';
   const searchPlaceholder =
     siteKey === 'htxonline'
@@ -70,7 +70,7 @@ export function PublicHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/96 shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
       <div className="border-b border-[#198f43] bg-[#1f9b4b] text-white">
-        <div className="mx-auto max-w-[1220px] px-4 py-2 text-[0.78rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-sm">{supportText}</div>
+        <div className="mx-auto max-w-[1220px] px-4 py-1.5 text-[0.76rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-sm">{supportText}</div>
       </div>
 
       <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
