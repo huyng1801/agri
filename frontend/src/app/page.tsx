@@ -365,10 +365,10 @@ export default async function HomePage() {
         <div
           className={cn(
             publicContainerClass,
-            'relative grid min-h-[16rem] grid-cols-[5rem_minmax(0,1fr)] items-center gap-3 py-4 sm:min-h-[22rem] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6 sm:py-8 lg:min-h-[27rem] lg:grid-cols-[13rem_minmax(0,1fr)_13rem] lg:gap-8 lg:py-10'
+            'relative grid min-h-[15rem] grid-cols-[4.6rem_minmax(0,1fr)] items-center gap-2.5 py-3 sm:min-h-[22rem] sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6 sm:py-8 lg:min-h-[27rem] lg:grid-cols-[13rem_minmax(0,1fr)_13rem] lg:gap-8 lg:py-10'
           )}
         >
-          <div className="relative z-10 mx-auto w-[4.7rem] sm:w-[8.5rem] lg:mx-0 lg:w-[11.8rem]">
+          <div className="relative z-10 mx-auto w-[4.3rem] sm:w-[8.5rem] lg:mx-0 lg:w-[11.8rem]">
             <div className="absolute inset-0 rounded-[2.4rem] bg-[#0d6f80]/14 blur-2xl" aria-hidden="true" />
             <div className="relative overflow-hidden rounded-[2rem] border-[5px] border-[#1f2738] bg-[#f8fbf7] p-2 shadow-[0_24px_50px_rgba(15,23,42,0.22)] sm:border-[6px] sm:p-2.5">
               <div className="mx-auto mb-2 h-3 w-10 rounded-full bg-[#1f2738] sm:h-4 sm:w-16" aria-hidden="true" />
@@ -439,11 +439,11 @@ export default async function HomePage() {
             <p className="mt-3 text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-[0.74rem] lg:text-[0.78rem]">
               Hệ sinh thái vận hành số
             </p>
-            <h1 className="mt-2 max-w-[8ch] text-[1.34rem] font-extrabold leading-[0.93] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[10ch] sm:text-[2.6rem] lg:mx-auto lg:max-w-[11ch] lg:text-[4.15rem]">
+            <h1 className="mt-2 max-w-[7.5ch] text-[1.24rem] font-extrabold leading-[0.93] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[10ch] sm:text-[2.6rem] lg:mx-auto lg:max-w-[11ch] lg:text-[4.15rem]">
               Cùng HTX kiến tạo vận hành số bền vững
             </h1>
-            <p className="mt-3 max-w-[34rem] text-[0.8rem] leading-5 text-[#31556d] sm:text-[1rem] sm:leading-7 lg:mx-auto lg:text-[1.08rem]">
-              Quản trị xã viên, dịch vụ, thu chi và xuất nhập trên một lớp dữ liệu rồi đồng bộ sang AGRIPASSPORT khi cần công khai và truy xuất QR.
+            <p className="mt-2.5 max-w-[34rem] text-[0.76rem] leading-5 text-[#31556d] sm:mt-3 sm:text-[1rem] sm:leading-7 lg:mx-auto lg:text-[1.08rem]">
+              Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang AGRIPASSPORT khi cần công khai và truy xuất QR.
             </p>
 
             <div className="mt-4 flex flex-wrap items-center gap-2 lg:justify-center">
@@ -458,7 +458,7 @@ export default async function HomePage() {
               </span>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2 lg:justify-center">
+            <div className="mt-4 hidden flex-wrap items-center gap-2 sm:flex lg:justify-center">
               <Link
                 href={primaryCta.href}
                 className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-4 text-[0.82rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-sm"

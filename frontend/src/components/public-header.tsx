@@ -131,8 +131,8 @@ export function PublicHeader({
               </Link>
             ) : (
               <Link
-                href="/gioi-thieu"
-                aria-label="Vai trò nền tảng"
+                href={navCta.href}
+                aria-label={navCta.label}
                 className="grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
               >
                 <Briefcase size={19} aria-hidden="true" />
@@ -180,7 +180,7 @@ export function PublicHeader({
                 <CartCountBadge />
               </Link>
             ) : (
-              <Link href="/gioi-thieu" aria-label="Vai trò nền tảng" className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
+              <Link href={navCta.href} aria-label={navCta.label} className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
                 <Briefcase size={18} aria-hidden="true" />
               </Link>
             )}
@@ -259,16 +259,7 @@ export function PublicHeader({
                   <span>Giỏ hàng</span>
                   <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
                 </Link>
-              ) : (
-                <Link
-                  href="/gioi-thieu"
-                  onClick={closeMenu}
-                  className="flex items-center justify-between rounded-[1.25rem] bg-[#f7faf4] px-4 py-3 text-sm font-semibold text-[#1f2233]"
-                >
-                  <span>Vai trò nền tảng</span>
-                  <Briefcase size={16} aria-hidden="true" />
-                </Link>
-              )}
+              ) : null}
               <Link
                 href={navCta.href}
                 onClick={closeMenu}
