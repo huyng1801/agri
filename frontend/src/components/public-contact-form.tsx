@@ -16,7 +16,7 @@ const HELP_TOPICS = [
 
 type PublicContactFormProps = {
   sourcePath?: string;
-  variant?: 'default' | 'hero';
+  variant?: 'default' | 'hero' | 'contact';
 };
 
 export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default' }: PublicContactFormProps) {
@@ -25,6 +25,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
   const [error, setError] = useState('');
   const [topic, setTopic] = useState<string>(HELP_TOPICS[0].id);
   const isHero = variant === 'hero';
+  const isContact = variant === 'contact';
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -104,14 +105,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
                   >
                     {selected ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
                   </span>
-                  <input
-                    type="radio"
-                    name="topic"
-                    value={item.id}
-                    checked={selected}
-                    onChange={() => setTopic(item.id)}
-                    className="sr-only"
-                  />
+                  <input type="radio" name="topic" value={item.id} checked={selected} onChange={() => setTopic(item.id)} className="sr-only" />
                   <span className="leading-6 font-medium">{item.label}</span>
                 </label>
               );
@@ -140,44 +134,19 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Họ tên / Tên HTX</span>
-            <Input
-              data-testid="contact-name-input"
-              name="fullName"
-              required
-              className="bg-[var(--surface-0)]"
-              placeholder="VD: HTX Lúa ST25 Đồng Tháp"
-            />
+            <Input data-testid="contact-name-input" name="fullName" required className="bg-[var(--surface-0)]" placeholder="VD: HTX Lúa ST25 Đồng Tháp" />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Số điện thoại</span>
-            <Input
-              data-testid="contact-phone-input"
-              name="phone"
-              required
-              inputMode="tel"
-              className="bg-[var(--surface-0)]"
-              placeholder="0907 001 200"
-            />
+            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" className="bg-[var(--surface-0)]" placeholder="0907 001 200" />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Email</span>
-            <Input
-              data-testid="contact-email-input"
-              name="email"
-              type="email"
-              className="bg-[var(--surface-0)]"
-              placeholder="ban@htx.vn"
-            />
+            <Input data-testid="contact-email-input" name="email" type="email" className="bg-[var(--surface-0)]" placeholder="ban@htx.vn" />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Nội dung</span>
-            <Textarea
-              data-testid="contact-message-input"
-              name="message"
-              required
-              className="min-h-32 bg-[var(--surface-0)]"
-              placeholder="Mô tả ngắn nhu cầu của bạn..."
-            />
+            <Textarea data-testid="contact-message-input" name="message" required className="min-h-32 bg-[var(--surface-0)]" placeholder="Mô tả ngắn nhu cầu của bạn..." />
           </label>
           {success && (
             <div data-testid="toast-success" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
@@ -194,6 +163,87 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
             <ArrowRight size={18} aria-hidden="true" />
           </Button>
         </div>
+      </form>
+    );
+  }
+
+  if (isContact) {
+    return (
+      <form className="grid gap-4 rounded-[2rem] border border-[#e7e3d7] bg-white p-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-6" onSubmit={submit}>
+        <div className="border-b border-[#ece8dd] pb-4">
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Điền thông tin</p>
+          <h2 className="mt-2 text-[1.45rem] font-extrabold leading-[1.06] text-[#1f2233] sm:text-[1.95rem]">Để lại thông tin để được tư vấn</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-[0.96rem]">
+            Chọn đúng nhu cầu của bạn, đội vận hành sẽ phản hồi trong thời gian sớm nhất và hướng dẫn luồng triển khai phù hợp.
+          </p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
+            <span>Họ tên / Tên HTX</span>
+            <Input data-testid="contact-name-input" name="fullName" required className="bg-white" placeholder="VD: HTX Lúa ST25 Đồng Tháp" />
+          </label>
+          <label className="grid gap-1.5 text-sm font-semibold text-ink">
+            <span>Số điện thoại</span>
+            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" className="bg-white" placeholder="0907 001 200" />
+          </label>
+        </div>
+
+        <label className="grid gap-1.5 text-sm font-semibold text-ink">
+          <span>Email</span>
+          <Input data-testid="contact-email-input" name="email" type="email" className="bg-white" placeholder="ban@htx.vn" />
+        </label>
+
+        <div className="grid gap-2.5">
+          <p className="text-sm font-semibold text-ink">Nhu cầu hỗ trợ</p>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {HELP_TOPICS.map((item) => {
+              const selected = topic === item.id;
+              return (
+                <label
+                  key={item.id}
+                  className={cn(
+                    'flex cursor-pointer items-start gap-3 rounded-[1.2rem] border px-3.5 py-3 text-sm transition',
+                    selected ? 'border-[#1f9b4b] bg-[#f5fbf4] text-[#1f2233]' : 'border-[#e6eadf] bg-white text-slate-600 hover:border-[#b7d6bf]'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2',
+                      selected ? 'border-[#1f9b4b] bg-[#1f9b4b]' : 'border-[#c8d4c8] bg-white'
+                    )}
+                    aria-hidden="true"
+                  >
+                    {selected ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
+                  </span>
+                  <input type="radio" name="topic" value={item.id} checked={selected} onChange={() => setTopic(item.id)} className="sr-only" />
+                  <span className="leading-6 font-medium">{item.label}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+
+        <label className="grid gap-1.5 text-sm font-semibold text-ink">
+          <span>Nội dung</span>
+          <Textarea data-testid="contact-message-input" name="message" required className="min-h-36 bg-white" placeholder="Mô tả ngắn mô hình HTX, sản phẩm hoặc nhu cầu hỗ trợ của bạn..." />
+        </label>
+
+        {success && (
+          <div data-testid="toast-success" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
+            {success}
+          </div>
+        )}
+        {error && (
+          <div data-testid="toast-error" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+            {error}
+          </div>
+        )}
+
+        <Button data-testid="contact-submit-button" type="submit" className="min-h-12 w-full justify-center rounded-full" disabled={submitting}>
+          {submitting ? 'Đang gửi' : 'Gửi liên hệ'}
+          <ArrowRight size={18} aria-hidden="true" />
+        </Button>
       </form>
     );
   }

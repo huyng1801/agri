@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, Leaf, QrCode, ShieldCheck, ShoppingBag, Sparkles, Store, Target, Users } from 'lucide-react';
+import { ArrowRight, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicImage } from '@/components/public-image';
-import { PublicLogo } from '@/components/public-logo';
 import { publicContainerClass } from '@/components/public-layout';
+import { PublicOutcomeShowcase, type PublicOutcomeSlide } from '@/components/public-outcome-showcase';
 import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
@@ -15,230 +15,165 @@ import { getRequestPublicSiteKey } from '@/lib/request-site';
 export async function generateMetadata() {
   return buildPublicMetadata({
     title: 'Về chúng tôi',
-    description: 'HTXONLINE mang đến sàn nông sản số, QR truy xuất và giải pháp vận hành cho hợp tác xã Việt Nam.',
+    description: 'HTXONLINE mang đến lớp quản trị nội bộ, QR truy xuất và quy trình vận hành số cho hợp tác xã Việt Nam.',
     path: '/ve-chung-toi'
   });
 }
 
 const valuePillars = [
-  { title: 'Sàn thương mại cho HTX', description: 'Hiển thị sản phẩm công khai, hồ sơ HTX và kênh tiếp cận người mua trên toàn quốc mà không cần website riêng.', icon: Store },
-  { title: 'QR Passport truy xuất', description: 'Mỗi sản phẩm có mã QR để khách xem nhật ký canh tác, vùng trồng và chứng nhận đã công khai.', icon: QrCode },
-  { title: 'Đặt hàng COD', description: 'Người mua gửi đơn nhanh, HTX chủ động liên hệ xác nhận và xử lý giao hàng thu tiền khi nhận.', icon: ShoppingBag },
-  { title: 'Dashboard vận hành HTX', description: 'HTX tự quản lý sản phẩm, nông dân, vùng trồng, nhật ký và đơn hàng trên một hệ thống thống nhất.', icon: Users }
+  {
+    title: 'Quản trị thành viên tập trung',
+    description: 'Tập hợp xã viên, mức độ sử dụng dịch vụ và lịch sử làm việc nội bộ trên cùng một hệ thống.',
+    icon: Users
+  },
+  {
+    title: 'Quản lý sản phẩm và dịch vụ',
+    description: 'Theo dõi danh mục, xuất nhập và các đầu việc đang vận hành mà không cần chia nhỏ nhiều file rời.',
+    icon: Store
+  },
+  {
+    title: 'Đồng bộ QR và truy xuất',
+    description: 'Khi cần công khai sản phẩm, dữ liệu có thể chuyển sang Agripassport và Hộ chiếu nông nghiệp theo luồng rõ ràng.',
+    icon: QrCode
+  },
+  {
+    title: 'Chốt đơn và đối soát gọn',
+    description: 'Quy trình đặt hàng, COD và phối hợp vận hành được ghi nhận để ban quản trị theo dõi minh bạch hơn.',
+    icon: ShoppingBag
+  }
 ] as const;
 
-const coreValues = [
-  { title: 'Minh bạch', description: 'Nguồn gốc và dữ liệu công khai rõ ràng với người mua.', icon: ShieldCheck },
-  { title: 'Đồng hành HTX', description: 'Hỗ trợ HTX số hóa và tiếp cận thị trường tốt hơn.', icon: Leaf },
-  { title: 'Tin cậy', description: 'Quy trình bán hàng COD và truy xuất có kiểm soát.', icon: BadgeCheck },
-  { title: 'Đơn giản', description: 'Dùng được ngay, không cần xây website riêng.', icon: Sparkles },
-  { title: 'Lan tỏa giá trị', description: 'Kết nối nông sản địa phương với người tiêu dùng.', icon: Target }
-] as const;
+const aboutOutcomeSlides: PublicOutcomeSlide[] = [
+  {
+    title: 'Quản trị xã viên',
+    value: 'Hồ sơ xã viên rõ ràng',
+    description: 'HTXONLINE gom hồ sơ thành viên, mức độ sử dụng dịch vụ và lịch sử tương tác để ban quản trị nhìn ra toàn cảnh nhanh hơn.',
+    icon: 'users',
+    note: 'Giảm phụ thuộc vào bảng tính rời và trao đổi thủ công.'
+  },
+  {
+    title: 'Quy trình nội bộ',
+    value: 'Thu chi, xuất nhập dễ theo dõi',
+    description: 'Các luồng công việc vận hành được chuẩn hóa theo cùng một mặt bằng dữ liệu để đối soát, bàn giao và báo cáo thuận tiện hơn.',
+    icon: 'boxes',
+    note: 'Phù hợp vai trò quản trị chuyển đổi số nội bộ cho hợp tác xã.'
+  },
+  {
+    title: 'Minh bạch sản phẩm',
+    value: 'Khi cần công khai, dữ liệu đã sẵn sàng',
+    description: 'Thông tin sản phẩm có thể được chuyển tiếp sang Agripassport và QR Passport mà không phải nhập liệu lại từ đầu.',
+    icon: 'qrCode',
+    note: 'Tạo cầu nối mượt giữa nội bộ HTX và lớp công khai ra thị trường.'
+  },
+  {
+    title: 'Vận hành bền vững',
+    value: 'Một nơi để quản trị tăng trưởng',
+    description: 'Ban quản trị có thể nhìn đồng thời thành viên, hàng hóa, quy trình và các điểm cần hỗ trợ mà không cần đổi nhiều công cụ.',
+    icon: 'badgeCheck',
+    note: 'Ưu tiên trải nghiệm dễ dùng, đặc biệt trên mobile.'
+  }
+];
 
-const journeySteps = [
-  { title: 'Công khai sản phẩm', description: 'HTX đưa sản phẩm, vùng trồng và chứng nhận công khai lên cùng một mặt bằng thương mại số.', accent: 'bg-[#f5fbf6] border-slate-200', icon: Store },
-  { title: 'Chuẩn hóa truy xuất', description: 'QR Passport gom nhật ký canh tác, mốc kiểm chứng và dữ liệu quan trọng thành một hành trình rõ ràng.', accent: 'bg-white border-slate-200', icon: QrCode },
-  { title: 'Chốt đơn COD', description: 'Người mua đặt hàng nhanh, còn HTX chủ động xác nhận và xử lý vận hành theo quy trình phù hợp.', accent: 'bg-mint/70 border-mint/80', icon: ShoppingBag },
-  { title: 'Theo dõi tăng trưởng', description: 'Dashboard giúp đội vận hành nhìn được sản phẩm, đơn hàng và niềm tin thị trường theo thời gian.', accent: 'bg-white border-slate-200', icon: Users }
+const trustSignals = [
+  'Vai trò trọng tâm là quản trị nội bộ cho hợp tác xã.',
+  'Dữ liệu sản phẩm có thể đồng bộ sang lớp công khai khi cần.',
+  'Quy trình vận hành được thiết kế để dùng được ngay trên mobile.',
+  'Thông tin liên hệ công khai và hồ sơ pháp lý được tách rõ để dễ đối chiếu.'
 ] as const;
-
-const trustSignals = ['Sản phẩm đã đăng công khai', 'QR mở trực tiếp cho khách', 'Quản lý vùng trồng tập trung', 'COD theo quy trình HTX'] as const;
 
 export default async function AboutUsPage() {
   const siteKey = await getRequestPublicSiteKey();
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
-  const stats = [
-    { value: `${catalog.cooperatives.length || 12}+`, label: 'HTX đang hiển thị trên sàn' },
-    { value: `${catalog.totalProducts || 60}+`, label: 'Sản phẩm công khai đang bán' },
-    { value: '100%', label: 'QR Passport xem được không cần đăng nhập' },
-    { value: '1 nền tảng', label: 'Từ sản xuất đến bán hàng COD' }
-  ];
   const featuredCooperatives =
     catalog.cooperatives.slice(0, 6).length > 0 ? catalog.cooperatives.slice(0, 6) : Array.from({ length: 6 }).map((_, index) => ({ id: String(index), name: `HTX ${index + 1}` }));
 
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="relative overflow-hidden bg-mint/60">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 opacity-70"
-            style={{
-              background:
-                'radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 36%), radial-gradient(circle at bottom right, rgba(47,132,81,0.14), transparent 34%)'
-            }}
-          />
-          <div className={cn(publicContainerClass, 'relative grid items-center gap-4 py-9 sm:gap-6 sm:py-12 lg:grid-cols-[0.95fr_0.9fr_0.95fr] lg:py-16')}>
-            <div>
-              <p className="text-sm font-bold uppercase tracking-wide text-leaf">Về chúng tôi</p>
-              <h1 className="mt-2 text-[2.14rem] font-bold leading-[1.02] text-ink sm:mt-3 sm:text-5xl">{siteProfile.pageContent.aboutTitle}</h1>
-              <p className="mt-3 max-w-md text-[0.96rem] leading-[1.72] text-slate-700 sm:text-base sm:leading-[1.8]">{siteProfile.pageContent.aboutDescription}</p>
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:mt-5 sm:flex sm:flex-wrap">
+        <section className="bg-white">
+          <div className={cn(publicContainerClass, 'grid gap-7 py-8 sm:py-10 lg:grid-cols-[0.95fr_1.05fr] lg:gap-10 lg:py-14')}>
+            <div className="max-w-[42rem]">
+              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Về hệ thống</p>
+              <h1 className="mt-4 text-[2.6rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-[#1f9b4b] sm:text-[3.45rem]">
+                {siteProfile.appName}
+              </h1>
+              <p className="mt-4 text-[1.18rem] font-semibold leading-8 text-[#1f2233]">{siteProfile.pageContent.aboutTitle}.</p>
+              <div className="mt-4 space-y-4 text-[0.98rem] leading-8 text-[#1f2233] sm:text-[1.02rem]">
+                <p>{siteProfile.pageContent.aboutDescription}</p>
+                <p>
+                  HTXONLINE là hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý xã viên, dịch vụ, thu chi, xuất nhập và các lớp vận hành quan trọng thay vì lấy
+                  gian hàng công khai làm trung tâm.
+                </p>
+                <p>
+                  Khi hợp tác xã cần công khai sản phẩm ra ngoài thị trường, dữ liệu có thể được chuẩn hóa để đồng bộ sang Agripassport và Hộ chiếu nông nghiệp, giúp
+                  hệ sinh thái vận hành liền mạch hơn.
+                </p>
+              </div>
+
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link href="/lien-he">
-                  <Button className="min-h-12 w-full">
+                  <Button className="min-h-12 w-full sm:w-auto">
                     Liên hệ tư vấn
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
-                <Link href="/san-pham">
-                  <Button variant="ghost" className="min-h-12 w-full">
-                    Xem sản phẩm
+                <Link href="/gioi-thieu">
+                  <Button variant="ghost" className="min-h-12 w-full sm:w-auto">
+                    Khám phá hệ sinh thái
                   </Button>
                 </Link>
               </div>
             </div>
 
-            <article className="rounded-[1.5rem] border border-white/85 bg-white/92 p-3 text-ink shadow-[0_20px_50px_rgba(148,163,184,0.14)] lg:hidden">
-              <PublicImage
-                src={siteProfile.pageContent.aboutImageUrl}
-                alt={siteProfile.pageContent.aboutImageAlt || siteProfile.pageContent.aboutTitle}
-                wrapperClassName="aspect-[16/10] rounded-[1.15rem]"
-                className="h-full w-full object-cover"
-                priority
-              />
-              <div className="mt-3 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <PublicLogo size={34} />
-                  <div>
-                    <p className="text-[0.82rem] font-bold">{siteProfile.appName}</p>
-                    <p className="text-[11px] text-slate-500">Số hóa gọn hơn trên mobile</p>
-                  </div>
-                </div>
-                <span className="rounded-full bg-mint px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] text-leaf">Live</span>
-              </div>
-              <div className="mt-3 rounded-[1.1rem] bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-3 ring-1 ring-mint/70">
-                <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf/70">QR Passport</p>
-                <p className="mt-1.5 text-[1.45rem] font-bold leading-[1.06]">Minh bạch nguồn gốc, chốt đơn nhanh và quản lý gọn.</p>
-              </div>
-            </article>
-
-            <div className="relative mx-auto hidden w-full max-w-sm lg:block">
-              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-[rgba(255,255,255,0.88)] p-4 shadow-[0_24px_60px_rgba(18,42,28,0.14)] backdrop-blur">
-                <div className="mb-4 overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/75 p-2">
+            <article className="overflow-hidden rounded-[2rem] border border-[#dfe6dc] bg-[#070b14] text-white shadow-[0_28px_70px_rgba(15,23,42,0.16)]">
+              <div className="grid lg:grid-cols-[1.02fr_0.98fr]">
+                <div className="relative min-h-[18rem] overflow-hidden lg:min-h-full">
                   <PublicImage
                     src={siteProfile.pageContent.aboutImageUrl}
                     alt={siteProfile.pageContent.aboutImageAlt || siteProfile.pageContent.aboutTitle}
-                    wrapperClassName="aspect-[16/10] rounded-[1.1rem]"
-                    className="h-full w-full object-cover"
+                    wrapperClassName="absolute inset-0"
+                    className="h-full w-full object-cover opacity-80"
                     priority
                   />
-                </div>
-                <div className="rounded-[1.6rem] bg-[linear-gradient(160deg,#2f8451_0%,#1f5f3d_65%,#153b28_100%)] p-5 text-white">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <PublicLogo size={42} />
-                      <div>
-                        <p className="text-sm font-bold">{siteProfile.appName}</p>
-                        <p className="text-xs text-white/75">Đồng hành số hóa cho hợp tác xã</p>
-                      </div>
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,7,12,0.06),rgba(4,7,12,0.62))]" />
+                  <div className="absolute inset-x-0 top-0 p-4 sm:p-5">
+                    <div className="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/78">
+                      Giới thiệu về {siteProfile.appName}
                     </div>
-                    <span className="rounded-full bg-white/14 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/80">Live</span>
                   </div>
-
-                  <div className="mt-6 grid gap-3">
-                    <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                      <div className="flex items-center justify-between gap-3">
-                        <div>
-                          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">QR Passport</p>
-                          <p className="mt-1 text-xl font-bold">Minh bạch từng sản phẩm</p>
-                        </div>
-                        <QrCode size={28} aria-hidden="true" className="text-mint" />
-                      </div>
-                    </div>
-
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">Đơn COD</p>
-                        <p className="mt-2 text-2xl font-bold">Chốt nhanh</p>
-                      </div>
-                      <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/10">
-                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/70">Dashboard</p>
-                        <p className="mt-2 text-2xl font-bold">Một nơi quản lý</p>
-                      </div>
+                  <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
+                    <div className="rounded-[1.4rem] border border-white/12 bg-white/10 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur">
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/65">Hệ thống lõi</p>
+                      <p className="mt-2 text-lg font-bold leading-7">Quản trị nội bộ, đồng bộ dữ liệu sản phẩm và quy trình vận hành trên cùng một trục số.</p>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <article className="rounded-[1.6rem] border border-slate-200 bg-white p-4 text-ink shadow-sm sm:p-7">
-              <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf/80 sm:text-sm sm:tracking-wide">Câu chuyện thương hiệu</p>
-              <p className="mt-3 text-[0.96rem] leading-[1.7] text-slate-700 sm:text-base sm:leading-[1.8]">
-                {siteProfile.appName} ra đời để giúp hợp tác xã Việt Nam đưa nông sản địa phương lên môi trường số một cách minh bạch. Chúng tôi kết hợp sàn bán hàng,
-                QR Passport và dashboard vận hành để HTX tập trung vào chất lượng sản phẩm, còn người mua dễ dàng tin tưởng nguồn gốc.
-              </p>
-              <p className="mt-2.5 text-[0.84rem] leading-[1.66] text-slate-600 sm:mt-3 sm:text-sm sm:leading-[1.75]">
-                Không chỉ là website giới thiệu, đây là hệ sinh thái sản xuất, truy xuất và bán hàng trên cùng một nền tảng.
-              </p>
-              <div className="mt-3.5 grid grid-cols-2 gap-2 lg:grid-cols-1">
-                {trustSignals.map((item) => (
-                  <div key={item} className="rounded-xl bg-[#f8faf7] px-2.5 py-2 text-[0.8rem] leading-[1.4] text-slate-700 ring-1 ring-mint/60 sm:px-3 sm:py-2.5 sm:text-sm">
-                    {item}
+                <div className="flex flex-col justify-between gap-5 bg-[linear-gradient(145deg,#0f1422_0%,#122738_42%,#1b7a41_100%)] p-5 sm:p-6">
+                  <div>
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/70">HTXONLINE</p>
+                    <h2 className="mt-3 text-[1.7rem] font-extrabold leading-[1.06] sm:text-[2.15rem]">Quản trị rõ hơn để hợp tác xã vận hành bền hơn.</h2>
+                    <p className="mt-3 text-sm leading-7 text-white/82 sm:text-[0.98rem]">
+                      Cấu trúc dữ liệu được tổ chức để đội vận hành, ban quản trị và các lớp công khai phía ngoài không bị chồng chéo vai trò.
+                    </p>
                   </div>
-                ))}
-              </div>
-            </article>
-          </div>
-        </section>
 
-        <section className={cn(publicContainerClass, 'py-8 sm:py-10')}>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {stats.map((item) => (
-              <article key={item.label} className="rounded-2xl border border-slate-200 bg-white p-3.5 text-center shadow-sm sm:p-5">
-                <p className="text-[1.7rem] font-bold text-leaf sm:text-3xl">{item.value}</p>
-                <p className="mt-1 text-[0.82rem] leading-[1.55] text-slate-600 sm:mt-1.5 sm:text-sm sm:leading-[1.65]">{item.label}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className={cn(publicContainerClass, 'pb-3 sm:pb-4')}>
-          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <article className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin pháp lý</p>
-              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{legalEntityProfile.organizationName}</h2>
-              <p className="mt-2 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
-                Hồ sơ pháp lý trên giấy chứng nhận được tách rõ với thông tin liên hệ công khai trên website để người xem dễ đối chiếu khi cần xác minh.
-              </p>
-              <div className="mt-4 grid gap-3 sm:mt-5 sm:grid-cols-2">
-                <div className="rounded-2xl bg-[#f8faf7] p-4">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Giấy chứng nhận</p>
-                  <p className="mt-2 text-base font-bold text-ink">{legalEntityProfile.certificateTitle}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
-                </div>
-                <div className="rounded-2xl bg-[#f8faf7] p-4">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Mã số tổ hợp tác</p>
-                  <p className="mt-2 text-2xl font-bold tracking-tight text-ink">{legalEntityProfile.registrationNumber}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
-                </div>
-                <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:col-span-2">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ và người đại diện theo hồ sơ</p>
-                  <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{legalEntityProfile.legalAddress}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">Người đại diện: {legalEntityProfile.representative}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">Email hồ sơ: {legalEntityProfile.legalEmail} · Điện thoại hồ sơ: {legalEntityProfile.legalPhone}</p>
-                </div>
-              </div>
-            </article>
-
-            <article className="rounded-[1.7rem] bg-[linear-gradient(180deg,#f8faf7_0%,#eef7f1_100%)] p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Thông tin công khai trên {siteProfile.appName}</p>
-              <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Kênh liên hệ dành cho khách hàng và HTX</h2>
-              <p className="mt-2.5 text-[0.92rem] leading-[1.68] text-slate-600 sm:text-base sm:leading-7">
-                Bộ thông tin này đang được dùng đồng nhất ở footer, liên hệ và các trang chính sách theo nội dung bạn cung cấp trong tài liệu cập nhật.
-              </p>
-              <div className="mt-4 grid gap-3 sm:mt-5">
-                <div className="rounded-2xl bg-white p-4 shadow-sm">
-                  <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ công khai</p>
-                  <p className="mt-2 text-[0.95rem] font-semibold leading-7 text-ink">{siteProfile.address}</p>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
-                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Hotline</p>
-                    <p className="mt-2 text-lg font-medium text-ink">{siteProfile.hotlineDisplay}</p>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-[1.35rem] border border-white/12 bg-white/10 p-4">
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/65">Dành cho HTX</p>
+                      <p className="mt-2 text-lg font-bold leading-7">Xã viên, dịch vụ, thu chi, xuất nhập</p>
+                    </div>
+                    <div className="rounded-[1.35rem] border border-white/12 bg-white/10 p-4">
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/65">Liên kết hệ sinh thái</p>
+                      <p className="mt-2 text-lg font-bold leading-7">Agripassport và Hộ chiếu nông nghiệp</p>
+                    </div>
                   </div>
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
-                    <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Email hỗ trợ</p>
-                    <p className="mt-2 break-all text-lg font-bold text-ink">{siteProfile.supportEmail}</p>
+
+                  <div className="rounded-[1.35rem] border border-white/12 bg-black/18 p-4">
+                    <p className="text-sm font-semibold text-white/90">Luồng triển khai điển hình</p>
+                    <p className="mt-2 text-sm leading-7 text-white/76">
+                      Quản trị nội bộ trong HTXONLINE trước, sau đó mới công khai sản phẩm và QR khi dữ liệu đã đủ chuẩn và đúng vai trò.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -246,137 +181,101 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className="bg-white py-9 sm:py-12">
+        <section className="bg-white pb-8 sm:pb-12">
           <div className={publicContainerClass}>
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Thành công được tạo dựng từ giá trị khác biệt</h2>
-              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                {siteProfile.appName} giúp HTX hiện diện trên thị trường số bằng dữ liệu minh bạch, quy trình bán hàng rõ ràng và trải nghiệm mua sắm đơn giản.
-              </p>
-            </div>
-            <div className="mt-6 grid gap-3 md:mt-8 md:grid-cols-2 md:gap-4">
-              {valuePillars.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-4 shadow-sm sm:p-6">
-                  <span className="grid h-11 w-11 place-items-center rounded-full bg-leaf text-white sm:h-12 sm:w-12">
-                    <item.icon size={20} aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-3 text-[1.05rem] font-bold leading-tight text-ink sm:mt-4 sm:text-xl">{item.title}</h3>
-                  <p className="mt-2 text-[0.84rem] leading-[1.65] text-slate-600 sm:text-sm sm:leading-7">{item.description}</p>
-                </article>
-              ))}
-            </div>
+            <h2 className="text-[2rem] font-extrabold leading-tight tracking-[-0.03em] text-[#1f9b4b] sm:text-[3.05rem]">Thắng lợi cùng hợp tác xã</h2>
+            <p className="mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-[1.04rem] sm:leading-8">
+              Bố cục vận hành của HTXONLINE được tổ chức theo vai trò quản trị nội bộ: ghi nhận thành viên, chuẩn hóa quy trình, theo dõi dữ liệu và tạo sẵn nền để kết nối
+              sang lớp công khai khi cần.
+            </p>
+            <PublicOutcomeShowcase items={aboutOutcomeSlides} className="mt-3" />
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'py-9 sm:py-12')}>
-          <div className="grid items-center gap-6 lg:grid-cols-[1fr_1fr]">
-            <div className="rounded-[1.7rem] border border-slate-200 bg-[linear-gradient(180deg,#f8faf7_0%,#edf7f0_100%)] p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
-                <article className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
-                  <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Tầm nhìn</p>
-                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] text-ink sm:text-2xl">Trở thành nền tảng số tin cậy cho hợp tác xã nông nghiệp Việt Nam.</h3>
-                  <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-slate-600 sm:mt-3 sm:text-sm sm:leading-7">
-                    Mỗi HTX có thể kể câu chuyện nguồn gốc rõ ràng, mỗi người mua đều kiểm tra được sản phẩm trước khi quyết định mua.
-                  </p>
-                </article>
-                <article className="rounded-2xl bg-leaf p-4 text-white shadow-sm sm:p-5">
-                  <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/75 sm:text-sm sm:tracking-wide">Sứ mệnh</p>
-                  <h3 className="mt-2 text-[1.38rem] font-bold leading-[1.12] sm:text-2xl">Số hóa bán hàng và truy xuất nguồn gốc cho HTX.</h3>
-                  <p className="mt-2.5 text-[0.84rem] leading-[1.65] text-white/85 sm:mt-3 sm:text-sm sm:leading-7">
-                    Chúng tôi mang đến công cụ thực tế: sàn công khai, QR Passport, dashboard vận hành và đơn COD để HTX phát triển bền vững hơn.
-                  </p>
-                </article>
+        <section className={cn(publicContainerClass, 'grid gap-4 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5')}>
+          <article className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Thông tin pháp lý</p>
+            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">{legalEntityProfile.organizationName}</h2>
+            <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">
+              Hồ sơ pháp lý được giữ riêng để đối chiếu minh bạch, trong khi thông tin hiển thị trên website phục vụ mục tiêu tư vấn và vận hành công khai.
+            </p>
+
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[1.35rem] bg-[#f8faf7] p-4">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Giấy chứng nhận</p>
+                <p className="mt-2 text-base font-bold leading-7 text-[#1f2233]">{legalEntityProfile.certificateTitle}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
               </div>
-            </div>
-
-            <div className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bản đồ giá trị</p>
-              <h3 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">Một hành trình rõ ràng từ niềm tin đến đơn hàng.</h3>
-              <div className="mt-4 grid gap-2.5 sm:mt-6 sm:gap-3">
-                {journeySteps.map((step, index) => (
-                  <article key={step.title} className={cn('rounded-2xl border p-3.5 shadow-sm sm:p-4', step.accent)}>
-                    <div className="flex items-start gap-3">
-                      <span className="grid h-10 w-10 place-items-center rounded-[1rem] bg-leaf text-white shadow-sm sm:h-11 sm:w-11 sm:rounded-2xl">
-                        <step.icon size={18} aria-hidden="true" />
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-slate-500 sm:text-[0.72rem] sm:tracking-[0.18em]">Bước {index + 1}</p>
-                        <h4 className="mt-1 text-[1rem] font-bold leading-tight text-ink sm:text-lg">{step.title}</h4>
-                        <p className="mt-1.5 text-[0.82rem] leading-[1.58] text-slate-600 sm:mt-2 sm:text-sm sm:leading-6">{step.description}</p>
-                      </div>
-                    </div>
-                  </article>
-                ))}
+              <div className="rounded-[1.35rem] bg-[#f8faf7] p-4">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Mã số tổ hợp tác</p>
+                <p className="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-[#1f2233]">{legalEntityProfile.registrationNumber}</p>
+                <p className="mt-2 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
               </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-white py-9 sm:py-12">
-          <div className={publicContainerClass}>
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-[1.85rem] font-bold leading-tight text-ink sm:text-3xl">Giá trị cốt lõi</h2>
-              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">Những nguyên tắc định hướng mọi sản phẩm và dịch vụ trên {siteProfile.appName}.</p>
-            </div>
-            <div className="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-2 lg:grid-cols-5">
-              {coreValues.map((item) => (
-                <article key={item.title} className="rounded-2xl border border-slate-200 bg-[#f8faf7] p-4 text-center shadow-sm sm:p-5">
-                  <span className="mx-auto grid h-10 w-10 place-items-center rounded-xl bg-leaf text-white sm:h-12 sm:w-12">
-                    <item.icon size={20} aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-3 text-[0.98rem] font-bold leading-tight text-ink sm:mt-4 sm:text-base">{item.title}</h3>
-                  <p className="mt-1.5 text-[0.82rem] leading-[1.58] text-slate-600 sm:mt-2 sm:text-sm sm:leading-6">{item.description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className={cn(publicContainerClass, 'py-9 sm:py-12')}>
-          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
-            <article className="rounded-[1.7rem] bg-[linear-gradient(180deg,#245f3e_0%,#1b4f33_100%)] p-4 text-white shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-white/70 sm:text-sm sm:tracking-wide">Đội ngũ đồng hành</p>
-              <h2 className="mt-2 max-w-lg text-[1.7rem] font-bold leading-[1.12] sm:text-3xl">Những con người trẻ cùng đam mê tạo nên giá trị lớn cho nông sản Việt.</h2>
-              <p className="mt-3 max-w-xl text-[0.84rem] leading-[1.66] text-white/82 sm:mt-4 sm:text-sm sm:leading-7">
-                Chúng tôi làm việc để HTX dễ hiện diện hơn trên môi trường số, còn người mua có thêm niềm tin khi chọn sản phẩm minh bạch nguồn gốc.
-              </p>
-            </article>
-
-            <article className="rounded-[1.7rem] border border-slate-200 bg-white p-4 shadow-sm sm:rounded-3xl sm:p-6">
-              <p className="text-[0.82rem] font-bold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Đối tác & niềm tin</p>
-               <h2 className="mt-2 text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">{catalog.cooperatives.length || 12}+ HTX đồng hành</h2>
-              <p className="mt-2.5 text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                Cảm ơn các hợp tác xã và người mua đã tin tưởng {siteProfile.appName} để kết nối nông sản minh bạch trên môi trường số.
-              </p>
-              <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-6 sm:grid-cols-3 sm:gap-3">
-                {featuredCooperatives.map((coop) => (
-                  <div key={coop.id} className="rounded-xl border border-slate-200 bg-[#f8faf7] px-3 py-3 text-center">
-                    <p className="line-clamp-2 text-[11px] font-semibold leading-[1.45] text-slate-700 sm:text-xs">{coop.name}</p>
-                  </div>
-                ))}
-              </div>
-              <Link href="/htx" className="mt-4 inline-flex min-h-11 items-center justify-center gap-1 rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 sm:mt-5">
-                Xem danh sách HTX
-                <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-            </article>
-          </div>
-        </section>
-
-        <section className={cn(publicContainerClass, 'pb-12 pt-3 sm:pt-4')}>
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-soft">
-            <div className="border-b border-slate-100 bg-mint/70 px-4 py-4 sm:px-8 sm:py-6">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-                <div>
-                  <p className="text-[0.82rem] font-semibold uppercase tracking-[0.16em] text-leaf sm:text-sm sm:tracking-wide">Bắt đầu cùng {siteProfile.appName}</p>
-                  <h2 className="mt-2 max-w-2xl text-[1.7rem] font-bold leading-tight text-ink sm:text-3xl">HTX muốn tham gia sàn hoặc cần tư vấn triển khai truy xuất?</h2>
-                </div>
-                <p className="max-w-md text-[0.84rem] leading-[1.6] text-slate-600 sm:text-sm sm:leading-6">
-                  Để lại thông tin, đội vận hành sẽ hỗ trợ onboarding và hướng dẫn quy trình phù hợp với HTX của bạn.
+              <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 sm:col-span-2">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Địa chỉ và liên hệ theo hồ sơ</p>
+                <p className="mt-2 text-[0.98rem] font-semibold leading-7 text-[#1f2233]">{legalEntityProfile.legalAddress}</p>
+                <p className="mt-3 text-sm leading-6 text-slate-600">Người đại diện: {legalEntityProfile.representative}</p>
+                <p className="text-sm leading-6 text-slate-600">
+                  Email: {legalEntityProfile.legalEmail} · Điện thoại: {legalEntityProfile.legalPhone}
                 </p>
               </div>
             </div>
-            <div className="p-4 sm:p-8">
+          </article>
+
+          <article className="rounded-[2rem] border border-slate-200 bg-[#f8faf7] p-5 shadow-sm sm:p-6">
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Vai trò nền tảng</p>
+            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">Một lớp quản trị đứng đúng vị trí trong hệ sinh thái Agri.</h2>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {valuePillars.map((item) => (
+                <article key={item.title} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm">
+                  <span className="grid h-11 w-11 place-items-center rounded-full bg-[#1f9b4b] text-white">
+                    <item.icon size={20} aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-3 text-[1rem] font-bold leading-6 text-[#1f2233]">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-5 grid gap-2.5">
+              {trustSignals.map((item) => (
+                <div key={item} className="rounded-[1.15rem] border border-[#dbe5d8] bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-700">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </article>
+        </section>
+
+        <section className={cn(publicContainerClass, 'grid gap-4 py-2 pb-8 lg:grid-cols-[0.98fr_1.02fr]')}>
+          <article className="rounded-[2rem] bg-[linear-gradient(145deg,#0c1322_0%,#13304a_46%,#1f9b4b_100%)] p-5 text-white shadow-[0_24px_56px_rgba(15,23,42,0.14)] sm:p-6">
+            <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-white/68">Đồng hành cùng HTX</p>
+            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-[1.08] sm:text-[2.3rem]">{catalog.cooperatives.length || 12}+ hợp tác xã đang có mặt trong hệ sinh thái.</h2>
+            <p className="mt-3 max-w-xl text-sm leading-7 text-white/82 sm:text-[0.98rem]">
+              Dữ liệu nội bộ, hồ sơ sản phẩm và niềm tin thị trường được kết nối theo từng vai trò cụ thể, để đội vận hành triển khai thuận hơn và người mua nhận biết rõ hơn.
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {featuredCooperatives.map((coop) => (
+                <div key={coop.id} className="rounded-[1.2rem] border border-white/12 bg-white/10 px-3 py-3 text-center">
+                  <p className="line-clamp-2 text-[0.78rem] font-semibold leading-5 text-white/88">{coop.name}</p>
+                </div>
+              ))}
+            </div>
+            <Link href="/htx" className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5">
+              Xem danh sách HTX
+              <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+          </article>
+
+          <div className="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-soft">
+            <div className="border-b border-slate-100 bg-[#f4faf3] px-5 py-5 sm:px-6">
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Bắt đầu cùng {siteProfile.appName}</p>
+              <h2 className="mt-2 text-[1.75rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.2rem]">Muốn chuẩn hóa quản trị nội bộ và chuẩn bị sẵn dữ liệu cho lớp công khai?</h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-[0.98rem]">
+                Để lại thông tin, đội vận hành sẽ tư vấn lộ trình triển khai phù hợp với mô hình hợp tác xã của bạn.
+              </p>
+            </div>
+            <div className="p-5 sm:p-6">
               <PublicContactForm sourcePath="/ve-chung-toi" variant="hero" />
             </div>
           </div>
