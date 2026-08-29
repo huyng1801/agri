@@ -12,6 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { ProductSlider } from "@/components/product-slider";
+import { PublicMetricCarousel, type PublicMetricCarouselItem } from "@/components/public-metric-carousel";
 import {
   EmptyPublicState,
   NewsCard,
@@ -442,6 +443,44 @@ export default async function HomePage() {
       value: "Vai trò rõ ràng",
       description: "Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo và giúp giao diện public dễ hiểu hơn.",
       icon: BadgeCheck,
+    },
+  ];
+  const internalOutcomeCarouselItems: PublicMetricCarouselItem[] = [
+    {
+      title: "Hồ sơ xã viên",
+      value: "01 nơi theo dõi",
+      description: "Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ trên cùng một lớp dữ liệu.",
+      icon: "users",
+    },
+    {
+      title: "Thu chi nội bộ",
+      value: "Đối soát gọn hơn",
+      description: "Theo dõi khoản thu chi và lịch sử biến động mà không phải ghép tay dữ liệu.",
+      icon: "boxes",
+    },
+    {
+      title: "Xuất nhập",
+      value: "Dữ liệu liền mạch",
+      description: "Biến động nhập xuất và trạng thái vận hành đi cùng một luồng theo dõi duy nhất.",
+      icon: "shoppingBag",
+    },
+    {
+      title: "Sản phẩm thực",
+      value: "Chọn đúng đầu ra",
+      description: "Khoanh vùng sản phẩm sẵn sàng để đồng bộ sang AGRIPASSPORT khi cần công khai.",
+      icon: "store",
+    },
+    {
+      title: "Liên kết QR",
+      value: "Sẵn sàng truy xuất",
+      description: "Dữ liệu đã chuẩn có thể tiếp tục mở sang lớp QR và hồ sơ số rõ ràng hơn.",
+      icon: "qrCode",
+    },
+    {
+      title: "Kiểm soát minh bạch",
+      value: "Vai trò rõ ràng",
+      description: "Mỗi nền tảng giữ đúng nhiệm vụ để giao diện public dễ hiểu và ít chồng chéo hơn.",
+      icon: "badgeCheck",
     },
   ];
   const outcomeTiles: OutcomeTile[] = isPassport
@@ -880,30 +919,35 @@ export default async function HomePage() {
           </div>
 
           {isInternal ? (
-            <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
-              {internalOutcomeTiles.map((tile) => {
-                const Icon = tile.icon;
-                return (
-                  <article
-                    key={`${tile.title}-${tile.value}`}
-                    className="text-center"
-                  >
-                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                      <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
-                    </span>
-                    <p className="mt-4 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
-                      {tile.title}
-                    </p>
-                    <p className="mt-2 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
-                      {tile.value}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">
-                      {tile.description}
-                    </p>
-                  </article>
-                );
-              })}
-            </div>
+            <>
+              <div className="mt-6 lg:hidden">
+                <PublicMetricCarousel items={internalOutcomeCarouselItems} />
+              </div>
+              <div className="mt-8 hidden gap-x-4 gap-y-8 lg:grid lg:grid-cols-6">
+                {internalOutcomeTiles.map((tile) => {
+                  const Icon = tile.icon;
+                  return (
+                    <article
+                      key={`${tile.title}-${tile.value}`}
+                      className="text-center"
+                    >
+                      <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                        <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
+                      </span>
+                      <p className="mt-4 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
+                        {tile.title}
+                      </p>
+                      <p className="mt-2 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
+                        {tile.value}
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                        {tile.description}
+                      </p>
+                    </article>
+                  );
+                })}
+              </div>
+            </>
           ) : (
             <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {outcomeTiles.map((tile) => {
