@@ -372,39 +372,66 @@ export default async function HomePage() {
   const internalHeroPreviewAlt =
     siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
   const serviceAction = isInternal ? "/gioi-thieu" : "/san-pham";
-  const internalServiceCards = [
+  const internalServicePanels = [
     {
-      key: "htxonline",
-      eyebrow: "Cho hợp tác xã",
+      key: "htxonline-panel",
+      eyebrow: "Giải pháp quản trị nội bộ",
       title: "HTXONLINE",
       description:
-        "Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.",
-      href: "/",
-      cta: "Quản trị nội bộ",
-      icon: Users,
-      gradient: "from-[#090d1d] via-[#131935] to-[#1b2450]",
+        "Quản lý xã viên, dịch vụ, thu chi và lịch sử vận hành trên một lớp dữ liệu gọn, rõ và dễ theo dõi hơn.",
+      href: "/ve-chung-toi",
+      cta: "Xem chi tiết",
+      image: siteProfile.pageContent.homeImageUrl,
+      imageAlt: siteProfile.pageContent.homeImageAlt || "Giải pháp HTXONLINE",
     },
     {
-      key: "agripassport",
-      eyebrow: "Cho sản phẩm & bán hàng",
+      key: "agripassport-panel",
+      eyebrow: "Dữ liệu sản phẩm công khai",
       title: "AGRIPASSPORT",
       description:
-        "Nền tảng trung tâm để chuẩn hóa tên HTX, sản phẩm nông nghiệp, mở kênh công khai, bán hàng và đồng bộ dữ liệu sang các lớp hiển thị khác.",
+        "Chuẩn hóa tên HTX, sản phẩm và vùng trồng trước khi mở kênh công khai, bán hàng hoặc kết nối truy xuất.",
       href: marketplaceUrl("/"),
-      cta: "Sản phẩm công khai",
-      icon: Store,
-      gradient: "from-[#0a5668] via-[#106f8a] to-[#1d96b7]",
+      cta: "Khám phá thêm",
+      image: siteProfile.pageContent.homeImageUrl,
+      imageAlt:
+        heroPreviewProducts[0]?.name || "Nền tảng AGRIPASSPORT",
     },
     {
-      key: "passport",
-      eyebrow: "Cho truy xuất QR",
+      key: "passport-panel",
+      eyebrow: "QR truy xuất minh bạch",
       title: "HỘ CHIẾU NÔNG NGHIỆP",
       description:
-        "Tạo hồ sơ số và QR cho từng sản phẩm hoặc lô sản phẩm, giúp người mua truy xuất nguồn gốc, nhật ký canh tác và thông tin công khai rõ ràng.",
+        "Tạo hồ sơ số cho sản phẩm và lô sản phẩm để người mua quét QR, xem nguồn gốc và hiểu đúng dữ liệu công khai.",
       href: "https://hochieunongnghiep.com/",
-      cta: "QR truy xuất",
-      icon: QrCode,
-      gradient: "from-[#0d5c24] via-[#0d7a28] to-[#10a536]",
+      cta: "Tra cứu QR",
+      image: siteProfile.pageContent.homeImageUrl,
+      imageAlt: "Hộ chiếu nông nghiệp",
+    },
+  ] as const;
+  const internalProductPanels = [
+    ...featuredProducts.slice(0, 2).map((product) => ({
+      key: product.id,
+      href: `/san-pham/${product.slug}`,
+      image: product.thumbnail?.publicUrl || siteProfile.pageContent.homeImageUrl,
+      title: product.name,
+      eyebrow: product.category?.name || "Sản phẩm công khai",
+      note: product.cooperative?.name || product.zone?.name || "HTXONLINE",
+    })),
+    {
+      key: "sync-preview",
+      href: "/gioi-thieu",
+      image: siteProfile.pageContent.homeImageUrl,
+      title: "Danh mục đang đồng bộ",
+      eyebrow: "Lớp công khai sản phẩm",
+      note: "Dữ liệu từ HTXONLINE sang AGRIPASSPORT",
+    },
+    {
+      key: "qr-preview",
+      href: "https://hochieunongnghiep.com/",
+      image: siteProfile.pageContent.homeImageUrl,
+      title: "Sẵn sàng mở QR truy xuất",
+      eyebrow: "Hộ chiếu nông nghiệp",
+      note: "Mở hồ sơ số khi cần minh bạch sâu hơn",
     },
   ] as const;
   const internalOutcomeTiles: OutcomeTile[] = [
@@ -1015,50 +1042,45 @@ export default async function HomePage() {
             {isInternal ? (
               <div className="relative">
                 <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible">
-                  {internalServiceCards.map((card) => {
-                    const Icon = card.icon;
-
+                  {internalServicePanels.map((card, index) => {
                     return (
                       <a
                         key={card.key}
                         href={card.href}
-                        className={cn(
-                          "group relative w-[min(90vw,24rem)] shrink-0 snap-start overflow-hidden rounded-[2rem] p-5 text-white shadow-[0_22px_44px_rgba(15,23,42,0.12)] transition hover:-translate-y-1 lg:w-auto",
-                          "bg-gradient-to-br",
-                          card.gradient,
-                        )}
+                        className="group w-[min(90vw,24rem)] shrink-0 snap-start overflow-hidden rounded-[2rem] border border-[#e3eadf] bg-white shadow-[0_18px_40px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-auto"
                       >
-                        <div
-                          aria-hidden="true"
-                          className="absolute inset-0 opacity-80"
-                          style={{
-                            background:
-                              "radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)",
-                          }}
-                        />
-                        <div className="relative flex h-full items-start gap-4">
-                          <span className="grid h-20 w-20 shrink-0 place-items-center rounded-full border border-white/16 bg-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
-                            <Icon
-                              size={38}
-                              strokeWidth={1.8}
-                              aria-hidden="true"
-                            />
-                          </span>
-                          <div className="min-w-0">
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
+                        <div className="relative overflow-hidden border-b border-[#e5eadf] bg-[#fbfdf8] p-3">
+                          <PublicImage
+                            src={card.image}
+                            alt={card.imageAlt}
+                            priority={index < 3}
+                            wrapperClassName="aspect-[16/10] rounded-[1.4rem]"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                          />
+                          <div className="pointer-events-none absolute inset-x-3 bottom-3 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(8,15,24,0.06)_0%,rgba(8,15,24,0.62)_100%)] p-3 text-white">
+                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">
                               {card.eyebrow}
                             </p>
-                            <h3 className="mt-2 text-[1.32rem] font-extrabold leading-tight tracking-[-0.03em] sm:text-[1.45rem]">
+                            <p className="mt-1 text-[1.05rem] font-extrabold leading-tight">
                               {card.title}
-                            </h3>
-                            <p className="mt-3 text-[0.94rem] leading-7 text-white/86">
-                              {card.description}
                             </p>
-                            <span className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/10 px-5 text-sm font-bold text-white transition group-hover:bg-white/14">
-                              {card.cta}
-                              <ArrowRight size={16} aria-hidden="true" />
-                            </span>
                           </div>
+                        </div>
+
+                        <div className="p-5">
+                          <p className="text-[0.74rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+                            {card.eyebrow}
+                          </p>
+                          <h3 className="mt-2 text-[1.3rem] font-extrabold leading-tight tracking-[-0.03em] text-[#1f2233]">
+                            {card.title}
+                          </h3>
+                          <p className="mt-3 text-[0.94rem] leading-7 text-slate-600">
+                            {card.description}
+                          </p>
+                          <span className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#d8e7d8] bg-[#f7fbf5] px-5 text-sm font-bold text-[#1f9b4b] transition group-hover:border-[#1f9b4b] group-hover:bg-white">
+                            {card.cta}
+                            <ArrowRight size={16} aria-hidden="true" />
+                          </span>
                         </div>
                       </a>
                     );
@@ -1149,9 +1171,45 @@ export default async function HomePage() {
           </div>
 
           {featuredProducts.length ? (
-            <div className="mt-6">
-              <ProductSlider products={featuredProducts} />
-            </div>
+            isInternal ? (
+              <div className="mt-6">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible">
+                  {internalProductPanels.map((panel, index) => (
+                    <a
+                      key={panel.key}
+                      href={panel.href}
+                      className="group w-[min(76vw,18rem)] shrink-0 snap-start rounded-[1.9rem] border border-[#e3eadf] bg-white p-3 shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:shadow-[0_22px_42px_rgba(15,23,42,0.08)] lg:w-auto"
+                    >
+                      <div className="overflow-hidden rounded-[1.45rem] border border-[#dbe7da] bg-[#fbfdf9]">
+                        <PublicImage
+                          src={panel.image}
+                          alt={panel.title}
+                          fallback={siteProfile.pageContent.homeImageUrl}
+                          priority={index < 3}
+                          wrapperClassName="aspect-[1/1] w-full"
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                      </div>
+                      <div className="mt-4 text-center">
+                        <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+                          {panel.eyebrow}
+                        </p>
+                        <p className="mt-2 line-clamp-2 min-h-[3rem] text-[1.04rem] font-extrabold leading-6 text-[#1f2233]">
+                          {panel.title}
+                        </p>
+                        <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
+                          {panel.note}
+                        </p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="mt-6">
+                <ProductSlider products={featuredProducts} />
+              </div>
+            )
           ) : (
             <div className="mt-6">
               <EmptyPublicState
