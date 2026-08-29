@@ -306,7 +306,7 @@ export default async function HomePage() {
             <PublicImage
               src={siteProfile.pageContent.homeImageUrl}
               alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-              wrapperClassName="aspect-[16/15] sm:aspect-[18/10] lg:aspect-[21/8]"
+              wrapperClassName="aspect-[16/24] sm:aspect-[18/10] lg:aspect-[21/8]"
               className="h-full w-full object-cover"
               priority
             />
@@ -330,14 +330,14 @@ export default async function HomePage() {
               </span>
             </div>
 
-            <div className="absolute inset-0 flex items-center px-4 py-8 sm:px-6 lg:px-8">
+            <div className="absolute inset-0 flex items-start px-4 py-14 sm:items-center sm:px-6 lg:px-8">
               <div className="w-full">
-                <div className="mx-auto max-w-[28rem] text-center lg:mx-0 lg:ml-[18rem] lg:max-w-[36rem] lg:text-left xl:ml-[19rem] xl:max-w-[40rem]">
+                <div className="mx-auto max-w-[19rem] text-center sm:max-w-[28rem] lg:mx-0 lg:ml-[18rem] lg:max-w-[36rem] lg:text-left xl:ml-[19rem] xl:max-w-[40rem]">
                   <p className="text-[0.74rem] font-semibold uppercase tracking-[0.22em] text-[#0f7d63]">Hệ sinh thái vận hành số</p>
-                  <h1 className="mt-3 text-[2.35rem] font-extrabold leading-[0.92] tracking-[-0.05em] text-[#0d6f80] sm:text-[3.15rem] lg:text-[4rem]">
+                  <h1 className="mt-3 text-[1.72rem] font-extrabold leading-[0.95] tracking-[-0.05em] text-[#0d6f80] sm:text-[3.15rem] lg:text-[4rem]">
                     Cùng hợp tác xã kiến tạo vận hành số bền vững
                   </h1>
-                  <p className="mt-4 text-[1rem] leading-7 text-[#31556d] sm:text-[1.07rem] sm:leading-8">
+                  <p className="mt-4 text-[0.94rem] leading-7 text-[#31556d] sm:text-[1.07rem] sm:leading-8">
                     Tập trung quản trị thành viên, dịch vụ, thu chi, xuất nhập rồi đồng bộ dữ liệu sang AGRIPASSPORT khi cần công khai sản phẩm và truy xuất QR.
                   </p>
 
@@ -370,10 +370,10 @@ export default async function HomePage() {
                     <span className="inline-flex min-h-10 items-center rounded-full bg-[#0d6f80] px-4 text-sm font-semibold text-white shadow-sm">
                       {featuredCooperatives.length} HTX đang hiển thị
                     </span>
-                    <span className="inline-flex min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm">
+                    <span className="hidden min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm sm:inline-flex">
                       {featuredProducts.length}+ sản phẩm đồng bộ
                     </span>
-                    <span className="inline-flex min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm">
+                    <span className="hidden min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm sm:inline-flex">
                       Hotline {siteProfile.hotlineDisplay}
                     </span>
                   </div>
