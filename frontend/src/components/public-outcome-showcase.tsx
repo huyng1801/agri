@@ -38,49 +38,42 @@ export function PublicOutcomeShowcase({
 
   return (
     <div className={cn('mt-8', className)}>
-      <div className="relative overflow-hidden rounded-[2.2rem] border border-[#e2eadc] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf7_100%)] p-3 shadow-[0_22px_48px_rgba(15,23,42,0.08)] sm:p-4">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-90"
-          style={{
-            background:
-              'radial-gradient(circle at 18% 20%, rgba(31,155,75,0.08), transparent 18%), radial-gradient(circle at 84% 24%, rgba(13,111,128,0.08), transparent 18%), radial-gradient(circle at 50% 100%, rgba(15,23,42,0.03), transparent 26%)'
-          }}
-        />
+      <div className="relative mx-auto max-w-[72rem] px-12 sm:px-16 lg:px-24">
+        <button
+          type="button"
+          aria-label="Lợi ích trước"
+          className="absolute left-0 top-[8.8rem] grid h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233] sm:top-[10.8rem] sm:h-14 sm:w-14"
+          onClick={() => setIndex((value) => value - 1)}
+        >
+          <ArrowLeft size={28} aria-hidden="true" />
+        </button>
 
-        <div className="relative rounded-[1.8rem] border border-white/80 bg-white/88 px-3 py-8 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:px-8 sm:py-10">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 sm:gap-6">
-            <button
-              type="button"
-              aria-label="Lợi ích trước"
-              className="grid h-14 w-14 place-items-center rounded-[1.15rem] border border-[#dfe7dd] bg-[#f4f5f2] text-slate-500 shadow-sm transition hover:border-[#c8d9ca] hover:text-[#1f9b4b]"
-              onClick={() => setIndex((value) => value - 1)}
-            >
-              <ArrowLeft size={28} aria-hidden="true" />
-            </button>
+        <button
+          type="button"
+          aria-label="Lợi ích tiếp theo"
+          className="absolute right-0 top-[8.8rem] grid h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233] sm:top-[10.8rem] sm:h-14 sm:w-14"
+          onClick={() => setIndex((value) => value + 1)}
+        >
+          <ArrowRight size={28} aria-hidden="true" />
+        </button>
 
-            <div className="min-w-0 text-center">
-              <span className="mx-auto grid h-28 w-28 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_18px_34px_rgba(15,23,42,0.05)] sm:h-36 sm:w-36">
-                <Icon size={56} strokeWidth={1.6} aria-hidden="true" className="sm:hidden" />
-                <Icon size={74} strokeWidth={1.6} aria-hidden="true" className="hidden sm:block" />
-              </span>
-              <p className="mt-6 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233]">{active.title}</p>
-              <p className="mt-2 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#24283a] sm:text-[3.2rem]">{active.value}</p>
-              <p className="mx-auto mt-4 max-w-2xl text-[0.96rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{active.description}</p>
-              {active.note ? <p className="mt-4 text-sm font-semibold text-[#1f9b4b] sm:text-[0.98rem]">{active.note}</p> : null}
-            </div>
+        <div className="relative text-center">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-[12%] top-10 h-32 rounded-full bg-[radial-gradient(circle,rgba(31,155,75,0.1),transparent_72%)] blur-3xl sm:inset-x-[18%] sm:top-16 sm:h-44"
+          />
 
-            <button
-              type="button"
-              aria-label="Lợi ích tiếp theo"
-              className="grid h-14 w-14 place-items-center rounded-[1.15rem] border border-[#dfe7dd] bg-[#f4f5f2] text-slate-500 shadow-sm transition hover:border-[#c8d9ca] hover:text-[#1f9b4b]"
-              onClick={() => setIndex((value) => value + 1)}
-            >
-              <ArrowRight size={28} aria-hidden="true" />
-            </button>
+          <div className="relative mx-auto flex h-[10.5rem] max-w-3xl items-center justify-center text-[#4d9259] sm:h-[13.5rem]">
+            <Icon size={118} strokeWidth={1.35} aria-hidden="true" className="sm:hidden" />
+            <Icon size={184} strokeWidth={1.3} aria-hidden="true" className="hidden sm:block" />
           </div>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+          <p className="text-[0.78rem] font-semibold uppercase tracking-[0.24em] text-[#1f2233]">{active.title}</p>
+          <p className="mt-3 text-[2rem] font-extrabold leading-[1.06] tracking-[-0.05em] text-[#1f9b4b] sm:text-[3.05rem]">{active.value}</p>
+          <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.08rem] sm:leading-8">{active.description}</p>
+          {active.note ? <p className="mx-auto mt-4 max-w-2xl text-sm font-semibold leading-6 text-[#2b8a3e] sm:text-base">{active.note}</p> : null}
+
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-2">
             {items.map((item, itemIndex) => (
               <button
                 key={`${item.title}-${item.value}`}
