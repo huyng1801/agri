@@ -116,7 +116,7 @@ export default async function HomePage() {
     description: heroSignals[index] ?? '',
     icon
   }));
-  const featureCards = isInternal
+  const featureCards: Array<[string, string, LucideIcon]> = isInternal
     ? [
         ['Hồ sơ thành viên', 'Lưu trữ tập trung thông tin xã viên, trạng thái tham gia và lịch sử sử dụng dịch vụ quan trọng.', Users],
         ['Thu chi - xuất nhập', 'Theo dõi khoản thu chi, biến động nhập xuất và tình hình vận hành nội bộ của hợp tác xã.', Boxes],
@@ -298,61 +298,186 @@ export default async function HomePage() {
     </div>
   );
 
+  const internalHeroSection = (
+    <section className="border-b border-[#ece8dd] bg-white">
+      <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
+        <div className="overflow-hidden rounded-[2.1rem] border border-[#e1e8da] bg-white shadow-[0_24px_54px_rgba(15,23,42,0.08)]">
+          <div className="relative isolate overflow-hidden">
+            <PublicImage
+              src={siteProfile.pageContent.homeImageUrl}
+              alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+              wrapperClassName="aspect-[16/15] sm:aspect-[18/10] lg:aspect-[21/8]"
+              className="h-full w-full object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(248,250,245,0.97)_0%,rgba(248,250,245,0.9)_38%,rgba(248,250,245,0.56)_68%,rgba(16,31,26,0.16)_100%)]" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-90"
+              style={{
+                background:
+                  'radial-gradient(circle at 18% 16%, rgba(255,255,255,0.7), transparent 18%), radial-gradient(circle at 63% 44%, rgba(255,255,255,0.18), transparent 24%), radial-gradient(circle at 84% 12%, rgba(255,255,255,0.28), transparent 20%)'
+              }}
+            />
+
+            <div className="absolute inset-x-4 top-4 flex flex-wrap items-center justify-center gap-2 sm:top-5 lg:left-[19rem] lg:right-8 lg:justify-start">
+              <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0f7d63] shadow-sm backdrop-blur">
+                HTXONLINE
+              </span>
+              <span className="text-sm font-semibold uppercase tracking-[0.18em] text-[#3d5871]">x</span>
+              <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/82 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0d6f80] shadow-sm backdrop-blur">
+                AGRIPASSPORT
+              </span>
+            </div>
+
+            <div className="absolute inset-0 flex items-center px-4 py-8 sm:px-6 lg:px-8">
+              <div className="w-full">
+                <div className="mx-auto max-w-[28rem] text-center lg:mx-0 lg:ml-[18rem] lg:max-w-[36rem] lg:text-left xl:ml-[19rem] xl:max-w-[40rem]">
+                  <p className="text-[0.74rem] font-semibold uppercase tracking-[0.22em] text-[#0f7d63]">Hệ sinh thái vận hành số</p>
+                  <h1 className="mt-3 text-[2.35rem] font-extrabold leading-[0.92] tracking-[-0.05em] text-[#0d6f80] sm:text-[3.15rem] lg:text-[4rem]">
+                    Cùng hợp tác xã kiến tạo vận hành số bền vững
+                  </h1>
+                  <p className="mt-4 text-[1rem] leading-7 text-[#31556d] sm:text-[1.07rem] sm:leading-8">
+                    Tập trung quản trị thành viên, dịch vụ, thu chi, xuất nhập rồi đồng bộ dữ liệu sang AGRIPASSPORT khi cần công khai sản phẩm và truy xuất QR.
+                  </p>
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row lg:justify-start">
+                    <Link
+                      href={primaryCta.href}
+                      className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+                    >
+                      {primaryCta.label}
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </Link>
+                    {secondaryCta.external ? (
+                      <a
+                        href={secondaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                      >
+                        {secondaryCta.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={secondaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                      >
+                        {secondaryCta.label}
+                      </Link>
+                    )}
+                  </div>
+
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm text-[#0f7d63] lg:justify-start">
+                    <span className="inline-flex min-h-10 items-center rounded-full bg-[#0d6f80] px-4 text-sm font-semibold text-white shadow-sm">
+                      {featuredCooperatives.length} HTX đang hiển thị
+                    </span>
+                    <span className="inline-flex min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm">
+                      {featuredProducts.length}+ sản phẩm đồng bộ
+                    </span>
+                    <span className="inline-flex min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/84 px-4 font-semibold text-[#31556d] shadow-sm">
+                      Hotline {siteProfile.hotlineDisplay}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute bottom-5 left-5 hidden w-[15rem] overflow-hidden rounded-[2rem] border border-white/70 bg-[rgba(255,255,255,0.92)] shadow-[0_18px_40px_rgba(15,23,42,0.12)] backdrop-blur lg:block">
+              <div className="border-b border-[#e6eadf] bg-[#132031] px-4 py-3 text-white">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">Bảng điều phối</p>
+                <p className="mt-1 text-sm font-bold">Luồng quản trị nội bộ</p>
+              </div>
+              <div className="grid gap-3 p-4">
+                {heroSignals.map((signal, index) => (
+                  <div key={signal} className="rounded-[1.25rem] border border-[#e5eadf] bg-[#f8fbf6] p-3">
+                    <p className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Bước 0{index + 1}</p>
+                    <p className="mt-2 text-sm leading-6 text-[#334155]">{signal}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="absolute bottom-5 right-5 hidden w-[13rem] rounded-[1.8rem] border border-white/70 bg-[rgba(255,255,255,0.9)] p-4 text-[#1f2233] shadow-[0_18px_40px_rgba(15,23,42,0.12)] backdrop-blur xl:block">
+              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">03 lớp nền tảng</p>
+              <p className="mt-2 text-[1.8rem] font-extrabold leading-tight text-[#1f9b4b]">1 nguồn dữ liệu</p>
+              <p className="mt-3 text-sm leading-6 text-slate-600">{heroNote}</p>
+            </div>
+          </div>
+
+          <div className="grid gap-3 border-t border-[#e6eadf] bg-white px-4 py-4 sm:grid-cols-3 sm:px-6 lg:px-8">
+            {featureCards.map(([title, text, Icon]) => (
+              <article key={title} className="rounded-[1.5rem] border border-[#e5eadf] bg-[#fbfcf9] p-4 shadow-[0_12px_24px_rgba(15,23,42,0.04)]">
+                <span className="grid h-11 w-11 place-items-center rounded-full bg-[#eef7ee] text-[#1f9b4b] shadow-sm">
+                  <Icon size={22} strokeWidth={1.8} aria-hidden="true" />
+                </span>
+                <h2 className="mt-3 text-base font-extrabold leading-tight text-[#1f2233]">{title}</h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+
   return (
     <PublicShell>
       <main id="main-content">
-        <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#eff6ee_0%,#ffffff_64%,#ffffff_100%)]">
-          <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
-            <div className="overflow-hidden rounded-[1.9rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)] sm:rounded-[2.15rem]">
-              <div className="relative isolate overflow-hidden border-b border-[#e5eadf]">
-                <PublicImage
-                  src={siteProfile.pageContent.homeImageUrl}
-                  alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                  wrapperClassName="aspect-[16/11] sm:aspect-[18/8] lg:aspect-[21/8]"
-                  className="h-full w-full object-cover"
-                  priority
-                />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(9,17,18,0.18)_100%)]" />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 opacity-80"
-                  style={{
-                    background:
-                      'radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)'
-                  }}
-                />
-                <div className="absolute inset-x-3 top-3 flex flex-wrap items-center gap-2 sm:inset-x-5 sm:top-5">
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e] shadow-sm backdrop-blur">
-                    {siteProfile.appName}
-                  </span>
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-[rgba(255,255,255,0.72)] px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
-                    Hệ sinh thái Agri
-                  </span>
-                </div>
-              </div>
-
-              <div className="border-b border-[#e5eadf] bg-white px-4 py-4 sm:px-6 lg:px-8 lg:py-5">{heroBannerPanel}</div>
-
-              <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                  <Leaf size={15} aria-hidden="true" className="text-[#1f9b4b]" />
-                  {siteProfile.pageContent.homeBadge}
-                </div>
-                <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
-                  {heroLeadTitle}
-                </h1>
-                <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
-                  {heroLeadDescription}
-                </p>
-                {!isInternal ? (
-                  <div className="mx-auto mt-6 max-w-2xl rounded-[1.8rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
-                    <PublicSearch placeholder={heroSearchPlaceholder} />
+        {isInternal ? (
+          internalHeroSection
+        ) : (
+          <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#eff6ee_0%,#ffffff_64%,#ffffff_100%)]">
+            <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
+              <div className="overflow-hidden rounded-[1.9rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)] sm:rounded-[2.15rem]">
+                <div className="relative isolate overflow-hidden border-b border-[#e5eadf]">
+                  <PublicImage
+                    src={siteProfile.pageContent.homeImageUrl}
+                    alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
+                    wrapperClassName="aspect-[16/11] sm:aspect-[18/8] lg:aspect-[21/8]"
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(9,17,18,0.18)_100%)]" />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-80"
+                    style={{
+                      background:
+                        'radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)'
+                    }}
+                  />
+                  <div className="absolute inset-x-3 top-3 flex flex-wrap items-center gap-2 sm:inset-x-5 sm:top-5">
+                    <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e] shadow-sm backdrop-blur">
+                      {siteProfile.appName}
+                    </span>
+                    <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-[rgba(255,255,255,0.72)] px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
+                      Hệ sinh thái Agri
+                    </span>
                   </div>
-                ) : null}
+                </div>
+
+                <div className="border-b border-[#e5eadf] bg-white px-4 py-4 sm:px-6 lg:px-8 lg:py-5">{heroBannerPanel}</div>
+
+                <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                    <Leaf size={15} aria-hidden="true" className="text-[#1f9b4b]" />
+                    {siteProfile.pageContent.homeBadge}
+                  </div>
+                  <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
+                    {heroLeadTitle}
+                  </h1>
+                  <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
+                    {heroLeadDescription}
+                  </p>
+                  {!isInternal ? (
+                    <div className="mx-auto mt-6 max-w-2xl rounded-[1.8rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                      <PublicSearch placeholder={heroSearchPlaceholder} />
+                    </div>
+                  ) : null}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <PublicSection>
           <div className="mx-auto max-w-5xl text-center">
@@ -364,21 +489,44 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
-            {outcomeTiles.map((tile) => {
-              const Icon = tile.icon;
-              return (
-                <article key={`${tile.title}-${tile.value}`} className="text-center">
-                  <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                    <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
-                  </span>
-                  <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">{tile.value}</p>
-                  <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">{tile.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{tile.description}</p>
-                </article>
-              );
-            })}
-          </div>
+          {isInternal ? (
+            <div className="-mx-4 mt-8 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex gap-4 lg:grid lg:grid-cols-3 lg:gap-5 xl:grid-cols-3">
+                {outcomeTiles.map((tile) => {
+                  const Icon = tile.icon;
+                  return (
+                    <article
+                      key={`${tile.title}-${tile.value}`}
+                      className="min-w-[17rem] rounded-[2rem] border border-[#e2e9dc] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] p-5 text-center shadow-[0_18px_40px_rgba(15,23,42,0.06)] lg:min-w-0"
+                    >
+                      <span className="mx-auto grid h-24 w-24 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
+                        <Icon size={44} strokeWidth={1.7} aria-hidden="true" />
+                      </span>
+                      <p className="mt-5 text-[1.35rem] font-extrabold leading-tight text-[#1f9b4b]">{tile.value}</p>
+                      <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">{tile.title}</p>
+                      <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
+              {outcomeTiles.map((tile) => {
+                const Icon = tile.icon;
+                return (
+                  <article key={`${tile.title}-${tile.value}`} className="text-center">
+                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                      <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
+                    </span>
+                    <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">{tile.value}</p>
+                    <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">{tile.title}</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">{tile.description}</p>
+                  </article>
+                );
+              })}
+            </div>
+          )}
         </PublicSection>
 
         <PublicSection band>
