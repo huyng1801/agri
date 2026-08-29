@@ -106,57 +106,69 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col bg-white transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
-      <Link href={`/san-pham/${product.slug}`} className="relative block overflow-hidden">
-        <PublicImage
-          src={product.thumbnail?.publicUrl}
-          alt={product.name}
-          fallback={DEFAULT_PRODUCT_IMAGE}
-          testId="product-card-image"
-          priority={priority}
-          wrapperClassName="aspect-[4/3] w-full"
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-        />
-        {hasQr && (
-          <span className="absolute left-3 top-3 z-[2] inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#1f2233] shadow-sm">
-            <QrCode size={12} aria-hidden="true" />
-            Có QR
+    <article className="group flex h-full flex-col rounded-[2rem] border border-[#dce9d7] bg-white p-3 shadow-[0_18px_40px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_52px_rgba(15,23,42,0.08)] sm:p-4">
+      <div className="rounded-[1.7rem] border border-[#2b8a3e]/90 bg-[linear-gradient(180deg,#ffffff_0%,#f8fcf6_100%)] p-3 sm:p-4">
+        <div className="flex items-center justify-between gap-2">
+          <span className="inline-flex min-h-8 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-white">
+            {product.category?.name ?? 'Nông sản'}
           </span>
-        )}
-      </Link>
-
-      <div className="flex flex-1 flex-col p-3 sm:p-3.5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-[#2b8a3e]">{product.category?.name ?? 'Nông sản'}</p>
-        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 py-1 line-clamp-2 text-[1rem] font-extrabold leading-[1.25] text-ink hover:text-leaf sm:text-[1.05rem]">
-          {product.name}
-        </Link>
-
-        <div className="mt-2 rounded-[1.15rem] border border-[#e8e4d8] bg-[#f8fbf7] px-3 py-2.5 sm:mt-2.5">
-          <p className="text-[1.22rem] font-extrabold leading-none text-ink sm:text-xl">{formatPrice(product.price)}</p>
-          <p className="text-xs text-slate-500">/{product.unit}</p>
+          {hasQr ? (
+            <span className="inline-flex min-h-8 items-center gap-1 rounded-full border border-[#dbe9d9] bg-white px-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#1f2233]">
+              <QrCode size={12} aria-hidden="true" />
+              Có QR
+            </span>
+          ) : null}
         </div>
 
-        {product.cooperative && (
-          <Link
-            href={`/htx/${product.cooperative.code}`}
-            className="mt-2 flex items-center gap-2 rounded-[1.15rem] border border-[#e8e4d8] bg-white p-2 transition hover:bg-[#f8fbf7] sm:mt-2.5 sm:p-2.5"
-          >
-            <PublicImage
-              src={product.cooperative.avatarUrl}
-              alt={product.cooperative.name}
-              fallback={defaultCooperativeAvatar}
-              decorative
-              wrapperClassName="h-9 w-9 shrink-0 rounded-lg"
-              className="h-full w-full object-cover"
-            />
-            <span className="min-w-0 flex-1">
-              <span className="block truncate text-xs font-bold text-ink">{product.cooperative.name}</span>
-              <span className="block truncate text-[11px] text-slate-500">{product.cooperative.province || 'HTX địa phương'}</span>
-            </span>
-          </Link>
-        )}
+        <Link href={`/san-pham/${product.slug}`} className="mt-3 block overflow-hidden rounded-[1.45rem] bg-white ring-1 ring-[#edf3e8]">
+          <PublicImage
+            src={product.thumbnail?.publicUrl}
+            alt={product.name}
+            fallback={DEFAULT_PRODUCT_IMAGE}
+            testId="product-card-image"
+            priority={priority}
+            wrapperClassName="aspect-[1.02/1] w-full bg-[linear-gradient(180deg,#ffffff_0%,#fbfdf9_100%)]"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          />
+        </Link>
 
-        <AddToCartButton product={product} className="mt-auto min-h-11 w-full pt-2 sm:pt-2.5" />
+        <div className="mt-4 text-center">
+          <Link href={`/san-pham/${product.slug}`} className="block min-h-11 line-clamp-2 text-[1.25rem] font-extrabold leading-[1.15] text-[#1b251f] transition hover:text-leaf sm:text-[1.35rem]">
+            {product.name}
+          </Link>
+          <p className="mt-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
+            {product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-1 flex-col">
+        <div className="rounded-[1.25rem] border border-[#e5ebdf] bg-[#f8fbf7] px-4 py-3">
+          <div className="flex items-end justify-between gap-3">
+            <div>
+              <p className="text-[1.42rem] font-extrabold leading-none text-[#17211b] sm:text-[1.6rem]">{formatPrice(product.price)}</p>
+              <p className="mt-1 text-sm text-slate-500">/{product.unit}</p>
+            </div>
+            {product.cooperative ? (
+              <Link
+                href={`/htx/${product.cooperative.code}`}
+                className="inline-flex items-center gap-2 rounded-full border border-[#dbe6d7] bg-white px-3 py-2 text-xs font-semibold text-[#1f2233] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+              >
+                <PublicImage
+                  src={product.cooperative.avatarUrl}
+                  alt={product.cooperative.name}
+                  fallback={defaultCooperativeAvatar}
+                  decorative
+                  wrapperClassName="h-7 w-7 shrink-0 rounded-full"
+                  className="h-full w-full rounded-full object-cover"
+                />
+                <span className="max-w-[9rem] truncate">{product.cooperative.name}</span>
+              </Link>
+            ) : null}
+          </div>
+        </div>
+
+        <AddToCartButton product={product} className="mt-auto min-h-[3.35rem] w-full rounded-full pt-3 text-base font-bold" />
       </div>
     </article>
   );

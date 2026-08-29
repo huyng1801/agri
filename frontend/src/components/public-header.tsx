@@ -10,6 +10,7 @@ import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 
 const marketplaceNavItems = [
+  { href: '/', label: 'Trang chủ' },
   { href: '/ve-chung-toi', label: 'Về chúng tôi' },
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'HTX' },
@@ -18,6 +19,7 @@ const marketplaceNavItems = [
 ] as const;
 
 const internalNavItems = [
+  { href: '/', label: 'Trang chủ' },
   { href: '/ve-chung-toi', label: 'Về hệ thống' },
   { href: '/gioi-thieu', label: 'Vai trò nền tảng' },
   { href: '/tin-tuc', label: 'Tin tức' },
@@ -54,7 +56,7 @@ export function PublicHeader({
       : siteKey === 'passport'
         ? 'Tìm sản phẩm có QR, vùng trồng'
         : 'Tìm sản phẩm, hợp tác xã, vùng trồng';
-  const searchLabel = siteKey === 'htxonline' ? 'Xem tính năng' : 'Khám phá';
+  const searchLabel = 'Tìm kiếm';
 
   useEffect(() => {
     setMenuOpen(false);
@@ -74,7 +76,7 @@ export function PublicHeader({
       </div>
 
       <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-        <div className="flex min-h-[76px] items-center gap-3 py-3">
+        <div className="flex min-h-[76px] items-center gap-3 py-3 md:hidden">
           <button
             type="button"
             className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-[#dce9dc] bg-white text-[#1f9b4b] shadow-sm md:hidden"
@@ -150,7 +152,53 @@ export function PublicHeader({
           </div>
         </div>
 
-        <nav className="hidden border-t border-[#ece8dd] py-3 md:flex md:flex-wrap md:items-center md:justify-center md:gap-2" aria-label="Menu chính">
+        <div className="hidden min-h-[84px] items-center gap-6 py-4 md:flex">
+          <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#22253a] ring-1 ring-[#d8ddd3]">
+              <PublicLogo size={34} className="h-[34px] w-[34px]" />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                {siteKey === 'htxonline' ? 'Nền tảng HTX' : siteKey === 'passport' ? 'QR truy xuất' : 'Hệ sinh thái Agri'}
+              </span>
+              <span className="block truncate text-[1rem] font-extrabold tracking-[-0.03em] text-[#1f2233]">{appName}</span>
+            </span>
+          </Link>
+
+          <form action={searchTarget} className="flex flex-1 justify-center">
+            <div className="flex w-full max-w-[35rem] items-center rounded-full border border-[#e1e7dd] bg-white px-4 shadow-sm">
+              <Search className="shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
+              <input
+                type="search"
+                name="search"
+                placeholder={searchPlaceholder}
+                className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[#1f2233] outline-none placeholder:text-slate-400"
+              />
+              <span className="h-5 w-px bg-[#e6eadf]" aria-hidden="true" />
+              <button type="submit" className="inline-flex h-11 shrink-0 items-center px-4 text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
+                {searchLabel}
+              </button>
+            </div>
+          </form>
+
+          <div className="ml-auto flex items-center gap-4">
+            <Link href="/login" className="text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
+              Đăng nhập
+            </Link>
+            {showCart ? (
+              <Link href="/gio-hang" aria-label="Giỏ hàng" className="relative grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
+                <ShoppingCart size={20} aria-hidden="true" />
+                <CartCountBadge />
+              </Link>
+            ) : (
+              <Link href="/gioi-thieu" aria-label="Vai trò nền tảng" className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
+                <Briefcase size={18} aria-hidden="true" />
+              </Link>
+            )}
+          </div>
+        </div>
+
+        <nav className="hidden border-t border-[#ece8dd] py-3 md:flex md:flex-wrap md:items-center md:justify-center md:gap-4" aria-label="Menu chính">
           {navItems.map((item) => {
             const active = isNavActive(pathname, item.href);
             return (
@@ -158,8 +206,10 @@ export function PublicHeader({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'inline-flex min-h-11 items-center rounded-full px-4 py-2 text-sm font-semibold transition',
-                  active ? 'bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]' : 'text-slate-700 hover:bg-[#f4f8f1] hover:text-[#1f9b4b]'
+                  'inline-flex min-h-11 items-center rounded-full px-2 py-2 text-[0.98rem] font-medium transition',
+                  active
+                    ? 'bg-[#43ad56] px-5 text-white shadow-[0_0_0_4px_rgba(67,173,86,0.16)]'
+                    : 'text-[#2f7d4f] hover:text-[#1f9b4b]'
                 )}
                 aria-current={active ? 'page' : undefined}
               >
