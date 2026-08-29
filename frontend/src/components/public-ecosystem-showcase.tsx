@@ -13,7 +13,7 @@ type EcosystemCard = {
   signal: string;
 };
 
-const ecosystemCards: EcosystemCard[] = [
+export const ecosystemCards: EcosystemCard[] = [
   {
     key: 'htxonline',
     name: 'HTXONLINE',

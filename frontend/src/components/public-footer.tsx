@@ -5,6 +5,7 @@ import type { PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
+import { ecosystemCards } from './public-ecosystem-showcase';
 
 const footerLinkClass = 'inline-flex min-h-11 items-center text-sm font-medium text-slate-600 transition hover:text-[#1f9b4b]';
 
@@ -15,11 +16,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const showMapPreview = Boolean(profile.address.trim());
   const isInternal = siteKey === 'htxonline';
   const isPassport = siteKey === 'passport';
-  const footerHeadline = isInternal
-    ? 'Chuẩn hóa vận hành nội bộ của hợp tác xã bằng một hệ thống số rõ ràng và dễ đối soát.'
-    : isPassport
-      ? 'Mở QR để xem hồ sơ số, nguồn gốc và thông tin công khai của sản phẩm nhanh hơn.'
-      : 'Đưa dữ liệu sản phẩm nông nghiệp lên một nền tảng thống nhất, rõ ràng và dễ kết nối tiêu thụ.';
   const brandTagline = isInternal
     ? 'Nền tảng quản trị nội bộ cho hợp tác xã'
     : isPassport
@@ -64,16 +60,22 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         { href: '/huong-dan-mua-hang', label: 'Hướng dẫn' },
         { href: '/tra-cuu-don-hang', label: 'Tra cứu đơn hàng' }
       ];
+  const policyLinks = [
+    { href: '/dieu-khoan-su-dung', label: 'Điều khoản sử dụng' },
+    { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
+    { href: '/chinh-sach-doi-tra', label: 'Chính sách đổi trả' },
+    { href: '/chinh-sach-van-hanh', label: 'Chính sách vận hành' }
+  ];
   const supportNote = isInternal
     ? 'Nếu cần hỗ trợ quản trị, phân quyền hoặc đồng bộ dữ liệu giữa các lớp hệ thống, hãy liên hệ hotline hoặc email.'
     : isPassport
       ? 'Nếu quét QR không ra hồ sơ hoặc thông tin truy xuất chưa đúng, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.'
       : 'Nếu tra cứu QR hoặc đơn hàng gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.';
   const mapHint = isInternal
-    ? 'Xem nhanh vị trí hỗ trợ triển khai, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.'
+    ? 'Xem nhanh vị trí hỗ trợ triển khai và mở Google Maps khi cần lấy chỉ đường rõ hơn.'
     : isPassport
-      ? 'Xem nhanh vị trí hỗ trợ hồ sơ số, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.'
-      : 'Xem nhanh vị trí hỗ trợ nền tảng, đồng thời mở Google Maps hoặc vào trang liên hệ để lấy chỉ đường rõ hơn.';
+      ? 'Xem nhanh vị trí hỗ trợ hồ sơ số và mở Google Maps khi cần lấy chỉ đường rõ hơn.'
+      : 'Xem nhanh vị trí hỗ trợ nền tảng và mở Google Maps khi cần lấy chỉ đường rõ hơn.';
   const emptyMapText = isInternal
     ? 'Liên hệ HTXONLINE để được hỗ trợ tư vấn triển khai và vận hành nội bộ phù hợp.'
     : isPassport
@@ -91,45 +93,44 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       : 'Liên hệ hotline hoặc email để được đội vận hành AGRIPASSPORT hỗ trợ nhanh.';
 
   return (
-    <footer className="mt-10 pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">
+    <footer className="mt-10 border-t border-[#e6ece0] bg-[linear-gradient(180deg,#ffffff_0%,#f7faf5_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">
       <div className={publicContainerClass}>
-        <div className="overflow-hidden rounded-[2.2rem] border border-[#e8e4d8] bg-[#fbfaf6] shadow-[0_28px_64px_rgba(15,23,42,0.08)]">
-          <div className="grid gap-4 border-b border-[#1f9b4b]/12 bg-[linear-gradient(135deg,#1d8f44_0%,#25a34d_58%,#31b35b_100%)] px-4 py-5 text-white sm:px-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-6 lg:py-6">
+        <div className="py-10 sm:py-12">
+          <div className="grid gap-8 border-b border-[#e4eadf] pb-8 lg:grid-cols-[1.12fr_0.72fr_0.78fr_1fr]">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[rgba(255,255,255,0.72)]">{profile.appName}</p>
-              <h2 className="mt-2 text-[1.55rem] font-bold leading-tight tracking-normal sm:text-2xl">{footerHeadline}</h2>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-              <a
-                href={telHref(profile.hotline)}
-                className="inline-flex min-h-12 items-center justify-center rounded-[1.1rem] bg-white px-5 text-sm font-bold text-leaf shadow-[0_16px_30px_rgba(15,23,42,0.12)] transition hover:-translate-y-0.5"
-              >
-                Gọi hotline
-              </a>
-              <Link
-                href="/lien-he"
-                className="inline-flex min-h-12 items-center justify-center rounded-[1.1rem] border border-white/25 bg-white/10 px-5 text-sm font-bold text-white transition hover:bg-white/16"
-              >
-                Nhận tư vấn
-              </Link>
-            </div>
-          </div>
-
-          <div className="grid gap-4 px-4 py-8 sm:grid-cols-2 sm:px-5 xl:grid-cols-4 xl:px-6">
-            <div className="rounded-[1.75rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:col-span-2 xl:col-span-1">
-              <div className="flex items-center gap-2 text-xl font-bold">
-                <PublicLogo size={40} className="ring-2 ring-[#e1eadc]" />
-                {profile.appName}
+              <div className="flex items-center gap-3 text-xl font-extrabold text-[#1f2233]">
+                <span className="grid h-14 w-14 place-items-center rounded-full border border-[#dce7d9] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                  <PublicLogo size={40} />
+                </span>
+                <div>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">{brandTagline}</p>
+                  <p className="mt-1 text-[1.15rem] font-extrabold tracking-[-0.03em]">{profile.appName}</p>
+                </div>
               </div>
-              <p className="mt-3 text-sm font-bold uppercase tracking-wide text-[#2b8a3e]">{brandTagline}</p>
-              <p className="mt-3 max-w-sm text-sm leading-6 text-slate-600">
-                {brandDescription}
-              </p>
+
+              <p className="mt-4 max-w-md text-sm leading-7 text-slate-600">{brandDescription}</p>
+
+              <div className="mt-5 grid gap-3 text-sm text-slate-700">
+                <p className="flex items-start gap-2">
+                  <MapPin size={18} className="mt-0.5 shrink-0 text-[#1f9b4b]" aria-hidden="true" />
+                  <span>{profile.address}</span>
+                </p>
+                <a href={telHref(profile.hotline)} className="flex min-h-11 items-center gap-2 transition hover:text-[#1f9b4b]">
+                  <Phone size={18} className="text-[#1f9b4b]" aria-hidden="true" />
+                  <span>{profile.hotlineDisplay}</span>
+                </a>
+                <a href={`mailto:${profile.supportEmail}`} className="flex min-h-11 items-center gap-2 transition hover:text-[#1f9b4b]">
+                  <Mail size={18} className="text-[#1f9b4b]" aria-hidden="true" />
+                  <span>{profile.supportEmail}</span>
+                </a>
+              </div>
+
+              <p className="mt-4 rounded-[1.4rem] bg-[#f4faf2] px-4 py-3 text-sm leading-6 text-slate-600 ring-1 ring-[#dce8da]">{supportNote}</p>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-              <p className="text-sm font-bold uppercase tracking-wide text-[#1f2233]">{serviceTitle}</p>
-              <div className="mt-4 grid gap-2">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">{serviceTitle}</p>
+              <div className="mt-4 grid gap-1">
                 {serviceLinks.map((item) => (
                   <Link key={item.href} href={item.href} className={footerLinkClass}>
                     {item.label}
@@ -138,10 +139,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-              <p className="text-sm font-bold uppercase tracking-wide text-[#1f2233]">Giải pháp và quy trình</p>
-              <div className="mt-4 grid gap-2">
-                {processLinks.map((item) => (
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">Quy trình và chính sách</p>
+              <div className="mt-4 grid gap-1">
+                {[...processLinks, ...policyLinks].map((item) => (
                   <Link key={item.href} href={item.href} className={footerLinkClass}>
                     {item.label}
                   </Link>
@@ -149,107 +150,81 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </div>
             </div>
 
-            <div className="rounded-[1.75rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-              <p className="text-sm font-bold uppercase tracking-wide text-[#1f2233]">Hỗ trợ khách hàng</p>
-              <div className="mt-4 grid gap-2">
-                <Link href="/dieu-khoan-su-dung" className={footerLinkClass}>Điều khoản sử dụng</Link>
-                <Link href="/chinh-sach-bao-mat" className={footerLinkClass}>Chính sách bảo mật</Link>
-                <Link href="/chinh-sach-doi-tra" className={footerLinkClass}>Chính sách đổi trả</Link>
-                <Link href="/chinh-sach-van-hanh" className={footerLinkClass}>Chính sách vận hành</Link>
+            <div className="rounded-[1.7rem] border border-[#e2e9dc] bg-white/80 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Điểm hỗ trợ</p>
+                  <p className="mt-1 text-sm font-semibold text-[#1f2233]">Bản đồ và liên hệ nhanh</p>
+                </div>
+                <a
+                  href={mapSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#dce7d9] bg-white px-4 text-xs font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+                >
+                  Google Maps
+                </a>
               </div>
+
+              <p className="mt-3 text-sm leading-6 text-slate-600">{showMapPreview ? mapHint : emptyMapText}</p>
+
+              {showMapPreview ? (
+                <div className="mt-4 overflow-hidden rounded-[1.5rem] border border-[#dbe7d9] bg-[#eef5ee] p-2">
+                  <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} compact />
+                </div>
+              ) : (
+                <Link
+                  href="/lien-he"
+                  className="mt-4 inline-flex min-h-11 items-center justify-center rounded-full border border-[#dce7d9] bg-[#f6fbf3] px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                >
+                  Xem thông tin liên hệ
+                </Link>
+              )}
             </div>
           </div>
 
-          <div className="border-t border-[#ebe6da] bg-[rgba(255,255,255,0.55)] px-4 py-8 sm:px-5 lg:px-6">
-            <div className="grid gap-6 lg:grid-cols-[1.08fr_1fr_0.82fr]">
-              <div className="space-y-4 rounded-[1.8rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-                <p className="text-lg font-bold text-[#1f2233]">{profile.appName}</p>
-                <div className="grid gap-3 text-sm text-slate-700">
-                  <p className="flex items-start gap-2">
-                    <MapPin size={18} className="mt-0.5 shrink-0 text-[#1f9b4b]" aria-hidden="true" />
-                    <span>{profile.address}</span>
-                  </p>
-                  <a href={telHref(profile.hotline)} className="flex min-h-11 items-center gap-2 rounded-xl px-1 transition hover:text-[#1f9b4b]">
-                    <Phone size={18} className="text-[#1f9b4b]" aria-hidden="true" />
-                    <span>{profile.hotlineDisplay}</span>
-                  </a>
-                  <a href={`mailto:${profile.supportEmail}`} className="flex min-h-11 items-center gap-2 rounded-xl px-1 transition hover:text-[#1f9b4b]">
-                    <Mail size={18} className="text-[#1f9b4b]" aria-hidden="true" />
-                    <span>{profile.supportEmail}</span>
-                  </a>
-                </div>
-                <p className="rounded-2xl border border-[#e1eadc] bg-[#f6fbf3] px-3 py-2 text-sm leading-6 text-slate-600">
-                  {supportNote}
-                </p>
-              </div>
+          <div className="grid gap-3 border-b border-[#e4eadf] py-6 text-sm text-slate-600 lg:grid-cols-[1.18fr_0.82fr]">
+            <p className="leading-7">{transparencyText}</p>
+            <div className="flex flex-col gap-1 leading-7 lg:items-end lg:text-right">
+              <p>{operatorLine}</p>
+              <p>© {new Date().getFullYear()} {profile.appName}. Được thiết kế và vận hành bởi Agri Passport.</p>
+            </div>
+          </div>
 
-              {showMapPreview ? (
-                <div className="overflow-hidden rounded-[1.8rem] border border-[#e8e4d8] bg-[#f8fbf6] shadow-[0_18px_44px_rgba(15,23,42,0.08)]">
-                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e4eadf] px-4 py-3">
-                    <div>
-                      <p className="text-sm font-semibold text-[#1f2233]">Điểm hỗ trợ và bản đồ</p>
-                      <p className="mt-1 text-xs text-slate-500">
-                        {mapHint}
-                      </p>
+          <div className="py-6">
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">Hệ sinh thái giải pháp toàn diện</p>
+            <div className="mt-4 grid gap-3 lg:grid-cols-3">
+              {ecosystemCards.map((card) => {
+                const Icon = card.icon;
+                const isCurrent = siteKey === card.key;
+                return (
+                  <a
+                    key={card.key}
+                    href={card.href}
+                    className={`group relative overflow-hidden rounded-[1.55rem] px-4 py-4 text-white shadow-[0_18px_38px_rgba(15,23,42,0.1)] transition hover:-translate-y-0.5 ${isCurrent ? 'ring-2 ring-[#9fe2b1]/70' : ''}`}
+                  >
+                    <div className={`absolute inset-0 ${card.gradientClassName}`} />
+                    <div
+                      aria-hidden="true"
+                      className="absolute inset-0 opacity-80"
+                      style={{
+                        background:
+                          'radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)'
+                      }}
+                    />
+                    <div className="relative flex items-start gap-3">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full border border-white/16 bg-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)]">
+                        <Icon size={22} aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[rgba(255,255,255,0.72)]">{card.label}</span>
+                        <span className="mt-1 block text-[1rem] font-extrabold leading-tight">{card.name}</span>
+                        <span className="mt-1 block text-sm leading-6 text-[rgba(255,255,255,0.86)]">{isCurrent ? 'Đang là giao diện bạn đang xem' : card.signal}</span>
+                      </span>
                     </div>
-                    <a
-                      href={mapSearchUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#1f9b4b] px-3.5 text-xs font-semibold text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5"
-                    >
-                      Mở Google Maps
-                    </a>
-                  </div>
-
-                  <div className="px-4 pb-4 pt-4">
-                    <div className="overflow-hidden rounded-[1.65rem] border border-[#dfe9dc] bg-white p-3 shadow-[0_14px_28px_rgba(15,23,42,0.05)]">
-                      <div className="rounded-2xl border border-[#dce7d9] bg-[#eef6ef] px-4 py-3">
-                        <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Địa chỉ hỗ trợ</p>
-                        <p className="mt-1 text-base font-bold leading-7 text-[#1f2233]">{profile.address}</p>
-                      </div>
-                      <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} className="mt-3 border-[#dbe7d9] bg-[#eef5ee]" compact />
-                    </div>
-                  </div>
-
-                  <div className="grid gap-2 border-t border-[#e4eadf] px-4 py-3 sm:grid-cols-2">
-                    <a
-                      href={mapSearchUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-4 text-sm font-semibold text-leaf shadow-[0_12px_24px_rgba(15,23,42,0.06)] transition hover:-translate-y-0.5"
-                    >
-                      Mở trên Google Maps
-                    </a>
-                    <Link
-                      href="/lien-he"
-                      className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#d9e4d7] bg-[#f6fbf3] px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-                    >
-                      Xem trang liên hệ đầy đủ
-                    </Link>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex min-h-[12rem] flex-col items-center justify-center rounded-2xl border border-dashed border-[#d9e4d7] bg-white p-6 text-center text-sm text-slate-600">
-                  <MapPin size={28} className="mb-2 text-[#1f9b4b]" aria-hidden="true" />
-                  <p>{emptyMapText}</p>
-                  <Link href="/lien-he" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl border border-[#d9e4d7] bg-[#f6fbf3] px-4 font-semibold text-[#1f2233] underline-offset-2 hover:border-[#1f9b4b] hover:text-[#1f9b4b] hover:underline">
-                    Xem thông tin liên hệ
-                  </Link>
-                </div>
-              )}
-
-              <div className="flex flex-col justify-between gap-4 rounded-[1.8rem] border border-[#dce7d9] bg-[linear-gradient(180deg,#f6fbf4_0%,#edf7ef_100%)] p-5 text-sm text-slate-700 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
-                <div>
-                  <p className="font-semibold text-[#1f2233]">Cam kết minh bạch</p>
-                  <p className="mt-2 leading-6">
-                    {transparencyText}
-                  </p>
-                </div>
-                <p className="text-xs text-slate-500">© {new Date().getFullYear()} {profile.appName}.</p>
-                <p className="text-xs text-slate-500">Được thiết kế và vận hành bởi Agri Passport.</p>
-                <p className="text-xs text-slate-500">{operatorLine}</p>
-              </div>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>

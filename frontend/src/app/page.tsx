@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, Boxes, Leaf, QrCode, ShoppingBag, Store, Users, type LucideIcon } from 'lucide-react';
 import { ProductSlider } from '@/components/product-slider';
-import { CooperativeCard, EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-marketplace';
+import { EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-marketplace';
 import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
 import { PublicImage } from '@/components/public-image';
 import { PublicSection, publicCardClass, publicContainerClass } from '@/components/public-layout';
@@ -228,10 +228,10 @@ export default async function HomePage() {
     : isPassport
       ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.'
       : 'Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.';
-  const partnerTitle = isInternal ? 'HTX tiêu biểu trong hệ sinh thái' : 'Đối tác và HTX công khai';
+  const partnerTitle = isInternal ? 'Đối tác và HTX trong hệ sinh thái' : 'Đối tác công khai trong hệ sinh thái';
   const partnerDescription = isInternal
-    ? 'Thay cho một cụm logo khô, phần này dùng avatar HTX thật để người xem liên hệ ngay giữa hệ quản trị và lớp công khai.'
-    : 'Phần này đóng vai trò như một dải nhận diện đối tác và HTX đang hiển thị công khai trong hệ sinh thái.';
+    ? 'Chuyển từ cụm card nặng sang dải nhận diện gọn hơn, để phần giữa và cuối trang gần nhịp logo-strip của Demeter hơn.'
+    : 'Giữ cảm giác một dải nhận diện đối tác gọn, sáng và dễ quét hơn thay vì các card hồ sơ nặng thông tin.';
   const partnerItems = featuredCooperatives.length ? featuredCooperatives : catalog.cooperatives.slice(0, 6);
   const serviceAction = isInternal ? '/gioi-thieu' : '/san-pham';
   const outcomeTiles: OutcomeTile[] = isInternal
@@ -303,8 +303,8 @@ export default async function HomePage() {
       <main id="main-content">
         <section className="border-b border-[#ece8dd] bg-[linear-gradient(180deg,#eff6ee_0%,#ffffff_64%,#ffffff_100%)]">
           <div className={cn(publicContainerClass, 'py-4 sm:py-6 lg:py-8')}>
-            <div className="overflow-hidden rounded-[2.35rem] border border-[#e8e4d8] bg-white shadow-[0_30px_72px_rgba(15,23,42,0.08)]">
-              <div className="relative isolate overflow-hidden border-b border-[#ece8dd]">
+            <div className="overflow-hidden rounded-[1.9rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)] sm:rounded-[2.15rem]">
+              <div className="relative isolate overflow-hidden border-b border-[#e5eadf]">
                 <PublicImage
                   src={siteProfile.pageContent.homeImageUrl}
                   alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
@@ -329,10 +329,9 @@ export default async function HomePage() {
                     Hệ sinh thái Agri
                   </span>
                 </div>
-                <div className="absolute inset-x-6 bottom-6 hidden lg:block">{heroBannerPanel}</div>
               </div>
 
-              <div className="border-b border-[#ece8dd] bg-white px-4 py-4 lg:hidden">{heroBannerPanel}</div>
+              <div className="border-b border-[#e5eadf] bg-white px-4 py-4 sm:px-6 lg:px-8 lg:py-5">{heroBannerPanel}</div>
 
               <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
@@ -494,10 +493,30 @@ export default async function HomePage() {
           </div>
 
           {partnerItems.length ? (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {partnerItems.map((cooperative, index) => (
-                <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
-              ))}
+            <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+              <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
+                {partnerItems.map((cooperative, index) => (
+                  <Link
+                    key={cooperative.id}
+                    href={`/htx/${cooperative.code}`}
+                    className="group min-w-[12rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
+                  >
+                    <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                      <PublicImage
+                        src={cooperative.avatarUrl}
+                        alt={cooperative.name}
+                        decorative
+                        priority={index < 4}
+                        wrapperClassName="h-full w-full rounded-full"
+                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                      />
+                    </span>
+                    <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">{cooperative.name}</p>
+                    <p className="mt-1 text-xs font-medium text-slate-500">{cooperative.province || 'Việt Nam'}</p>
+                    <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">{cooperative.productCount} sản phẩm công khai</p>
+                  </Link>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="mt-6">
