@@ -86,7 +86,7 @@ export function PublicHeader({
           </button>
 
           <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#21253a] shadow-[0_14px_30px_rgba(33,37,58,0.16)] ring-1 ring-[#d7ddd2]">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#21253a] shadow-[0_8px_18px_rgba(33,37,58,0.12)] ring-1 ring-[#d7ddd2] md:shadow-[0_14px_30px_rgba(33,37,58,0.16)]">
               <PublicLogo size={38} className="h-[38px] w-[38px]" />
             </span>
             <span className="hidden min-w-0 sm:block">
