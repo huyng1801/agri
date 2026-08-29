@@ -169,7 +169,7 @@ export default async function HomePage() {
       ? 'Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số'
       : 'Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng';
   const sectionDescription = isInternal
-    ? 'Giữ vai trò đầu vào dữ liệu, nhưng giao diện public được kéo về nhịp sáng và card ngang như một landing page dịch vụ mobile-first.'
+    ? 'Các lớp giải pháp được trình bày theo nhịp card sáng, ngắn và dễ quét hơn để người xem hiểu vai trò từng nền tảng ngay từ lần chạm đầu.'
     : isPassport
       ? 'Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng.'
       : 'Theo hướng trình bày gần Demeter hơn: rõ khối chức năng, card lớn và hành trình công khai bám sát người dùng cuối.';
@@ -221,18 +221,18 @@ export default async function HomePage() {
         ? ['Sản phẩm có QR', 'Hồ sơ công khai', 'Vùng trồng minh bạch']
         : ['Nông sản nổi bật', 'Sản phẩm truy xuất', 'Đặt hàng công khai'];
   const productSectionTitle = isInternal
-    ? 'Khám phá các sản phẩm sau lớp quản trị'
+    ? 'Khám phá các sản phẩm'
     : isPassport
       ? 'Khám phá hồ sơ số và sản phẩm QR'
       : 'Khám phá các sản phẩm';
   const productSectionDescription = isInternal
-    ? 'Sau khi HTX quản trị dữ liệu nội bộ và xác định sản phẩm thực, các sản phẩm công khai sẽ hiển thị tại đây để tiếp cận thị trường.'
+    ? 'Khi HTX xác định được sản phẩm thực và đồng bộ ra lớp công khai, các sản phẩm sẽ hiển thị tại đây theo nhịp lướt nhanh như một app mobile.'
     : isPassport
       ? 'Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn.'
       : 'Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.';
-  const partnerTitle = isInternal ? 'Đối tác và HTX trong hệ sinh thái' : 'Đối tác công khai trong hệ sinh thái';
+  const partnerTitle = isInternal ? 'Đối tác' : 'Đối tác công khai trong hệ sinh thái';
   const partnerDescription = isInternal
-    ? 'Chuyển từ cụm card nặng sang dải nhận diện gọn hơn, để phần giữa và cuối trang gần nhịp logo-strip của Demeter hơn.'
+    ? 'Các HTX và đơn vị trong hệ sinh thái được đưa về một dải nhận diện gọn, sáng và dễ quét hơn thay vì card hồ sơ dày thông tin.'
     : 'Giữ cảm giác một dải nhận diện đối tác gọn, sáng và dễ quét hơn thay vì các card hồ sơ nặng thông tin.';
   const partnerItems = featuredCooperatives.length ? featuredCooperatives : catalog.cooperatives.slice(0, 6);
   const heroPreviewProducts = featuredProducts.slice(0, 3);
@@ -240,6 +240,41 @@ export default async function HomePage() {
   const internalHeroPreviewImage = siteProfile.pageContent.homeImageUrl;
   const internalHeroPreviewAlt = siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
   const serviceAction = isInternal ? '/gioi-thieu' : '/san-pham';
+  const internalServiceCards = [
+    {
+      key: 'htxonline',
+      eyebrow: 'Cho hợp tác xã',
+      title: 'HTXONLINE',
+      description: 'Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.',
+      href: '/',
+      cta: 'Quản trị nội bộ',
+      imageUrl: siteProfile.pageContent.aboutImageUrl,
+      imageAlt: siteProfile.pageContent.aboutImageAlt,
+      badge: 'Lớp điều phối nội bộ'
+    },
+    {
+      key: 'agripassport',
+      eyebrow: 'Cho sản phẩm & bán hàng',
+      title: 'AGRIPASSPORT',
+      description: 'Nền tảng trung tâm để chuẩn hóa tên HTX, sản phẩm nông nghiệp, mở kênh công khai, bán hàng và đồng bộ dữ liệu sang các lớp hiển thị khác.',
+      href: marketplaceUrl('/'),
+      cta: 'Sản phẩm công khai',
+      imageUrl: siteProfile.pageContent.introImageUrl,
+      imageAlt: siteProfile.pageContent.introImageAlt,
+      badge: 'Lớp dữ liệu công khai'
+    },
+    {
+      key: 'passport',
+      eyebrow: 'Cho truy xuất QR',
+      title: 'HỘ CHIẾU NÔNG NGHIỆP',
+      description: 'Tạo hồ sơ số và QR cho từng sản phẩm hoặc lô sản phẩm, giúp người mua truy xuất nguồn gốc, nhật ký canh tác và thông tin công khai rõ ràng.',
+      href: 'https://hochieunongnghiep.com/',
+      cta: 'QR truy xuất',
+      imageUrl: siteProfile.pageContent.contactImageUrl,
+      imageAlt: siteProfile.pageContent.contactImageAlt,
+      badge: 'Lớp minh bạch nguồn gốc'
+    }
+  ] as const;
   const internalOutcomeSlides: PublicOutcomeSlide[] = [
     {
       title: 'Hồ sơ xã viên',
@@ -628,28 +663,73 @@ export default async function HomePage() {
           </div>
 
           <div className="mt-6">
-            <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
+            {isInternal ? (
+              <div className="relative">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible">
+                  {internalServiceCards.map((card, index) => (
+                    <article
+                      key={card.key}
+                      className="w-[min(88vw,22rem)] shrink-0 snap-start rounded-[2rem] border border-[#e2e9dc] bg-white p-3 shadow-[0_18px_40px_rgba(15,23,42,0.06)] lg:w-auto"
+                    >
+                      <div className="overflow-hidden rounded-[1.65rem] border border-[#dde7da] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)]">
+                        <div className="relative">
+                          <PublicImage
+                            src={card.imageUrl}
+                            alt={card.imageAlt}
+                            priority={index === 0}
+                            wrapperClassName="aspect-[16/11] w-full"
+                            className="h-full w-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.12)_0%,rgba(255,255,255,0.08)_38%,rgba(13,31,42,0.26)_100%)]" />
+                          <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
+                            <span className="inline-flex min-h-8 items-center rounded-full border border-white/80 bg-white/90 px-3 text-[0.58rem] font-bold uppercase tracking-[0.18em] text-[#2b8a3e] shadow-sm">
+                              {card.badge}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="p-5">
+                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{card.eyebrow}</p>
+                          <h3 className="mt-3 text-[1.25rem] font-extrabold leading-tight tracking-[-0.03em] text-[#1f2233] sm:text-[1.35rem]">{card.title}</h3>
+                          <p className="mt-3 text-[0.96rem] leading-7 text-slate-600">{card.description}</p>
+                          <a
+                            href={card.href}
+                            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-[#d6e5d7] bg-white px-5 text-sm font-bold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+                          >
+                            {card.cta}
+                          </a>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
+            )}
           </div>
         </PublicSection>
 
-        <PublicSection>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{journeyTitle}</h2>
-              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{journeyDescription}</p>
+        {!isInternal ? (
+          <PublicSection>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{journeyTitle}</h2>
+                <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{journeyDescription}</p>
+              </div>
             </div>
-          </div>
 
-          <div className={cn('mt-6 grid gap-4', isInternal ? 'md:grid-cols-2 xl:grid-cols-4' : 'md:grid-cols-3')}>
-            {journeyCards.map(([step, title, text]) => (
-              <article key={`${step}-${title}`} className={cn(publicCardClass, 'h-full rounded-[2rem] p-5 sm:p-6')}>
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{step}</p>
-                <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">{title}</h2>
-                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{text}</p>
-              </article>
-            ))}
-          </div>
-        </PublicSection>
+            <div className={cn('mt-6 grid gap-4', isInternal ? 'md:grid-cols-2 xl:grid-cols-4' : 'md:grid-cols-3')}>
+              {journeyCards.map(([step, title, text]) => (
+                <article key={`${step}-${title}`} className={cn(publicCardClass, 'h-full rounded-[2rem] p-5 sm:p-6')}>
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{step}</p>
+                  <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">{title}</h2>
+                  <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{text}</p>
+                </article>
+              ))}
+            </div>
+          </PublicSection>
+        ) : null}
 
         <PublicSection band={!isInternal}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -710,31 +790,59 @@ export default async function HomePage() {
           </div>
 
           {partnerItems.length ? (
-            <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
-              <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
-                {partnerItems.map((cooperative, index) => (
-                  <Link
-                    key={cooperative.id}
-                    href={`/htx/${cooperative.code}`}
-                    className="group min-w-[12rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
-                  >
-                    <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-                      <PublicImage
-                        src={cooperative.avatarUrl}
-                        alt={cooperative.name}
-                        decorative
-                        priority={index < 4}
-                        wrapperClassName="h-full w-full rounded-full"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                      />
-                    </span>
-                    <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">{cooperative.name}</p>
-                    <p className="mt-1 text-xs font-medium text-slate-500">{cooperative.province || 'Việt Nam'}</p>
-                    <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">{cooperative.productCount} sản phẩm công khai</p>
-                  </Link>
-                ))}
+            isInternal ? (
+              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-6">
+                <div className="-mx-2 flex items-center gap-4 overflow-x-auto px-2 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
+                  {partnerItems.map((cooperative, index) => (
+                    <Link
+                      key={cooperative.id}
+                      href={`/htx/${cooperative.code}`}
+                      className="group min-w-[9rem] shrink-0 rounded-[1.7rem] border border-[#eef2eb] bg-white px-4 py-5 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.06)] lg:min-w-0"
+                    >
+                      <span className="mx-auto grid h-20 w-full place-items-center rounded-[1.4rem] bg-[#fbfcf9]">
+                        <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:h-16 sm:w-16">
+                          <PublicImage
+                            src={cooperative.avatarUrl}
+                            alt={cooperative.name}
+                            decorative
+                            priority={index < 4}
+                            wrapperClassName="h-full w-full rounded-full"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                          />
+                        </span>
+                      </span>
+                      <p className="mt-4 line-clamp-2 text-[0.92rem] font-extrabold leading-6 text-[#1f2233]">{cooperative.name}</p>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+                <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
+                  {partnerItems.map((cooperative, index) => (
+                    <Link
+                      key={cooperative.id}
+                      href={`/htx/${cooperative.code}`}
+                      className="group min-w-[12rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
+                    >
+                      <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                        <PublicImage
+                          src={cooperative.avatarUrl}
+                          alt={cooperative.name}
+                          decorative
+                          priority={index < 4}
+                          wrapperClassName="h-full w-full rounded-full"
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                        />
+                      </span>
+                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">{cooperative.name}</p>
+                      <p className="mt-1 text-xs font-medium text-slate-500">{cooperative.province || 'Việt Nam'}</p>
+                      <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">{cooperative.productCount} sản phẩm công khai</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )
           ) : (
             <div className="mt-6">
               <EmptyPublicState title="Chưa có HTX công khai" description="HTX sẽ xuất hiện khi có dữ liệu sản phẩm được đăng công khai." />
@@ -756,7 +864,7 @@ export default async function HomePage() {
               <div className="max-w-3xl">
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/76">Kết nối công nghệ</p>
                 <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-[2.9rem]">
-                  {isInternal ? 'Đưa vận hành nội bộ ra thị trường bằng một luồng dữ liệu rõ ràng.' : 'Kéo dữ liệu nông nghiệp lên một giao diện công khai gọn, rõ và dễ hiểu hơn.'}
+                  {isInternal ? 'Đưa dữ liệu HTX ra thị trường bằng một luồng rõ ràng.' : 'Kéo dữ liệu nông nghiệp lên một giao diện công khai gọn, rõ và dễ hiểu hơn.'}
                 </h2>
                 <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
                   <Link
@@ -785,6 +893,27 @@ export default async function HomePage() {
             </div>
           </div>
         </PublicSection>
+
+        {isInternal ? (
+          <PublicSection>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">{journeyTitle}</h2>
+                <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">{journeyDescription}</p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {journeyCards.map(([step, title, text]) => (
+                <article key={`${step}-${title}`} className={cn(publicCardClass, 'h-full rounded-[2rem] p-5 sm:p-6')}>
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{step}</p>
+                  <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">{title}</h2>
+                  <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{text}</p>
+                </article>
+              ))}
+            </div>
+          </PublicSection>
+        ) : null}
 
         <PublicSection>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
