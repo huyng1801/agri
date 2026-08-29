@@ -383,6 +383,9 @@ export default async function HomePage() {
                     HTXONLINE
                   </span>
                   <span className="text-sm font-semibold uppercase tracking-[0.18em] text-[#3d5871]">x</span>
+                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/82 px-3 text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:hidden">
+                    AGRI
+                  </span>
                   <span className="hidden min-h-10 items-center rounded-full border border-white/80 bg-white/82 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0d6f80] shadow-sm backdrop-blur sm:inline-flex">
                     AGRIPASSPORT
                   </span>
@@ -399,7 +402,7 @@ export default async function HomePage() {
                 <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:justify-start">
                   <Link
                     href={primaryCta.href}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 whitespace-nowrap rounded-full bg-[#1f9b4b] px-4 text-[0.86rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5 sm:w-auto sm:px-6 sm:text-sm"
                   >
                     {primaryCta.label}
                     <ArrowRight size={16} aria-hidden="true" />
