@@ -7,6 +7,7 @@ import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase'
 import { PublicImage } from '@/components/public-image';
 import { PublicSection, publicCardClass, publicContainerClass } from '@/components/public-layout';
 import { PublicLogo } from '@/components/public-logo';
+import { PublicOutcomeShowcase, type PublicOutcomeSlide } from '@/components/public-outcome-showcase';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { marketplaceUrl } from '@/lib/domain';
@@ -237,16 +238,51 @@ export default async function HomePage() {
   const heroPreviewProducts = featuredProducts.slice(0, 3);
   const heroPreviewCooperative = partnerItems[0];
   const serviceAction = isInternal ? '/gioi-thieu' : '/san-pham';
-  const outcomeTiles: OutcomeTile[] = isInternal
-    ? [
-        { title: 'Hồ sơ xã viên', value: '01 nơi theo dõi', description: 'Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ.', icon: Users },
-        { title: 'Thu chi nội bộ', value: 'Đối soát gọn hơn', description: 'Theo dõi khoản thu chi và chi tiết vận hành mà không gom tay nhiều bảng.', icon: Boxes },
-        { title: 'Xuất nhập', value: 'Dữ liệu liền mạch', description: 'Biến động nhập xuất đi cùng một luồng vận hành duy nhất.', icon: ShoppingBag },
-        { title: 'Sản phẩm thực', value: 'Chọn đúng đầu ra', description: 'Khoanh vùng các sản phẩm hoặc lô cần mang ra lớp công khai.', icon: Store },
-        { title: 'Liên kết QR', value: 'Sẵn sàng truy xuất', description: 'Khi cần minh bạch sâu hơn, dữ liệu được mở sang lớp QR và hồ sơ số.', icon: QrCode },
-        { title: 'Kiểm soát minh bạch', value: 'Vai trò rõ ràng', description: 'Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo.', icon: BadgeCheck }
-      ]
-    : isPassport
+  const internalOutcomeSlides: PublicOutcomeSlide[] = [
+    {
+      title: 'Hồ sơ xã viên',
+      value: '01 nơi theo dõi',
+      description: 'Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ trên cùng một lớp dữ liệu gọn, rõ và dễ kiểm tra hơn.',
+      icon: 'users',
+      note: 'Giảm thao tác gom nhiều bảng rời khi vận hành hằng ngày.'
+    },
+    {
+      title: 'Thu chi nội bộ',
+      value: 'Đối soát gọn hơn',
+      description: 'Theo dõi khoản thu chi, lịch sử biến động và các điểm cần kiểm tra mà không phải ghép tay dữ liệu từ nhiều nơi.',
+      icon: 'boxes',
+      note: 'Giữ nhịp vận hành gọn như một bảng điều phối tập trung.'
+    },
+    {
+      title: 'Xuất nhập',
+      value: 'Dữ liệu liền mạch',
+      description: 'Biến động nhập xuất và trạng thái vận hành đi cùng một luồng theo dõi duy nhất thay vì chia tách sang nhiều bước thủ công.',
+      icon: 'shoppingBag',
+      note: 'Giảm rủi ro lệch thông tin giữa quản trị và đầu ra công khai.'
+    },
+    {
+      title: 'Sản phẩm thực',
+      value: 'Chọn đúng đầu ra',
+      description: 'Khoanh vùng sản phẩm hoặc lô sản phẩm thật sự sẵn sàng để đồng bộ ra AGRIPASSPORT, không phải đưa toàn bộ dữ liệu nội bộ ra ngoài.',
+      icon: 'store',
+      note: 'Giữ ranh giới rõ giữa quản trị nội bộ và lớp công khai.'
+    },
+    {
+      title: 'Liên kết QR',
+      value: 'Sẵn sàng truy xuất',
+      description: 'Khi cần minh bạch sâu hơn, dữ liệu đã chuẩn có thể tiếp tục mở sang lớp QR và hồ sơ số mà không phải nhập lại từ đầu.',
+      icon: 'qrCode',
+      note: 'Tạo cảm giác một hành trình dữ liệu liền mạch hơn cho người dùng cuối.'
+    },
+    {
+      title: 'Kiểm soát minh bạch',
+      value: 'Vai trò rõ ràng',
+      description: 'Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo, đồng thời giúp giao diện public sáng và dễ hiểu hơn trên mobile.',
+      icon: 'badgeCheck',
+      note: 'Đây là khác biệt cốt lõi để hệ sinh thái trông gọn như một app native.'
+    }
+  ];
+  const outcomeTiles: OutcomeTile[] = isPassport
       ? [
           { title: 'QR công khai', value: 'Mở nhanh', description: 'Điện thoại quét mã và vào thẳng hồ sơ số công khai đã được duyệt.', icon: QrCode },
           { title: 'Hồ sơ số', value: `${featuredProducts.length} hồ sơ`, description: 'Tập trung vào sản phẩm đã có lớp truy xuất rõ ràng và dễ đọc.', icon: ShoppingBag },
@@ -569,26 +605,7 @@ export default async function HomePage() {
           </div>
 
           {isInternal ? (
-            <div className="-mx-4 mt-8 overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex gap-4 lg:grid lg:grid-cols-3 lg:gap-5 xl:grid-cols-3">
-                {outcomeTiles.map((tile) => {
-                  const Icon = tile.icon;
-                  return (
-                    <article
-                      key={`${tile.title}-${tile.value}`}
-                      className="min-w-[17rem] rounded-[2rem] border border-[#e2e9dc] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] p-5 text-center shadow-[0_18px_40px_rgba(15,23,42,0.06)] lg:min-w-0"
-                    >
-                      <span className="mx-auto grid h-24 w-24 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_18px_34px_rgba(15,23,42,0.05)]">
-                        <Icon size={44} strokeWidth={1.7} aria-hidden="true" />
-                      </span>
-                      <p className="mt-5 text-[1.35rem] font-extrabold leading-tight text-[#1f9b4b]">{tile.value}</p>
-                      <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">{tile.title}</p>
-                      <p className="mt-3 text-sm leading-6 text-slate-600">{tile.description}</p>
-                    </article>
-                  );
-                })}
-              </div>
-            </div>
+            <PublicOutcomeShowcase items={internalOutcomeSlides} />
           ) : (
             <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {outcomeTiles.map((tile) => {
