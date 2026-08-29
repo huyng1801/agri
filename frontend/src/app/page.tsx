@@ -25,10 +25,6 @@ import {
   publicContainerClass,
 } from "@/components/public-layout";
 import { PublicLogo } from "@/components/public-logo";
-import {
-  PublicOutcomeShowcase,
-  type PublicOutcomeSlide,
-} from "@/components/public-outcome-showcase";
 import { PublicShell } from "@/components/public-shell";
 import { cn } from "@/components/ui";
 import { marketplaceUrl } from "@/lib/domain";
@@ -82,6 +78,17 @@ type OutcomeTile = {
   description: string;
   icon: LucideIcon;
 };
+
+function cooperativeMonogram(name: string) {
+  return name
+    .replace(/^HTX\s+/i, "")
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join("")
+    .toUpperCase();
+}
 
 export default async function HomePage() {
   const siteKey = await getRequestPublicSiteKey();
@@ -399,54 +406,42 @@ export default async function HomePage() {
       gradient: "from-[#0d5c24] via-[#0d7a28] to-[#10a536]",
     },
   ] as const;
-  const internalOutcomeSlides: PublicOutcomeSlide[] = [
+  const internalOutcomeTiles: OutcomeTile[] = [
     {
       title: "Hồ sơ xã viên",
       value: "01 nơi theo dõi",
-      description:
-        "Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ trên cùng một lớp dữ liệu gọn, rõ và dễ kiểm tra hơn.",
-      icon: "users",
-      note: "Giảm thao tác gom nhiều bảng rời khi vận hành hằng ngày.",
+      description: "Tập trung hồ sơ, lịch sử tham gia và mức độ dùng dịch vụ nội bộ trên cùng một lớp dữ liệu.",
+      icon: Users,
     },
     {
       title: "Thu chi nội bộ",
       value: "Đối soát gọn hơn",
-      description:
-        "Theo dõi khoản thu chi, lịch sử biến động và các điểm cần kiểm tra mà không phải ghép tay dữ liệu từ nhiều nơi.",
-      icon: "boxes",
-      note: "Giữ nhịp vận hành gọn như một bảng điều phối tập trung.",
+      description: "Theo dõi khoản thu chi, lịch sử biến động và các điểm cần kiểm tra mà không phải ghép tay dữ liệu.",
+      icon: Boxes,
     },
     {
       title: "Xuất nhập",
       value: "Dữ liệu liền mạch",
-      description:
-        "Biến động nhập xuất và trạng thái vận hành đi cùng một luồng theo dõi duy nhất thay vì chia tách sang nhiều bước thủ công.",
-      icon: "shoppingBag",
-      note: "Giảm rủi ro lệch thông tin giữa quản trị và đầu ra công khai.",
+      description: "Biến động nhập xuất và trạng thái vận hành đi cùng một luồng theo dõi duy nhất.",
+      icon: ShoppingBag,
     },
     {
       title: "Sản phẩm thực",
       value: "Chọn đúng đầu ra",
-      description:
-        "Khoanh vùng sản phẩm hoặc lô sản phẩm thật sự sẵn sàng để đồng bộ ra AGRIPASSPORT, không phải đưa toàn bộ dữ liệu nội bộ ra ngoài.",
-      icon: "store",
-      note: "Giữ ranh giới rõ giữa quản trị nội bộ và lớp công khai.",
+      description: "Khoanh vùng sản phẩm hoặc lô sản phẩm thật sự sẵn sàng để đồng bộ ra AGRIPASSPORT.",
+      icon: Store,
     },
     {
       title: "Liên kết QR",
       value: "Sẵn sàng truy xuất",
-      description:
-        "Khi cần minh bạch sâu hơn, dữ liệu đã chuẩn có thể tiếp tục mở sang lớp QR và hồ sơ số mà không phải nhập lại từ đầu.",
-      icon: "qrCode",
-      note: "Tạo cảm giác một hành trình dữ liệu liền mạch hơn cho người dùng cuối.",
+      description: "Khi cần minh bạch sâu hơn, dữ liệu đã chuẩn có thể tiếp tục mở sang lớp QR và hồ sơ số.",
+      icon: QrCode,
     },
     {
       title: "Kiểm soát minh bạch",
       value: "Vai trò rõ ràng",
-      description:
-        "Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo, đồng thời giúp giao diện public sáng và dễ hiểu hơn trên mobile.",
-      icon: "badgeCheck",
-      note: "Đây là khác biệt cốt lõi để hệ sinh thái trông gọn như một app native.",
+      description: "Mỗi nền tảng giữ đúng nhiệm vụ để tránh nhập liệu chồng chéo và giúp giao diện public dễ hiểu hơn.",
+      icon: BadgeCheck,
     },
   ];
   const outcomeTiles: OutcomeTile[] = isPassport
@@ -885,7 +880,30 @@ export default async function HomePage() {
           </div>
 
           {isInternal ? (
-            <PublicOutcomeShowcase items={internalOutcomeSlides} />
+            <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
+              {internalOutcomeTiles.map((tile) => {
+                const Icon = tile.icon;
+                return (
+                  <article
+                    key={`${tile.title}-${tile.value}`}
+                    className="text-center"
+                  >
+                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                      <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
+                    </span>
+                    <p className="mt-4 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
+                      {tile.title}
+                    </p>
+                    <p className="mt-2 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
+                      {tile.value}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-slate-600">
+                      {tile.description}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
           ) : (
             <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {outcomeTiles.map((tile) => {
@@ -1129,28 +1147,24 @@ export default async function HomePage() {
 
           {partnerItems.length ? (
             isInternal ? (
-              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-white p-5 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-6">
-                <div className="-mx-2 flex items-center gap-4 overflow-x-auto px-2 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
+              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-5">
+                <div className="-mx-1 flex items-center gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0 lg:pb-0">
                   {partnerItems.map((cooperative, index) => (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group min-w-[9rem] shrink-0 rounded-[1.7rem] border border-[#eef2eb] bg-white px-4 py-5 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.06)] lg:min-w-0"
+                      className="group min-w-[10rem] shrink-0 rounded-[1.55rem] border border-transparent px-3 py-4 text-center transition hover:-translate-y-0.5 hover:border-[#e5eadf] hover:bg-[#f8fbf7] lg:min-w-0"
                     >
-                      <span className="mx-auto grid h-20 w-full place-items-center rounded-[1.4rem] bg-[#fbfcf9]">
-                        <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:h-16 sm:w-16">
-                          <PublicImage
-                            src={cooperative.avatarUrl}
-                            alt={cooperative.name}
-                            decorative
-                            priority={index < 4}
-                            wrapperClassName="h-full w-full rounded-full"
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                          />
+                      <span className="mx-auto grid h-16 w-16 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf4_100%)] shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:h-20 sm:w-20">
+                        <span className="text-[0.88rem] font-extrabold uppercase tracking-[0.08em] text-[#1f9b4b] sm:text-[1.02rem]">
+                          {cooperativeMonogram(cooperative.name)}
                         </span>
                       </span>
-                      <p className="mt-4 line-clamp-2 text-[0.92rem] font-extrabold leading-6 text-[#1f2233]">
+                      <p className="mt-3 line-clamp-2 text-[0.82rem] font-extrabold uppercase tracking-[0.06em] leading-5 text-[#1f2233] sm:text-[0.9rem]">
                         {cooperative.name}
+                      </p>
+                      <p className="mt-1 text-[0.72rem] text-slate-500">
+                        {cooperative.province || "Việt Nam"}
                       </p>
                     </Link>
                   ))}
@@ -1252,37 +1266,65 @@ export default async function HomePage() {
 
         {isInternal ? (
           <PublicSection>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-3xl">
-                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+            <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+              <div className="max-w-[28rem]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">
+                  Mô hình triển khai
+                </p>
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[3rem]">
                   {journeyTitle}
                 </h2>
-                <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+                <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
                   {journeyDescription}
                 </p>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              {journeyCards.map(([step, title, text]) => (
-                <article
-                  key={`${step}-${title}`}
-                  className={cn(
-                    publicCardClass,
-                    "h-full rounded-[2rem] p-5 sm:p-6",
-                  )}
+                <Link
+                  href="/gioi-thieu"
+                  className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
                 >
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                    {step}
-                  </p>
-                  <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">
-                    {title}
-                  </h2>
-                  <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">
-                    {text}
-                  </p>
-                </article>
-              ))}
+                  Xem chi tiết hệ sinh thái
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                {journeyCards.map(([step, title, text], index) => (
+                  <article
+                    key={`${step}-${title}`}
+                    className={cn(
+                      publicCardClass,
+                      "h-full rounded-[2rem] p-5 sm:p-6",
+                      index === 0
+                        ? "bg-[linear-gradient(145deg,#0d1324_0%,#15324b_48%,#1f9b4b_100%)] text-white"
+                        : "bg-white",
+                    )}
+                  >
+                    <p
+                      className={cn(
+                        "text-[0.72rem] font-semibold uppercase tracking-[0.18em]",
+                        index === 0 ? "text-white/70" : "text-[#2b8a3e]",
+                      )}
+                    >
+                      {step}
+                    </p>
+                    <h2
+                      className={cn(
+                        "mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] sm:text-[1.3rem]",
+                        index === 0 ? "text-white" : "text-[#1f2233]",
+                      )}
+                    >
+                      {title}
+                    </h2>
+                    <p
+                      className={cn(
+                        "mt-3 text-[0.95rem] leading-7",
+                        index === 0 ? "text-white/82" : "text-slate-600",
+                      )}
+                    >
+                      {text}
+                    </p>
+                  </article>
+                ))}
+              </div>
             </div>
           </PublicSection>
         ) : null}
