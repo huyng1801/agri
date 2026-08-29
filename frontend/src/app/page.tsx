@@ -324,14 +324,14 @@ export default async function HomePage() {
             />
 
             <div className="relative grid grid-cols-[7.7rem_minmax(0,1fr)] items-center gap-4 px-4 py-5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[16rem_minmax(0,1fr)_15rem] lg:gap-8 lg:px-8 lg:py-10">
-              <div className="relative mx-auto w-[7.1rem] sm:w-[11rem] lg:mx-0 lg:w-[15rem]">
+              <div className="relative mx-auto w-[6.6rem] sm:w-[11rem] lg:mx-0 lg:w-[15rem]">
                 <div className="absolute inset-0 rounded-[2.8rem] bg-[#0d6f80]/16 blur-2xl" aria-hidden="true" />
-                <div className="relative overflow-hidden rounded-[2.3rem] border-[6px] border-[#1f2738] bg-[#f8fbf7] p-2.5 shadow-[0_28px_60px_rgba(15,23,42,0.22)]">
-                  <div className="mx-auto mb-2 h-4 w-16 rounded-full bg-[#1f2738]" aria-hidden="true" />
-                  <div className="rounded-[1.6rem] bg-[linear-gradient(180deg,#ffffff_0%,#f4faf3_56%,#eef7fb_100%)] p-3">
+                <div className="relative overflow-hidden rounded-[2.3rem] border-[6px] border-[#1f2738] bg-[#f8fbf7] p-2 shadow-[0_28px_60px_rgba(15,23,42,0.22)] sm:p-2.5">
+                  <div className="mx-auto mb-2 h-3.5 w-12 rounded-full bg-[#1f2738] sm:h-4 sm:w-16" aria-hidden="true" />
+                  <div className="rounded-[1.45rem] bg-[linear-gradient(180deg,#ffffff_0%,#f4faf3_56%,#eef7fb_100%)] p-2.5 sm:rounded-[1.6rem] sm:p-3">
                     <div className="flex items-center gap-2">
-                      <span className="grid h-9 w-9 place-items-center rounded-full bg-[#1f2738] shadow-sm">
-                        <PublicLogo size={22} className="h-[22px] w-[22px]" />
+                      <span className="grid h-8 w-8 place-items-center rounded-full bg-[#1f2738] shadow-sm sm:h-9 sm:w-9">
+                        <PublicLogo size={20} className="h-5 w-5 sm:h-[22px] sm:w-[22px]" />
                       </span>
                       <div className="min-w-0">
                         <p className="text-[0.44rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e] sm:text-[0.55rem]">Điều phối HTX</p>
@@ -341,18 +341,18 @@ export default async function HomePage() {
 
                     <div className="mt-3 rounded-[1.25rem] bg-[linear-gradient(135deg,#108a42_0%,#1f9b4b_100%)] p-2.5 text-white shadow-[0_16px_26px_rgba(31,155,75,0.24)] sm:p-3">
                       <p className="text-[0.48rem] font-semibold uppercase tracking-[0.14em] text-white/78 sm:text-[0.52rem]">Lớp dữ liệu nội bộ</p>
-                      <p className="mt-1 text-[0.78rem] font-extrabold leading-tight sm:text-sm">Thành viên, dịch vụ, thu chi, xuất nhập</p>
+                      <p className="mt-1 text-[0.72rem] font-extrabold leading-tight sm:text-sm">
+                        <span className="sm:hidden">Xã viên, thu chi, nhập xuất</span>
+                        <span className="hidden sm:inline">Thành viên, dịch vụ, thu chi, xuất nhập</span>
+                      </p>
                     </div>
 
-                    <div className="mt-3 grid gap-2">
+                    <div className="mt-3 hidden gap-2 sm:grid">
                       {heroPreviewProducts.length ? (
                         heroPreviewProducts.map((product, index) => (
                           <div
                             key={product.id}
-                            className={cn(
-                              'flex items-center gap-2 rounded-[1.1rem] border border-[#e0eadf] bg-white/92 p-2.5 shadow-sm',
-                              index > 0 && 'hidden sm:flex'
-                            )}
+                            className={cn('flex items-center gap-2 rounded-[1.1rem] border border-[#e0eadf] bg-white/92 p-2.5 shadow-sm', index > 0 && 'hidden lg:flex')}
                           >
                             <PublicImage
                               src={product.thumbnail?.publicUrl}
@@ -372,6 +372,10 @@ export default async function HomePage() {
                           Sản phẩm sau khi được chuẩn hóa sẽ đồng bộ sang AGRIPASSPORT để công khai và tạo QR.
                         </div>
                       )}
+                    </div>
+
+                    <div className="mt-3 rounded-full border border-[#dfe8dc] bg-white/92 px-3 py-2 text-[0.56rem] font-semibold uppercase tracking-[0.14em] text-[#0f7d63] shadow-sm sm:hidden">
+                      Đồng bộ sang AGRI
                     </div>
                   </div>
                 </div>
