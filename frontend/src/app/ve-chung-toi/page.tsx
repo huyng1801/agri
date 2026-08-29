@@ -113,7 +113,7 @@ export default async function AboutUsPage() {
             </article>
 
             <div className="relative mx-auto hidden w-full max-w-sm lg:block">
-              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-white/88 p-4 shadow-[0_24px_60px_rgba(18,42,28,0.14)] backdrop-blur">
+              <div className="overflow-hidden rounded-[2rem] border border-white/70 bg-[rgba(255,255,255,0.88)] p-4 shadow-[0_24px_60px_rgba(18,42,28,0.14)] backdrop-blur">
                 <div className="mb-4 overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/75 p-2">
                   <PublicImage
                     src={siteProfile.pageContent.aboutImageUrl}

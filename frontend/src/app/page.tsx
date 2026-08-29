@@ -260,6 +260,43 @@ export default async function HomePage() {
           { title: 'Bán hàng công khai', value: 'Giỏ hàng gọn hơn', description: 'Giữ hành vi lướt, xem và thêm giỏ gần với một app thương mại điện tử.', icon: Boxes },
           { title: 'Niềm tin người mua', value: 'Hiểu nhanh hơn', description: 'Thông tin được sắp theo nhịp card lớn, khoảng thở rộng và CTA rõ hơn.', icon: Users }
         ];
+  const heroBannerPanel = (
+    <div className="rounded-[1.85rem] border border-white/70 bg-white/90 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur sm:p-5">
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+            {isInternal ? 'Luồng nội bộ ra công khai' : isPassport ? 'Hồ sơ số công khai' : 'Dữ liệu công khai trung tâm'}
+          </p>
+          <p className="mt-1 text-[1rem] font-extrabold leading-tight text-[#1f2233] sm:text-[1.45rem]">{String(heroTiles[0].value)}</p>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{heroNote}</p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
+          <Link
+            href={primaryCta.href}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+          >
+            {primaryCta.label}
+            <ArrowRight size={16} aria-hidden="true" />
+          </Link>
+          {secondaryCta.external ? (
+            <a
+              href={secondaryCta.href}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+            >
+              {secondaryCta.label}
+            </a>
+          ) : (
+            <Link
+              href={secondaryCta.href}
+              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+            >
+              {secondaryCta.label}
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <PublicShell>
@@ -271,7 +308,7 @@ export default async function HomePage() {
                 <PublicImage
                   src={siteProfile.pageContent.homeImageUrl}
                   alt={siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle}
-                  wrapperClassName="aspect-[16/10] sm:aspect-[18/8] lg:aspect-[21/8]"
+                  wrapperClassName="aspect-[16/11] sm:aspect-[18/8] lg:aspect-[21/8]"
                   className="h-full w-full object-cover"
                   priority
                 />
@@ -288,50 +325,14 @@ export default async function HomePage() {
                   <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e] shadow-sm backdrop-blur">
                     {siteProfile.appName}
                   </span>
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-white/72 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
+                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-[rgba(255,255,255,0.72)] px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
                     Hệ sinh thái Agri
                   </span>
                 </div>
-                <div className="absolute inset-x-3 bottom-3 sm:inset-x-5 sm:bottom-5 lg:inset-x-6">
-                  <div className="rounded-[1.85rem] border border-white/70 bg-white/90 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur sm:p-5">
-                    <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-                      <div>
-                        <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
-                          {isInternal ? 'Luồng nội bộ ra công khai' : isPassport ? 'Hồ sơ số công khai' : 'Dữ liệu công khai trung tâm'}
-                        </p>
-                        <p className="mt-1 text-[1.1rem] font-extrabold leading-tight text-[#1f2233] sm:text-[1.45rem]">
-                          {String(heroTiles[0].value)}
-                        </p>
-                        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">{heroNote}</p>
-                      </div>
-                      <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
-                        <Link
-                          href={primaryCta.href}
-                          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
-                        >
-                          {primaryCta.label}
-                          <ArrowRight size={16} aria-hidden="true" />
-                        </Link>
-                        {secondaryCta.external ? (
-                          <a
-                            href={secondaryCta.href}
-                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-                          >
-                            {secondaryCta.label}
-                          </a>
-                        ) : (
-                          <Link
-                            href={secondaryCta.href}
-                            className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-                          >
-                            {secondaryCta.label}
-                          </Link>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div className="absolute inset-x-6 bottom-6 hidden lg:block">{heroBannerPanel}</div>
               </div>
+
+              <div className="border-b border-[#ece8dd] bg-white px-4 py-4 lg:hidden">{heroBannerPanel}</div>
 
               <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
                 <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">

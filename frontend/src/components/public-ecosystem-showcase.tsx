@@ -105,7 +105,7 @@ export function PublicEcosystemShowcase({
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/72">
+                    <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,255,255,0.72)]">
                       <span>{card.label}</span>
                       <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
                       <span>0{index + 1}</span>
@@ -120,7 +120,7 @@ export function PublicEcosystemShowcase({
                     <h3 className={cn('mt-3 text-[1.55rem] font-extrabold leading-[1.05] tracking-[-0.03em] sm:text-[2.2rem]', compact && 'text-[1.15rem] sm:text-[1.45rem]')}>
                       {card.name}
                     </h3>
-                    <p className={cn('mt-2 max-w-3xl text-[0.96rem] leading-[1.78] text-white/88 sm:text-[1.06rem]', compact && 'text-sm leading-6')}>
+                    <p className={cn('mt-2 max-w-3xl text-[0.96rem] leading-[1.78] text-[rgba(255,255,255,0.88)] sm:text-[1.06rem]', compact && 'text-sm leading-6')}>
                       {card.description}
                     </p>
 

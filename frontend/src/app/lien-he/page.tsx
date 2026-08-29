@@ -183,7 +183,7 @@ export default async function ContactPage() {
                   <div className="relative flex h-full flex-col justify-between">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="inline-flex items-center gap-2 rounded-full bg-white/88 px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-leaf shadow-sm">
+                        <p className="inline-flex items-center gap-2 rounded-full bg-[rgba(255,255,255,0.88)] px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-leaf shadow-sm">
                           <MapPinned size={14} aria-hidden="true" />
                           Điểm hỗ trợ
                         </p>
@@ -202,7 +202,7 @@ export default async function ContactPage() {
                     </div>
 
                     <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-                      <div className="rounded-2xl border border-white/80 bg-white/88 p-5 shadow-sm backdrop-blur-sm">
+                      <div className="rounded-2xl border border-white/80 bg-[rgba(255,255,255,0.88)] p-5 shadow-sm backdrop-blur-sm">
                         <p className="text-[0.72rem] font-bold uppercase tracking-[0.16em] text-slate-500">Địa chỉ liên hệ</p>
                         <p className="mt-2 text-lg font-bold leading-8 text-ink">{siteProfile.address}</p>
                         <div className="mt-4 flex flex-wrap gap-3">

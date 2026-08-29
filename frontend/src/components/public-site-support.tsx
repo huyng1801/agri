@@ -104,7 +104,7 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
         </a>
       )}
       {showTopButton ? (
-        <a href="#top" className="grid h-11 w-11 place-items-center rounded-full bg-white/96 text-ink shadow-soft ring-1 ring-slate-200/80" aria-label="Lên đầu trang">
+        <a href="#top" className="grid h-11 w-11 place-items-center rounded-full bg-[rgba(255,255,255,0.96)] text-ink shadow-soft ring-1 ring-slate-200/80" aria-label="Lên đầu trang">
           <ChevronUp size={16} aria-hidden="true" />
         </a>
       ) : null}

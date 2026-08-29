@@ -68,7 +68,7 @@ export function PublicHeader({
   }, [menuOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/96 shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
       <div className="border-b border-[#198f43] bg-[#1f9b4b] text-white">
         <div className="mx-auto max-w-[1220px] px-4 py-1.5 text-[0.76rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-sm">{supportText}</div>
       </div>

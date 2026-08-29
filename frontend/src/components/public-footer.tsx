@@ -96,7 +96,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         <div className="overflow-hidden rounded-[2.2rem] border border-[#e8e4d8] bg-[#fbfaf6] shadow-[0_28px_64px_rgba(15,23,42,0.08)]">
           <div className="grid gap-4 border-b border-[#1f9b4b]/12 bg-[linear-gradient(135deg,#1d8f44_0%,#25a34d_58%,#31b35b_100%)] px-4 py-5 text-white sm:px-5 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:px-6 lg:py-6">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-white/72">{profile.appName}</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[rgba(255,255,255,0.72)]">{profile.appName}</p>
               <h2 className="mt-2 text-[1.55rem] font-bold leading-tight tracking-normal sm:text-2xl">{footerHeadline}</h2>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
@@ -160,7 +160,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             </div>
           </div>
 
-          <div className="border-t border-[#ebe6da] bg-white/55 px-4 py-8 sm:px-5 lg:px-6">
+          <div className="border-t border-[#ebe6da] bg-[rgba(255,255,255,0.55)] px-4 py-8 sm:px-5 lg:px-6">
             <div className="grid gap-6 lg:grid-cols-[1.08fr_1fr_0.82fr]">
               <div className="space-y-4 rounded-[1.8rem] border border-[#e8e4d8] bg-white p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
                 <p className="text-lg font-bold text-[#1f2233]">{profile.appName}</p>

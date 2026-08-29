@@ -43,7 +43,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
           <div className="absolute bottom-[20%] left-[18%] h-20 w-20 rounded-full bg-white/14 blur-3xl" />
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(15,23,42,0.16))]" />
-        <div className="absolute left-[12%] top-[24%] hidden rounded-full border border-white/55 bg-white/70 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 shadow-sm sm:inline-flex">
+        <div className="absolute left-[12%] top-[24%] hidden rounded-full border border-[rgba(255,255,255,0.55)] bg-white/70 px-3 py-1 text-[0.65rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 shadow-sm sm:inline-flex">
           {regionLabel}
         </div>
         <div className="absolute right-[10%] top-[22%] hidden rounded-full border border-white/50 bg-white/65 px-3 py-1 text-[0.65rem] font-semibold text-ink/75 shadow-sm sm:inline-flex">
@@ -55,11 +55,11 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
         </div>
         <div className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.18)]" />
         <div className="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#dc2626]/18 blur-[2px]" />
-        <div className="absolute left-[18%] bottom-[12%] inline-flex items-center gap-2 rounded-full border border-white/55 bg-white/76 px-3 py-1.5 text-[0.68rem] font-semibold text-leaf shadow-sm backdrop-blur">
+        <div className="absolute left-[18%] bottom-[12%] inline-flex items-center gap-2 rounded-full border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.76)] px-3 py-1.5 text-[0.68rem] font-semibold text-leaf shadow-sm backdrop-blur">
           <MapPinned size={13} aria-hidden="true" />
           Điểm hỗ trợ
         </div>
-        <div className="absolute right-[12%] bottom-[12%] hidden items-center gap-2 rounded-full border border-white/55 bg-white/76 px-3 py-1.5 text-[0.68rem] font-semibold text-ink/80 shadow-sm backdrop-blur sm:inline-flex">
+        <div className="absolute right-[12%] bottom-[12%] hidden items-center gap-2 rounded-full border border-[rgba(255,255,255,0.55)] bg-[rgba(255,255,255,0.76)] px-3 py-1.5 text-[0.68rem] font-semibold text-ink/80 shadow-sm backdrop-blur sm:inline-flex">
           <Navigation size={13} aria-hidden="true" />
           Tuyến tra cứu
         </div>
