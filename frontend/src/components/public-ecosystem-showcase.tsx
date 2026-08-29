@@ -57,6 +57,7 @@ export function PublicEcosystemShowcase({
   compact?: boolean;
   showHeading?: boolean;
 }) {
+  const demeterLike = siteKey === 'htxonline';
   return (
     <section className={className}>
       {showHeading ? (
@@ -94,33 +95,55 @@ export function PublicEcosystemShowcase({
                   }}
                 />
 
-                <div className="relative grid gap-5 md:grid-cols-[8.5rem_1fr] md:items-center lg:grid-cols-[10rem_1fr]">
+                <div
+                  className={cn(
+                    'relative grid gap-5 md:grid-cols-[8.5rem_1fr] md:items-center lg:grid-cols-[10rem_1fr]',
+                    demeterLike && 'md:grid-cols-[6.8rem_1fr] lg:grid-cols-[8rem_1fr]'
+                  )}
+                >
                   <div
                     className={cn(
                       'flex h-[6.8rem] w-[6.8rem] shrink-0 items-center justify-center rounded-full border border-white/16 bg-white/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] md:h-[7.4rem] md:w-[7.4rem]',
-                      compact && 'h-[5rem] w-[5rem]'
+                      compact && 'h-[5rem] w-[5rem]',
+                      demeterLike && 'rounded-[1.7rem] border-white/12 bg-transparent shadow-none md:h-[6rem] md:w-[6rem] lg:h-[6.6rem] lg:w-[6.6rem]'
                     )}
                   >
-                    <Icon size={compact ? 34 : 54} strokeWidth={1.8} aria-hidden="true" />
+                    <Icon size={compact ? 34 : demeterLike ? 48 : 54} strokeWidth={1.8} aria-hidden="true" />
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,255,255,0.72)]">
                       <span>{card.label}</span>
-                      <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
-                      <span>0{index + 1}</span>
-                      {isCurrent ? (
+                      {!demeterLike ? (
                         <>
                           <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
-                          <span>Đang mở</span>
+                          <span>0{index + 1}</span>
+                          {isCurrent ? (
+                            <>
+                              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
+                              <span>Đang mở</span>
+                            </>
+                          ) : null}
                         </>
                       ) : null}
                     </div>
 
-                    <h3 className={cn('mt-3 text-[1.55rem] font-extrabold leading-[1.05] tracking-[-0.03em] sm:text-[2.2rem]', compact && 'text-[1.15rem] sm:text-[1.45rem]')}>
+                    <h3
+                      className={cn(
+                        'mt-3 text-[1.55rem] font-extrabold leading-[1.05] tracking-[-0.03em] sm:text-[2.2rem]',
+                        compact && 'text-[1.15rem] sm:text-[1.45rem]',
+                        demeterLike && 'text-[1.45rem] sm:text-[1.9rem]'
+                      )}
+                    >
                       {card.name}
                     </h3>
-                    <p className={cn('mt-2 max-w-3xl text-[0.96rem] leading-[1.78] text-[rgba(255,255,255,0.88)] sm:text-[1.06rem]', compact && 'text-sm leading-6')}>
+                    <p
+                      className={cn(
+                        'mt-2 max-w-3xl text-[0.96rem] leading-[1.78] text-[rgba(255,255,255,0.88)] sm:text-[1.06rem]',
+                        compact && 'text-sm leading-6',
+                        demeterLike && 'max-w-2xl text-[0.98rem] leading-[1.72] sm:text-[1rem]'
+                      )}
+                    >
                       {card.description}
                     </p>
 
@@ -128,10 +151,12 @@ export function PublicEcosystemShowcase({
                       <span className="inline-flex min-h-10 items-center rounded-full border border-white/14 bg-black/16 px-4 text-sm font-semibold text-white/90">
                         {card.signal}
                       </span>
-                      <span className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-white">
-                        Mở nền tảng
-                        <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
-                      </span>
+                      {!demeterLike ? (
+                        <span className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-white">
+                          Mở nền tảng
+                          <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                        </span>
+                      ) : null}
                     </div>
                   </div>
                 </div>
