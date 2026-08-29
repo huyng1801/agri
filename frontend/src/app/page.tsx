@@ -323,8 +323,8 @@ export default async function HomePage() {
               }}
             />
 
-            <div className="relative grid gap-6 px-4 py-6 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-center sm:px-6 sm:py-8 lg:grid-cols-[16rem_minmax(0,1fr)_15rem] lg:gap-8 lg:px-8 lg:py-10">
-              <div className="relative mx-auto w-[9.5rem] sm:w-[11rem] lg:mx-0 lg:w-[15rem]">
+            <div className="relative grid grid-cols-[7.7rem_minmax(0,1fr)] items-center gap-4 px-4 py-5 sm:grid-cols-[11rem_minmax(0,1fr)] sm:gap-6 sm:px-6 sm:py-8 lg:grid-cols-[16rem_minmax(0,1fr)_15rem] lg:gap-8 lg:px-8 lg:py-10">
+              <div className="relative mx-auto w-[7.1rem] sm:w-[11rem] lg:mx-0 lg:w-[15rem]">
                 <div className="absolute inset-0 rounded-[2.8rem] bg-[#0d6f80]/16 blur-2xl" aria-hidden="true" />
                 <div className="relative overflow-hidden rounded-[2.3rem] border-[6px] border-[#1f2738] bg-[#f8fbf7] p-2.5 shadow-[0_28px_60px_rgba(15,23,42,0.22)]">
                   <div className="mx-auto mb-2 h-4 w-16 rounded-full bg-[#1f2738]" aria-hidden="true" />
@@ -334,20 +334,26 @@ export default async function HomePage() {
                         <PublicLogo size={22} className="h-[22px] w-[22px]" />
                       </span>
                       <div className="min-w-0">
-                        <p className="text-[0.55rem] font-semibold uppercase tracking-[0.16em] text-[#2b8a3e]">Điều phối HTX</p>
-                        <p className="truncate text-sm font-extrabold text-[#1f2233]">HTXONLINE</p>
+                        <p className="text-[0.44rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e] sm:text-[0.55rem]">Điều phối HTX</p>
+                        <p className="truncate text-[0.78rem] font-extrabold text-[#1f2233] sm:text-sm">HTXONLINE</p>
                       </div>
                     </div>
 
-                    <div className="mt-3 rounded-[1.25rem] bg-[linear-gradient(135deg,#108a42_0%,#1f9b4b_100%)] p-3 text-white shadow-[0_16px_26px_rgba(31,155,75,0.24)]">
-                      <p className="text-[0.52rem] font-semibold uppercase tracking-[0.16em] text-white/78">Lớp dữ liệu nội bộ</p>
-                      <p className="mt-1 text-sm font-extrabold leading-tight">Thành viên, dịch vụ, thu chi, xuất nhập</p>
+                    <div className="mt-3 rounded-[1.25rem] bg-[linear-gradient(135deg,#108a42_0%,#1f9b4b_100%)] p-2.5 text-white shadow-[0_16px_26px_rgba(31,155,75,0.24)] sm:p-3">
+                      <p className="text-[0.48rem] font-semibold uppercase tracking-[0.14em] text-white/78 sm:text-[0.52rem]">Lớp dữ liệu nội bộ</p>
+                      <p className="mt-1 text-[0.78rem] font-extrabold leading-tight sm:text-sm">Thành viên, dịch vụ, thu chi, xuất nhập</p>
                     </div>
 
                     <div className="mt-3 grid gap-2">
                       {heroPreviewProducts.length ? (
-                        heroPreviewProducts.map((product) => (
-                          <div key={product.id} className="flex items-center gap-2 rounded-[1.1rem] border border-[#e0eadf] bg-white/92 p-2.5 shadow-sm">
+                        heroPreviewProducts.map((product, index) => (
+                          <div
+                            key={product.id}
+                            className={cn(
+                              'flex items-center gap-2 rounded-[1.1rem] border border-[#e0eadf] bg-white/92 p-2.5 shadow-sm',
+                              index > 0 && 'hidden sm:flex'
+                            )}
+                          >
                             <PublicImage
                               src={product.thumbnail?.publicUrl}
                               alt={product.name}
@@ -356,8 +362,8 @@ export default async function HomePage() {
                               className="h-full w-full rounded-[0.85rem] object-cover"
                             />
                             <div className="min-w-0">
-                              <p className="truncate text-[0.74rem] font-bold leading-tight text-[#1f2233]">{product.name}</p>
-                              <p className="mt-0.5 truncate text-[0.62rem] font-medium text-slate-500">{product.cooperative?.name || 'HTX đang vận hành'}</p>
+                              <p className="truncate text-[0.66rem] font-bold leading-tight text-[#1f2233] sm:text-[0.74rem]">{product.name}</p>
+                              <p className="mt-0.5 truncate text-[0.56rem] font-medium text-slate-500 sm:text-[0.62rem]">{product.cooperative?.name || 'HTX đang vận hành'}</p>
                             </div>
                           </div>
                         ))
@@ -371,26 +377,26 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              <div className="text-center lg:text-left">
-                <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
+              <div className="text-left">
+                <div className="flex flex-wrap items-center justify-start gap-2">
                   <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0f7d63] shadow-sm backdrop-blur">
                     HTXONLINE
                   </span>
                   <span className="text-sm font-semibold uppercase tracking-[0.18em] text-[#3d5871]">x</span>
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/82 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0d6f80] shadow-sm backdrop-blur">
+                  <span className="hidden min-h-10 items-center rounded-full border border-white/80 bg-white/82 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#0d6f80] shadow-sm backdrop-blur sm:inline-flex">
                     AGRIPASSPORT
                   </span>
                 </div>
 
-                <p className="mt-4 text-[0.74rem] font-semibold uppercase tracking-[0.22em] text-[#0f7d63]">Hệ sinh thái vận hành số</p>
-                <h1 className="mt-3 text-[2rem] font-extrabold leading-[0.92] tracking-[-0.05em] text-[#0d6f80] sm:text-[2.7rem] lg:max-w-[11ch] lg:text-[4rem]">
+                <p className="mt-4 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#0f7d63] sm:text-[0.74rem]">Hệ sinh thái vận hành số</p>
+                <h1 className="mt-3 max-w-[8ch] text-[1.46rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#0d6f80] sm:max-w-none sm:text-[2.7rem] lg:max-w-[11ch] lg:text-[4rem]">
                   Cùng hợp tác xã kiến tạo vận hành số bền vững
                 </h1>
-                <p className="mx-auto mt-4 max-w-xl text-[0.98rem] leading-7 text-[#31556d] sm:text-[1.05rem] sm:leading-8 lg:mx-0">
+                <p className="mt-4 max-w-xl text-[0.9rem] leading-6 text-[#31556d] sm:text-[1.05rem] sm:leading-8">
                   Tập trung quản trị thành viên, dịch vụ, thu chi, xuất nhập rồi đồng bộ dữ liệu sang AGRIPASSPORT khi cần công khai sản phẩm và truy xuất QR.
                 </p>
 
-                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+                <div className="mt-5 flex flex-col gap-3 sm:mt-6 sm:flex-row sm:justify-start">
                   <Link
                     href={primaryCta.href}
                     className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
@@ -401,28 +407,28 @@ export default async function HomePage() {
                   {secondaryCta.external ? (
                     <a
                       href={secondaryCta.href}
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                      className="hidden min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex"
                     >
                       {secondaryCta.label}
                     </a>
                   ) : (
                     <Link
                       href={secondaryCta.href}
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                      className="hidden min-h-12 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-6 text-sm font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex"
                     >
                       {secondaryCta.label}
                     </Link>
                   )}
                 </div>
 
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-2 text-sm text-[#0f7d63] lg:justify-start">
+                <div className="mt-4 flex flex-wrap items-center justify-start gap-2 text-sm text-[#0f7d63] sm:mt-5">
                   <span className="inline-flex min-h-10 items-center rounded-full bg-[#0d6f80] px-4 text-sm font-semibold text-white shadow-sm">
                     {featuredCooperatives.length} HTX đang hiển thị
                   </span>
-                  <span className="inline-flex min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/88 px-4 font-semibold text-[#31556d] shadow-sm">
+                  <span className="hidden min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/88 px-4 font-semibold text-[#31556d] shadow-sm sm:inline-flex">
                     {featuredProducts.length}+ sản phẩm đồng bộ
                   </span>
-                  <span className="hidden min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/88 px-4 font-semibold text-[#31556d] shadow-sm sm:inline-flex">
+                  <span className="hidden min-h-10 items-center rounded-full border border-[#d7e6d7] bg-white/88 px-4 font-semibold text-[#31556d] shadow-sm lg:inline-flex">
                     Hotline {siteProfile.hotlineDisplay}
                   </span>
                 </div>
