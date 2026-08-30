@@ -434,6 +434,66 @@ export default async function HomePage() {
       note: "Mở hồ sơ số khi cần minh bạch sâu hơn",
     },
   ] as const;
+  const internalJourneyPanels = [
+    {
+      key: "journey-htxonline",
+      step: "Bước 1",
+      badge: "Quản trị nội bộ",
+      title: "HTXONLINE",
+      description:
+        "Quản lý xã viên, dịch vụ và toàn bộ dữ liệu vận hành nội bộ trên một lớp điều phối gọn và rõ.",
+      href: "/login",
+      cta: "Mở quản trị",
+      image:
+        siteProfile.pageContent.aboutImageUrl ||
+        siteProfile.pageContent.homeImageUrl,
+      imageAlt: siteProfile.pageContent.aboutImageAlt || "HTXONLINE",
+    },
+    {
+      key: "journey-selection",
+      step: "Bước 2",
+      badge: "Chọn đầu ra",
+      title: "Xác định sản phẩm thực",
+      description:
+        "Chọn đúng sản phẩm hoặc lô sản phẩm cần đưa ra bên ngoài để tránh công khai dàn trải và lệch dữ liệu.",
+      href: "/san-pham",
+      cta: "Xem sản phẩm",
+      image:
+        heroPreviewProducts[0]?.thumbnail?.publicUrl ||
+        siteProfile.pageContent.homeImageUrl,
+      imageAlt:
+        heroPreviewProducts[0]?.name ||
+        "Sản phẩm sẵn sàng công khai",
+    },
+    {
+      key: "journey-marketplace",
+      step: "Bước 3",
+      badge: "Đồng bộ dữ liệu",
+      title: "Đưa sang AGRIPASSPORT",
+      description:
+        "Chuẩn hóa tên HTX, hình ảnh, vùng trồng và tín hiệu bán hàng trên lớp dữ liệu trung tâm trước khi công khai.",
+      href: marketplaceUrl("/"),
+      cta: "Mở AGRIPASSPORT",
+      image: siteProfile.pageContent.homeImageUrl,
+      imageAlt: "AGRIPASSPORT",
+    },
+    {
+      key: "journey-passport",
+      step: "Bước 4",
+      badge: "QR truy xuất",
+      title: "Mở Hộ chiếu nông nghiệp",
+      description:
+        "Sinh QR và hồ sơ số để truy xuất minh bạch khi cần làm thị trường, hồ sơ hoặc kết nối đầu ra.",
+      href: "https://hochieunongnghiep.com/",
+      cta: "Tra cứu QR",
+      image:
+        heroPreviewProducts[1]?.thumbnail?.publicUrl ||
+        siteProfile.pageContent.aboutImageUrl ||
+        siteProfile.pageContent.homeImageUrl,
+      imageAlt:
+        heroPreviewProducts[1]?.name || "Hộ chiếu nông nghiệp",
+    },
+  ] as const;
   const internalOutcomeTiles: OutcomeTile[] = [
     {
       title: "Hồ sơ xã viên",
@@ -1365,44 +1425,97 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                {journeyCards.map(([step, title, text], index) => (
-                  <article
-                    key={`${step}-${title}`}
-                    className={cn(
+              <div className="relative">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:px-5 lg:mx-0 lg:px-0">
+                  {internalJourneyPanels.map((panel, index) => {
+                    const isFirst = index === 0;
+                    const isExternal = /^https?:\/\//.test(panel.href);
+
+                    const cardContent = (
+                      <>
+                        <div className="relative overflow-hidden border-b border-[#e6ece0] bg-[#f8fbf6] p-3">
+                          <PublicImage
+                            src={panel.image}
+                            alt={panel.imageAlt}
+                            fallback={siteProfile.pageContent.homeImageUrl}
+                            priority={index < 2}
+                            wrapperClassName="aspect-[5/4] rounded-[1.5rem]"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                          />
+                          <div className="pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between gap-2">
+                            <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/88 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233] shadow-sm backdrop-blur">
+                              {panel.step}
+                            </span>
+                            <span
+                              className={cn(
+                                "inline-flex min-h-9 items-center rounded-full px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] shadow-sm backdrop-blur",
+                                isFirst
+                                  ? "bg-[#1f2233] text-white"
+                                  : "border border-white/70 bg-white/84 text-[#2b8a3e]",
+                              )}
+                            >
+                              {panel.badge}
+                            </span>
+                          </div>
+                          <div className="pointer-events-none absolute inset-x-3 bottom-3 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(8,15,24,0.02)_0%,rgba(8,15,24,0.66)_100%)] p-3 text-white">
+                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
+                              {panel.badge}
+                            </p>
+                            <p className="mt-1 text-[1.08rem] font-extrabold leading-tight">
+                              {panel.title}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-1 flex-col p-5">
+                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                            {panel.step}
+                          </p>
+                          <h2 className="mt-2 text-[1.22rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">
+                            {panel.title}
+                          </h2>
+                          <p className="mt-3 flex-1 text-[0.95rem] leading-7 text-slate-600">
+                            {panel.description}
+                          </p>
+                          <span
+                            className={cn(
+                              "mt-5 inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-bold transition",
+                              isFirst
+                                ? "bg-[#1f9b4b] text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)]"
+                                : "border border-[#d8e7d8] bg-[#f7fbf5] text-[#1f9b4b] group-hover:border-[#1f9b4b] group-hover:bg-white",
+                            )}
+                          >
+                            {panel.cta}
+                            <ArrowRight size={16} aria-hidden="true" />
+                          </span>
+                        </div>
+                      </>
+                    );
+
+                    const cardClassName = cn(
                       publicCardClass,
-                      "h-full rounded-[2rem] p-5 sm:p-6",
-                      index === 0
-                        ? "bg-[linear-gradient(145deg,#0d1324_0%,#15324b_48%,#1f9b4b_100%)] text-white"
-                        : "bg-white",
-                    )}
-                  >
-                    <p
-                      className={cn(
-                        "text-[0.72rem] font-semibold uppercase tracking-[0.18em]",
-                        index === 0 ? "text-white/70" : "text-[#2b8a3e]",
-                      )}
-                    >
-                      {step}
-                    </p>
-                    <h2
-                      className={cn(
-                        "mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] sm:text-[1.3rem]",
-                        index === 0 ? "text-white" : "text-[#1f2233]",
-                      )}
-                    >
-                      {title}
-                    </h2>
-                    <p
-                      className={cn(
-                        "mt-3 text-[0.95rem] leading-7",
-                        index === 0 ? "text-white/82" : "text-slate-600",
-                      )}
-                    >
-                      {text}
-                    </p>
-                  </article>
-                ))}
+                      "group flex h-full w-[min(80vw,19rem)] shrink-0 snap-start flex-col rounded-[2rem] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-[17rem]",
+                    );
+
+                    return isExternal ? (
+                      <a
+                        key={panel.key}
+                        href={panel.href}
+                        className={cardClassName}
+                      >
+                        {cardContent}
+                      </a>
+                    ) : (
+                      <Link
+                        key={panel.key}
+                        href={panel.href}
+                        className={cardClassName}
+                      >
+                        {cardContent}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </PublicSection>
