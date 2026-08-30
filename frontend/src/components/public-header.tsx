@@ -41,17 +41,18 @@ export function PublicHeader({
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
-  const navItems = siteKey === 'htxonline' ? internalNavItems : marketplaceNavItems;
-  const showCart = siteKey !== 'htxonline';
+  const isInternal = siteKey === 'htxonline';
+  const navItems = isInternal ? internalNavItems : marketplaceNavItems;
+  const showCart = !isInternal;
   const supportText =
-    siteKey === 'htxonline'
+    isInternal
       ? 'Hệ thống số quản trị nội bộ cho hợp tác xã.'
       : siteKey === 'passport'
         ? 'QR truy xuất và hồ sơ số cho nông sản.'
         : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
-  const searchTarget = siteKey === 'htxonline' ? '/tin-tuc' : '/san-pham';
+  const searchTarget = isInternal ? '/tin-tuc' : '/san-pham';
   const searchPlaceholder =
-    siteKey === 'htxonline'
+    isInternal
       ? 'Tìm tính năng, quy trình hoặc tin tức'
       : siteKey === 'passport'
         ? 'Tìm sản phẩm có QR, vùng trồng'
@@ -69,6 +70,182 @@ export function PublicHeader({
       document.body.style.overflow = '';
     };
   }, [menuOpen]);
+
+  if (isInternal) {
+    return (
+      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/95 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+        <div className="bg-[#1d9b49] text-white">
+          <div className="mx-auto max-w-[1220px] px-3 py-2 text-[0.8rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-[0.92rem]">{supportText}</div>
+        </div>
+
+        <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
+          <div className="flex min-h-[82px] items-center gap-3 py-3 md:hidden">
+            <button
+              type="button"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f9b4b] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#16753d]"
+              aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              {menuOpen ? <X size={21} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+            </button>
+
+            <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5" aria-label={`${appName} - Trang chủ`}>
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
+                <PublicLogo size={28} className="h-7 w-7" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Quản trị nội bộ</span>
+                <span className="block truncate text-[1.02rem] font-extrabold tracking-[-0.03em] text-[#111827]">{appName}</span>
+              </span>
+            </Link>
+
+            <Link
+              href={searchTarget}
+              aria-label="Tìm kiếm"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
+            >
+              <Search size={19} aria-hidden="true" />
+            </Link>
+            <Link
+              href={navCta.href}
+              aria-label={navCta.label}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f2233] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+            >
+              <Briefcase size={18} aria-hidden="true" />
+            </Link>
+          </div>
+
+          <div className="hidden min-h-[98px] items-center gap-6 py-4 md:flex">
+            <Link href="/" className="flex min-w-0 items-center gap-4" aria-label={`${appName} - Trang chủ`}>
+              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_16px_34px_rgba(15,23,42,0.12)] ring-1 ring-[#dae4d7]">
+                <PublicLogo size={42} className="h-[42px] w-[42px]" />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">Quản trị nội bộ cho hợp tác xã</span>
+                <span className="block text-[1.65rem] font-extrabold tracking-[-0.05em] text-[#111827]">{appName}</span>
+                <span className="mt-1 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[#40614f]">
+                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Xã viên</span>
+                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Thu chi</span>
+                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Đồng bộ dữ liệu</span>
+                </span>
+              </span>
+            </Link>
+
+            <form action={searchTarget} className="flex flex-1 justify-center">
+              <div className="flex w-full max-w-[30rem] items-center rounded-full border border-[#dde8da] bg-[#f8fbf6] px-4 shadow-[0_12px_24px_rgba(15,23,42,0.04)]">
+                <Search className="shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
+                <input
+                  type="search"
+                  name="search"
+                  placeholder={searchPlaceholder}
+                  className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[#1f2233] outline-none placeholder:text-slate-400"
+                />
+                <button type="submit" className="inline-flex h-11 shrink-0 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5">
+                  {searchLabel}
+                </button>
+              </div>
+            </form>
+
+            <div className="ml-auto flex items-center gap-3">
+              <Link href="/login" className="text-sm font-semibold text-[#1f2233] transition hover:text-[#1f9b4b]">
+                Đăng nhập
+              </Link>
+              <Link
+                href={navCta.href}
+                className="inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(135deg,#0f172a_0%,#1f9b4b_100%)] px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5"
+              >
+                {navCta.label}
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-[#ece8dd] bg-[#fbf8ef]">
+          <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
+            <nav className="hidden items-center gap-2 overflow-x-auto py-3 md:flex" aria-label="Menu chính">
+              {navItems.map((item) => {
+                const active = isNavActive(pathname, item.href);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'inline-flex min-h-11 items-center rounded-full border px-4 py-2 text-[0.95rem] font-semibold transition',
+                      active
+                        ? 'border-[#111827] bg-[#111827] text-white shadow-[0_12px_24px_rgba(15,23,42,0.12)]'
+                        : 'border-[#dde8da] bg-white text-[#20402a] hover:border-[#1f9b4b] hover:text-[#1f9b4b]'
+                    )}
+                    aria-current={active ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </nav>
+          </div>
+        </div>
+
+        {menuOpen ? (
+          <div className="fixed inset-x-0 bottom-0 top-[7.8rem] z-40 md:hidden">
+            <button type="button" className="absolute inset-0 bg-[#13231a]/24 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
+            <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
+              <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">HTXONLINE</p>
+                <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">Quản trị nội bộ cho hợp tác xã, rồi mới đồng bộ sang lớp công khai.</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em]">
+                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Xã viên</span>
+                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Thu chi</span>
+                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Tin tức</span>
+                </div>
+              </div>
+
+              <form action={searchTarget} className="relative mt-4">
+                <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#1f9b4b]" size={18} aria-hidden="true" />
+                <input
+                  type="search"
+                  name="search"
+                  placeholder={searchPlaceholder}
+                  className="h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-11 pr-4 text-sm outline-none focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
+                />
+              </form>
+
+              <nav className="mt-4 grid gap-2" aria-label="Menu di động">
+                {navItems.map((item) => {
+                  const active = isNavActive(pathname, item.href);
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={closeMenu}
+                      className={cn(
+                        'rounded-[1.25rem] border px-4 py-3 text-base font-semibold',
+                        active ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#e8e4d8] bg-[#fafaf6] text-[#1f2233]'
+                      )}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="mt-4 grid gap-2 border-t border-[#ece8dd] pt-4">
+                <Link
+                  href={navCta.href}
+                  onClick={closeMenu}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)]"
+                >
+                  <LogIn size={18} aria-hidden="true" />
+                  {navCta.label}
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </header>
+    );
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">

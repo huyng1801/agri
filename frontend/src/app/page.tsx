@@ -80,6 +80,15 @@ type OutcomeTile = {
   icon: LucideIcon;
 };
 
+const internalPartnerGradients = [
+  "bg-[linear-gradient(135deg,#090d1d_0%,#131935_46%,#1b2450_100%)]",
+  "bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]",
+  "bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]",
+  "bg-[linear-gradient(135deg,#1f2937_0%,#1f4f46_48%,#2b8a3e_100%)]",
+  "bg-[linear-gradient(135deg,#17314b_0%,#14556a_52%,#1f9b4b_100%)]",
+  "bg-[linear-gradient(135deg,#111827_0%,#24415f_42%,#2f7d4f_100%)]",
+] as const;
+
 function cooperativeMonogram(name: string) {
   return name
     .replace(/^HTX\s+/i, "")
@@ -358,10 +367,10 @@ export default async function HomePage() {
       ? "Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn."
       : "Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.";
   const partnerTitle = isInternal
-    ? "Đối tác"
+    ? "HTX đang vận hành"
     : "Đối tác công khai trong hệ sinh thái";
   const partnerDescription = isInternal
-    ? "Các HTX và đơn vị trong hệ sinh thái được đưa về một dải nhận diện gọn, sáng và dễ quét hơn thay vì card hồ sơ dày thông tin."
+    ? "Mỗi hợp tác xã được đưa về một thẻ nhận diện lớn, rõ và dễ quét hơn để đúng nhịp mobile-first thay vì các ô logo nhỏ khó nhớ."
     : "Giữ cảm giác một dải nhận diện đối tác gọn, sáng và dễ quét hơn thay vì các card hồ sơ nặng thông tin.";
   const partnerItems = featuredCooperatives.length
     ? featuredCooperatives
@@ -1289,26 +1298,60 @@ export default async function HomePage() {
           {partnerItems.length ? (
             isInternal ? (
               <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-5">
-                <div className="-mx-1 flex items-center gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-6 lg:overflow-visible lg:px-0 lg:pb-0">
-                  {partnerItems.map((cooperative, index) => (
+                <div className="-mx-1 flex items-stretch gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-6">
+                  {partnerItems.map((cooperative, index) => {
+                    const gradient = internalPartnerGradients[index % internalPartnerGradients.length];
+                    return (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group min-w-[10rem] shrink-0 rounded-[1.55rem] border border-transparent px-3 py-4 text-center transition hover:-translate-y-0.5 hover:border-[#e5eadf] hover:bg-[#f8fbf7] lg:min-w-0"
+                      className="group relative min-w-[16rem] shrink-0 overflow-hidden rounded-[1.65rem] px-4 py-4 text-white shadow-[0_18px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 lg:min-w-0"
                     >
-                      <span className="mx-auto grid h-16 w-16 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-[linear-gradient(180deg,#ffffff_0%,#f6fbf4_100%)] shadow-[0_10px_24px_rgba(15,23,42,0.05)] sm:h-20 sm:w-20">
-                        <span className="text-[0.88rem] font-extrabold uppercase tracking-[0.08em] text-[#1f9b4b] sm:text-[1.02rem]">
-                          {cooperativeMonogram(cooperative.name)}
-                        </span>
-                      </span>
-                      <p className="mt-3 line-clamp-2 text-[0.82rem] font-extrabold uppercase tracking-[0.06em] leading-5 text-[#1f2233] sm:text-[0.9rem]">
-                        {cooperative.name}
-                      </p>
-                      <p className="mt-1 text-[0.72rem] text-slate-500">
-                        {cooperative.province || "Việt Nam"}
-                      </p>
+                      <div className={cn("absolute inset-0", gradient)} />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 opacity-80"
+                        style={{
+                          background:
+                            "radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)",
+                        }}
+                      />
+                      <div className="relative flex h-full flex-col">
+                        <div className="flex items-start gap-3">
+                          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border border-white/18 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] sm:h-20 sm:w-20">
+                            {cooperative.avatarUrl ? (
+                              <PublicImage
+                                src={cooperative.avatarUrl}
+                                alt={cooperative.name}
+                                decorative
+                                priority={index < 3}
+                                wrapperClassName="h-full w-full rounded-full"
+                                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]"
+                              />
+                            ) : (
+                              <span className="text-[0.88rem] font-extrabold uppercase tracking-[0.08em] text-white sm:text-[1.02rem]">
+                                {cooperativeMonogram(cooperative.name)}
+                              </span>
+                            )}
+                          </span>
+                          <span className="min-w-0">
+                            <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
+                              HTX vận hành
+                            </span>
+                            <span className="mt-1 block line-clamp-2 text-[1rem] font-extrabold leading-tight sm:text-[1.08rem]">
+                              {cooperative.name}
+                            </span>
+                            <span className="mt-2 block text-sm leading-6 text-white/84">
+                              {cooperative.province || "Việt Nam"}
+                            </span>
+                          </span>
+                        </div>
+                        <div className="mt-4 rounded-[1.15rem] border border-white/14 bg-white/10 px-3 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/86">
+                          Hồ sơ HTX · Dữ liệu nội bộ sẵn sàng đồng bộ
+                        </div>
+                      </div>
                     </Link>
-                  ))}
+                  )})}
                 </div>
               </div>
             ) : (

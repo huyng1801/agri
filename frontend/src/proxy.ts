@@ -29,7 +29,7 @@ const PUBLIC_MARKETPLACE_PATHS = [
 ];
 
 const PASSPORT_PATHS = ['/passport', '/qr'];
-const INTERNAL_MARKETPLACE_REDIRECT_PATHS = ['/san-pham', '/htx', '/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang', '/tin-tuc'];
+const INTERNAL_MARKETPLACE_REDIRECT_PATHS = ['/san-pham', '/htx', '/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
 
 export function proxy(request: NextRequest) {
   const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
