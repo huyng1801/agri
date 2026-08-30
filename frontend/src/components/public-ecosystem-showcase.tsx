@@ -99,8 +99,7 @@ export function PublicEcosystemShowcase({
       <div
         className={cn(
           'grid gap-4',
-          demeterLike &&
-            '-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 xl:grid-cols-3'
+          demeterLike && 'gap-4 sm:gap-5'
         )}
       >
         {ecosystemCards.map((card, index) => {
@@ -113,59 +112,82 @@ export function PublicEcosystemShowcase({
                 key={card.key}
                 href={card.href}
                 className={cn(
-                  'group w-[min(82vw,21rem)] shrink-0 snap-start overflow-hidden rounded-[1.9rem] border border-[#e4eadf] bg-white p-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(15,23,42,0.08)] md:w-auto',
-                  compact && 'rounded-[1.6rem]',
-                  isCurrent && 'ring-2 ring-[#9fe2b1]/70'
+                  'group relative overflow-hidden rounded-[2rem] shadow-[0_28px_60px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1',
+                  compact && 'rounded-[1.6rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)]'
                 )}
               >
                 <div
                   className={cn(
-                    'relative overflow-hidden rounded-[1.6rem] border border-[#e1e8de] aspect-[1/1.02] p-4',
-                    demeterStyle.surface,
-                    compact && 'aspect-[1/0.95]'
+                    'relative overflow-hidden px-5 py-5 text-white sm:px-7 sm:py-6',
+                    card.gradientClassName,
+                    compact && 'px-4 py-4'
                   )}
                 >
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.82),transparent_36%)]" aria-hidden="true" />
-                  <div className="absolute left-1/2 top-6 h-24 w-24 -translate-x-1/2 rounded-full bg-white/70 blur-3xl" aria-hidden="true" />
-                  <div className="absolute inset-x-0 top-7 flex justify-center">
-                    <div
-                      className={cn(
-                        'grid h-[7.5rem] w-[7.5rem] place-items-center rounded-full border-[5px] bg-white shadow-[0_18px_34px_rgba(15,23,42,0.08)]',
-                        demeterStyle.ring
-                      )}
-                    >
-                      <Icon size={compact ? 44 : 52} strokeWidth={1.7} aria-hidden="true" className={demeterStyle.icon} />
-                    </div>
-                  </div>
-                  <div className="absolute inset-x-4 bottom-4 flex items-center justify-between gap-2">
-                    <span className={cn('inline-flex min-h-8 items-center rounded-full px-3 text-[0.74rem] font-semibold', demeterStyle.badge)}>
-                      {card.signal}
-                    </span>
-                    {isCurrent ? (
-                      <span className="inline-flex min-h-8 items-center rounded-full border border-white/80 bg-white/86 px-3 text-[0.72rem] font-semibold text-[#1f2233] shadow-sm">
-                        Đang xem
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-80"
+                    style={{
+                      background:
+                        'radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(255,255,255,0.12), transparent 24%)'
+                    }}
+                  />
 
-                <div className="px-1 pb-1 pt-4">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">{card.label}</p>
-                  <h3
+                  <div
                     className={cn(
-                      'mt-2 text-[1.06rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1f9b4b] sm:text-[1.28rem]',
-                      compact && 'text-[1rem] sm:text-[1.18rem]'
+                      'relative grid gap-5 md:grid-cols-[8rem_1fr] md:items-center lg:grid-cols-[9rem_1fr]',
+                      compact && 'md:grid-cols-[6rem_1fr] lg:grid-cols-[7rem_1fr]'
                     )}
                   >
-                    {card.name}
-                  </h3>
-                  <p className={cn('mt-2 text-[0.96rem] leading-7 text-[#1f2233]', compact && 'text-sm leading-6')}>
-                    {card.description}
-                  </p>
-                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-[#1f2233]">
-                    Mở nền tảng
-                    <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
-                  </span>
+                    <div
+                      className={cn(
+                        'flex h-[6.8rem] w-[6.8rem] shrink-0 items-center justify-center rounded-full border border-white/16 bg-white/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] md:h-[7.4rem] md:w-[7.4rem]',
+                        compact && 'h-[5rem] w-[5rem]'
+                      )}
+                    >
+                      <Icon size={compact ? 34 : 50} strokeWidth={1.8} aria-hidden="true" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[rgba(255,255,255,0.72)]">
+                        <span>{card.label}</span>
+                        <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
+                        <span>0{index + 1}</span>
+                        {isCurrent ? (
+                          <>
+                            <span className="inline-flex h-1.5 w-1.5 rounded-full bg-white/65" aria-hidden="true" />
+                            <span>Đang mở</span>
+                          </>
+                        ) : null}
+                      </div>
+
+                      <h3
+                        className={cn(
+                          'mt-3 text-[1.48rem] font-extrabold leading-[1.05] tracking-[-0.03em] sm:text-[2.05rem]',
+                          compact && 'text-[1.15rem] sm:text-[1.45rem]'
+                        )}
+                      >
+                        {card.name}
+                      </h3>
+                      <p
+                        className={cn(
+                          'mt-2 max-w-3xl text-[0.98rem] leading-[1.72] text-[rgba(255,255,255,0.88)] sm:text-[1.04rem]',
+                          compact && 'text-sm leading-6'
+                        )}
+                      >
+                        {card.description}
+                      </p>
+
+                      <div className="mt-4 flex flex-wrap items-center gap-3">
+                        <span className={cn('inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold', demeterStyle.badge)}>
+                          {card.signal}
+                        </span>
+                        <span className="inline-flex min-h-10 items-center gap-2 text-sm font-bold text-white">
+                          {isCurrent ? 'Đang xem' : 'Mở nền tảng'}
+                          <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </a>
             );
