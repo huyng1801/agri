@@ -79,41 +79,40 @@ export function PublicHeader({
         </div>
 
         <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-          <div className="flex min-h-[82px] items-center gap-3 py-3 md:hidden">
+          <div className="flex min-h-[72px] items-center justify-between gap-3 py-2.5 md:hidden">
             <button
               type="button"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f9b4b] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#16753d]"
+              className="grid h-10 w-10 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? <X size={21} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+              {menuOpen ? <X size={21} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             </button>
 
-            <Link href="/" className="flex min-w-0 flex-1 items-center gap-2.5" aria-label={`${appName} - Trang chủ`}>
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
-                <PublicLogo size={28} className="h-7 w-7" />
+            <Link href="/" className="flex items-center" aria-label={`${appName} - Trang chủ`}>
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
+                <PublicLogo size={30} className="h-[30px] w-[30px]" />
               </span>
-              <span className="min-w-0">
-                <span className="block text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Quản trị nội bộ</span>
-                <span className="block truncate text-[1.02rem] font-extrabold tracking-[-0.03em] text-[#111827]">{appName}</span>
-              </span>
+              <span className="sr-only">{appName}</span>
             </Link>
 
-            <Link
-              href={searchTarget}
-              aria-label="Tìm kiếm"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
-            >
-              <Search size={19} aria-hidden="true" />
-            </Link>
-            <Link
-              href={navCta.href}
-              aria-label={navCta.label}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f2233] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-            >
-              <Briefcase size={18} aria-hidden="true" />
-            </Link>
+            <div className="ml-auto flex items-center gap-2.5">
+              <Link
+                href={searchTarget}
+                aria-label="Tìm kiếm"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
+              >
+                <Search size={20} aria-hidden="true" />
+              </Link>
+              <Link
+                href={navCta.href}
+                aria-label={navCta.label}
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f2233] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+              >
+                <Briefcase size={18} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
 
           <div className="hidden min-h-[98px] items-center gap-6 py-4 md:flex">
@@ -187,7 +186,7 @@ export function PublicHeader({
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-x-0 bottom-0 top-[7.8rem] z-40 md:hidden">
+          <div className="fixed inset-x-0 bottom-0 top-[6.7rem] z-40 md:hidden">
             <button type="button" className="absolute inset-0 bg-[#13231a]/24 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
             <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
               <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">

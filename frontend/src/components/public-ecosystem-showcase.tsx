@@ -72,10 +72,71 @@ export function PublicEcosystemShowcase({
         </div>
       ) : null}
 
-      <div className="grid gap-4">
+      <div className={cn('grid gap-4', demeterLike && 'gap-5')}>
         {ecosystemCards.map((card, index) => {
           const Icon = card.icon;
           const isCurrent = siteKey === card.key;
+          if (demeterLike) {
+            return (
+              <a
+                key={card.key}
+                href={card.href}
+                className={cn(
+                  'group relative overflow-hidden rounded-[2rem] shadow-[0_28px_60px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1',
+                  compact && 'rounded-[1.6rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)]',
+                  isCurrent && 'ring-2 ring-[#a6e6b3]/80'
+                )}
+              >
+                <div
+                  className={cn(
+                    'relative min-h-[10.75rem] overflow-hidden px-4 py-4 text-white sm:min-h-[13.5rem] sm:px-7 sm:py-6',
+                    card.gradientClassName,
+                    compact && 'min-h-[10rem] px-4 py-4'
+                  )}
+                >
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 opacity-80"
+                    style={{
+                      background:
+                        'radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 20%, rgba(255,255,255,0.12), transparent 24%)'
+                    }}
+                  />
+                  <div className="relative flex h-full items-center gap-3 sm:gap-6">
+                    <div className="grid h-[4.85rem] w-[4.85rem] shrink-0 place-items-center rounded-full border border-white/20 bg-white/6 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)] sm:h-[7rem] sm:w-[7rem]">
+                      <Icon size={compact ? 32 : 38} strokeWidth={1.8} aria-hidden="true" />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/72 sm:text-[0.78rem]">
+                        {card.label}
+                      </p>
+                      <h3
+                        className={cn(
+                          'mt-1 text-[1.08rem] font-extrabold leading-[1.04] tracking-[-0.03em] sm:mt-2 sm:text-[2rem]',
+                          compact && 'text-[1.08rem] sm:text-[1.32rem]'
+                        )}
+                      >
+                        {card.name}
+                      </h3>
+                      <p
+                        className={cn(
+                          'mt-2 max-w-2xl text-[0.8rem] leading-6 text-white/88 sm:mt-3 sm:text-[1.02rem] sm:leading-8',
+                          compact && 'text-sm leading-6'
+                        )}
+                      >
+                        {card.description}
+                      </p>
+                      <div className="mt-3 inline-flex min-h-9 items-center rounded-full border border-white/16 bg-black/16 px-3 text-[0.78rem] font-semibold text-white/92 sm:mt-4 sm:min-h-10 sm:px-4 sm:text-sm">
+                        {isCurrent ? 'Đang là giao diện bạn đang xem' : card.signal}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            );
+          }
+
           return (
             <a
               key={card.key}

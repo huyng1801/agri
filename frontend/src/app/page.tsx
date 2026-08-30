@@ -718,196 +718,179 @@ export default async function HomePage() {
 
   const internalHeroSection = (
     <section className="border-b border-[#ece8dd] bg-white">
-      <div className="relative isolate overflow-hidden border-y border-[#e4eadf] bg-[#f8fbf7]">
-        <PublicImage
-          src={siteProfile.pageContent.homeImageUrl}
-          alt={
-            siteProfile.pageContent.homeImageAlt ||
-            siteProfile.pageContent.homeTitle
-          }
-          wrapperClassName="absolute inset-0 h-full w-full"
-          className="h-full w-full object-cover object-[72%_center] sm:object-center"
-          priority
-          fallback={internalHeroPreviewImage}
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.62)_30%,rgba(255,255,255,0.92)_76%,rgba(255,255,255,0.98)_100%)] lg:bg-[linear-gradient(90deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.92)_48%,rgba(255,255,255,0.6)_78%,rgba(255,255,255,0.18)_100%)]" />
-        <div
-          className="absolute inset-x-0 top-0 h-[10rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.88)_62%,rgba(255,255,255,0)_100%)] sm:hidden"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute left-0 top-0 h-[11rem] w-[62%] bg-[radial-gradient(circle_at_left_top,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.92)_44%,rgba(255,255,255,0)_100%)] sm:hidden"
-          aria-hidden="true"
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 opacity-90"
-          style={{
-            background:
-              "radial-gradient(circle at 14% 18%, rgba(255,255,255,0.78), transparent 22%), radial-gradient(circle at 84% 18%, rgba(255,255,255,0.56), transparent 20%), radial-gradient(circle at 18% 80%, rgba(119,201,94,0.14), transparent 18%), radial-gradient(circle at 82% 78%, rgba(13,111,128,0.14), transparent 18%)",
-          }}
-        />
-        <div
-          className="absolute left-[4%] top-[12%] h-20 w-20 rounded-full bg-white/36 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute right-[6%] top-[16%] h-24 w-24 rounded-full bg-[#77c95e]/20 blur-3xl"
-          aria-hidden="true"
-        />
-        <div
-          className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.82)_70%,#ffffff_100%)] lg:h-24"
-          aria-hidden="true"
-        />
+      <div className={cn(publicContainerClass, "py-4 sm:py-5 lg:py-6")}>
+        <div className="overflow-hidden rounded-[2rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)]">
+          <div className="relative isolate min-h-[12.25rem] overflow-hidden border-b border-[#e4eadf] bg-[#f8fbf7] sm:min-h-[20rem] lg:min-h-[27rem]">
+            <PublicImage
+              src={siteProfile.pageContent.homeImageUrl}
+              alt={
+                siteProfile.pageContent.homeImageAlt ||
+                siteProfile.pageContent.homeTitle
+              }
+              wrapperClassName="absolute inset-0 h-full w-full"
+              className="h-full w-full object-cover object-center"
+              priority
+              fallback={internalHeroPreviewImage}
+            />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.64)_36%,rgba(255,255,255,0.92)_100%)] lg:bg-[linear-gradient(90deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.9)_50%,rgba(255,255,255,0.46)_82%,rgba(255,255,255,0.18)_100%)]" />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-90"
+              style={{
+                background:
+                  "radial-gradient(circle at 12% 15%, rgba(255,255,255,0.82), transparent 20%), radial-gradient(circle at 88% 16%, rgba(255,255,255,0.6), transparent 20%), radial-gradient(circle at 18% 82%, rgba(119,201,94,0.12), transparent 18%), radial-gradient(circle at 82% 82%, rgba(13,111,128,0.12), transparent 18%)",
+              }}
+            />
+            <div
+              className="absolute left-[3%] top-[16%] h-16 w-16 rounded-full bg-white/36 blur-3xl sm:h-24 sm:w-24"
+              aria-hidden="true"
+            />
+            <div
+              className="absolute right-[5%] top-[12%] h-20 w-20 rounded-full bg-[#77c95e]/22 blur-3xl sm:h-28 sm:w-28"
+              aria-hidden="true"
+            />
 
-        <div
-          className={cn(
-            publicContainerClass,
-            "relative min-h-[22rem] px-4 py-4 sm:min-h-[27rem] sm:px-5 sm:py-6 lg:min-h-[31rem] lg:px-6 lg:py-9",
-          )}
-        >
-          <div className="absolute left-[-0.4rem] bottom-0 z-10 w-[5.6rem] sm:left-0 sm:w-[8rem] lg:left-2 lg:w-[13.6rem]">
-            <div className="relative">
-              <div
-                className="absolute inset-0 rounded-[2.2rem] bg-[#0d6f80]/16 blur-2xl"
-                aria-hidden="true"
-              />
-              <div className="relative overflow-hidden rounded-[1.9rem] border-[4px] border-[#22283a] bg-white p-1.5 shadow-[0_22px_46px_rgba(15,23,42,0.24)] sm:rounded-[2.2rem] sm:border-[5px] sm:p-2 lg:border-[6px] lg:p-2.5">
+            <div className="absolute bottom-0 left-0 z-10 w-[3.7rem] sm:w-[8rem] lg:left-3 lg:w-[13.4rem]">
+              <div className="relative">
                 <div
-                  className="mx-auto mb-1.5 h-2.5 w-8 rounded-full bg-[#22283a] sm:mb-2 sm:h-3 sm:w-12 lg:h-4 lg:w-16"
+                  className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
                   aria-hidden="true"
                 />
-                <div className="rounded-[1.15rem] bg-[linear-gradient(180deg,#ffffff_0%,#f5fbf3_58%,#eef7fb_100%)] p-1.5 sm:rounded-[1.35rem] sm:p-2.5 lg:p-3">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-7 sm:w-7 lg:h-9 lg:w-9">
-                      <PublicLogo
-                        size={18}
-                        className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px] lg:h-[22px] lg:w-[22px]"
-                      />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-[0.32rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e] sm:text-[0.42rem] lg:text-[0.55rem]">
-                        Điều phối HTX
+                <div className="relative overflow-hidden rounded-t-[2rem] border-[4px] border-b-0 border-[#22283a] bg-white p-1.5 shadow-[0_22px_46px_rgba(15,23,42,0.22)] sm:rounded-t-[2.2rem] sm:border-[5px] sm:border-b-0 sm:p-2 lg:rounded-t-[2.5rem] lg:border-[6px] lg:border-b-0 lg:p-2.5">
+                  <div
+                    className="mx-auto mb-1.5 h-2.5 w-8 rounded-full bg-[#22283a] sm:mb-2 sm:h-3 sm:w-12 lg:h-4 lg:w-16"
+                    aria-hidden="true"
+                  />
+                  <div className="rounded-[1rem] bg-[linear-gradient(180deg,#ffffff_0%,#f5fbf3_58%,#eef7fb_100%)] p-1.5 sm:rounded-[1.25rem] sm:p-2.5 lg:rounded-[1.5rem] lg:p-3">
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-7 sm:w-7 lg:h-9 lg:w-9">
+                        <PublicLogo
+                          size={18}
+                          className="h-3.5 w-3.5 sm:h-[18px] sm:w-[18px] lg:h-[22px] lg:w-[22px]"
+                        />
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-[0.32rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e] sm:text-[0.42rem] lg:text-[0.55rem]">
+                          Điều phối HTX
+                        </p>
+                        <p className="truncate text-[0.52rem] font-extrabold text-[#1f2233] sm:text-[0.68rem] lg:text-sm">
+                          HTXONLINE
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-2 rounded-[0.95rem] bg-[linear-gradient(135deg,#128a42_0%,#1f9b4b_100%)] px-2 py-2 text-white shadow-[0_12px_22px_rgba(31,155,75,0.22)] sm:mt-2.5 sm:rounded-[1.1rem] sm:px-2.5 sm:py-2.5 lg:rounded-[1.2rem] lg:p-3">
+                      <p className="text-[0.34rem] font-semibold uppercase tracking-[0.12em] text-white/78 sm:text-[0.42rem] lg:text-[0.52rem]">
+                        Dữ liệu nội bộ
                       </p>
-                      <p className="truncate text-[0.52rem] font-extrabold text-[#1f2233] sm:text-[0.68rem] lg:text-sm">
-                        HTXONLINE
+                      <p className="mt-1 text-[0.54rem] font-extrabold leading-tight sm:text-[0.72rem] lg:text-sm">
+                        Xã viên, thu chi, nhập xuất
                       </p>
                     </div>
-                  </div>
-                  <div className="mt-2 rounded-[0.95rem] bg-[linear-gradient(135deg,#128a42_0%,#1f9b4b_100%)] px-2 py-2 text-white shadow-[0_12px_22px_rgba(31,155,75,0.24)] sm:mt-2.5 sm:rounded-[1.1rem] sm:px-2.5 sm:py-2.5 lg:rounded-[1.2rem] lg:p-3">
-                    <p className="text-[0.34rem] font-semibold uppercase tracking-[0.12em] text-white/78 sm:text-[0.42rem] lg:text-[0.52rem]">
-                      Dữ liệu nội bộ
-                    </p>
-                    <p className="mt-1 text-[0.54rem] font-extrabold leading-tight sm:text-[0.72rem] lg:text-sm">
-                      Xã viên, thu chi, nhập xuất
-                    </p>
-                  </div>
-                  <div className="mt-2 rounded-full border border-[#dfe8dc] bg-white/92 px-2 py-1 text-center text-[0.36rem] font-semibold uppercase tracking-[0.12em] text-[#0f7d63] shadow-sm sm:px-2.5 sm:py-1.5 sm:text-[0.44rem] lg:text-[0.58rem]">
-                    Đồng bộ sang AGRI
+                    <div className="mt-2 rounded-full border border-[#dfe8dc] bg-white/92 px-2 py-1 text-center text-[0.36rem] font-semibold uppercase tracking-[0.12em] text-[#0f7d63] shadow-sm sm:px-2.5 sm:py-1.5 sm:text-[0.44rem] lg:text-[0.58rem]">
+                      Đồng bộ sang AGRI
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="absolute right-[-0.45rem] bottom-0 z-10 w-[7rem] sm:right-0 sm:w-[9rem] lg:right-0 lg:w-[15rem]">
-            <div className="relative overflow-hidden rounded-[1.65rem] border border-white/70 bg-white/84 p-2 shadow-[0_20px_40px_rgba(15,23,42,0.12)] backdrop-blur sm:rounded-[1.9rem] sm:p-2.5 lg:p-3">
-              <PublicImage
-                src={siteProfile.pageContent.aboutImageUrl}
-                alt={
-                  siteProfile.pageContent.aboutImageAlt ||
-                  internalHeroPreviewAlt
-                }
-                fallback={internalHeroPreviewImage}
-                wrapperClassName="aspect-[10/13] w-full overflow-hidden rounded-[1.25rem] bg-[linear-gradient(180deg,#eef6ef_0%,#ffffff_100%)] sm:rounded-[1.45rem]"
-                className="h-full w-full object-cover object-center"
-                priority
-              />
-              <div className="absolute inset-x-2 bottom-2 rounded-[1rem] bg-[linear-gradient(180deg,rgba(9,17,18,0.04)_0%,rgba(9,17,18,0.74)_100%)] p-2.5 text-white sm:inset-x-3 sm:bottom-3 sm:rounded-[1.1rem] sm:p-3">
-                <p className="text-[0.48rem] font-semibold uppercase tracking-[0.18em] text-white/72 sm:text-[0.56rem]">
-                  Điểm triển khai
-                </p>
-                <p className="mt-1 text-[0.68rem] font-extrabold leading-4 sm:text-[0.82rem] sm:leading-5 lg:text-sm">
-                  {heroPreviewCooperative?.name || "Hệ sinh thái HTXONLINE"}
-                </p>
-                <p className="mt-1 text-[0.56rem] leading-4 text-white/82 sm:text-[0.64rem] lg:text-[0.72rem]">
-                  {heroPreviewProducts[0]?.name ||
-                    heroPreviewCooperative?.province ||
-                    "Kết nối dữ liệu nội bộ với sản phẩm công khai và QR."}
-                </p>
+            <div className="absolute bottom-0 right-0 z-10 w-[4.25rem] sm:w-[9rem] lg:w-[15rem]">
+              <div className="relative overflow-hidden rounded-tl-[1.5rem] border border-b-0 border-r-0 border-white/70 bg-white/84 p-1.5 shadow-[0_20px_40px_rgba(15,23,42,0.12)] backdrop-blur sm:rounded-tl-[1.9rem] sm:p-2.5 lg:rounded-tl-[2.2rem] lg:p-3">
+                <PublicImage
+                  src={siteProfile.pageContent.aboutImageUrl}
+                  alt={
+                    siteProfile.pageContent.aboutImageAlt ||
+                    internalHeroPreviewAlt
+                  }
+                  fallback={internalHeroPreviewImage}
+                  wrapperClassName="aspect-[10/13] w-full overflow-hidden rounded-tl-[1.15rem] bg-[linear-gradient(180deg,#eef6ef_0%,#ffffff_100%)] sm:rounded-tl-[1.45rem]"
+                  className="h-full w-full object-cover object-center"
+                  priority
+                />
+                <div className="absolute inset-x-2 bottom-2 hidden rounded-[1rem] bg-[linear-gradient(180deg,rgba(9,17,18,0.04)_0%,rgba(9,17,18,0.74)_100%)] p-2 text-white sm:block sm:inset-x-3 sm:bottom-3 sm:rounded-[1.1rem] sm:p-3">
+                  <p className="text-[0.44rem] font-semibold uppercase tracking-[0.18em] text-white/72 sm:text-[0.56rem]">
+                    Điểm triển khai
+                  </p>
+                  <p className="mt-1 text-[0.62rem] font-extrabold leading-4 sm:text-[0.82rem] sm:leading-5 lg:text-sm">
+                    {heroPreviewCooperative?.name || "Hệ sinh thái HTXONLINE"}
+                  </p>
+                  <p className="mt-1 text-[0.54rem] leading-4 text-white/82 sm:text-[0.64rem] lg:text-[0.72rem]">
+                    {heroPreviewProducts[0]?.name ||
+                      heroPreviewCooperative?.province ||
+                      "Kết nối dữ liệu nội bộ với sản phẩm công khai và QR."}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="relative z-20 mx-auto flex min-h-[15rem] max-w-[17rem] flex-col items-center justify-center px-[3.9rem] pt-2 text-center sm:min-h-[18rem] sm:max-w-[24rem] sm:px-[5.6rem] sm:pt-4 lg:min-h-[22rem] lg:max-w-[39rem] lg:px-0 lg:pt-0">
-            <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-              <span className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/80 bg-white/90 px-2.5 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-6 sm:w-6 lg:h-7 lg:w-7">
-                  <PublicLogo
-                    size={16}
-                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-[18px] lg:w-[18px]"
-                  />
-                </span>
-                HTXONLINE
-              </span>
-              <span className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-[#3d5871] sm:text-xs lg:text-sm">
-                x
-              </span>
-              <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-2.5 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
-                AGRIPASSPORT
-              </span>
-            </div>
-
-            <p className="mt-3 text-[0.56rem] font-semibold uppercase tracking-[0.26em] text-[#2b8a3e] sm:text-[0.64rem] lg:text-[0.78rem]">
-              Hệ sinh thái vận hành số
-            </p>
-            <h1 className="mx-auto mt-2 max-w-[10ch] text-[1.85rem] font-extrabold leading-[0.92] tracking-[-0.055em] text-[#0d6f80] sm:max-w-[10.5ch] sm:text-[2.85rem] lg:max-w-[10.8ch] lg:text-[4.2rem]">
-              Cùng HTX kiến tạo vận hành số bền vững
-            </h1>
-            <p className="mx-auto mt-2.5 max-w-[30rem] text-[0.74rem] leading-5 text-[#31556d] sm:text-[0.9rem] sm:leading-6 lg:max-w-[33rem] lg:text-[1.08rem] lg:leading-7">
-              Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang
-              AGRIPASSPORT khi cần công khai và truy xuất QR.
-            </p>
-
-            <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-[#0d6f80] px-3 py-2 text-[0.62rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.24)] sm:px-4 sm:text-[0.72rem] lg:text-sm">
-              <span>{featuredCooperatives.length} HTX đang hiển thị</span>
-              <span className="opacity-45">•</span>
-              <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
-              <span className="hidden sm:inline opacity-45">•</span>
-              <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
-            </div>
-
-            <div className="mt-3 flex w-full max-w-[14rem] flex-col gap-2 sm:max-w-none sm:flex-row sm:flex-wrap sm:items-center sm:justify-center">
-              <Link
-                href={primaryCta.href}
-                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-4 text-[0.8rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-sm"
-              >
-                {primaryCta.label}
-                <ArrowRight size={15} aria-hidden="true" />
-              </Link>
-              {secondaryCta.external ? (
-                <a
-                  href={secondaryCta.href}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.8rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-5 sm:text-sm"
-                >
-                  {secondaryCta.label}
-                </a>
-              ) : (
-                <Link
-                  href={secondaryCta.href}
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.8rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-5 sm:text-sm"
-                >
-                  {secondaryCta.label}
-                </Link>
+            <div
+              className={cn(
+                publicContainerClass,
+                "relative z-20 flex min-h-[12.25rem] flex-col items-center justify-center px-[2.9rem] py-3 text-center sm:min-h-[20rem] sm:px-[8.5rem] sm:py-6 lg:min-h-[27rem] lg:px-[13rem] lg:py-8",
               )}
-            </div>
-          </div>
+            >
+              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
+                <span className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/80 bg-white/90 px-2.5 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
+                  <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-6 sm:w-6 lg:h-7 lg:w-7">
+                    <PublicLogo
+                      size={16}
+                      className="h-3.5 w-3.5 sm:h-4 sm:w-4 lg:h-[18px] lg:w-[18px]"
+                    />
+                  </span>
+                  HTXONLINE
+                </span>
+                <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#3d5871] sm:text-xs lg:text-sm">
+                  x
+                </span>
+                <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-2.5 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
+                  AGRIPASSPORT
+                </span>
+              </div>
 
-          <div className="absolute left-[24%] top-[18%] hidden rounded-full border border-white/70 bg-white/84 px-3 py-1.5 text-[0.66rem] font-semibold text-[#0f7d63] shadow-sm backdrop-blur lg:inline-flex">
-            Quản trị HTX
-          </div>
-          <div className="absolute right-[18%] top-[20%] hidden rounded-full border border-white/70 bg-white/84 px-3 py-1.5 text-[0.66rem] font-semibold text-[#1f2233] shadow-sm backdrop-blur lg:inline-flex">
-            Sản phẩm công khai
+              <p className="mt-3 text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-[0.64rem] lg:text-[0.8rem]">
+                Hệ sinh thái vận hành số
+              </p>
+              <h1 className="mx-auto mt-2 max-w-[13ch] text-[1.14rem] font-extrabold leading-[0.98] tracking-[-0.045em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.65rem] lg:max-w-[11ch] lg:text-[4rem]">
+                Cùng HTX kiến tạo vận hành số bền vững
+              </h1>
+              <p className="mx-auto mt-1.5 max-w-[13.5rem] text-[0.6rem] leading-4 text-[#31556d] sm:max-w-[29rem] sm:text-[0.92rem] sm:leading-6 lg:max-w-[32rem] lg:text-[1.08rem] lg:leading-7">
+                Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang
+                AGRIPASSPORT khi cần công khai và truy xuất QR.
+              </p>
+
+              <div className="mt-2.5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.54rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:px-4 sm:py-2 sm:text-[0.72rem] lg:text-sm">
+                <span>{featuredCooperatives.length} HTX đang hiển thị</span>
+                <span className="opacity-45">•</span>
+                <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
+                <span className="hidden sm:inline opacity-45">•</span>
+                <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
+              </div>
+
+              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2">
+                <Link
+                  href={primaryCta.href}
+                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-4 text-[0.72rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-sm"
+                >
+                  {primaryCta.label}
+                  <ArrowRight size={15} aria-hidden="true" />
+                </Link>
+                {secondaryCta.external ? (
+                  <a
+                    href={secondaryCta.href}
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-5 sm:text-sm"
+                  >
+                    {secondaryCta.label}
+                  </a>
+                ) : (
+                  <Link
+                    href={secondaryCta.href}
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-5 sm:text-sm"
+                  >
+                    {secondaryCta.label}
+                  </Link>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
