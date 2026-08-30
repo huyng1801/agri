@@ -97,8 +97,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
     return (
       <footer className="mt-12 border-t border-[#e6ece0] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">
         <div className={publicContainerClass}>
-          <div className="py-10 sm:py-12">
-            <div className="grid gap-5 border-b border-[#e4eadf] pb-8 sm:grid-cols-2 lg:grid-cols-[0.78fr_1.12fr_0.78fr_0.9fr]">
+          <div className="py-8 sm:py-10">
+            <div className="grid gap-5 border-b border-[#e4eadf] pb-8 sm:grid-cols-2 lg:grid-cols-[0.88fr_0.98fr_1.14fr_0.9fr]">
               <div className="sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-3">
                   <span className="grid h-14 w-14 place-items-center rounded-full border border-[#dce7d9] bg-[#1d2436] shadow-[0_14px_30px_rgba(15,23,42,0.08)]">
@@ -150,7 +150,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                 <p className="mt-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#1f2233]">
                   Theo dõi vận hành
                 </p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
+                <p className="mt-2 max-w-sm text-sm leading-6 text-slate-600">
                   {supportNote}
                 </p>
               </div>
@@ -184,17 +184,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   </a>
                 </div>
 
-                <div className="mt-5 rounded-[1.5rem] border border-[#dde8db] bg-white px-4 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.05)]">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                    Dữ liệu công khai kết nối
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {transparencyText}
-                  </p>
-                </div>
+                <p className="mt-5 rounded-[1.35rem] bg-[#f3f8f1] px-4 py-3 text-sm leading-6 text-slate-600 ring-1 ring-[#dbe6d7]">
+                  {transparencyText}
+                </p>
               </div>
 
-              <div className="grid gap-4 sm:col-span-2 sm:grid-cols-2 lg:col-span-1 lg:grid-cols-1">
+              <div className="grid gap-5 sm:col-span-2 sm:grid-cols-2 lg:col-span-1">
                 <div>
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">
                     Truy cập nhanh
@@ -204,7 +199,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="inline-flex min-h-11 items-center rounded-[1rem] border border-[#e1e8dd] bg-white px-3 py-3 text-[0.82rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                        className="inline-flex min-h-10 items-center rounded-full border border-[#e1e8dd] bg-white px-3.5 py-2 text-[0.78rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
                       >
                         {item.label}
                       </Link>
@@ -216,12 +211,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">
                     Quy trình và chính sách
                   </p>
-                  <div className="mt-4 grid gap-2">
+                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
                     {[...processLinks, ...policyLinks].map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="inline-flex min-h-11 items-center rounded-[1rem] border border-[#e1e8dd] bg-white px-3 py-3 text-[0.82rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                        className="inline-flex min-h-10 items-center rounded-full border border-[#e1e8dd] bg-white px-3.5 py-2 text-[0.78rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
                       >
                         {item.label}
                       </Link>
