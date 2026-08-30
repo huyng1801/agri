@@ -295,7 +295,7 @@ export default async function HomePage() {
       ? "Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số"
       : "Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng";
   const sectionDescription = isInternal
-    ? "Ba lớp nền tảng được kéo về đúng nhịp card gradient đậm, headline ngắn và mô tả gọn để phong cách bám sát Demeter hơn ngay từ lần chạm đầu."
+    ? "Ba lớp nền tảng được đưa về nhịp card trắng, visual lớn và mô tả ngắn hơn để cảm giác landing page gần Demeter hơn ngay từ lần chạm đầu."
     : isPassport
       ? "Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng."
       : "Theo hướng trình bày gần Demeter hơn: rõ khối chức năng, card lớn và hành trình công khai bám sát người dùng cuối.";
@@ -335,7 +335,7 @@ export default async function HomePage() {
     ? "Thắng lợi cùng hợp tác xã"
     : "Thắng lợi cùng nhà nông";
   const outcomeDescription = isInternal
-    ? "HTXONLINE vẫn là lớp vận hành nội bộ, nhưng cách trình bày được kéo về nhịp icon lớn, khoảng thở rộng và câu ngắn như landing page của Demeter."
+    ? "Giữ vai trò quản trị nội bộ, nhưng cách trình bày được kéo về nhịp landing page sáng hơn, ít chữ hơn và icon lớn hơn."
     : "Các tín hiệu quan trọng được kéo về nhịp icon, headline ngắn và khoảng thở lớn để trông gần ứng dụng native hơn trên mobile.";
   const serviceTabs = isInternal
     ? ["Tất cả", "Quản trị nội bộ", "Đồng bộ sản phẩm", "Báo cáo điều hành"]
@@ -718,8 +718,8 @@ export default async function HomePage() {
 
   const internalHeroSection = (
     <section className="border-b border-[#ece8dd] bg-white">
-      <div className={cn(publicContainerClass, "py-4 sm:py-5 lg:py-6")}>
-        <div className="overflow-hidden rounded-[2rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)]">
+      <div className={cn(publicContainerClass, "px-0 py-0 sm:px-5 sm:py-5 lg:px-6 lg:py-6")}>
+        <div className="overflow-hidden border-y border-[#e2e9da] bg-white shadow-none sm:rounded-[2rem] sm:border sm:shadow-[0_22px_48px_rgba(15,23,42,0.06)]">
           <div className="relative isolate min-h-[12.25rem] overflow-hidden border-b border-[#e4eadf] bg-[#f8fbf7] sm:min-h-[20rem] lg:min-h-[27rem]">
             <PublicImage
               src={siteProfile.pageContent.homeImageUrl}
@@ -968,7 +968,7 @@ export default async function HomePage() {
 
         <PublicSection>
           <div className="mx-auto max-w-5xl text-center">
-            <h2 className="text-[2rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:text-[3.1rem]">
+            <h2 className="mx-auto max-w-[13ch] text-[2rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]">
               {outcomeTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -979,7 +979,7 @@ export default async function HomePage() {
           {isInternal ? (
             <>
               <div className="mt-6 lg:hidden">
-                <PublicMetricCarousel items={internalOutcomeCarouselItems} />
+                <PublicMetricCarousel items={internalOutcomeCarouselItems} variant="demeter" />
               </div>
               <div className="mt-8 hidden gap-x-4 gap-y-8 lg:grid lg:grid-cols-6">
                 {internalOutcomeTiles.map((tile) => {
@@ -989,16 +989,16 @@ export default async function HomePage() {
                       key={`${tile.title}-${tile.value}`}
                       className="text-center"
                     >
-                      <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                        <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
+                      <span className="mx-auto grid h-24 w-24 place-items-center rounded-full border border-[#dbe7da] bg-white text-[#4a8e5f] shadow-none">
+                        <Icon size={54} strokeWidth={1.55} aria-hidden="true" />
                       </span>
-                      <p className="mt-4 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
+                      <p className="mt-5 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
                         {tile.title}
                       </p>
-                      <p className="mt-2 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
+                      <p className="mt-3 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
                         {tile.value}
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-slate-600">
+                      <p className="mt-3 text-sm leading-6 text-slate-600">
                         {tile.description}
                       </p>
                     </article>
