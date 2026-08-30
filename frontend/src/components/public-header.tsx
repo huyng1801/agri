@@ -46,7 +46,7 @@ export function PublicHeader({
   const showCart = !isInternal;
   const supportText =
     isInternal
-      ? 'Hệ thống số quản trị nội bộ cho hợp tác xã.'
+      ? 'Điều phối dữ liệu cho hợp tác xã bền vững.'
       : siteKey === 'passport'
         ? 'QR truy xuất và hồ sơ số cho nông sản.'
         : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
@@ -75,24 +75,26 @@ export function PublicHeader({
     return (
       <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/95 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
         <div className="bg-[#1d9b49] text-white">
-          <div className="mx-auto max-w-[1220px] px-3 py-2 text-[0.8rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-[0.92rem]">{supportText}</div>
+          <div className="mx-auto max-w-[1220px] px-3 py-2 text-center text-[0.72rem] font-medium leading-5 sm:px-5 sm:text-[0.8rem] lg:px-6 lg:text-[0.92rem]">
+            {supportText}
+          </div>
         </div>
 
         <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-          <div className="flex min-h-[72px] items-center justify-between gap-3 py-2.5 md:hidden">
+          <div className="flex min-h-[74px] items-center justify-between gap-3 py-3 md:hidden">
             <button
               type="button"
-              className="grid h-10 w-10 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
+              className="grid h-11 w-11 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
             >
-              {menuOpen ? <X size={21} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
+              {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             </button>
 
             <Link href="/" className="flex items-center" aria-label={`${appName} - Trang chủ`}>
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
-                <PublicLogo size={30} className="h-[30px] w-[30px]" />
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
+                <PublicLogo size={34} className="h-[34px] w-[34px]" />
               </span>
               <span className="sr-only">{appName}</span>
             </Link>
@@ -101,38 +103,33 @@ export function PublicHeader({
               <Link
                 href={searchTarget}
                 aria-label="Tìm kiếm"
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
+                className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
               >
-                <Search size={20} aria-hidden="true" />
+                <Search size={22} aria-hidden="true" />
               </Link>
               <Link
                 href={navCta.href}
                 aria-label={navCta.label}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e7d8] bg-white text-[#1f2233] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                className="relative grid h-11 w-11 shrink-0 place-items-center text-[#252b3d] transition hover:text-[#1f9b4b]"
               >
                 <Briefcase size={18} aria-hidden="true" />
+                <span className="absolute right-0 top-1 grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full bg-[#1f9b4b] px-1 text-[0.6rem] font-bold text-white shadow-[0_8px_18px_rgba(31,155,75,0.2)]">
+                  0
+                </span>
               </Link>
             </div>
           </div>
 
-          <div className="hidden min-h-[98px] items-center gap-6 py-4 md:flex">
-            <Link href="/" className="flex min-w-0 items-center gap-4" aria-label={`${appName} - Trang chủ`}>
-              <span className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_16px_34px_rgba(15,23,42,0.12)] ring-1 ring-[#dae4d7]">
-                <PublicLogo size={42} className="h-[42px] w-[42px]" />
+          <div className="hidden min-h-[86px] items-center gap-6 py-4 md:flex">
+            <Link href="/" className="flex shrink-0 items-center" aria-label={`${appName} - Trang chủ`}>
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_14px_28px_rgba(15,23,42,0.12)] ring-1 ring-[#dae4d7]">
+                <PublicLogo size={36} className="h-[36px] w-[36px]" />
               </span>
-              <span className="min-w-0">
-                <span className="block text-[0.66rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">Quản trị nội bộ cho hợp tác xã</span>
-                <span className="block text-[1.65rem] font-extrabold tracking-[-0.05em] text-[#111827]">{appName}</span>
-                <span className="mt-1 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em] text-[#40614f]">
-                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Xã viên</span>
-                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Thu chi</span>
-                  <span className="rounded-full bg-[#eef8ef] px-2.5 py-1 text-[#1f9b4b]">Đồng bộ dữ liệu</span>
-                </span>
-              </span>
+              <span className="sr-only">{appName}</span>
             </Link>
 
             <form action={searchTarget} className="flex flex-1 justify-center">
-              <div className="flex w-full max-w-[30rem] items-center rounded-full border border-[#dde8da] bg-[#f8fbf6] px-4 shadow-[0_12px_24px_rgba(15,23,42,0.04)]">
+              <div className="flex w-full max-w-[34rem] items-center rounded-full border border-[#dde8da] bg-white px-5 shadow-none">
                 <Search className="shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
                 <input
                   type="search"
@@ -140,29 +137,37 @@ export function PublicHeader({
                   placeholder={searchPlaceholder}
                   className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[#1f2233] outline-none placeholder:text-slate-400"
                 />
-                <button type="submit" className="inline-flex h-11 shrink-0 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5">
+                <span className="h-5 w-px bg-[#dce6d8]" aria-hidden="true" />
+                <button
+                  type="submit"
+                  className="inline-flex h-11 shrink-0 items-center px-4 text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]"
+                >
                   {searchLabel}
                 </button>
               </div>
             </form>
 
-            <div className="ml-auto flex items-center gap-3">
-              <Link href="/login" className="text-sm font-semibold text-[#1f2233] transition hover:text-[#1f9b4b]">
-                Đăng nhập
+            <div className="ml-auto flex items-center gap-5">
+              <Link href="/login" className="text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
+                Đăng nhập / Đăng ký
               </Link>
               <Link
                 href={navCta.href}
-                className="inline-flex min-h-12 items-center rounded-full bg-[linear-gradient(135deg,#0f172a_0%,#1f9b4b_100%)] px-5 text-sm font-semibold text-white shadow-[0_16px_34px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5"
+                className="relative grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]"
+                aria-label={navCta.label}
               >
-                {navCta.label}
+                <Briefcase size={20} aria-hidden="true" />
+                <span className="absolute right-0 top-0 grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full bg-[#1f9b4b] px-1 text-[0.6rem] font-bold text-white shadow-[0_8px_18px_rgba(31,155,75,0.2)]">
+                  0
+                </span>
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-[#ece8dd] bg-[#fbf8ef]">
+        <div className="border-t border-[#ece8dd] bg-white">
           <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-            <nav className="hidden items-center gap-2 overflow-x-auto py-3 md:flex" aria-label="Menu chính">
+            <nav className="hidden items-center justify-center gap-8 overflow-x-auto py-4 md:flex" aria-label="Menu chính">
               {navItems.map((item) => {
                 const active = isNavActive(pathname, item.href);
                 return (
@@ -170,10 +175,10 @@ export function PublicHeader({
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'inline-flex min-h-11 items-center rounded-full border px-4 py-2 text-[0.95rem] font-semibold transition',
+                      'inline-flex items-center py-1 text-[0.95rem] transition',
                       active
-                        ? 'border-[#111827] bg-[#111827] text-white shadow-[0_12px_24px_rgba(15,23,42,0.12)]'
-                        : 'border-[#dde8da] bg-white text-[#20402a] hover:border-[#1f9b4b] hover:text-[#1f9b4b]'
+                        ? 'font-semibold text-[#1f9b4b]'
+                        : 'font-medium text-[#27513a] hover:text-[#1f9b4b]'
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -181,6 +186,12 @@ export function PublicHeader({
                   </Link>
                 );
               })}
+              <Link
+                href={navCta.href}
+                className="inline-flex min-h-11 items-center rounded-full border border-[#cfe5d2] bg-[#1f9b4b] px-5 text-[0.95rem] font-semibold text-white shadow-[0_12px_24px_rgba(31,155,75,0.16)] transition hover:-translate-y-0.5"
+              >
+                {navCta.label}
+              </Link>
             </nav>
           </div>
         </div>

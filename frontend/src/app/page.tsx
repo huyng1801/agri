@@ -382,6 +382,15 @@ export default async function HomePage() {
   const internalHeroPreviewImage = siteProfile.pageContent.homeImageUrl;
   const internalHeroPreviewAlt =
     siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
+  const internalHeroShowcaseImage =
+    siteProfile.pageContent.aboutImageUrl ||
+    heroPreviewProducts[0]?.thumbnail?.publicUrl ||
+    internalHeroPreviewImage;
+  const internalHeroShowcaseAlt =
+    siteProfile.pageContent.aboutImageAlt ||
+    heroPreviewProducts[0]?.name ||
+    heroPreviewCooperative?.name ||
+    internalHeroPreviewAlt;
   const serviceAction = isInternal ? "/gioi-thieu" : "/san-pham";
   const internalServicePanels = [
     {
@@ -718,9 +727,9 @@ export default async function HomePage() {
 
   const internalHeroSection = (
     <section className="border-b border-[#ece8dd] bg-white">
-      <div className={cn(publicContainerClass, "px-0 py-0 sm:px-5 sm:py-5 lg:px-6 lg:py-6")}>
-        <div className="overflow-hidden border-y border-[#e2e9da] bg-white shadow-none sm:rounded-[2rem] sm:border sm:shadow-[0_22px_48px_rgba(15,23,42,0.06)]">
-          <div className="relative isolate min-h-[12.25rem] overflow-hidden border-b border-[#e4eadf] bg-[#f8fbf7] sm:min-h-[20rem] lg:min-h-[27rem]">
+      <div className={cn(publicContainerClass, "px-0 py-0 sm:px-5 sm:py-4 lg:px-6 lg:py-5")}>
+        <div className="overflow-hidden bg-white">
+          <div className="relative isolate min-h-[14rem] overflow-hidden bg-[#f8fbf7] sm:min-h-[23rem] lg:min-h-[31rem]">
             <PublicImage
               src={siteProfile.pageContent.homeImageUrl}
               alt={
@@ -732,25 +741,25 @@ export default async function HomePage() {
               priority
               fallback={internalHeroPreviewImage}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2)_0%,rgba(255,255,255,0.64)_36%,rgba(255,255,255,0.92)_100%)] lg:bg-[linear-gradient(90deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.9)_50%,rgba(255,255,255,0.46)_82%,rgba(255,255,255,0.18)_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0.62)_36%,rgba(255,255,255,0.94)_100%)] lg:bg-[linear-gradient(90deg,rgba(255,255,255,0.14)_0%,rgba(255,255,255,0.34)_18%,rgba(255,255,255,0.88)_50%,rgba(255,255,255,0.42)_82%,rgba(255,255,255,0.1)_100%)]" />
             <div
               aria-hidden="true"
               className="absolute inset-0 opacity-90"
               style={{
                 background:
-                  "radial-gradient(circle at 12% 15%, rgba(255,255,255,0.82), transparent 20%), radial-gradient(circle at 88% 16%, rgba(255,255,255,0.6), transparent 20%), radial-gradient(circle at 18% 82%, rgba(119,201,94,0.12), transparent 18%), radial-gradient(circle at 82% 82%, rgba(13,111,128,0.12), transparent 18%)",
+                  "radial-gradient(circle at 14% 16%, rgba(255,255,255,0.84), transparent 20%), radial-gradient(circle at 84% 14%, rgba(255,255,255,0.62), transparent 22%), radial-gradient(circle at 18% 84%, rgba(119,201,94,0.14), transparent 18%), radial-gradient(circle at 82% 82%, rgba(13,111,128,0.12), transparent 18%)",
               }}
             />
             <div
-              className="absolute left-[3%] top-[16%] h-16 w-16 rounded-full bg-white/36 blur-3xl sm:h-24 sm:w-24"
+              className="absolute left-[32%] top-[22%] h-10 w-4 rotate-[-32deg] rounded-full bg-[#8dd86d]/90 blur-[1px] sm:left-[24%] sm:h-16 sm:w-6 lg:left-[22%] lg:top-[24%] lg:h-20 lg:w-7"
               aria-hidden="true"
             />
             <div
-              className="absolute right-[5%] top-[12%] h-20 w-20 rounded-full bg-[#77c95e]/22 blur-3xl sm:h-28 sm:w-28"
+              className="absolute right-[27%] top-[17%] h-8 w-3 rotate-[28deg] rounded-full bg-[#91d86b]/72 blur-[1px] sm:right-[24%] sm:h-12 sm:w-4 lg:right-[27%] lg:top-[19%] lg:h-14 lg:w-5"
               aria-hidden="true"
             />
 
-            <div className="absolute bottom-0 left-0 z-10 w-[3.7rem] sm:w-[8rem] lg:left-3 lg:w-[13.4rem]">
+            <div className="absolute bottom-0 left-0 z-10 w-[4.6rem] sm:w-[9.4rem] lg:left-3 lg:w-[16.4rem]">
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
@@ -794,27 +803,27 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="absolute bottom-0 right-0 z-10 w-[4.25rem] sm:w-[9rem] lg:w-[15rem]">
-              <div className="relative overflow-hidden rounded-tl-[1.5rem] border border-b-0 border-r-0 border-white/70 bg-white/84 p-1.5 shadow-[0_20px_40px_rgba(15,23,42,0.12)] backdrop-blur sm:rounded-tl-[1.9rem] sm:p-2.5 lg:rounded-tl-[2.2rem] lg:p-3">
+            <div className="absolute bottom-0 right-0 z-10 w-[6rem] sm:w-[16rem] lg:w-[22rem]">
+              <div className="relative overflow-hidden rounded-tl-[1.65rem] sm:rounded-tl-[2.4rem] lg:rounded-tl-[3rem]">
                 <PublicImage
-                  src={siteProfile.pageContent.aboutImageUrl}
-                  alt={
-                    siteProfile.pageContent.aboutImageAlt ||
-                    internalHeroPreviewAlt
-                  }
+                  src={internalHeroShowcaseImage}
+                  alt={internalHeroShowcaseAlt}
                   fallback={internalHeroPreviewImage}
-                  wrapperClassName="aspect-[10/13] w-full overflow-hidden rounded-tl-[1.15rem] bg-[linear-gradient(180deg,#eef6ef_0%,#ffffff_100%)] sm:rounded-tl-[1.45rem]"
+                  wrapperClassName="aspect-[10/14] w-full overflow-hidden bg-[linear-gradient(180deg,#eef6ef_0%,#ffffff_100%)] lg:aspect-[10/15]"
                   className="h-full w-full object-cover object-center"
                   priority
                 />
-                <div className="absolute inset-x-2 bottom-2 hidden rounded-[1rem] bg-[linear-gradient(180deg,rgba(9,17,18,0.04)_0%,rgba(9,17,18,0.74)_100%)] p-2 text-white sm:block sm:inset-x-3 sm:bottom-3 sm:rounded-[1.1rem] sm:p-3">
-                  <p className="text-[0.44rem] font-semibold uppercase tracking-[0.18em] text-white/72 sm:text-[0.56rem]">
+                <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(9,17,18,0.1)_0%,rgba(9,17,18,0.02)_20%,rgba(248,251,247,0)_100%)]" />
+                <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(248,251,247,0)_0%,rgba(248,251,247,0.92)_100%)] sm:h-28 lg:h-36" />
+                <div className="absolute inset-y-0 left-0 w-10 bg-[linear-gradient(90deg,rgba(248,251,247,0.96)_0%,rgba(248,251,247,0)_100%)] sm:w-14 lg:w-20" />
+                <div className="absolute inset-x-3 bottom-4 hidden rounded-[1.1rem] bg-[rgba(241,246,231,0.72)] p-3 text-[#1f2740] shadow-[0_16px_36px_rgba(15,23,42,0.14)] backdrop-blur sm:block lg:inset-x-5 lg:bottom-5 lg:rounded-[1.25rem] lg:p-4">
+                  <p className="text-[0.5rem] font-semibold uppercase tracking-[0.18em] text-[#5e9650] lg:text-[0.58rem]">
                     Điểm triển khai
                   </p>
-                  <p className="mt-1 text-[0.62rem] font-extrabold leading-4 sm:text-[0.82rem] sm:leading-5 lg:text-sm">
+                  <p className="mt-1 text-[0.72rem] font-extrabold leading-4 sm:text-[0.92rem] sm:leading-5 lg:text-[1.02rem]">
                     {heroPreviewCooperative?.name || "Hệ sinh thái HTXONLINE"}
                   </p>
-                  <p className="mt-1 text-[0.54rem] leading-4 text-white/82 sm:text-[0.64rem] lg:text-[0.72rem]">
+                  <p className="mt-1 text-[0.56rem] leading-4 text-[#314665] sm:text-[0.66rem] lg:text-[0.76rem]">
                     {heroPreviewProducts[0]?.name ||
                       heroPreviewCooperative?.province ||
                       "Kết nối dữ liệu nội bộ với sản phẩm công khai và QR."}
@@ -826,11 +835,11 @@ export default async function HomePage() {
             <div
               className={cn(
                 publicContainerClass,
-                "relative z-20 flex min-h-[12.25rem] flex-col items-center justify-center px-[2.9rem] py-3 text-center sm:min-h-[20rem] sm:px-[8.5rem] sm:py-6 lg:min-h-[27rem] lg:px-[13rem] lg:py-8",
+                "relative z-20 flex min-h-[14rem] flex-col items-center justify-center px-[3.2rem] py-4 text-center sm:min-h-[23rem] sm:px-[9.4rem] sm:py-7 lg:min-h-[31rem] lg:px-[15.5rem] lg:py-10",
               )}
             >
-              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-                <span className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/80 bg-white/90 px-2.5 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
+              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
+                <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/80 bg-white/90 px-3 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                   <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-6 sm:w-6 lg:h-7 lg:w-7">
                     <PublicLogo
                       size={16}
@@ -839,26 +848,26 @@ export default async function HomePage() {
                   </span>
                   HTXONLINE
                 </span>
-                <span className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#3d5871] sm:text-xs lg:text-sm">
+                <span className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-[#3d5871] sm:text-xs lg:text-sm">
                   x
                 </span>
-                <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-2.5 text-[0.52rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-9 sm:px-3 sm:text-[0.62rem] lg:min-h-10 lg:px-4 lg:text-[0.72rem]">
+                <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/84 px-3 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                   AGRIPASSPORT
                 </span>
               </div>
 
-              <p className="mt-3 text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-[0.64rem] lg:text-[0.8rem]">
+              <p className="mt-4 text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái vận hành số
               </p>
-              <h1 className="mx-auto mt-2 max-w-[13ch] text-[1.14rem] font-extrabold leading-[0.98] tracking-[-0.045em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.65rem] lg:max-w-[11ch] lg:text-[4rem]">
+              <h1 className="mx-auto mt-2 max-w-[13ch] text-[1.22rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.9rem] lg:max-w-[11ch] lg:text-[4.35rem]">
                 Cùng HTX kiến tạo vận hành số bền vững
               </h1>
-              <p className="mx-auto mt-1.5 max-w-[13.5rem] text-[0.6rem] leading-4 text-[#31556d] sm:max-w-[29rem] sm:text-[0.92rem] sm:leading-6 lg:max-w-[32rem] lg:text-[1.08rem] lg:leading-7">
+              <p className="mx-auto mt-2 max-w-[14rem] text-[0.62rem] leading-4 text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[34rem] lg:text-[1.12rem] lg:leading-7">
                 Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang
                 AGRIPASSPORT khi cần công khai và truy xuất QR.
               </p>
 
-              <div className="mt-2.5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.54rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:px-4 sm:py-2 sm:text-[0.72rem] lg:text-sm">
+              <div className="mt-3.5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-[#0d6f80] px-3 py-1.5 text-[0.56rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
                 <span>{featuredCooperatives.length} HTX đang hiển thị</span>
                 <span className="opacity-45">•</span>
                 <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
@@ -866,10 +875,10 @@ export default async function HomePage() {
                 <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
               </div>
 
-              <div className="mt-2.5 flex flex-wrap items-center justify-center gap-2">
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
                 <Link
                   href={primaryCta.href}
-                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-4 text-[0.72rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-5 sm:text-sm"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.15rem] text-[0.74rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                 >
                   {primaryCta.label}
                   <ArrowRight size={15} aria-hidden="true" />
@@ -877,14 +886,14 @@ export default async function HomePage() {
                 {secondaryCta.external ? (
                   <a
                     href={secondaryCta.href}
-                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-5 sm:text-sm"
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.15rem] text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </a>
                 ) : (
                   <Link
                     href={secondaryCta.href}
-                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-4 text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-5 sm:text-sm"
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.15rem] text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </Link>
