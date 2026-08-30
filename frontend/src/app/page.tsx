@@ -295,10 +295,10 @@ export default async function HomePage() {
       ? "Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số"
       : "Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng";
   const sectionDescription = isInternal
-    ? "Ba lớp nền tảng được đưa về nhịp card trắng, visual lớn và mô tả ngắn hơn để cảm giác landing page gần Demeter hơn ngay từ lần chạm đầu."
+    ? "Ba lớp nền tảng giúp HTX tách rõ quản trị nội bộ, công khai sản phẩm và truy xuất QR trên cùng một hệ sinh thái dữ liệu."
     : isPassport
       ? "Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng."
-      : "Theo hướng trình bày gần Demeter hơn: rõ khối chức năng, card lớn và hành trình công khai bám sát người dùng cuối.";
+      : "Các khối chức năng được tách rõ để người mua, HTX và đối tác đi đúng hành trình công khai ngay từ lần chạm đầu.";
   const journeyTitle = isInternal
     ? "Luồng dữ liệu từ quản trị nội bộ ra thị trường"
     : "Luồng triển khai từ dữ liệu gốc đến người mua";
@@ -335,10 +335,10 @@ export default async function HomePage() {
     ? "Thắng lợi cùng hợp tác xã"
     : "Thắng lợi cùng nhà nông";
   const outcomeDescription = isInternal
-    ? "Giữ vai trò quản trị nội bộ, nhưng cách trình bày được kéo về nhịp landing page sáng hơn, ít chữ hơn và icon lớn hơn."
-    : "Các tín hiệu quan trọng được kéo về nhịp icon, headline ngắn và khoảng thở lớn để trông gần ứng dụng native hơn trên mobile.";
+    ? "Theo dõi xã viên, thu chi, nhập xuất và chuẩn bị dữ liệu đầu ra trên một luồng vận hành rõ ràng trước khi công khai ra thị trường."
+    : "Các chỉ số quan trọng được trình bày ngắn gọn để người mua, HTX và đối tác nắm nhanh thông tin trên điện thoại.";
   const serviceTabs = isInternal
-    ? ["Tất cả", "Quản trị nội bộ", "Đồng bộ sản phẩm", "Báo cáo điều hành"]
+    ? ["Tất cả", "Quản trị HTX", "Sản phẩm công khai", "QR truy xuất"]
     : isPassport
       ? ["Tất cả", "QR truy xuất", "Hồ sơ số", "Nguồn gốc minh bạch"]
       : ["Tất cả", "Dữ liệu sản phẩm", "Bán hàng công khai", "Liên kết QR"];
@@ -976,11 +976,18 @@ export default async function HomePage() {
         )}
 
         <PublicSection>
-          <div className="mx-auto max-w-5xl text-center">
+          <div
+            className={cn(
+              "mx-auto max-w-5xl text-center",
+              isInternal && "lg:mx-0 lg:max-w-none lg:text-left",
+            )}
+          >
             <h2
               className={cn(
                 "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]",
-                isInternal ? "max-w-[16ch]" : "max-w-[13ch]",
+                isInternal
+                  ? "max-w-[16ch] lg:mx-0"
+                  : "max-w-[13ch]",
               )}
             >
               {outcomeTitle}
@@ -988,7 +995,7 @@ export default async function HomePage() {
             <p
               className={cn(
                 "mx-auto mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8",
-                isInternal && "hidden sm:block",
+                isInternal && "hidden sm:block lg:mx-0",
               )}
             >
               {outcomeDescription}
@@ -1062,33 +1069,40 @@ export default async function HomePage() {
               <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
                 {sectionIntro}
               </h2>
-              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+              <p
+                className={cn(
+                  "mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8",
+                  isInternal && "hidden sm:block",
+                )}
+              >
                 {sectionDescription}
               </p>
             </div>
             <Link
               href={serviceAction}
-              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
             >
               Khám phá thêm
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
 
-          <div className="mt-5 flex flex-wrap gap-2">
-            {serviceTabs.map((tab, index) => (
-              <span
-                key={tab}
-                className={cn(
-                  "inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold shadow-sm",
-                  index === 0
-                    ? "border-[#1f9b4b] bg-[#1f9b4b] text-white"
-                    : "border-[#dce6d8] bg-white text-slate-600",
-                )}
-              >
-                {tab}
-              </span>
-            ))}
+          <div className="-mx-4 mt-5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+            <div className="flex min-w-max gap-2">
+              {serviceTabs.map((tab, index) => (
+                <span
+                  key={tab}
+                  className={cn(
+                    "inline-flex min-h-10 items-center whitespace-nowrap rounded-full border px-4 text-sm font-semibold shadow-sm",
+                    index === 0
+                      ? "border-[#1f9b4b] bg-[#1f9b4b] text-white"
+                      : "border-[#dce6d8] bg-white text-slate-600",
+                  )}
+                >
+                  {tab}
+                </span>
+              ))}
+            </div>
           </div>
 
           <div className="mt-6">

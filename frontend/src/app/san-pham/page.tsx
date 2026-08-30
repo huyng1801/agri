@@ -78,7 +78,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm sm:tracking-[0.24em]">Danh mục công khai</p>
               <h2 className="mt-2 text-[1.32rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#24283a] sm:text-[2rem] lg:text-[2.15rem]">Tìm nhanh theo HTX, địa phương và trạng thái QR truy xuất.</h2>
               <p className="mt-2 hidden max-w-2xl text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:block sm:text-base sm:leading-7">
-                Phần sản phẩm được kéo về nhịp trắng, card lớn và bớt nhiễu hơn để gần ngôn ngữ landing page của Demeter, trong khi vẫn giữ đủ bộ lọc cần thiết cho người mua.
+                Phần sản phẩm được sắp lại theo bố cục sáng, card lớn và bộ lọc gọn để người mua quét nhanh hơn mà vẫn đủ thông tin cần thiết.
               </p>
               {categoryHighlights.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2 sm:mt-4">

@@ -80,7 +80,7 @@ export default async function AboutPage() {
               </h1>
               <p className="mt-4 text-[1rem] leading-8 text-slate-700 sm:text-[1.05rem]">
                 {isInternal
-                  ? 'HTXONLINE giữ vai trò quản trị nội bộ, còn AGRIPASSPORT và Hộ chiếu nông nghiệp là hai lớp công khai bên ngoài. Trang này được kéo về nhịp card màu lớn, headline ngắn và mô tả gọn giống Demeter để nhìn là hiểu cấu trúc ngay.'
+                  ? 'HTXONLINE giữ vai trò quản trị nội bộ, còn AGRIPASSPORT và Hộ chiếu nông nghiệp là hai lớp công khai bên ngoài. Nhìn vào là hiểu ngay lớp nào dùng để vận hành, lớp nào dùng để công khai sản phẩm và lớp nào dùng để truy xuất QR.'
                   : siteProfile.pageContent.introDescription}
               </p>
 
@@ -154,7 +154,7 @@ export default async function AboutPage() {
                   Giải pháp dịch vụ tiêu biểu
                 </h2>
                 <p className="mt-3 text-[0.96rem] leading-7 text-slate-600 sm:text-base">
-                  Ba card lớn bên dưới được sắp lại theo cùng nhịp màu khối và cách đọc nhanh như Demeter, nhưng nội dung bám đúng vai trò thật của hệ sinh thái Agri.
+                  Ba card lớn bên dưới giúp nhìn nhanh vai trò thật của từng nền tảng trong hệ sinh thái Agri.
                 </p>
               </div>
               <Link
@@ -237,7 +237,7 @@ export default async function AboutPage() {
 
               <div className="mt-5 rounded-[1.45rem] bg-[linear-gradient(135deg,#0f172a_0%,#12344b_48%,#1f9b4b_100%)] p-4 text-white">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/68">Bước tiếp theo</p>
-                <p className="mt-2 text-lg font-extrabold leading-7">Nếu muốn giống Demeter về cảm giác dùng, giao diện phải giữ headline ngắn, card lớn và CTA rõ trên mobile.</p>
+                <p className="mt-2 text-lg font-extrabold leading-7">Muốn triển khai hiệu quả, giao diện cần headline rõ, card lớn và CTA dễ bấm để HTX lẫn người mua dùng tốt trên mobile.</p>
                 <Link href="/lien-he" className="mt-4 inline-flex min-h-11 items-center rounded-full bg-white px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5">
                   Nhận tư vấn triển khai
                 </Link>

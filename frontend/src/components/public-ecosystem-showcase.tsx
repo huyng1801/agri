@@ -91,7 +91,7 @@ export function PublicEcosystemShowcase({
             Ba nền tảng đi cùng một luồng dữ liệu, nhưng mỗi nền tảng giữ một vai trò rất rõ.
           </h2>
           <p className={cn('mt-2 max-w-3xl text-[0.95rem] leading-7 text-slate-600 sm:text-base', compact && 'max-w-2xl text-sm leading-6')}>
-            Phần này được dựng theo nhịp card trắng, khối visual lớn và headline ngắn hơn để người xem chạm vào là hiểu vai trò từng nền tảng.
+            Ba nền tảng phối hợp trên cùng luồng dữ liệu để HTX vận hành nội bộ gọn hơn, công khai sản phẩm đúng lớp và truy xuất QR rõ ràng hơn.
           </p>
         </div>
       ) : null}

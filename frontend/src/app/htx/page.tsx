@@ -71,7 +71,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
               Khám phá các hợp tác xã đã sẵn sàng công khai sản phẩm và kết nối thị trường.
             </h2>
             <p className="mt-3 max-w-2xl text-[0.95rem] leading-7 text-slate-600 sm:text-base">
-              Giống nhịp giới thiệu của Demeter, phần HTX được kéo về bố cục trắng, thoáng và ít hiệu ứng hơn để người xem tập trung vào chủ thể, địa phương và sản phẩm công khai.
+              Phần HTX được trình bày theo bố cục sáng, thoáng và dễ quét để người xem tập trung vào chủ thể, địa phương và sản phẩm công khai.
             </p>
             {topProvinces.length > 0 && (
               <div className="mt-5 flex flex-wrap gap-2.5">
