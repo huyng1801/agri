@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
-import { PublicContactForm } from '@/components/public-contact-form';
+import { ArrowRight, CheckCircle2, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
 import { PublicImage } from '@/components/public-image';
 import { publicContainerClass } from '@/components/public-layout';
 import { PublicOutcomeShowcase, type PublicOutcomeSlide } from '@/components/public-outcome-showcase';
@@ -275,8 +274,37 @@ export default async function AboutUsPage() {
                 Để lại thông tin, đội vận hành sẽ tư vấn lộ trình triển khai phù hợp với mô hình hợp tác xã của bạn.
               </p>
             </div>
-            <div className="p-5 sm:p-6">
-              <PublicContactForm sourcePath="/ve-chung-toi" variant="hero" />
+            <div className="grid gap-4 p-5 sm:p-6">
+              <div className="grid gap-3">
+                {[
+                  'Rà soát vai trò quản trị nội bộ, xã viên, dịch vụ, thu chi và xuất nhập theo đúng mô hình HTX.',
+                  'Chuẩn hóa dữ liệu sản phẩm để sẵn sàng đồng bộ sang Agripassport và Hộ chiếu nông nghiệp.',
+                  'Thiết kế giao diện public theo nhịp mobile-first để người xem vào là hiểu luồng ngay.'
+                ].map((item) => (
+                  <div key={item} className="flex items-start gap-3 rounded-[1.35rem] border border-[#dce7d9] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,#0f172a_0%,#12344b_46%,#1f9b4b_100%)] p-4 text-white">
+                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/70">Đội vận hành phản hồi</p>
+                <p className="mt-2 text-lg font-extrabold leading-7">Chúng tôi sẽ liên hệ lại sớm nhất để chốt luồng triển khai phù hợp cho HTX của bạn.</p>
+                <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                  <Link href="/lien-he">
+                    <Button className="min-h-11 w-full sm:w-auto">
+                      Liên hệ ngay
+                      <ArrowRight size={16} aria-hidden="true" />
+                    </Button>
+                  </Link>
+                  <Link href="/gioi-thieu">
+                    <Button variant="ghost" className="min-h-11 w-full border-white/18 bg-white/10 text-white hover:bg-white/16 hover:text-white sm:w-auto">
+                      Xem vai trò nền tảng
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </section>
