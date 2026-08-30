@@ -655,11 +655,19 @@ export default async function HomePage() {
             siteProfile.pageContent.homeTitle
           }
           wrapperClassName="absolute inset-0 h-full w-full"
-          className="h-full w-full object-cover object-center"
+          className="h-full w-full object-cover object-[72%_center] sm:object-center"
           priority
           fallback={internalHeroPreviewImage}
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.62)_30%,rgba(255,255,255,0.92)_76%,rgba(255,255,255,0.98)_100%)] lg:bg-[linear-gradient(90deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0.42)_18%,rgba(255,255,255,0.92)_48%,rgba(255,255,255,0.6)_78%,rgba(255,255,255,0.18)_100%)]" />
+        <div
+          className="absolute inset-x-0 top-0 h-[10rem] bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.88)_62%,rgba(255,255,255,0)_100%)] sm:hidden"
+          aria-hidden="true"
+        />
+        <div
+          className="absolute left-0 top-0 h-[11rem] w-[62%] bg-[radial-gradient(circle_at_left_top,rgba(255,255,255,0.98)_0%,rgba(255,255,255,0.92)_44%,rgba(255,255,255,0)_100%)] sm:hidden"
+          aria-hidden="true"
+        />
         <div
           aria-hidden="true"
           className="absolute inset-0 opacity-90"
