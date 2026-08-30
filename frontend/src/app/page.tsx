@@ -759,7 +759,7 @@ export default async function HomePage() {
               aria-hidden="true"
             />
 
-            <div className="absolute bottom-0 left-0 z-10 w-[4.6rem] sm:w-[9.4rem] lg:left-3 lg:w-[16.4rem]">
+            <div className="absolute left-0 top-[20%] z-10 w-[4.1rem] sm:top-auto sm:w-[9.4rem] sm:bottom-0 lg:left-3 lg:w-[16.4rem]">
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
@@ -803,7 +803,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="absolute bottom-0 right-0 z-10 w-[6rem] sm:w-[16rem] lg:w-[22rem]">
+            <div className="absolute right-0 top-[18%] z-10 w-[4.9rem] sm:top-auto sm:w-[16rem] sm:bottom-0 lg:w-[22rem]">
               <div className="relative overflow-hidden rounded-tl-[1.65rem] sm:rounded-tl-[2.4rem] lg:rounded-tl-[3rem]">
                 <PublicImage
                   src={internalHeroShowcaseImage}
@@ -835,11 +835,11 @@ export default async function HomePage() {
             <div
               className={cn(
                 publicContainerClass,
-                "relative z-20 flex min-h-[14rem] flex-col items-center justify-center px-[3.2rem] py-4 text-center sm:min-h-[23rem] sm:px-[9.4rem] sm:py-7 lg:min-h-[31rem] lg:px-[15.5rem] lg:py-10",
+                "relative z-20 flex min-h-[14rem] flex-col items-center justify-start px-[2.6rem] pb-4 pt-5 text-center sm:min-h-[23rem] sm:justify-center sm:px-[9.4rem] sm:py-7 lg:min-h-[31rem] lg:px-[15.5rem] lg:py-10",
               )}
             >
-              <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
-                <span className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/80 bg-white/90 px-3 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
+              <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
+                <span className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/80 bg-white/90 px-2.5 text-[0.48rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-10 sm:gap-2 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                   <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-6 sm:w-6 lg:h-7 lg:w-7">
                     <PublicLogo
                       size={16}
@@ -848,26 +848,26 @@ export default async function HomePage() {
                   </span>
                   HTXONLINE
                 </span>
-                <span className="text-[0.66rem] font-semibold uppercase tracking-[0.18em] text-[#3d5871] sm:text-xs lg:text-sm">
+                <span className="text-[0.56rem] font-semibold uppercase tracking-[0.16em] text-[#3d5871] sm:text-xs lg:text-sm">
                   x
                 </span>
-                <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/84 px-3 text-[0.54rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
+                <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-2.5 text-[0.48rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                   AGRIPASSPORT
                 </span>
               </div>
 
-              <p className="mt-4 text-[0.58rem] font-semibold uppercase tracking-[0.26em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
+              <p className="mt-3 text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái vận hành số
               </p>
-              <h1 className="mx-auto mt-2 max-w-[13ch] text-[1.22rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.9rem] lg:max-w-[11ch] lg:text-[4.35rem]">
+              <h1 className="mx-auto mt-2 max-w-[11.2ch] text-[1.08rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.9rem] lg:max-w-[11ch] lg:text-[4.35rem]">
                 Cùng HTX kiến tạo vận hành số bền vững
               </h1>
-              <p className="mx-auto mt-2 max-w-[14rem] text-[0.62rem] leading-4 text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[34rem] lg:text-[1.12rem] lg:leading-7">
+              <p className="mx-auto mt-2 max-w-[13.5rem] text-[0.56rem] leading-4 text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[34rem] lg:text-[1.12rem] lg:leading-7">
                 Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang
                 AGRIPASSPORT khi cần công khai và truy xuất QR.
               </p>
 
-              <div className="mt-3.5 inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-[#0d6f80] px-3 py-1.5 text-[0.56rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
+              <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.5rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
                 <span>{featuredCooperatives.length} HTX đang hiển thị</span>
                 <span className="opacity-45">•</span>
                 <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
@@ -875,10 +875,10 @@ export default async function HomePage() {
                 <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
               </div>
 
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+              <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
                 <Link
                   href={primaryCta.href}
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.15rem] text-[0.74rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.05rem] text-[0.68rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                 >
                   {primaryCta.label}
                   <ArrowRight size={15} aria-hidden="true" />
@@ -977,19 +977,32 @@ export default async function HomePage() {
 
         <PublicSection>
           <div className="mx-auto max-w-5xl text-center">
-            <h2 className="mx-auto max-w-[13ch] text-[2rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]">
+            <h2
+              className={cn(
+                "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]",
+                isInternal ? "max-w-[16ch]" : "max-w-[13ch]",
+              )}
+            >
               {outcomeTitle}
             </h2>
-            <p className="mx-auto mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+            <p
+              className={cn(
+                "mx-auto mt-3 max-w-3xl text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8",
+                isInternal && "hidden sm:block",
+              )}
+            >
               {outcomeDescription}
             </p>
           </div>
 
           {isInternal ? (
             <>
-              <div className="mt-6 lg:hidden">
+              <div className="mt-5 lg:hidden">
                 <PublicMetricCarousel items={internalOutcomeCarouselItems} variant="demeter" />
               </div>
+              <p className="mx-auto mt-5 max-w-[18rem] text-center text-[0.96rem] leading-7 text-slate-600 sm:hidden">
+                {outcomeDescription}
+              </p>
               <div className="mt-8 hidden gap-x-4 gap-y-8 lg:grid lg:grid-cols-6">
                 {internalOutcomeTiles.map((tile) => {
                   const Icon = tile.icon;
