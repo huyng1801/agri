@@ -292,7 +292,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                     Hệ sinh thái giải pháp toàn diện
                   </p>
                   <p className="mt-2 text-[1.1rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233]">
-                    Mỗi nền tảng giữ một vai trò rõ để giao diện public nhẹ hơn và dữ liệu nội bộ không bị chồng chéo.
+                    Mỗi nền tảng giữ một vai trò rõ để HTX vận hành nội bộ gọn hơn, công khai sản phẩm đúng lớp và truy xuất minh bạch hơn.
                   </p>
                 </div>
                 <p className="max-w-md text-sm leading-6 text-slate-600 sm:text-right">

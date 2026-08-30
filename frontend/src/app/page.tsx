@@ -80,15 +80,6 @@ type OutcomeTile = {
   icon: LucideIcon;
 };
 
-const internalPartnerGradients = [
-  "bg-[linear-gradient(135deg,#090d1d_0%,#131935_46%,#1b2450_100%)]",
-  "bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]",
-  "bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]",
-  "bg-[linear-gradient(135deg,#1f2937_0%,#1f4f46_48%,#2b8a3e_100%)]",
-  "bg-[linear-gradient(135deg,#17314b_0%,#14556a_52%,#1f9b4b_100%)]",
-  "bg-[linear-gradient(135deg,#111827_0%,#24415f_42%,#2f7d4f_100%)]",
-] as const;
-
 function cooperativeMonogram(name: string) {
   return name
     .replace(/^HTX\s+/i, "")
@@ -362,15 +353,15 @@ export default async function HomePage() {
       ? "Khám phá hồ sơ số và sản phẩm QR"
       : "Khám phá các sản phẩm";
   const productSectionDescription = isInternal
-    ? "Khi HTX xác định được sản phẩm thực và đồng bộ ra lớp công khai, các sản phẩm sẽ hiển thị tại đây theo nhịp lướt nhanh như một app mobile."
+    ? "Khi HTX xác định được sản phẩm thực và đồng bộ ra lớp công khai, các sản phẩm sẽ hiển thị tại đây theo bố cục gọn và dễ quét hơn."
     : isPassport
       ? "Ưu tiên những sản phẩm đã có lớp truy xuất rõ ràng để người mua tra cứu nhanh hơn."
       : "Giữ nhịp lướt nhanh trên mobile nhưng trình bày gọn và thoáng hơn theo hướng landing page hiện đại.";
   const partnerTitle = isInternal
-    ? "HTX đang vận hành"
+    ? "HTX kết nối hệ sinh thái"
     : "Đối tác công khai trong hệ sinh thái";
   const partnerDescription = isInternal
-    ? "Mỗi hợp tác xã được đưa về một thẻ nhận diện lớn, rõ và dễ quét hơn để đúng nhịp mobile-first thay vì các ô logo nhỏ khó nhớ."
+    ? "Mỗi hợp tác xã được đưa về thẻ nhận diện gọn, sáng và rõ để người xem quét nhanh và mở đúng hồ sơ cần xem."
     : "Giữ cảm giác một dải nhận diện đối tác gọn, sáng và dễ quét hơn thay vì các card hồ sơ nặng thông tin.";
   const partnerItems = featuredCooperatives.length
     ? featuredCooperatives
@@ -1270,66 +1261,41 @@ export default async function HomePage() {
 
           {partnerItems.length ? (
             isInternal ? (
-              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-[linear-gradient(180deg,#f7fbf6_0%,#ffffff_100%)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-5">
-                <div className="-mx-1 flex items-stretch gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3">
-                  {partnerItems.map((cooperative, index) => {
-                    const gradient = internalPartnerGradients[index % internalPartnerGradients.length];
-                    return (
+              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+                <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-6">
+                  {partnerItems.map((cooperative, index) => (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group relative min-w-[19rem] shrink-0 overflow-hidden rounded-[1.8rem] px-5 py-5 text-white shadow-[0_18px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 lg:min-w-0"
+                      className="group min-w-[11.25rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
                     >
-                      <div className={cn("absolute inset-0", gradient)} />
-                      <div
-                        aria-hidden="true"
-                        className="absolute inset-0 opacity-80"
-                        style={{
-                          background:
-                            "radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)",
-                        }}
-                      />
-                      <div className="relative flex h-full flex-col gap-4">
-                        <div className="flex items-center gap-4">
-                          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border border-white/18 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] sm:h-[4.5rem] sm:w-[4.5rem]">
-                            {cooperative.avatarUrl ? (
-                              <PublicImage
-                                src={cooperative.avatarUrl}
-                                alt={cooperative.name}
-                                decorative
-                                priority={index < 3}
-                                wrapperClassName="h-full w-full rounded-full"
-                                className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]"
-                              />
-                            ) : (
-                              <span className="text-[0.88rem] font-extrabold uppercase tracking-[0.08em] text-white sm:text-[1.02rem]">
-                                {cooperativeMonogram(cooperative.name)}
-                              </span>
-                            )}
+                      <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                        {cooperative.avatarUrl ? (
+                          <PublicImage
+                            src={cooperative.avatarUrl}
+                            alt={cooperative.name}
+                            decorative
+                            priority={index < 4}
+                            wrapperClassName="h-full w-full rounded-full"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                          />
+                        ) : (
+                          <span className="text-[0.92rem] font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                            {cooperativeMonogram(cooperative.name)}
                           </span>
-                          <span className="min-w-0 flex-1">
-                            <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
-                              HTX vận hành
-                            </span>
-                            <span className="mt-1 block line-clamp-2 text-[1.02rem] font-extrabold leading-tight sm:text-[1.16rem]">
-                              {cooperative.name}
-                            </span>
-                            <span className="mt-2 block text-sm leading-6 text-white/84">
-                              {cooperative.province || "Việt Nam"}
-                            </span>
-                          </span>
-                        </div>
-                        <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-                          <div className="rounded-[1.15rem] border border-white/14 bg-white/10 px-3 py-3 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/86">
-                            Hồ sơ HTX · Dữ liệu nội bộ sẵn sàng đồng bộ
-                          </div>
-                          <span className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/16 bg-black/16 px-4 text-sm font-semibold text-white">
-                            Xem chi tiết
-                          </span>
-                        </div>
-                      </div>
+                        )}
+                      </span>
+                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                        {cooperative.name}
+                      </p>
+                      <p className="mt-1 text-xs font-medium text-slate-500">
+                        {cooperative.province || "Việt Nam"}
+                      </p>
+                      <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">
+                        {cooperative.productCount} sản phẩm công khai
+                      </p>
                     </Link>
-                  )})}
+                  ))}
                 </div>
               </div>
             ) : (
@@ -1449,65 +1415,50 @@ export default async function HomePage() {
               </div>
 
               <div className="relative">
-                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:px-5 lg:mx-0 lg:px-0">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:px-5 lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 xl:grid-cols-4">
                   {internalJourneyPanels.map((panel, index) => {
-                    const isFirst = index === 0;
                     const isExternal = /^https?:\/\//.test(panel.href);
 
                     const cardContent = (
                       <>
-                        <div className="relative overflow-hidden border-b border-[#e6ece0] bg-[#f8fbf6] p-3">
+                        <div className="relative overflow-hidden rounded-[1.5rem] border border-[#e6ece0] bg-[#f8fbf6] p-3">
                           <PublicImage
                             src={panel.image}
                             alt={panel.imageAlt}
                             fallback={siteProfile.pageContent.homeImageUrl}
                             priority={index < 2}
-                            wrapperClassName="aspect-[5/4] rounded-[1.5rem]"
+                            wrapperClassName="aspect-[4/5] rounded-[1.2rem]"
                             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
                           />
                           <div className="pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between gap-2">
                             <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/88 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233] shadow-sm backdrop-blur">
                               {panel.step}
                             </span>
-                            <span
-                              className={cn(
-                                "inline-flex min-h-9 items-center rounded-full px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] shadow-sm backdrop-blur",
-                                isFirst
-                                  ? "bg-[#1f2233] text-white"
-                                  : "border border-white/70 bg-white/84 text-[#2b8a3e]",
-                              )}
-                            >
+                            <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/84 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e] shadow-sm backdrop-blur">
                               {panel.badge}
                             </span>
                           </div>
-                          <div className="pointer-events-none absolute inset-x-3 bottom-3 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(8,15,24,0.02)_0%,rgba(8,15,24,0.66)_100%)] p-3 text-white">
-                            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
-                              {panel.badge}
+                          <div className="pointer-events-none absolute inset-x-5 bottom-5 rounded-[1.2rem] bg-[rgba(255,255,255,0.88)] px-3 py-2 text-left shadow-sm backdrop-blur">
+                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                              {panel.step}
                             </p>
-                            <p className="mt-1 text-[1.08rem] font-extrabold leading-tight">
+                            <p className="mt-1 text-[1rem] font-extrabold leading-tight text-[#1f2233]">
                               {panel.title}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex flex-1 flex-col p-5">
+                        <div className="flex flex-1 flex-col px-1 pt-4">
                           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                            {panel.step}
+                            {panel.badge}
                           </p>
                           <h2 className="mt-2 text-[1.22rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">
                             {panel.title}
                           </h2>
-                          <p className="mt-3 flex-1 text-[0.95rem] leading-7 text-slate-600">
+                          <p className="mt-3 flex-1 text-[0.92rem] leading-6 text-slate-600">
                             {panel.description}
                           </p>
-                          <span
-                            className={cn(
-                              "mt-5 inline-flex min-h-11 items-center gap-2 rounded-full px-5 text-sm font-bold transition",
-                              isFirst
-                                ? "bg-[#1f9b4b] text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)]"
-                                : "border border-[#d8e7d8] bg-[#f7fbf5] text-[#1f9b4b] group-hover:border-[#1f9b4b] group-hover:bg-white",
-                            )}
-                          >
+                          <span className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d8e7d8] bg-[#f7fbf5] px-5 text-sm font-bold text-[#1f9b4b] transition group-hover:border-[#1f9b4b] group-hover:bg-white">
                             {panel.cta}
                             <ArrowRight size={16} aria-hidden="true" />
                           </span>
@@ -1517,7 +1468,7 @@ export default async function HomePage() {
 
                     const cardClassName = cn(
                       publicCardClass,
-                      "group flex h-full w-[min(80vw,19rem)] shrink-0 snap-start flex-col rounded-[2rem] bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-[17rem]",
+                      "group flex h-full w-[min(78vw,16rem)] shrink-0 snap-start flex-col rounded-[1.9rem] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-auto",
                     );
 
                     return isExternal ? (
