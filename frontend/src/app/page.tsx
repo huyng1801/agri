@@ -1088,53 +1088,7 @@ export default async function HomePage() {
 
           <div className="mt-6">
             {isInternal ? (
-              <div className="relative">
-                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible">
-                  {internalServicePanels.map((card, index) => {
-                    return (
-                      <a
-                        key={card.key}
-                        href={card.href}
-                        className="group w-[min(90vw,24rem)] shrink-0 snap-start overflow-hidden rounded-[2rem] border border-[#e3eadf] bg-white shadow-[0_18px_40px_rgba(15,23,42,0.06)] transition hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-auto"
-                      >
-                        <div className="relative overflow-hidden border-b border-[#e5eadf] bg-[#fbfdf8] p-3">
-                          <PublicImage
-                            src={card.image}
-                            alt={card.imageAlt}
-                            priority={index < 3}
-                            wrapperClassName="aspect-[16/10] rounded-[1.4rem]"
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                          />
-                          <div className="pointer-events-none absolute inset-x-3 bottom-3 rounded-[1.35rem] bg-[linear-gradient(180deg,rgba(8,15,24,0.06)_0%,rgba(8,15,24,0.62)_100%)] p-3 text-white">
-                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">
-                              {card.eyebrow}
-                            </p>
-                            <p className="mt-1 text-[1.05rem] font-extrabold leading-tight">
-                              {card.title}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="p-5">
-                          <p className="text-[0.74rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
-                            {card.eyebrow}
-                          </p>
-                          <h3 className="mt-2 text-[1.3rem] font-extrabold leading-tight tracking-[-0.03em] text-[#1f2233]">
-                            {card.title}
-                          </h3>
-                          <p className="mt-3 text-[0.94rem] leading-7 text-slate-600">
-                            {card.description}
-                          </p>
-                          <span className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#d8e7d8] bg-[#f7fbf5] px-5 text-sm font-bold text-[#1f9b4b] transition group-hover:border-[#1f9b4b] group-hover:bg-white">
-                            {card.cta}
-                            <ArrowRight size={16} aria-hidden="true" />
-                          </span>
-                        </div>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
+              <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
             ) : (
               <PublicEcosystemShowcase siteKey={siteKey} showHeading={false} />
             )}
@@ -1297,15 +1251,15 @@ export default async function HomePage() {
 
           {partnerItems.length ? (
             isInternal ? (
-              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-5">
-                <div className="-mx-1 flex items-stretch gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-6">
+              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#edf1ea] bg-[linear-gradient(180deg,#f7fbf6_0%,#ffffff_100%)] p-4 shadow-[0_18px_40px_rgba(15,23,42,0.04)] sm:p-5">
+                <div className="-mx-1 flex items-stretch gap-3 overflow-x-auto px-1 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-3">
                   {partnerItems.map((cooperative, index) => {
                     const gradient = internalPartnerGradients[index % internalPartnerGradients.length];
                     return (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group relative min-w-[16rem] shrink-0 overflow-hidden rounded-[1.65rem] px-4 py-4 text-white shadow-[0_18px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 lg:min-w-0"
+                      className="group relative min-w-[19rem] shrink-0 overflow-hidden rounded-[1.8rem] px-5 py-5 text-white shadow-[0_18px_36px_rgba(15,23,42,0.08)] transition hover:-translate-y-1 lg:min-w-0"
                     >
                       <div className={cn("absolute inset-0", gradient)} />
                       <div
@@ -1316,9 +1270,9 @@ export default async function HomePage() {
                             "radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)",
                         }}
                       />
-                      <div className="relative flex h-full flex-col">
-                        <div className="flex items-start gap-3">
-                          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border border-white/18 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] sm:h-20 sm:w-20">
+                      <div className="relative flex h-full flex-col gap-4">
+                        <div className="flex items-center gap-4">
+                          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full border border-white/18 bg-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] sm:h-[4.5rem] sm:w-[4.5rem]">
                             {cooperative.avatarUrl ? (
                               <PublicImage
                                 src={cooperative.avatarUrl}
@@ -1334,11 +1288,11 @@ export default async function HomePage() {
                               </span>
                             )}
                           </span>
-                          <span className="min-w-0">
+                          <span className="min-w-0 flex-1">
                             <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/72">
                               HTX vận hành
                             </span>
-                            <span className="mt-1 block line-clamp-2 text-[1rem] font-extrabold leading-tight sm:text-[1.08rem]">
+                            <span className="mt-1 block line-clamp-2 text-[1.02rem] font-extrabold leading-tight sm:text-[1.16rem]">
                               {cooperative.name}
                             </span>
                             <span className="mt-2 block text-sm leading-6 text-white/84">
@@ -1346,8 +1300,13 @@ export default async function HomePage() {
                             </span>
                           </span>
                         </div>
-                        <div className="mt-4 rounded-[1.15rem] border border-white/14 bg-white/10 px-3 py-2 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/86">
-                          Hồ sơ HTX · Dữ liệu nội bộ sẵn sàng đồng bộ
+                        <div className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+                          <div className="rounded-[1.15rem] border border-white/14 bg-white/10 px-3 py-3 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/86">
+                            Hồ sơ HTX · Dữ liệu nội bộ sẵn sàng đồng bộ
+                          </div>
+                          <span className="inline-flex min-h-10 items-center justify-center rounded-full border border-white/16 bg-black/16 px-4 text-sm font-semibold text-white">
+                            Xem chi tiết
+                          </span>
                         </div>
                       </div>
                     </Link>
