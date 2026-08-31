@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Clock3, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicMapPreview } from '@/components/public-map-preview';
-import { PublicInfoTile, publicContainerClass } from '@/components/public-layout';
+import { PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
@@ -27,88 +27,125 @@ export default async function ContactPage() {
 
   return (
     <PublicShell>
-      <main id="main-content">
-        <section className="overflow-hidden border-b border-[#d3e5ea] bg-[#c7e1eb]">
-          <div className={cn(publicContainerClass, 'py-5 sm:py-6')}>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-[#1f2233] sm:text-[1rem]">
-              <Link href="/" className="transition hover:text-[#1f9b4b]">
-                Trang Chủ
-              </Link>
-              <span aria-hidden="true">→</span>
-              <span className="font-medium">Liên Hệ</span>
-            </div>
-          </div>
-        </section>
+      <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
+        <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-4 py-2 text-sm text-[#1f2233]">
+          <Link href="/" className="transition hover:text-[#1f9b4b]">
+            Trang chủ
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className="font-medium">Liên hệ</span>
+        </div>
 
-        <section className={cn(publicContainerClass, 'grid gap-6 py-8 sm:py-10 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8')}>
-          <div className="space-y-6">
-            <div>
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Liên hệ {siteProfile.appName}</p>
-              <h1 className="mt-3 text-[2rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-[#111827] sm:text-[2.8rem]">
-                {siteProfile.pageContent.contactTitle}
-              </h1>
-              <p className="mt-4 max-w-[40rem] text-[0.98rem] leading-8 text-slate-700 sm:text-[1.03rem]">{siteProfile.pageContent.contactDescription}</p>
-            </div>
+        <section className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
+          <div className="space-y-4">
+            <article className="relative overflow-hidden rounded-[2.2rem] bg-[linear-gradient(140deg,#0d1e30_0%,#173a50_48%,#1f9b4b_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(173,255,208,0.18),transparent_30%)]" aria-hidden="true" />
+              <div className="relative z-10">
+                <p className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/88">
+                  Liên hệ {siteProfile.appName}
+                </p>
+                <h1 className="mt-4 max-w-[12ch] text-[2rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[14ch] sm:text-[2.85rem]">
+                  {siteProfile.pageContent.contactTitle}
+                </h1>
+                <p className="mt-4 max-w-[42rem] text-[0.96rem] leading-7 text-white/82 sm:text-[1rem]">
+                  {siteProfile.pageContent.contactDescription}
+                </p>
 
-            <div className="space-y-5 text-[#111827]">
-              <div className="flex items-start gap-4">
-                <PhoneCall className="mt-1 shrink-0 text-[#1f2233]" size={28} aria-hidden="true" />
-                <div>
-                  <p className="text-[1.05rem] font-bold">Hotline:</p>
-                  <a href={telHref(siteProfile.hotline)} className="mt-1 block text-[1.02rem] leading-7 text-slate-700 transition hover:text-[#1f9b4b]">
-                    {siteProfile.hotlineDisplay}
-                  </a>
+                <div className="mt-5 grid gap-3">
+                  {[
+                    {
+                      icon: PhoneCall,
+                      label: 'Hotline',
+                      value: siteProfile.hotlineDisplay,
+                      href: telHref(siteProfile.hotline)
+                    },
+                    {
+                      icon: Mail,
+                      label: 'Email',
+                      value: siteProfile.supportEmail,
+                      href: `mailto:${siteProfile.supportEmail}`
+                    },
+                    {
+                      icon: MapPinned,
+                      label: 'Địa chỉ',
+                      value: siteProfile.address,
+                      href: mapSearchUrl
+                    }
+                  ].map((item) => (
+                    <a
+                      key={item.label}
+                      href={item.href}
+                      target={item.label === 'Địa chỉ' ? '_blank' : undefined}
+                      rel={item.label === 'Địa chỉ' ? 'noreferrer' : undefined}
+                      className="flex items-start gap-3 rounded-[1.35rem] border border-white/14 bg-white/10 px-4 py-3.5 text-white transition hover:-translate-y-0.5 hover:bg-white/14"
+                    >
+                      <span className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/12 text-white">
+                        <item.icon size={20} aria-hidden="true" />
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/64">{item.label}</span>
+                        <span className="mt-1 block break-words text-sm font-semibold leading-6 text-white/92 sm:text-[0.98rem]">{item.value}</span>
+                      </span>
+                    </a>
+                  ))}
                 </div>
-              </div>
 
-              <div className="flex items-start gap-4">
-                <Mail className="mt-1 shrink-0 text-[#1f2233]" size={28} aria-hidden="true" />
-                <div>
-                  <p className="text-[1.05rem] font-bold">Email:</p>
+                <div className="mt-5 flex flex-wrap gap-2.5">
                   <a
-                    href={`mailto:${siteProfile.supportEmail}`}
-                    className="mt-1 block break-all text-[1.02rem] leading-7 text-slate-700 transition hover:text-[#1f9b4b]"
+                    href={telHref(siteProfile.hotline)}
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[#14344b] transition hover:-translate-y-0.5"
                   >
-                    {siteProfile.supportEmail}
+                    Gọi hotline
+                  </a>
+                  <a
+                    href={mapSearchUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/18 bg-white/8 px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/14"
+                  >
+                    Mở bản đồ
                   </a>
                 </div>
               </div>
+            </article>
 
-              <div className="flex items-start gap-4">
-                <MapPinned className="mt-1 shrink-0 text-[#1f2233]" size={28} aria-hidden="true" />
-                <div>
-                  <p className="text-[1.05rem] font-bold">Địa chỉ:</p>
-                  <p className="mt-1 text-[1.02rem] leading-8 text-slate-700">{siteProfile.address}</p>
+            <div className="grid gap-4 lg:grid-cols-[1.06fr_0.94fr]">
+              {showMapPreview ? (
+                <div className="overflow-hidden rounded-[1.9rem] border border-[#dfe6da] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+                  <PublicMapPreview
+                    address={siteProfile.address}
+                    location={mapLocation}
+                    mapSearchUrl={mapSearchUrl}
+                    compact
+                    className="rounded-none border-0 bg-[#dbece1]"
+                    frameClassName="rounded-none"
+                  />
                 </div>
-              </div>
-            </div>
+              ) : null}
 
-            {showMapPreview ? (
-              <div className="overflow-hidden rounded-[1.8rem] border border-slate-200 bg-white shadow-sm">
-                <PublicMapPreview
-                  address={siteProfile.address}
-                  location={mapLocation}
-                  mapSearchUrl={mapSearchUrl}
-                  compact
-                  className="rounded-none border-0 bg-[#dbece1]"
-                  frameClassName="rounded-none"
-                />
-              </div>
-            ) : null}
-
-            <div className="rounded-[1.5rem] border border-slate-200 bg-[#f8faf7] p-4 sm:p-5">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Giờ hỗ trợ</p>
-              <p className="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-[#1f2233]">
-                <Clock3 size={16} aria-hidden="true" />
-                08:00 - 17:30 từ thứ Hai đến thứ Bảy
-              </p>
+              <article className="rounded-[1.9rem] border border-[#e6eadf] bg-[#fffaf2] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Nhịp phản hồi</p>
+                <h2 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[#1f2233]">Hỗ trợ rõ luồng nội bộ, công khai và QR.</h2>
+                <div className="mt-4 space-y-3">
+                  <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3">
+                    <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
+                    <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-[#1f2233]">
+                      <Clock3 size={15} aria-hidden="true" />
+                      08:00 - 17:30, thứ Hai đến thứ Bảy
+                    </p>
+                  </div>
+                  <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+                    Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.
+                  </div>
+                </div>
+              </article>
             </div>
           </div>
 
           <PublicContactForm sourcePath="/lien-he" variant="contact" />
         </section>
 
-        <section className={cn(publicContainerClass, 'pb-8 sm:pb-10')}>
+        <section className="mt-6">
           <div className="grid gap-4 lg:grid-cols-2">
             <article className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
               <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Thông tin pháp lý đối chiếu</p>
@@ -154,7 +191,7 @@ export default async function ContactPage() {
         </section>
 
         {siteProfile.faqs.length > 0 && (
-          <section className={cn(publicContainerClass, 'pb-[calc(10.5rem+var(--safe-bottom))] sm:pb-12')}>
+          <section className="pb-[calc(10.5rem+var(--safe-bottom))] pt-6 sm:pb-12">
             <h2 className="text-[1.9rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {siteProfile.faqs.map((faq) => (
@@ -163,7 +200,7 @@ export default async function ContactPage() {
             </div>
           </section>
         )}
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }
