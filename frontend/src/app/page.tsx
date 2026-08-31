@@ -830,7 +830,7 @@ export default async function HomePage() {
                   alt={internalHeroShowcaseAlt}
                   fallback={internalHeroPreviewImage}
                   wrapperClassName="aspect-[9/12] w-full overflow-hidden bg-transparent lg:aspect-[10/13]"
-                  className="h-full w-full scale-[1.08] object-cover object-[68%_top] sm:scale-[1.08] sm:object-[72%_top] lg:scale-[1.03] lg:object-[70%_top]"
+                  className="h-full w-full scale-[1.2] object-cover object-[78%_top] sm:scale-[1.15] sm:object-[78%_top] lg:scale-[1.18] lg:object-[80%_top]"
                   priority
                 />
                 <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(249,252,247,0.02)_0%,rgba(249,252,247,0.02)_18%,rgba(249,252,247,0)_38%)]" />
