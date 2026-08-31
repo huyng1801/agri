@@ -738,7 +738,7 @@ export default async function HomePage() {
               className="absolute inset-0 opacity-90"
               style={{
                 background:
-                  "radial-gradient(circle at 14% 16%, rgba(255,255,255,0.84), transparent 20%), radial-gradient(circle at 84% 14%, rgba(255,255,255,0.62), transparent 22%), radial-gradient(circle at 18% 84%, rgba(119,201,94,0.14), transparent 18%), radial-gradient(circle at 82% 82%, rgba(13,111,128,0.12), transparent 18%)",
+                  "radial-gradient(circle at 50% 34%, rgba(255,255,255,0.94), transparent 26%), radial-gradient(circle at 14% 16%, rgba(255,255,255,0.84), transparent 20%), radial-gradient(circle at 84% 14%, rgba(255,255,255,0.62), transparent 22%), radial-gradient(circle at 18% 84%, rgba(119,201,94,0.14), transparent 18%), radial-gradient(circle at 82% 82%, rgba(13,111,128,0.12), transparent 18%)",
               }}
             />
             <div
@@ -750,7 +750,7 @@ export default async function HomePage() {
               aria-hidden="true"
             />
 
-            <div className="absolute -left-2 top-[28%] z-10 w-[2.9rem] sm:bottom-0 sm:top-auto sm:w-[8.2rem] lg:left-3 lg:w-[13.8rem]">
+            <div className="absolute -left-3 top-[27%] z-10 w-[4.15rem] sm:bottom-0 sm:top-auto sm:w-[9.1rem] lg:left-2 lg:w-[15.1rem]">
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
@@ -794,24 +794,24 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="absolute right-0 top-[16%] z-10 w-[6.9rem] sm:bottom-0 sm:top-auto sm:w-[16.2rem] lg:w-[22.5rem]">
-              <div className="relative overflow-hidden rounded-l-[1.75rem] sm:rounded-l-[2.4rem] lg:rounded-l-[3rem]">
+            <div className="absolute -right-4 top-[18%] z-10 w-[7.3rem] sm:bottom-0 sm:top-auto sm:-right-2 sm:w-[16.8rem] lg:-right-3 lg:w-[23.4rem]">
+              <div className="relative overflow-hidden rounded-l-[1.85rem] sm:rounded-l-[2.55rem] lg:rounded-l-[3.1rem]">
                 <PublicImage
                   src={internalHeroShowcaseImage}
                   alt={internalHeroShowcaseAlt}
                   fallback={internalHeroPreviewImage}
-                  wrapperClassName="aspect-[9/12] w-full overflow-hidden bg-[radial-gradient(circle_at_20%_18%,#fff6ea_0%,#fffdf8_44%,#eef6ef_100%)] lg:aspect-[10/13]"
-                  className="h-full w-full scale-[1.07] object-cover object-right-top sm:scale-[1.03] lg:scale-100"
+                  wrapperClassName="aspect-[8/11] w-full overflow-hidden bg-transparent lg:aspect-[10/13]"
+                  className="h-full w-full scale-[1.18] object-cover object-[76%_top] sm:scale-[1.08] sm:object-[72%_top] lg:scale-[1.03] lg:object-[70%_top]"
                   priority
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(249,252,247,0.04)_0%,rgba(249,252,247,0.04)_18%,rgba(249,252,247,0)_38%)]" />
-                <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(248,251,247,0)_0%,rgba(248,251,247,0.88)_100%)] sm:h-24 lg:h-28" />
-                <div className="absolute inset-y-0 left-0 w-8 bg-[linear-gradient(90deg,rgba(248,251,247,0.92)_0%,rgba(248,251,247,0)_100%)] sm:w-10 lg:w-12" />
-                <div className="absolute bottom-4 left-3 hidden max-w-[11rem] rounded-[1.1rem] bg-[rgba(255,253,247,0.82)] p-3 text-[#1f2740] shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur sm:block lg:bottom-5 lg:left-5 lg:max-w-[13.2rem] lg:rounded-[1.25rem] lg:p-4">
+                <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(249,252,247,0.02)_0%,rgba(249,252,247,0.02)_18%,rgba(249,252,247,0)_38%)]" />
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(248,251,247,0)_0%,rgba(248,251,247,0.82)_100%)] sm:h-20 lg:h-24" />
+                <div className="absolute inset-y-0 left-0 w-11 bg-[linear-gradient(90deg,rgba(248,251,247,0.97)_0%,rgba(248,251,247,0.8)_30%,rgba(248,251,247,0)_100%)] sm:w-14 lg:w-16" />
+                <div className="absolute bottom-4 left-3 hidden max-w-[10.75rem] rounded-[1.1rem] bg-[rgba(255,253,247,0.82)] p-3 text-[#1f2740] shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur sm:block lg:bottom-5 lg:left-5 lg:max-w-[12.6rem] lg:rounded-[1.25rem] lg:p-4">
                   <p className="text-[0.5rem] font-semibold uppercase tracking-[0.18em] text-[#5e9650] lg:text-[0.58rem]">
                     Điểm triển khai
                   </p>
-                  <p className="mt-1 text-[0.72rem] font-extrabold leading-4 sm:text-[0.92rem] sm:leading-5 lg:text-[1.02rem]">
+                  <p className="mt-1 line-clamp-2 text-[0.72rem] font-extrabold leading-4 sm:text-[0.88rem] sm:leading-5 lg:text-[0.98rem]">
                     {heroPreviewCooperative?.name || "Hệ sinh thái HTXONLINE"}
                   </p>
                   <p className="mt-1 text-[0.56rem] leading-4 text-[#314665] sm:text-[0.66rem] lg:text-[0.76rem]">
@@ -826,7 +826,7 @@ export default async function HomePage() {
             <div
               className={cn(
                 publicContainerClass,
-                "relative z-20 flex min-h-[13.2rem] flex-col items-center justify-start px-[2.5rem] pb-4 pt-4 text-center sm:min-h-[21rem] sm:justify-center sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
+                "relative z-20 flex min-h-[13.2rem] flex-col items-center justify-start px-[2.9rem] pb-4 pt-4 text-center sm:min-h-[21rem] sm:justify-center sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
               )}
             >
               <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
@@ -847,18 +847,18 @@ export default async function HomePage() {
                 </span>
               </div>
 
-              <p className="mt-3 text-[0.52rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
+              <p className="mt-3 text-[0.5rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái thương mại số
               </p>
-              <h1 className="mx-auto mt-2.5 max-w-[12.2ch] text-[1.12rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
+              <h1 className="mx-auto mt-2.5 max-w-[13ch] text-[1.02rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
                 Cùng HTX kiến tạo nông nghiệp bền vững
               </h1>
-              <p className="mx-auto mt-2 max-w-[15.2rem] text-[0.62rem] leading-[1.58] text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
+              <p className="mx-auto mt-2 max-w-[15rem] text-[0.57rem] leading-[1.55] text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
                 Quản trị xã viên, thu chi, xuất nhập rồi mở sản phẩm công khai,
                 tin tức và QR truy xuất trên cùng một hệ sinh thái.
               </p>
 
-              <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.52rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
+              <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.48rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
                 <span>{featuredCooperatives.length} HTX đang hiển thị</span>
                 <span className="opacity-45">•</span>
                 <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
@@ -866,26 +866,26 @@ export default async function HomePage() {
                 <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
               </div>
 
-              <div className="mt-3.5 w-full max-w-[14.2rem] rounded-[1.65rem] border border-white/75 bg-white/74 p-2 shadow-[0_16px_32px_rgba(15,23,42,0.09)] backdrop-blur sm:max-w-none sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
-                <div className="flex flex-col items-center justify-center gap-2 sm:flex-row sm:flex-wrap sm:gap-2.5">
+              <div className="mt-3.5 w-full max-w-[13.1rem] rounded-[1.42rem] border border-white/75 bg-white/70 p-1.5 shadow-[0_16px_32px_rgba(15,23,42,0.08)] backdrop-blur sm:max-w-none sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+                <div className="flex flex-col items-center justify-center gap-1.5 sm:flex-row sm:flex-wrap sm:gap-2.5">
                   <Link
                     href={primaryCta.href}
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.15rem] text-[0.78rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
+                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1rem] text-[0.72rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5 sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
                   >
                     {primaryCta.label}
-                    <ArrowRight size={15} aria-hidden="true" />
+                    <ArrowRight size={14} aria-hidden="true" />
                   </Link>
                   {secondaryCta.external ? (
                     <a
                       href={secondaryCta.href}
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.78rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
+                      className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1rem] text-[0.72rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
                     >
                       {secondaryCta.label}
                     </a>
                   ) : (
                     <Link
                       href={secondaryCta.href}
-                      className="inline-flex min-h-11 w-full items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.78rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
+                      className="inline-flex min-h-10 w-full items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1rem] text-[0.72rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
                     >
                       {secondaryCta.label}
                     </Link>
@@ -979,7 +979,7 @@ export default async function HomePage() {
               className={cn(
                 "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]",
                 isInternal
-                  ? "max-w-[11ch] text-[1.68rem] leading-[0.96] lg:mx-0"
+                  ? "max-w-none text-[1.52rem] leading-[0.96] sm:text-[2.65rem] lg:mx-0 lg:text-[3.1rem]"
                   : "max-w-[13ch]",
               )}
             >
