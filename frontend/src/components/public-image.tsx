@@ -33,7 +33,9 @@ export function PublicImage({
   priority = false,
   decorative = false
 }: PublicImageProps) {
-  const resolved = src || fallback;
+  // Demo seed images are useful in development but are not reliable enough for
+  // a public page. Use the stable fallback immediately instead of showing a blank card.
+  const resolved = src && !src.includes('picsum.photos/') ? src : fallback;
   const [currentSrc, setCurrentSrc] = useState(resolved);
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);

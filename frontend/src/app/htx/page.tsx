@@ -6,7 +6,7 @@ import {
   EmptyPublicState,
   PublicSearch
 } from '@/components/public-marketplace';
-import { PublicImage } from '@/components/public-image';
+import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
@@ -148,7 +148,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                     <PublicImage
                       src={featuredCooperative?.avatarUrl}
                       alt={featuredCooperative?.name ?? 'HTX nổi bật'}
-                      fallback="/images/placeholders/cooperative.svg"
+                      fallback={DEFAULT_COOPERATIVE_IMAGE}
                       priority
                       wrapperClassName="h-20 w-20 shrink-0 overflow-hidden rounded-[1.4rem] ring-1 ring-white/20"
                       className="h-full w-full object-cover"
