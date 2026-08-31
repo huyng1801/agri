@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowRight, MapPin, QrCode, Search, SlidersHorizontal, Sparkles } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { EmptyPublicState, ProductCard, PublicProduct, productImage, publicListItems } from '@/components/public-marketplace';
+import { PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
@@ -126,13 +127,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         <span>{featuredProduct.cooperative?.name || 'HTX Việt Nam'}</span>
                       </div>
                       <Link href={featuredProductSlug} className="mt-4 block overflow-hidden rounded-[1.5rem] bg-[#fbfdf9]">
-                        <div className="aspect-[1/1] w-full bg-[linear-gradient(180deg,#ffffff_0%,#f7fbf4_100%)] sm:aspect-[16/11]">
-                          <img
-                            src={productImage(featuredProduct)}
-                            alt={featuredProduct.name}
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
+                        <PublicImage
+                          src={productImage(featuredProduct)}
+                          alt={featuredProduct.name}
+                          priority
+                          wrapperClassName="aspect-[1/1] w-full bg-[linear-gradient(180deg,#ffffff_0%,#f7fbf4_100%)] sm:aspect-[16/11]"
+                          className="h-full w-full object-cover"
+                        />
                       </Link>
                     </div>
 
@@ -238,9 +239,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                             href={`/san-pham/${product.slug}`}
                             className="flex items-center gap-3 rounded-[1.25rem] border border-[#e6ede1] bg-white px-3 py-3 transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
                           >
-                            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-[1rem] bg-[#f3f7ef]">
-                              <img src={productImage(product)} alt={product.name} className="h-full w-full object-cover" />
-                            </div>
+                            <PublicImage
+                              src={productImage(product)}
+                              alt={product.name}
+                              wrapperClassName="h-14 w-14 shrink-0 rounded-[1rem] bg-[#f3f7ef]"
+                              className="h-full w-full object-cover"
+                            />
                             <div className="min-w-0 flex-1">
                               <p className="line-clamp-2 text-sm font-extrabold leading-5 text-[#1f2233]">{product.name}</p>
                               <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
