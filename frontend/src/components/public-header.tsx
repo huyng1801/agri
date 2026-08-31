@@ -85,6 +85,7 @@ export function PublicHeader({
       : siteKey === 'passport'
         ? ['Có QR', 'Hồ sơ số', 'HTX']
         : ['Sản phẩm', 'HTX', 'Truy xuất'];
+  const CtaIcon = isInternal ? Briefcase : LogIn;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -99,15 +100,15 @@ export function PublicHeader({
 
   if (isInternal) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/92 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
-        <div className="hidden bg-[#1d9b49] text-white md:block">
-          <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-center text-[0.68rem] font-medium leading-5 sm:px-5 sm:text-[0.76rem] lg:px-6 lg:text-[0.84rem]">
+      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/94 shadow-[0_8px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+        <div className="bg-[#1d9b49] text-white">
+          <div className="mx-auto max-w-[1220px] px-4 py-2 text-left text-[0.7rem] font-medium leading-5 sm:px-5 sm:text-center sm:text-[0.76rem] lg:px-6 lg:py-1.5 lg:text-[0.84rem]">
             {supportText}
           </div>
         </div>
 
         <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-          <div className="flex items-center gap-2 py-2.5 md:hidden">
+          <div className="flex items-center gap-2 py-3 md:hidden">
             <button
               type="button"
               className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d9e5d7] bg-white text-[#1f9b4b] shadow-sm transition hover:text-[#16753d]"
@@ -118,19 +119,15 @@ export function PublicHeader({
               {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             </button>
 
-            <Link
-              href="/"
-              className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-[#dfe8db] bg-[#f8faf5] px-3 py-2.5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]"
-              aria-label={`${appName} - Trang chủ`}
-            >
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
-                <PublicLogo size={26} className="h-[26px] w-[26px]" />
-              </span>
-              <span className="min-w-0">
-                <span className="block truncate text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{brandBadge}</span>
-                <span className="mt-0.5 block truncate text-sm font-extrabold text-[#1f2233]">{appName}</span>
-              </span>
-            </Link>
+            <div className="flex flex-1 justify-center">
+              <Link
+                href="/"
+                className="grid h-[4.2rem] w-[4.2rem] place-items-center rounded-full bg-[#111827] shadow-[0_14px_28px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]"
+                aria-label={`${appName} - Trang chủ`}
+              >
+                <PublicLogo size={34} className="h-[34px] w-[34px]" />
+              </Link>
+            </div>
 
             <div className="flex items-center gap-2">
               <Link
@@ -145,12 +142,12 @@ export function PublicHeader({
                 aria-label={navCta.label}
                 className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e5d6] bg-white text-[#252b3d] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
               >
-                <LogIn size={18} aria-hidden="true" />
+                <CtaIcon size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>
 
-          <div className="mb-2 flex gap-2 overflow-x-auto pb-2 md:hidden">
+          <div className="mb-3 flex gap-2 overflow-x-auto pb-2 md:hidden">
             {navItems.map((item) => {
               const active = isNavActive(pathname, item.href);
               return (
@@ -245,7 +242,7 @@ export function PublicHeader({
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-x-0 bottom-0 top-[6.2rem] z-40 md:hidden">
+          <div className="fixed inset-x-0 bottom-0 top-[8.6rem] z-40 md:hidden">
             <button type="button" className="absolute inset-0 bg-[#13231a]/24 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
             <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
               <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
@@ -296,7 +293,7 @@ export function PublicHeader({
                   onClick={closeMenu}
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)]"
                 >
-                  <LogIn size={18} aria-hidden="true" />
+                  <CtaIcon size={18} aria-hidden="true" />
                   {navCta.label}
                 </Link>
               </div>
