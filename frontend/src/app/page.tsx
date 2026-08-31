@@ -1159,7 +1159,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/san-pham"
-              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
             >
               Khám phá thêm
               <ArrowRight size={16} aria-hidden="true" />
@@ -1252,7 +1252,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/htx"
-              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
             >
               Xem HTX
               <ArrowRight size={16} aria-hidden="true" />
@@ -1263,27 +1263,16 @@ export default async function HomePage() {
             isInternal ? (
               <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
                 <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-6">
-                  {partnerItems.map((cooperative, index) => (
+                  {partnerItems.map((cooperative) => (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
                       className="group min-w-[11.25rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
                     >
-                      <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-                        {cooperative.avatarUrl ? (
-                          <PublicImage
-                            src={cooperative.avatarUrl}
-                            alt={cooperative.name}
-                            decorative
-                            priority={index < 4}
-                            wrapperClassName="h-full w-full rounded-full"
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
-                          />
-                        ) : (
-                          <span className="text-[0.92rem] font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
-                            {cooperativeMonogram(cooperative.name)}
-                          </span>
-                        )}
+                      <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dce7d8] bg-[linear-gradient(180deg,#ffffff_0%,#eef6ec_100%)] shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                        <span className="text-[0.92rem] font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                          {cooperativeMonogram(cooperative.name)}
+                        </span>
                       </span>
                       <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
                         {cooperative.name}
@@ -1507,7 +1496,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/tin-tuc"
-              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
             >
               Xem tin tức
               <ArrowRight size={16} aria-hidden="true" />
