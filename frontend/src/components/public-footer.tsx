@@ -194,12 +194,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">
                     Truy cập nhanh
                   </p>
-                  <div className="mt-4 grid gap-2">
+                  <div className="mt-4 grid gap-1">
                     {serviceLinks.map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="inline-flex min-h-10 items-center rounded-full border border-[#e1e8dd] bg-white px-3.5 py-2 text-[0.78rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                        className={footerLinkClass}
                       >
                         {item.label}
                       </Link>
@@ -211,12 +211,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">
                     Quy trình và chính sách
                   </p>
-                  <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  <div className="mt-4 grid gap-1">
                     {[...processLinks, ...policyLinks].map((item) => (
                       <Link
                         key={item.href}
                         href={item.href}
-                        className="inline-flex min-h-10 items-center rounded-full border border-[#e1e8dd] bg-white px-3.5 py-2 text-[0.78rem] font-semibold leading-5 text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                        className={footerLinkClass}
                       >
                         {item.label}
                       </Link>
@@ -343,10 +343,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           </div>
         </div>
 
-        <div className="bg-[#101725] text-white/72">
+        <div className="border-t border-[#e4eadf] bg-transparent text-slate-600">
           <div className={cn(publicContainerClass, 'flex flex-col gap-2 py-4 text-sm sm:flex-row sm:items-center sm:justify-between')}>
             <p>© {new Date().getFullYear()} {profile.appName}. Được thiết kế và vận hành bởi Agri Passport.</p>
-            <p className="text-white/56">Luồng nội bộ, sản phẩm công khai và QR truy xuất được tách vai trò rõ ràng.</p>
+            <p>Luồng nội bộ, sản phẩm công khai và QR truy xuất được tách vai trò rõ ràng.</p>
           </div>
         </div>
       </footer>
