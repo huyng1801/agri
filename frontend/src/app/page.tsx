@@ -368,8 +368,6 @@ export default async function HomePage() {
     : catalog.cooperatives.slice(0, 6);
   const heroPreviewProducts = featuredProducts.slice(0, 3);
   const heroPreviewCooperative = partnerItems[0];
-  const internalLeadNews = news.data[0];
-  const internalSecondaryNews = news.data.slice(1, 3);
   const internalHeroPreviewImage = siteProfile.pageContent.homeImageUrl;
   const internalHeroPreviewAlt =
     siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
@@ -1504,120 +1502,15 @@ export default async function HomePage() {
           </div>
 
           {news.data.length ? (
-            isInternal && internalLeadNews ? (
-              <div className="mt-6 grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
-                <article
-                  className={cn(
-                    publicCardClass,
-                    "group flex h-full flex-col overflow-hidden bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_48px_rgba(15,23,42,0.08)]",
-                  )}
-                >
-                  <Link
-                    href={`/tin-tuc/${internalLeadNews.slug}`}
-                    className="block overflow-hidden"
-                  >
-                    <div className="relative">
-                      <PublicImage
-                        src={internalLeadNews.coverImageUrl}
-                        alt={internalLeadNews.title}
-                        priority
-                        wrapperClassName="aspect-[16/10] w-full"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                      />
-                      <div className="pointer-events-none absolute inset-x-4 bottom-4 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase">
-                        {internalLeadNews.category?.name ? (
-                          <span className="inline-flex min-h-9 items-center rounded-full bg-[#1f9b4b] px-3 text-white shadow-sm">
-                            {internalLeadNews.category.name}
-                          </span>
-                        ) : null}
-                        {internalLeadNews.publishedAt ? (
-                          <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/86 px-3 text-[#1f2233] shadow-sm backdrop-blur">
-                            {new Date(internalLeadNews.publishedAt).toLocaleDateString(
-                              "vi-VN",
-                            )}
-                          </span>
-                        ) : null}
-                      </div>
-                    </div>
-                  </Link>
-
-                  <div className="flex flex-1 flex-col p-5 sm:p-6">
-                    <Link
-                      href={`/tin-tuc/${internalLeadNews.slug}`}
-                      className="text-[1.45rem] font-extrabold leading-[1.18] tracking-[-0.03em] text-[#1f2233] transition hover:text-[#1f9b4b] sm:text-[1.75rem]"
-                    >
-                      {internalLeadNews.title}
-                    </Link>
-                    <p className="mt-4 flex-1 text-[1rem] leading-8 text-slate-600">
-                      {internalLeadNews.excerpt ||
-                        internalLeadNews.seoDescription ||
-                        "Tin tức vận hành mới nhất từ HTXONLINE."}
-                    </p>
-                    <Link
-                      href={`/tin-tuc/${internalLeadNews.slug}`}
-                      className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
-                    >
-                      Đọc chi tiết
-                      <ArrowRight size={16} aria-hidden="true" />
-                    </Link>
-                  </div>
-                </article>
-
-                <div className="grid gap-4">
-                  {internalSecondaryNews.map((article) => (
-                    <article
-                      key={article.id}
-                      className={cn(
-                        publicCardClass,
-                        "group flex h-full flex-col overflow-hidden bg-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_22px_42px_rgba(15,23,42,0.08)] sm:flex-row",
-                      )}
-                    >
-                      <Link
-                        href={`/tin-tuc/${article.slug}`}
-                        className="block shrink-0 overflow-hidden sm:w-[46%]"
-                      >
-                        <PublicImage
-                          src={article.coverImageUrl}
-                          alt={article.title}
-                          priority
-                          wrapperClassName="aspect-[16/10] h-full w-full sm:aspect-auto sm:min-h-full"
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-                        />
-                      </Link>
-
-                      <div className="flex flex-1 flex-col p-4 sm:p-5">
-                        <div className="flex flex-wrap items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">
-                          {article.category?.name ? (
-                            <span className="text-[#2b8a3e]">{article.category.name}</span>
-                          ) : null}
-                          {article.publishedAt ? (
-                            <span>
-                              {new Date(article.publishedAt).toLocaleDateString("vi-VN")}
-                            </span>
-                          ) : null}
-                        </div>
-                        <Link
-                          href={`/tin-tuc/${article.slug}`}
-                          className="mt-2 text-[1.1rem] font-extrabold leading-6 text-[#1f2233] transition hover:text-[#1f9b4b]"
-                        >
-                          {article.title}
-                        </Link>
-                        <p className="mt-3 flex-1 text-sm leading-7 text-slate-600">
-                          {article.excerpt ||
-                            article.seoDescription ||
-                            "Tin tức vận hành từ HTXONLINE."}
-                        </p>
-                        <Link
-                          href={`/tin-tuc/${article.slug}`}
-                          className="mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-[#1f9b4b]"
-                        >
-                          Xem thêm
-                          <ArrowRight size={15} aria-hidden="true" />
-                        </Link>
-                      </div>
-                    </article>
-                  ))}
-                </div>
+            isInternal ? (
+              <div className="mt-6 grid gap-4 md:grid-cols-3">
+                {news.data.slice(0, 3).map((article, index) => (
+                  <NewsCard
+                    key={article.id}
+                    article={article}
+                    priority={index === 0}
+                  />
+                ))}
               </div>
             ) : (
               <div className="mt-6 grid gap-4 md:grid-cols-3">
