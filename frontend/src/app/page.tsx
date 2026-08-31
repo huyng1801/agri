@@ -1452,8 +1452,8 @@ export default async function HomePage() {
 
         {isInternal ? (
           <PublicSection>
-            <div className="grid gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-              <div className="max-w-[28rem]">
+            <div className="text-center">
+              <div className="mx-auto max-w-3xl">
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">
                   Mô hình triển khai
                 </p>
@@ -1463,62 +1463,57 @@ export default async function HomePage() {
                 <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
                   {journeyDescription}
                 </p>
-                <Link
-                  href="/gioi-thieu"
-                  className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
-                >
-                  Xem chi tiết hệ sinh thái
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
+                <div className="mt-5 flex justify-center">
+                  <Link
+                    href="/gioi-thieu"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
+                  >
+                    Xem chi tiết hệ sinh thái
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </div>
               </div>
-
-              <div className="relative">
-                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-5 sm:px-5 lg:mx-0 lg:grid lg:grid-cols-2 lg:overflow-visible lg:px-0 xl:grid-cols-4">
+              <div className="mt-8">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0 lg:grid lg:grid-cols-2 lg:overflow-visible xl:grid-cols-4">
                   {internalJourneyPanels.map((panel, index) => {
                     const isExternal = /^https?:\/\//.test(panel.href);
 
                     const cardContent = (
                       <>
-                        <div className="relative overflow-hidden rounded-[1.5rem] border border-[#e6ece0] bg-[#f8fbf6] p-3">
+                        <div className="relative overflow-hidden">
                           <PublicImage
                             src={panel.image}
                             alt={panel.imageAlt}
                             fallback={siteProfile.pageContent.homeImageUrl}
                             priority={index < 2}
-                            wrapperClassName="aspect-[4/5] rounded-[1.2rem]"
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                            wrapperClassName="aspect-[16/12] w-full"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                           />
-                          <div className="pointer-events-none absolute inset-x-3 top-3 flex items-center justify-between gap-2">
-                            <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/88 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233] shadow-sm backdrop-blur">
+                          <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+                            <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/92 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233] shadow-sm backdrop-blur">
                               {panel.step}
                             </span>
-                            <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/84 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e] shadow-sm backdrop-blur">
+                            <span className="inline-flex min-h-9 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
                               {panel.badge}
                             </span>
                           </div>
-                          <div className="pointer-events-none absolute inset-x-5 bottom-5 rounded-[1.2rem] bg-[rgba(255,255,255,0.88)] px-3 py-2 text-left shadow-sm backdrop-blur">
-                            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                              {panel.step}
+                          <div className="absolute inset-x-4 bottom-4 rounded-[1.2rem] bg-[rgba(255,255,255,0.9)] px-3 py-2.5 shadow-[0_14px_30px_rgba(15,23,42,0.12)] backdrop-blur">
+                            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                              {panel.badge}
                             </p>
-                            <p className="mt-1 text-[1rem] font-extrabold leading-tight text-[#1f2233]">
+                            <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1f2233]">
                               {panel.title}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex flex-1 flex-col px-1 pt-4">
-                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
-                            {panel.badge}
-                          </p>
-                          <h2 className="mt-2 text-[1.22rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">
-                            {panel.title}
-                          </h2>
-                          <p className="mt-3 flex-1 text-[0.92rem] leading-6 text-slate-600">
+                        <div className="flex flex-1 flex-col p-4 sm:p-5">
+                          <p className="line-clamp-4 text-[0.96rem] leading-7 text-slate-600">
                             {panel.description}
                           </p>
-                          <span className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d8e7d8] bg-[#f7fbf5] px-5 text-sm font-bold text-[#1f9b4b] transition group-hover:border-[#1f9b4b] group-hover:bg-white">
+                          <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
                             {panel.cta}
-                            <ArrowRight size={16} aria-hidden="true" />
+                            <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
                           </span>
                         </div>
                       </>
@@ -1526,23 +1521,15 @@ export default async function HomePage() {
 
                     const cardClassName = cn(
                       publicCardClass,
-                      "group flex h-full w-[min(78vw,16rem)] shrink-0 snap-start flex-col rounded-[1.9rem] bg-white p-3 transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.08)] lg:w-auto",
+                      "group flex h-full w-[min(82vw,22rem)] shrink-0 snap-start flex-col rounded-[2rem] border border-[#dfe7dc] bg-white shadow-[0_20px_44px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_54px_rgba(15,23,42,0.1)] lg:w-auto",
                     );
 
                     return isExternal ? (
-                      <a
-                        key={panel.key}
-                        href={panel.href}
-                        className={cardClassName}
-                      >
+                      <a key={panel.key} href={panel.href} className={cardClassName}>
                         {cardContent}
                       </a>
                     ) : (
-                      <Link
-                        key={panel.key}
-                        href={panel.href}
-                        className={cardClassName}
-                      >
+                      <Link key={panel.key} href={panel.href} className={cardClassName}>
                         {cardContent}
                       </Link>
                     );
