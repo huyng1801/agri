@@ -29,7 +29,7 @@ const PUBLIC_MARKETPLACE_PATHS = [
 ];
 
 const PASSPORT_PATHS = ['/passport', '/qr'];
-const INTERNAL_MARKETPLACE_REDIRECT_PATHS = ['/san-pham', '/htx', '/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
+const INTERNAL_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
 
 export function proxy(request: NextRequest) {
   const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
@@ -57,7 +57,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
 
-  if (area === 'public' && siteKey === 'htxonline' && INTERNAL_MARKETPLACE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
+  if (area === 'public' && siteKey === 'htxonline' && INTERNAL_COMMERCE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
 
