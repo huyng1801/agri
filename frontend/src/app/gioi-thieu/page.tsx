@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
 import { PublicImage } from '@/components/public-image';
-import { publicContainerClass } from '@/components/public-layout';
+import { PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { ecosystemCards } from '@/components/public-ecosystem-showcase';
 import { Button, cn } from '@/components/ui';
@@ -58,58 +58,67 @@ export default async function AboutPage() {
 
   return (
     <PublicShell>
-      <main id="main-content">
-        <section className="overflow-hidden border-b border-[#d3e5ea] bg-[#c7e1eb]">
-          <div className={cn(publicContainerClass, 'py-5 sm:py-6')}>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-[#1f2233] sm:text-[1rem]">
-              <Link href="/" className="transition hover:text-[#1f9b4b]">
-                Trang Chủ
-              </Link>
-              <span aria-hidden="true">→</span>
-              <span className="font-medium">Vai Trò Nền Tảng</span>
-            </div>
-          </div>
-        </section>
+      <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
+        <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-4 py-2 text-sm text-[#1f2233]">
+          <Link href="/" className="transition hover:text-[#1f9b4b]">
+            Trang chủ
+          </Link>
+          <span aria-hidden="true">/</span>
+          <span className="font-medium">Vai trò nền tảng</span>
+        </div>
 
-        <section className="bg-white">
-          <div className={cn(publicContainerClass, 'grid gap-5 py-7 sm:gap-6 sm:py-9 lg:grid-cols-[0.92fr_1.08fr] lg:items-start lg:gap-8 lg:py-12')}>
-            <div className="max-w-[42rem]">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#82a954] sm:text-sm">Nền tảng</p>
-              <h1 className="mt-2 text-[2rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-[#1f2233] sm:text-[3rem] lg:text-[3.35rem]">
+        <section className="grid gap-5 lg:grid-cols-[0.94fr_1.06fr] lg:items-start lg:gap-8">
+          <article className="relative overflow-hidden rounded-[2.25rem] bg-[linear-gradient(145deg,#0d1e30_0%,#173a50_48%,#1f9b4b_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(173,255,208,0.18),transparent_30%)]" aria-hidden="true" />
+            <div className="relative z-10">
+              <p className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/88">
+                Vai trò nền tảng
+              </p>
+              <h1 className="mt-4 max-w-[12ch] text-[2rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[14ch] sm:text-[2.9rem]">
                 {isInternal ? 'Giải pháp dịch vụ tiêu biểu cho HTX số' : siteProfile.pageContent.introTitle}
               </h1>
-              <p className="mt-4 text-[1rem] leading-8 text-slate-700 sm:text-[1.05rem]">
+              <p className="mt-4 max-w-[42rem] text-[0.96rem] leading-7 text-white/82 sm:text-[1rem]">
                 {isInternal
                   ? 'HTXONLINE giữ vai trò quản trị nội bộ, còn AGRIPASSPORT và Hộ chiếu nông nghiệp là hai lớp công khai bên ngoài. Nhìn vào là hiểu ngay lớp nào dùng để vận hành, lớp nào dùng để công khai sản phẩm và lớp nào dùng để truy xuất QR.'
                   : siteProfile.pageContent.introDescription}
               </p>
 
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link href="/ve-chung-toi">
-                  <Button className="min-h-12 w-full sm:w-auto">
-                    Về chúng tôi
-                    <ArrowRight size={18} aria-hidden="true" />
-                  </Button>
-                </Link>
-                <Link href="/lien-he">
-                  <Button variant="ghost" className="min-h-12 w-full sm:w-auto">
-                    Liên hệ triển khai
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-5 flex flex-wrap gap-2.5">
                 {heroStats.map((item) => (
                   <span
                     key={item}
-                    className="inline-flex min-h-10 items-center rounded-full border border-[#dbe7d8] bg-[#f5faf2] px-4 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-[#2b8a3e]"
+                    className="inline-flex min-h-10 items-center rounded-full border border-white/16 bg-white/10 px-4 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/92"
                   >
                     {item}
                   </span>
                 ))}
               </div>
-            </div>
 
+              <div className="mt-5 grid gap-3">
+                {workflowPoints.slice(0, 3).map((item) => (
+                  <div key={item} className="rounded-[1.3rem] border border-white/12 bg-white/10 px-4 py-3 text-sm leading-6 text-white/88">
+                    {item}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <Link href="/ve-chung-toi">
+                  <Button className="min-h-12 w-full sm:w-auto bg-white text-[#14344b] hover:bg-white/90">
+                    Về chúng tôi
+                    <ArrowRight size={18} aria-hidden="true" />
+                  </Button>
+                </Link>
+                <Link href="/lien-he">
+                  <Button variant="ghost" className="min-h-12 w-full border border-white/16 bg-white/8 text-white hover:bg-white/12 sm:w-auto">
+                    Liên hệ triển khai
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </article>
+
+          <div className="grid gap-4">
             <article className="overflow-hidden rounded-[2rem] border border-[#e1e7dd] bg-white shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
               <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
                 <div className="p-3 sm:p-4">
@@ -131,17 +140,23 @@ export default async function AboutPage() {
                   <p className="mt-3 text-sm leading-7 text-white/82 sm:text-[0.98rem]">
                     Đây là điểm khác biệt cốt lõi của hệ sinh thái Agri: dữ liệu trong HTXONLINE được chuẩn hóa trước, sau đó mới đẩy sang lớp sản phẩm công khai hoặc QR truy xuất khi cần.
                   </p>
-
-                  <div className="mt-5 grid gap-3">
-                    {workflowPoints.slice(0, 2).map((item) => (
-                      <div key={item} className="rounded-[1.25rem] border border-white/12 bg-white/10 px-4 py-3 text-sm leading-6 text-white/88">
-                        {item}
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
             </article>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              {[
+                { label: 'Lớp 1', value: 'Nội bộ HTX', note: 'Xã viên, thu chi, dữ liệu vận hành' },
+                { label: 'Lớp 2', value: 'Công khai', note: 'Sản phẩm, HTX, đơn hàng và liên hệ' },
+                { label: 'Lớp 3', value: 'QR hồ sơ số', note: 'Truy xuất sâu khi cần làm thị trường' }
+              ].map((item) => (
+                <article key={item.label} className="rounded-[1.6rem] border border-[#e5e8db] bg-[#fffdf8] p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{item.label}</p>
+                  <p className="mt-2 text-lg font-extrabold leading-6 text-[#1f2233]">{item.value}</p>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.note}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -245,7 +260,7 @@ export default async function AboutPage() {
             </article>
           </div>
         </section>
-      </main>
+      </PublicPageMain>
     </PublicShell>
   );
 }
