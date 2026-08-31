@@ -20,8 +20,9 @@ const marketplaceNavItems = [
 
 const internalNavItems = [
   { href: '/', label: 'Trang chủ' },
-  { href: '/ve-chung-toi', label: 'Về hệ thống' },
-  { href: '/gioi-thieu', label: 'Vai trò nền tảng' },
+  { href: '/san-pham', label: 'Sản phẩm' },
+  { href: '/htx', label: 'HTX' },
+  { href: '/gioi-thieu', label: 'Dịch vụ' },
   { href: '/tin-tuc', label: 'Tin tức' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
@@ -46,14 +47,14 @@ export function PublicHeader({
   const showCart = !isInternal;
   const supportText =
     isInternal
-      ? 'Điều phối dữ liệu cho hợp tác xã bền vững.'
+      ? 'Nền tảng số cho điều phối hợp tác xã và vận hành bền vững.'
       : siteKey === 'passport'
         ? 'QR truy xuất và hồ sơ số cho nông sản.'
         : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
-  const searchTarget = isInternal ? '/tin-tuc' : '/san-pham';
+  const searchTarget = '/san-pham';
   const searchPlaceholder =
     isInternal
-      ? 'Tìm tính năng, quy trình hoặc tin tức'
+      ? 'Tìm sản phẩm, HTX hoặc dịch vụ'
       : siteKey === 'passport'
         ? 'Tìm sản phẩm có QR, vùng trồng'
         : 'Tìm sản phẩm, hợp tác xã, vùng trồng';
@@ -110,12 +111,9 @@ export function PublicHeader({
               <Link
                 href={navCta.href}
                 aria-label={navCta.label}
-                className="relative grid h-11 w-11 shrink-0 place-items-center text-[#252b3d] transition hover:text-[#1f9b4b]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#dde8da] bg-white text-[#252b3d] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
               >
-                <Briefcase size={18} aria-hidden="true" />
-                <span className="absolute right-0 top-1 grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full bg-[#1f9b4b] px-1 text-[0.6rem] font-bold text-white shadow-[0_8px_18px_rgba(31,155,75,0.2)]">
-                  0
-                </span>
+                <LogIn size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -153,13 +151,10 @@ export function PublicHeader({
               </Link>
               <Link
                 href={navCta.href}
-                className="relative grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]"
+                className="grid h-11 w-11 place-items-center rounded-full border border-[#dde8da] bg-white text-[#1f2233] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
                 aria-label={navCta.label}
               >
-                <Briefcase size={20} aria-hidden="true" />
-                <span className="absolute right-0 top-0 grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full bg-[#1f9b4b] px-1 text-[0.6rem] font-bold text-white shadow-[0_8px_18px_rgba(31,155,75,0.2)]">
-                  0
-                </span>
+                <LogIn size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>
@@ -202,10 +197,10 @@ export function PublicHeader({
             <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
               <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
                 <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">HTXONLINE</p>
-                <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">Quản trị nội bộ cho hợp tác xã, rồi mới đồng bộ sang lớp công khai.</p>
+                <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">Quản trị hợp tác xã, mở sản phẩm công khai và kết nối QR truy xuất trên cùng hệ sinh thái.</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em]">
-                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Xã viên</span>
-                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Thu chi</span>
+                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Sản phẩm</span>
+                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">HTX</span>
                   <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Tin tức</span>
                 </div>
               </div>

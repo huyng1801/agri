@@ -108,12 +108,12 @@ export default async function HomePage() {
   ).slice(0, 12);
   const featuredCooperatives = catalog.cooperatives.slice(0, 6);
   const primaryCta = isInternal
-    ? { href: "/login", label: "Đăng nhập quản trị" }
+    ? { href: "/gioi-thieu", label: "Khám phá dịch vụ" }
     : isPassport
       ? { href: "/san-pham?hasQr=true", label: "Xem sản phẩm có QR" }
       : { href: "/san-pham", label: "Xem sản phẩm" };
   const secondaryCta = isInternal
-    ? { href: marketplaceUrl("/"), label: "Mở AGRIPASSPORT", external: true }
+    ? { href: "/san-pham", label: "Xem sản phẩm", external: false }
     : isPassport
       ? { href: "/ve-chung-toi", label: "Cách hoạt động", external: false }
       : { href: "/htx", label: "Khám phá HTX", external: false };
@@ -785,7 +785,7 @@ export default async function HomePage() {
                       </p>
                     </div>
                     <div className="mt-2 rounded-full border border-[#dfe8dc] bg-white/92 px-2 py-1 text-center text-[0.36rem] font-semibold uppercase tracking-[0.12em] text-[#0f7d63] shadow-sm sm:px-2.5 sm:py-1.5 sm:text-[0.44rem] lg:text-[0.58rem]">
-                      Đồng bộ sang AGRI
+                      Mở sản phẩm công khai
                     </div>
                   </div>
                 </div>
@@ -846,14 +846,14 @@ export default async function HomePage() {
               </div>
 
               <p className="mt-3 text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
-                Hệ sinh thái vận hành số
+                Hệ sinh thái thương mại số
               </p>
               <h1 className="mx-auto mt-2 max-w-[11.2ch] text-[1.08rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.9rem] lg:max-w-[11ch] lg:text-[4.35rem]">
-                Cùng HTX kiến tạo vận hành số bền vững
+                Cùng HTX kiến tạo thương mại nông nghiệp bền vững
               </h1>
               <p className="mx-auto mt-2 max-w-[13.5rem] text-[0.56rem] leading-4 text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[34rem] lg:text-[1.12rem] lg:leading-7">
-                Quản trị xã viên, thu chi và xuất nhập rồi đồng bộ sang
-                AGRIPASSPORT khi cần công khai và truy xuất QR.
+                Quản trị xã viên, thu chi, xuất nhập rồi mở sản phẩm công khai,
+                tin tức và QR truy xuất trên cùng hệ sinh thái.
               </p>
 
               <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.5rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
@@ -875,14 +875,14 @@ export default async function HomePage() {
                 {secondaryCta.external ? (
                   <a
                     href={secondaryCta.href}
-                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.15rem] text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                    className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </a>
                 ) : (
                   <Link
                     href={secondaryCta.href}
-                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.15rem] text-[0.76rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                    className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </Link>
