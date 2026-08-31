@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Calendar, MapPin, Phone, QrCode } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
-import { PublicProduct, cooperativeAvatar, productImage } from '@/components/public-marketplace';
+import { PublicProduct } from '@/components/public-marketplace';
 import { AddToCartButton } from '@/components/add-to-cart-button';
-import { PublicImage } from '@/components/public-image';
+import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { formatDate } from '@/lib/format';
@@ -59,7 +59,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   const passport = product.passports?.[0];
-  const coopAvatar = product.cooperative ? cooperativeAvatar(product.cooperative) : null;
+  const hasCooperative = Boolean(product.cooperative);
   const certifications = product.certifications ?? [];
   const publicLogs = product.farmingLogs ?? [];
 
@@ -74,7 +74,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <PublicImage
                 src={product.thumbnail?.publicUrl}
                 alt={product.name}
-                fallback={productImage(product)}
+                fallback={DEFAULT_PRODUCT_IMAGE}
                 priority
                 wrapperClassName="aspect-[16/10] w-full rounded-[1.45rem] sm:aspect-[4/3]"
                 className="h-full w-full object-cover"
@@ -100,11 +100,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 href={`/htx/${product.cooperative?.code ?? ''}`}
                 className="mt-3 inline-flex min-h-11 items-center gap-3 rounded-[1.15rem] border border-white/10 bg-white/10 px-2.5 pr-3 text-sm font-semibold text-white/86 transition hover:bg-white/14"
               >
-                {coopAvatar && (
+                {hasCooperative && (
                   <PublicImage
                     src={product.cooperative?.avatarUrl}
                     alt={product.cooperative?.name ?? 'HTX'}
-                    fallback={coopAvatar}
+                    fallback={DEFAULT_COOPERATIVE_IMAGE}
                     decorative
                     wrapperClassName="h-10 w-10 shrink-0 rounded-[0.95rem]"
                     className="h-full w-full object-cover"

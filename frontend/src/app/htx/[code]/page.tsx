@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { MapPin, Phone } from 'lucide-react';
-import { ProductCard, cooperativesFromProducts, cooperativeAvatar } from '@/components/public-marketplace';
+import { ProductCard, cooperativesFromProducts } from '@/components/public-marketplace';
 import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain, PublicSectionHeader, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
@@ -34,7 +34,6 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
   const products = await fetchProductsForCooperative(code);
   const cooperative = cooperativesFromProducts(products)[0];
   const zones = zonesFromProducts(products);
-  const avatarFallback = cooperative ? cooperativeAvatar(cooperative) : DEFAULT_COOPERATIVE_IMAGE;
 
   if (!cooperative) {
     return (
@@ -62,7 +61,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
               <PublicImage
                 src={cooperative.avatarUrl}
                 alt={cooperative.name}
-                fallback={avatarFallback}
+                fallback={DEFAULT_COOPERATIVE_IMAGE}
                 priority
                 wrapperClassName="h-full w-full"
                 className="h-full w-full object-cover"
