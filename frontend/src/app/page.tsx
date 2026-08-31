@@ -373,17 +373,15 @@ export default async function HomePage() {
     siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
   const internalHeroBackdropImage =
     siteProfile.pageContent.homeImageUrl || internalHeroPreviewImage;
+  const internalHeroPortraitImage = "/hero/htx-farmer-hero-v1.png";
   const internalHeroShowcaseImage =
+    internalHeroPortraitImage ||
     siteProfile.pageContent.contactImageUrl ||
     siteProfile.pageContent.aboutImageUrl ||
     heroPreviewProducts[0]?.thumbnail?.publicUrl ||
     internalHeroPreviewImage;
   const internalHeroShowcaseAlt =
-    siteProfile.pageContent.contactImageAlt ||
-    siteProfile.pageContent.aboutImageAlt ||
-    heroPreviewProducts[0]?.name ||
-    heroPreviewCooperative?.name ||
-    internalHeroPreviewAlt;
+    "Nông hộ đồng hành cùng HTXONLINE";
   const serviceAction = isInternal ? "/gioi-thieu" : "/san-pham";
   const internalServicePanels = [
     {
