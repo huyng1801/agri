@@ -100,7 +100,7 @@ export function PublicHeader({
 
   if (isInternal) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/94 shadow-[0_8px_24px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
         <div className="bg-[#1d9b49] text-white">
           <div className="mx-auto max-w-[1220px] px-4 py-2 text-left text-[0.7rem] font-medium leading-5 sm:px-5 sm:text-center sm:text-[0.76rem] lg:px-6 lg:py-1.5 lg:text-[0.84rem]">
             {supportText}
@@ -305,7 +305,7 @@ export function PublicHeader({
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/92 shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.05)]">
       <div className="hidden border-b border-[#198f43] bg-[#1f9b4b] text-white md:block">
         <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-[0.76rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-[0.88rem]">{supportText}</div>
       </div>
