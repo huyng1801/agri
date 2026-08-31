@@ -47,7 +47,7 @@ export function PublicHeader({
   const showCart = !isInternal;
   const supportText =
     isInternal
-      ? 'Nền tảng số cho điều phối hợp tác xã và vận hành bền vững.'
+      ? 'Điều phối dữ liệu cho hợp tác xã vận hành bền vững.'
       : siteKey === 'passport'
         ? 'QR truy xuất và hồ sơ số cho nông sản.'
         : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
@@ -76,16 +76,16 @@ export function PublicHeader({
     return (
       <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/95 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
         <div className="bg-[#1d9b49] text-white">
-          <div className="mx-auto max-w-[1220px] px-3 py-2 text-left text-[0.72rem] font-medium leading-5 sm:px-5 sm:text-[0.8rem] lg:px-6 lg:text-[0.92rem]">
+          <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-center text-[0.68rem] font-medium leading-5 sm:px-5 sm:text-[0.78rem] lg:px-6 lg:text-[0.88rem]">
             {supportText}
           </div>
         </div>
 
         <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-          <div className="flex min-h-[74px] items-center justify-between gap-3 py-3 md:hidden">
+          <div className="flex min-h-[64px] items-center justify-between gap-2.5 py-2.5 md:hidden">
             <button
               type="button"
-              className="grid h-11 w-11 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
+              className="grid h-10 w-10 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
@@ -94,31 +94,31 @@ export function PublicHeader({
             </button>
 
             <Link href="/" className="flex items-center" aria-label={`${appName} - Trang chủ`}>
-              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
-                <PublicLogo size={34} className="h-[34px] w-[34px]" />
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
+                <PublicLogo size={30} className="h-[30px] w-[30px]" />
               </span>
               <span className="sr-only">{appName}</span>
             </Link>
 
-            <div className="ml-auto flex items-center gap-2.5">
+            <div className="ml-auto flex items-center gap-2">
               <Link
                 href={searchTarget}
                 aria-label="Tìm kiếm"
-                className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
               >
-                <Search size={22} aria-hidden="true" />
+                <Search size={21} aria-hidden="true" />
               </Link>
               <Link
                 href={navCta.href}
                 aria-label={navCta.label}
-                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#dde8da] bg-white text-[#252b3d] shadow-sm transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e5d6] bg-white text-[#252b3d] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
               >
                 <LogIn size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>
 
-          <div className="hidden min-h-[86px] items-center gap-6 py-4 md:flex">
+          <div className="hidden min-h-[82px] items-center gap-6 py-3.5 md:flex">
             <Link href="/" className="flex shrink-0 items-center" aria-label={`${appName} - Trang chủ`}>
               <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_14px_28px_rgba(15,23,42,0.12)] ring-1 ring-[#dae4d7]">
                 <PublicLogo size={36} className="h-[36px] w-[36px]" />
@@ -162,7 +162,7 @@ export function PublicHeader({
 
         <div className="border-t border-[#ece8dd] bg-white">
           <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-            <nav className="hidden items-center justify-center gap-8 overflow-x-auto py-4 md:flex" aria-label="Menu chính">
+            <nav className="hidden items-center justify-center gap-8 overflow-x-auto py-3.5 md:flex" aria-label="Menu chính">
               {navItems.map((item) => {
                 const active = isNavActive(pathname, item.href);
                 return (
