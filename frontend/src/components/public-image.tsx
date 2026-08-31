@@ -58,11 +58,26 @@ export function PublicImage({
     setLoaded(true);
   }, [currentSrc, fallback]);
 
+  useEffect(() => {
+    if (loaded || currentSrc === fallback) return;
+
+    // Third-party image hosts can leave an image request pending indefinitely.
+    // Prefer a known, fast fallback so a public page never keeps a blank media area.
+    const timeout = window.setTimeout(() => {
+      if (!imgRef.current?.complete) {
+        setCurrentSrc(fallback);
+        setLoaded(false);
+      }
+    }, 3500);
+
+    return () => window.clearTimeout(timeout);
+  }, [currentSrc, fallback, loaded]);
+
   return (
     <div className={cn('relative overflow-hidden bg-[var(--surface-0)]', wrapperClassName)}>
       {!loaded && (
         <div
-          className="absolute inset-0 z-[1] animate-pulse bg-[linear-gradient(135deg,rgba(255,252,246,0.96)_0%,rgba(242,236,224,0.98)_48%,rgba(233,244,236,0.96)_100%)]"
+          className="absolute inset-0 z-[1] animate-pulse bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.92),transparent_28%),linear-gradient(135deg,#e6f3e4_0%,#f8fbf5_50%,#dcefea_100%)]"
           aria-hidden="true"
         />
       )}
