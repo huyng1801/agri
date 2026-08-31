@@ -323,7 +323,7 @@ export default async function HomePage() {
       ? "Tập trung vào trải nghiệm quét mã, mở hồ sơ số và đọc nhanh những thông tin công khai quan trọng nhất trên di động."
       : "Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng dữ liệu để công khai bán hàng rõ ràng hơn.";
   const outcomeTitle = isInternal
-    ? "Thắng lợi cùng hợp tác xã"
+    ? "Thắng lợi cùng HTX"
     : "Thắng lợi cùng nhà nông";
   const outcomeDescription = isInternal
     ? "Theo dõi xã viên, thu chi, nhập xuất và chuẩn bị dữ liệu đầu ra trên một luồng vận hành rõ ràng trước khi công khai ra thị trường."
@@ -848,12 +848,12 @@ export default async function HomePage() {
               <p className="mt-3 text-[0.54rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái thương mại số
               </p>
-              <h1 className="mx-auto mt-2 max-w-[11.2ch] text-[1.08rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[12ch] sm:text-[2.9rem] lg:max-w-[11ch] lg:text-[4.35rem]">
-                Cùng HTX kiến tạo thương mại nông nghiệp bền vững
+              <h1 className="mx-auto mt-2 max-w-[10.4ch] text-[1.08rem] font-extrabold leading-[0.97] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[11.2ch] sm:text-[2.9rem] lg:max-w-[10.6ch] lg:text-[4.35rem]">
+                Cùng HTX kiến tạo nông nghiệp bền vững
               </h1>
               <p className="mx-auto mt-2 max-w-[13.5rem] text-[0.56rem] leading-4 text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[34rem] lg:text-[1.12rem] lg:leading-7">
                 Quản trị xã viên, thu chi, xuất nhập rồi mở sản phẩm công khai,
-                tin tức và QR truy xuất trên cùng hệ sinh thái.
+                tin tức và QR truy xuất trên cùng một hệ sinh thái.
               </p>
 
               <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.5rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
@@ -864,10 +864,10 @@ export default async function HomePage() {
                 <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
               </div>
 
-              <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2">
+              <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
                 <Link
                   href={primaryCta.href}
-                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.05rem] text-[0.68rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                  className="inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1.15rem] text-[0.68rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5 sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                 >
                   {primaryCta.label}
                   <ArrowRight size={15} aria-hidden="true" />
@@ -875,14 +875,14 @@ export default async function HomePage() {
                 {secondaryCta.external ? (
                   <a
                     href={secondaryCta.href}
-                    className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </a>
                 ) : (
                   <Link
                     href={secondaryCta.href}
-                    className="inline-flex min-h-9 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
+                    className="hidden min-h-10 items-center justify-center rounded-full border border-[#d7e6d7] bg-white/92 px-[1.05rem] text-[0.68rem] font-bold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:inline-flex sm:min-h-11 sm:px-[1.4rem] sm:text-sm"
                   >
                     {secondaryCta.label}
                   </Link>
@@ -975,7 +975,7 @@ export default async function HomePage() {
               className={cn(
                 "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]",
                 isInternal
-                  ? "max-w-[16ch] lg:mx-0"
+                  ? "max-w-[11ch] text-[1.68rem] leading-[0.96] lg:mx-0"
                   : "max-w-[13ch]",
               )}
             >
