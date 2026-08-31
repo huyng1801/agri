@@ -373,7 +373,7 @@ export default async function HomePage() {
     siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle;
   const internalHeroBackdropImage =
     siteProfile.pageContent.homeImageUrl || internalHeroPreviewImage;
-  const internalHeroPortraitImage = "/hero/htx-farmer-hero-v1.png";
+  const internalHeroPortraitImage = "/hero/htx-farmer-hero-v2.png";
   const internalHeroShowcaseImage =
     internalHeroPortraitImage ||
     siteProfile.pageContent.contactImageUrl ||
@@ -750,7 +750,7 @@ export default async function HomePage() {
               aria-hidden="true"
             />
 
-            <div className="absolute -left-1 top-[21%] z-10 w-[3.6rem] sm:bottom-0 sm:top-auto sm:w-[8.7rem] lg:left-3 lg:w-[14.8rem]">
+            <div className="absolute -left-2 top-[28%] z-10 w-[2.9rem] sm:bottom-0 sm:top-auto sm:w-[8.2rem] lg:left-3 lg:w-[13.8rem]">
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
@@ -794,20 +794,20 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="absolute right-0 top-[20%] z-10 w-[4.35rem] sm:bottom-0 sm:top-auto sm:w-[14.6rem] lg:w-[19.5rem]">
-              <div className="relative overflow-hidden rounded-tl-[1.65rem] sm:rounded-tl-[2.4rem] lg:rounded-tl-[3rem]">
+            <div className="absolute right-0 top-[16%] z-10 w-[6.9rem] sm:bottom-0 sm:top-auto sm:w-[16.2rem] lg:w-[22.5rem]">
+              <div className="relative overflow-hidden rounded-l-[1.75rem] sm:rounded-l-[2.4rem] lg:rounded-l-[3rem]">
                 <PublicImage
                   src={internalHeroShowcaseImage}
                   alt={internalHeroShowcaseAlt}
                   fallback={internalHeroPreviewImage}
-                  wrapperClassName="aspect-[10/14] w-full overflow-hidden bg-[linear-gradient(180deg,#eef6ef_0%,#ffffff_100%)] lg:aspect-[10/15]"
-                  className="h-full w-full object-cover object-center"
+                  wrapperClassName="aspect-[9/12] w-full overflow-hidden bg-[radial-gradient(circle_at_20%_18%,#fff6ea_0%,#fffdf8_44%,#eef6ef_100%)] lg:aspect-[10/13]"
+                  className="h-full w-full scale-[1.07] object-cover object-right-top sm:scale-[1.03] lg:scale-100"
                   priority
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(9,17,18,0.1)_0%,rgba(9,17,18,0.02)_20%,rgba(248,251,247,0)_100%)]" />
-                <div className="absolute inset-x-0 bottom-0 h-20 bg-[linear-gradient(180deg,rgba(248,251,247,0)_0%,rgba(248,251,247,0.92)_100%)] sm:h-28 lg:h-36" />
-                <div className="absolute inset-y-0 left-0 w-10 bg-[linear-gradient(90deg,rgba(248,251,247,0.96)_0%,rgba(248,251,247,0)_100%)] sm:w-14 lg:w-20" />
-                <div className="absolute inset-x-3 bottom-4 hidden rounded-[1.1rem] bg-[rgba(241,246,231,0.72)] p-3 text-[#1f2740] shadow-[0_16px_36px_rgba(15,23,42,0.14)] backdrop-blur sm:block lg:inset-x-5 lg:bottom-5 lg:rounded-[1.25rem] lg:p-4">
+                <div className="absolute inset-0 bg-[linear-gradient(270deg,rgba(249,252,247,0.04)_0%,rgba(249,252,247,0.04)_18%,rgba(249,252,247,0)_38%)]" />
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-[linear-gradient(180deg,rgba(248,251,247,0)_0%,rgba(248,251,247,0.88)_100%)] sm:h-24 lg:h-28" />
+                <div className="absolute inset-y-0 left-0 w-8 bg-[linear-gradient(90deg,rgba(248,251,247,0.92)_0%,rgba(248,251,247,0)_100%)] sm:w-10 lg:w-12" />
+                <div className="absolute bottom-4 left-3 hidden max-w-[11rem] rounded-[1.1rem] bg-[rgba(255,253,247,0.82)] p-3 text-[#1f2740] shadow-[0_16px_36px_rgba(15,23,42,0.12)] backdrop-blur sm:block lg:bottom-5 lg:left-5 lg:max-w-[13.2rem] lg:rounded-[1.25rem] lg:p-4">
                   <p className="text-[0.5rem] font-semibold uppercase tracking-[0.18em] text-[#5e9650] lg:text-[0.58rem]">
                     Điểm triển khai
                   </p>
@@ -826,7 +826,7 @@ export default async function HomePage() {
             <div
               className={cn(
                 publicContainerClass,
-                "relative z-20 flex min-h-[13.2rem] flex-col items-center justify-start px-[1.9rem] pb-4 pt-4 text-center sm:min-h-[21rem] sm:justify-center sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
+                "relative z-20 flex min-h-[13.2rem] flex-col items-center justify-start px-[2.5rem] pb-4 pt-4 text-center sm:min-h-[21rem] sm:justify-center sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
               )}
             >
               <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
@@ -850,10 +850,10 @@ export default async function HomePage() {
               <p className="mt-3 text-[0.52rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái thương mại số
               </p>
-              <h1 className="mx-auto mt-2.5 max-w-[11.5ch] text-[1.14rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
+              <h1 className="mx-auto mt-2.5 max-w-[12.2ch] text-[1.12rem] font-extrabold leading-[0.96] tracking-[-0.05em] text-[#0d6f80] sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
                 Cùng HTX kiến tạo nông nghiệp bền vững
               </h1>
-              <p className="mx-auto mt-2 max-w-[14.5rem] text-[0.6rem] leading-[1.58] text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
+              <p className="mx-auto mt-2 max-w-[15.2rem] text-[0.62rem] leading-[1.58] text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
                 Quản trị xã viên, thu chi, xuất nhập rồi mở sản phẩm công khai,
                 tin tức và QR truy xuất trên cùng một hệ sinh thái.
               </p>

@@ -43,7 +43,7 @@ export function PublicMetricCarousel({
       className={cn(
         'relative rounded-[2rem] border border-[#e6ece1] bg-white px-12 py-6 shadow-[0_18px_42px_rgba(15,23,42,0.05)]',
         demeterVariant &&
-          'min-h-[24rem] rounded-none border-0 bg-transparent px-10 py-2 shadow-none sm:min-h-0 sm:rounded-[2rem] sm:border sm:bg-white sm:px-12 sm:py-8 sm:shadow-[0_18px_42px_rgba(15,23,42,0.05)]',
+          'mx-auto max-w-[23rem] rounded-[2rem] border border-[#e6ece1] bg-white px-12 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:max-w-none sm:px-12 sm:py-8',
         className
       )}
     >
@@ -52,7 +52,7 @@ export function PublicMetricCarousel({
         aria-label="Mục trước"
         className={cn(
           'absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
-          demeterVariant && 'left-2 top-[50%] h-12 w-12 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:left-3 sm:top-1/2 sm:h-10 sm:w-10'
+          demeterVariant && 'left-3 top-[42%] h-11 w-11 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:left-3 sm:top-1/2 sm:h-10 sm:w-10'
         )}
         onClick={() => setIndex((value) => value - 1)}
       >
@@ -64,7 +64,7 @@ export function PublicMetricCarousel({
         aria-label="Mục tiếp theo"
         className={cn(
           'absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
-          demeterVariant && 'right-2 top-[50%] h-12 w-12 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:right-3 sm:top-1/2 sm:h-10 sm:w-10'
+          demeterVariant && 'right-3 top-[42%] h-11 w-11 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:right-3 sm:top-1/2 sm:h-10 sm:w-10'
         )}
         onClick={() => setIndex((value) => value + 1)}
       >
@@ -76,11 +76,11 @@ export function PublicMetricCarousel({
           className={cn(
             'mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]',
             demeterVariant &&
-              'h-[11rem] w-[11rem] rounded-none border-0 bg-transparent text-[#4a8e5f] shadow-none sm:h-24 sm:w-24 sm:rounded-full sm:border sm:border-[#dbe7da] sm:bg-[#f5fbf3] sm:text-[#2b8a3e] sm:shadow-[0_14px_30px_rgba(15,23,42,0.05)]'
+              'h-[7rem] w-[7rem] rounded-full border border-[#dbe7da] bg-[#f7fbf4] text-[#4a8e5f] shadow-[0_14px_30px_rgba(15,23,42,0.05)] sm:h-24 sm:w-24 sm:bg-[#f5fbf3] sm:text-[#2b8a3e]'
           )}
         >
           <Icon
-            size={demeterVariant ? 118 : 38}
+            size={demeterVariant ? 74 : 38}
             strokeWidth={demeterVariant ? 1.45 : 1.7}
             aria-hidden="true"
             className={cn(demeterVariant && 'sm:h-[42px] sm:w-[42px]')}
@@ -89,7 +89,7 @@ export function PublicMetricCarousel({
         <p
           className={cn(
             'mt-4 text-[0.74rem] font-semibold uppercase tracking-[0.2em] text-[#1f2233]',
-            demeterVariant && 'mt-2 text-[0.7rem] tracking-[0.18em] text-[#334155]'
+            demeterVariant && 'mt-4 text-[0.7rem] tracking-[0.18em] text-[#334155]'
           )}
         >
           {active.title}
@@ -97,7 +97,7 @@ export function PublicMetricCarousel({
         <p
           className={cn(
             'mt-3 text-[1.9rem] font-extrabold leading-tight tracking-[-0.04em] text-[#1f9b4b]',
-            demeterVariant && 'mx-auto max-w-[19rem] text-[2.15rem] leading-[1.08] text-[#1f9b4b] sm:text-[2rem]'
+            demeterVariant && 'mx-auto max-w-[18rem] text-[1.72rem] leading-[1.08] text-[#1f9b4b] sm:text-[2rem]'
           )}
         >
           {active.value}
@@ -105,13 +105,13 @@ export function PublicMetricCarousel({
         <p
           className={cn(
             'mx-auto mt-3 max-w-[17rem] text-sm leading-6 text-slate-600',
-            demeterVariant && 'max-w-[18rem] text-[0.98rem] leading-7 text-[#475569] sm:text-sm sm:leading-6'
+            demeterVariant && 'max-w-[17rem] text-[0.92rem] leading-6 text-[#475569] sm:max-w-[18rem] sm:text-sm sm:leading-6'
           )}
         >
           {active.description}
         </p>
 
-        <div className={cn('mt-5 flex items-center justify-center gap-2', demeterVariant && 'mt-6')}>
+        <div className={cn('mt-5 flex items-center justify-center gap-2', demeterVariant && 'mt-5')}>
           {items.map((item, itemIndex) => (
             <button
               key={`${item.title}-${item.value}`}
