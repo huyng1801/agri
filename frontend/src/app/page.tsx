@@ -4,6 +4,8 @@ import {
   ArrowRight,
   BadgeCheck,
   Boxes,
+  Calendar,
+  Eye,
   Leaf,
   QrCode,
   ShoppingBag,
@@ -89,6 +91,22 @@ function cooperativeMonogram(name: string) {
     .map((part) => part[0])
     .join("")
     .toUpperCase();
+}
+
+function plainTextExcerpt(value: string | null | undefined, fallback: string) {
+  const normalized = value?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  return normalized || fallback;
+}
+
+function formatPublishedDate(value?: string | null) {
+  if (!value) return "Chưa công bố";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Chưa công bố";
+  return new Intl.DateTimeFormat("vi-VN", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
 }
 
 export default async function HomePage() {
@@ -427,6 +445,11 @@ export default async function HomePage() {
       title: product.name,
       eyebrow: product.category?.name || "Sản phẩm công khai",
       note: product.cooperative?.name || product.zone?.name || "HTXONLINE",
+      description: plainTextExcerpt(
+        product.description,
+        "Sản phẩm thực đã được chuẩn hóa để sẵn sàng đưa ra lớp công khai của hệ sinh thái.",
+      ),
+      cta: "Mở sản phẩm",
     })),
     {
       key: "sync-preview",
@@ -435,6 +458,9 @@ export default async function HomePage() {
       title: "Danh mục đang đồng bộ",
       eyebrow: "Lớp công khai sản phẩm",
       note: "Dữ liệu từ HTXONLINE sang AGRIPASSPORT",
+      description:
+        "Từ lớp vận hành nội bộ, HTX chọn đúng sản phẩm cần công khai để giữ dữ liệu ra thị trường gọn và nhất quán hơn.",
+      cta: "Xem lộ trình",
     },
     {
       key: "qr-preview",
@@ -443,6 +469,9 @@ export default async function HomePage() {
       title: "Sẵn sàng mở QR truy xuất",
       eyebrow: "Hộ chiếu nông nghiệp",
       note: "Mở hồ sơ số khi cần minh bạch sâu hơn",
+      description:
+        "Khi thị trường cần tra cứu sâu hơn, dữ liệu đã chuẩn hóa có thể tiếp tục mở sang lớp QR và hồ sơ số công khai.",
+      cta: "Tra cứu QR",
     },
   ] as const;
   const internalJourneyPanels = [
@@ -1152,23 +1181,39 @@ export default async function HomePage() {
         ) : null}
 
         <PublicSection band={!isInternal}>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
-                {productSectionTitle}
-              </h2>
-              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
-                {productSectionDescription}
-              </p>
+          {isInternal ? (
+            <div className="text-center">
+              <div className="mx-auto max-w-3xl">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">
+                  Danh mục công khai
+                </p>
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.9rem]">
+                  {productSectionTitle}
+                </h2>
+                <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+                  {productSectionDescription}
+                </p>
+              </div>
             </div>
-            <Link
-              href="/san-pham"
-              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
-            >
-              Khám phá thêm
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+                  {productSectionTitle}
+                </h2>
+                <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+                  {productSectionDescription}
+                </p>
+              </div>
+              <Link
+                href="/san-pham"
+                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+              >
+                Khám phá thêm
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          )}
 
           <div className="mt-5 flex flex-wrap gap-2">
             {productTabs.map((tab, index) => (
@@ -1189,36 +1234,56 @@ export default async function HomePage() {
           {featuredProducts.length ? (
             isInternal ? (
               <div className="mt-6">
-                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-2 lg:overflow-visible xl:grid-cols-4">
                   {internalProductPanels.map((panel, index) => (
                     <a
                       key={panel.key}
                       href={panel.href}
-                      className="group w-[min(76vw,18rem)] shrink-0 snap-start rounded-[1.9rem] border border-[#e3eadf] bg-white p-3 shadow-[0_16px_34px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:shadow-[0_22px_42px_rgba(15,23,42,0.08)] lg:w-auto"
+                      className="group w-[min(82vw,22rem)] shrink-0 snap-start overflow-hidden rounded-[2rem] border border-[#dfe7dc] bg-white shadow-[0_20px_44px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_54px_rgba(15,23,42,0.1)] lg:w-auto"
                     >
-                      <div className="overflow-hidden rounded-[1.45rem] border border-[#dbe7da] bg-[#fbfdf9]">
+                      <div className="relative overflow-hidden">
                         <PublicImage
                           src={panel.image}
                           alt={panel.title}
                           fallback={siteProfile.pageContent.homeImageUrl}
-                          priority
-                          wrapperClassName="aspect-[1/1] w-full"
+                          priority={index < 2}
+                          wrapperClassName="aspect-[16/13] w-full"
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                         />
+                        <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
+                          <span className="inline-flex min-h-9 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
+                            {panel.eyebrow}
+                          </span>
+                        </div>
+                        <div className="absolute inset-x-4 bottom-4 rounded-[1.2rem] bg-[rgba(255,255,255,0.9)] px-3 py-2.5 shadow-[0_14px_30px_rgba(15,23,42,0.12)] backdrop-blur">
+                          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                            {panel.note}
+                          </p>
+                          <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1f2233]">
+                            {panel.title}
+                          </p>
+                        </div>
                       </div>
-                      <div className="mt-4 text-center">
-                        <p className="text-[0.66rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
-                          {panel.eyebrow}
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
+                        <p className="line-clamp-3 text-[0.94rem] leading-7 text-slate-600">
+                          {panel.description}
                         </p>
-                        <p className="mt-2 line-clamp-2 min-h-[3rem] text-[1.04rem] font-extrabold leading-6 text-[#1f2233]">
-                          {panel.title}
-                        </p>
-                        <p className="mt-2 text-xs font-medium uppercase tracking-[0.12em] text-slate-500">
-                          {panel.note}
-                        </p>
+                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
+                          {panel.cta}
+                          <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                        </span>
                       </div>
                     </a>
                   ))}
+                </div>
+                <div className="mt-6 flex justify-center">
+                  <Link
+                    href="/san-pham"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_32px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5"
+                  >
+                    Xem toàn bộ sản phẩm
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -1489,34 +1554,102 @@ export default async function HomePage() {
         ) : null}
 
         <PublicSection>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
-                Tin tức mới nhất
-              </h2>
-              <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
-                {newsDescription}
-              </p>
+          {isInternal ? (
+            <div className="text-center">
+              <div className="mx-auto max-w-3xl">
+                <h2 className="text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.9rem]">
+                  Tin tức mới nhất
+                </h2>
+                <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+                  {newsDescription}
+                </p>
+              </div>
             </div>
-            <Link
-              href="/tin-tuc"
-              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
-            >
-              Xem tin tức
-              <ArrowRight size={16} aria-hidden="true" />
-            </Link>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+                  Tin tức mới nhất
+                </h2>
+                <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
+                  {newsDescription}
+                </p>
+              </div>
+              <Link
+                href="/tin-tuc"
+                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+              >
+                Xem tin tức
+                <ArrowRight size={16} aria-hidden="true" />
+              </Link>
+            </div>
+          )}
 
           {news.data.length ? (
             isInternal ? (
-              <div className="mt-6 grid gap-4 md:grid-cols-3">
-                {news.data.slice(0, 3).map((article, index) => (
-                  <NewsCard
-                    key={article.id}
-                    article={article}
-                    priority={index === 0}
-                  />
-                ))}
+              <div className="mt-6">
+                <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-3 lg:overflow-visible">
+                  {news.data.slice(0, 3).map((article, index) => (
+                    <Link
+                      key={article.id}
+                      href={`/tin-tuc/${article.slug}`}
+                      className="group w-[min(84vw,23rem)] shrink-0 snap-start overflow-hidden rounded-[2rem] border border-[#dfe7dc] bg-white shadow-[0_20px_44px_rgba(15,23,42,0.08)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_28px_54px_rgba(15,23,42,0.1)] lg:w-auto"
+                    >
+                      <div className="relative overflow-hidden">
+                        <PublicImage
+                          src={article.coverImageUrl}
+                          alt={article.title}
+                          fallback={siteProfile.pageContent.homeImageUrl}
+                          priority={index === 0}
+                          wrapperClassName="aspect-[16/12] w-full"
+                          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                        />
+                        <div className="absolute left-0 top-4 rounded-r-[1.1rem] bg-[#1f9b4b] px-4 py-3 text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
+                          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-white/76">
+                            HTXONLINE
+                          </p>
+                          <p className="mt-0.5 text-sm font-extrabold leading-tight">
+                            {article.category?.name || "Tin tức vận hành"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-1 flex-col p-4 sm:p-5">
+                        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500">
+                          <span className="inline-flex items-center gap-2">
+                            <Calendar size={16} aria-hidden="true" />
+                            {formatPublishedDate(article.publishedAt)}
+                          </span>
+                          <span className="inline-flex items-center gap-2">
+                            <Eye size={16} aria-hidden="true" />
+                            {article.viewCount}
+                          </span>
+                        </div>
+                        <h3 className="mt-4 line-clamp-3 text-[1.38rem] font-extrabold leading-[1.15] tracking-[-0.03em] text-[#1f2233] transition group-hover:text-[#1f9b4b]">
+                          {article.title}
+                        </h3>
+                        <p className="mt-3 line-clamp-4 text-[0.96rem] leading-7 text-slate-600">
+                          {plainTextExcerpt(
+                            article.excerpt || article.seoDescription,
+                            "Tin tức về vận hành HTX, công khai sản phẩm và triển khai hệ sinh thái số.",
+                          )}
+                        </p>
+                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
+                          Đọc tin
+                          <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-6 flex justify-center">
+                  <Link
+                    href="/tin-tuc"
+                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_32px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5"
+                  >
+                    Xem toàn bộ tin tức
+                    <ArrowRight size={16} aria-hidden="true" />
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="mt-6 grid gap-4 md:grid-cols-3">
