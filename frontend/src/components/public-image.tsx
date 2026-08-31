@@ -64,7 +64,8 @@ export function PublicImage({
     // Third-party image hosts can leave an image request pending indefinitely.
     // Prefer a known, fast fallback so a public page never keeps a blank media area.
     const timeout = window.setTimeout(() => {
-      if (!imgRef.current?.complete) {
+      const image = imgRef.current;
+      if (!image || image.naturalWidth === 0) {
         setCurrentSrc(fallback);
         setLoaded(false);
       }
