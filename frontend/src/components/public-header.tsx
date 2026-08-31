@@ -60,6 +60,31 @@ export function PublicHeader({
         : 'Tìm sản phẩm, hợp tác xã, vùng trồng';
   const searchLabel = 'Tìm kiếm';
   const navCta = { href: '/login', label: 'Cộng tác viên' };
+  const brandBadge =
+    isInternal
+      ? 'Điều phối HTX'
+      : siteKey === 'passport'
+        ? 'QR truy xuất'
+        : 'Sàn nông sản số';
+  const brandCaption =
+    isInternal
+      ? 'Luồng nội bộ, công khai và QR trong một hệ sinh thái.'
+      : siteKey === 'passport'
+        ? 'Tra cứu hồ sơ số gọn hơn trên điện thoại.'
+        : 'Sản phẩm, HTX và QR được mở theo nhịp mobile-first.';
+  const desktopAuthLabel = isInternal ? 'Đăng nhập / Đăng ký' : 'Đăng nhập';
+  const mobilePanelTitle =
+    isInternal
+      ? 'Quản trị HTX, mở sản phẩm công khai và kết nối QR trên cùng hệ sinh thái.'
+      : siteKey === 'passport'
+        ? 'Tra cứu sản phẩm có QR và hồ sơ số nhanh hơn trên điện thoại.'
+        : 'Khám phá sản phẩm, HTX và hành trình truy xuất trên cùng một lớp giao diện.';
+  const mobilePanelTags =
+    isInternal
+      ? ['Sản phẩm', 'HTX', 'Tin tức']
+      : siteKey === 'passport'
+        ? ['Có QR', 'Hồ sơ số', 'HTX']
+        : ['Sản phẩm', 'HTX', 'Truy xuất'];
 
   useEffect(() => {
     setMenuOpen(false);
@@ -74,18 +99,18 @@ export function PublicHeader({
 
   if (isInternal) {
     return (
-      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/95 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
-        <div className="bg-[#1d9b49] text-white">
-          <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-center text-[0.68rem] font-medium leading-5 sm:px-5 sm:text-[0.78rem] lg:px-6 lg:text-[0.88rem]">
+      <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/92 shadow-[0_10px_36px_rgba(15,23,42,0.06)] backdrop-blur-xl">
+        <div className="hidden bg-[#1d9b49] text-white md:block">
+          <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-center text-[0.68rem] font-medium leading-5 sm:px-5 sm:text-[0.76rem] lg:px-6 lg:text-[0.84rem]">
             {supportText}
           </div>
         </div>
 
         <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-          <div className="flex min-h-[64px] items-center justify-between gap-2.5 py-2.5 md:hidden">
+          <div className="flex items-center gap-2 py-2.5 md:hidden">
             <button
               type="button"
-              className="grid h-10 w-10 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d]"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d9e5d7] bg-white text-[#1f9b4b] shadow-sm transition hover:text-[#16753d]"
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
@@ -93,14 +118,21 @@ export function PublicHeader({
               {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
             </button>
 
-            <Link href="/" className="flex items-center" aria-label={`${appName} - Trang chủ`}>
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
-                <PublicLogo size={30} className="h-[30px] w-[30px]" />
+            <Link
+              href="/"
+              className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-[#dfe8db] bg-[#f8faf5] px-3 py-2.5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]"
+              aria-label={`${appName} - Trang chủ`}
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_10px_22px_rgba(15,23,42,0.12)] ring-1 ring-[#d9e4d6]">
+                <PublicLogo size={26} className="h-[26px] w-[26px]" />
               </span>
-              <span className="sr-only">{appName}</span>
+              <span className="min-w-0">
+                <span className="block truncate text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{brandBadge}</span>
+                <span className="mt-0.5 block truncate text-sm font-extrabold text-[#1f2233]">{appName}</span>
+              </span>
             </Link>
 
-            <div className="ml-auto flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Link
                 href={searchTarget}
                 aria-label="Tìm kiếm"
@@ -116,6 +148,27 @@ export function PublicHeader({
                 <LogIn size={18} aria-hidden="true" />
               </Link>
             </div>
+          </div>
+
+          <div className="mb-2 flex gap-2 overflow-x-auto pb-2 md:hidden">
+            {navItems.map((item) => {
+              const active = isNavActive(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'inline-flex min-h-10 shrink-0 items-center rounded-full border px-4 text-[0.78rem] font-semibold transition',
+                    active
+                      ? 'border-[#132031] bg-[#132031] text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
+                      : 'border-[#dfe8db] bg-[#f8faf5] text-[#27513a]'
+                  )}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="hidden min-h-[82px] items-center gap-6 py-3.5 md:flex">
@@ -147,7 +200,7 @@ export function PublicHeader({
 
             <div className="ml-auto flex items-center gap-5">
               <Link href="/login" className="text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
-                Đăng nhập / Đăng ký
+                {desktopAuthLabel}
               </Link>
               <Link
                 href={navCta.href}
@@ -162,7 +215,7 @@ export function PublicHeader({
 
         <div className="border-t border-[#ece8dd] bg-white">
           <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-            <nav className="hidden items-center justify-center gap-8 overflow-x-auto py-3.5 md:flex" aria-label="Menu chính">
+            <nav className="hidden items-center justify-center gap-3 overflow-x-auto py-3.5 md:flex" aria-label="Menu chính">
               {navItems.map((item) => {
                 const active = isNavActive(pathname, item.href);
                 return (
@@ -170,10 +223,10 @@ export function PublicHeader({
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'inline-flex items-center py-1 text-[0.95rem] transition',
+                      'inline-flex min-h-11 items-center rounded-full px-4 py-1.5 text-[0.95rem] transition',
                       active
-                        ? 'font-semibold text-[#1f9b4b]'
-                        : 'font-medium text-[#27513a] hover:text-[#1f9b4b]'
+                        ? 'bg-[#132031] font-semibold text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
+                        : 'font-medium text-[#27513a] hover:bg-[#f5faf2] hover:text-[#1f9b4b]'
                     )}
                     aria-current={active ? 'page' : undefined}
                   >
@@ -192,16 +245,18 @@ export function PublicHeader({
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-x-0 bottom-0 top-[6.7rem] z-40 md:hidden">
+          <div className="fixed inset-x-0 bottom-0 top-[6.2rem] z-40 md:hidden">
             <button type="button" className="absolute inset-0 bg-[#13231a]/24 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
             <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
               <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
-                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">HTXONLINE</p>
-                <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">Quản trị hợp tác xã, mở sản phẩm công khai và kết nối QR truy xuất trên cùng hệ sinh thái.</p>
+                <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">{appName}</p>
+                <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">{mobilePanelTitle}</p>
                 <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em]">
-                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Sản phẩm</span>
-                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">HTX</span>
-                  <span className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">Tin tức</span>
+                  {mobilePanelTags.map((tag) => (
+                    <span key={tag} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
 
@@ -253,16 +308,16 @@ export function PublicHeader({
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
-      <div className="border-b border-[#198f43] bg-[#1f9b4b] text-white">
-        <div className="mx-auto max-w-[1220px] px-3 py-2 text-[0.84rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-[0.95rem]">{supportText}</div>
+    <header className="sticky top-0 z-40 border-b border-[#e7e3d7] bg-white/92 shadow-[0_8px_28px_rgba(15,23,42,0.05)] backdrop-blur-xl">
+      <div className="hidden border-b border-[#198f43] bg-[#1f9b4b] text-white md:block">
+        <div className="mx-auto max-w-[1220px] px-3 py-1.5 text-[0.76rem] font-medium leading-5 sm:px-5 lg:px-6 lg:text-[0.88rem]">{supportText}</div>
       </div>
 
       <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
-        <div className="flex min-h-[78px] items-center gap-3 py-3 md:hidden">
+        <div className="flex items-center gap-2 py-2.5 md:hidden">
           <button
             type="button"
-            className="grid h-10 w-10 shrink-0 place-items-center text-[#1f9b4b] transition hover:text-[#16753d] md:hidden"
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d9e5d7] bg-white text-[#1f9b4b] shadow-sm transition hover:text-[#16753d] md:hidden"
             aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
@@ -270,9 +325,17 @@ export function PublicHeader({
             {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={24} aria-hidden="true" />}
           </button>
 
-          <Link href="/" className="flex min-w-0 items-center" aria-label={`${appName} - Trang chủ`}>
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#21253a] shadow-[0_8px_18px_rgba(33,37,58,0.12)] ring-1 ring-[#d7ddd2]">
-              <PublicLogo size={32} className="h-8 w-8" />
+          <Link
+            href="/"
+            className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-[#dfe8db] bg-[#f8faf5] px-3 py-2.5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]"
+            aria-label={`${appName} - Trang chủ`}
+          >
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#21253a] shadow-[0_8px_18px_rgba(33,37,58,0.12)] ring-1 ring-[#d7ddd2]">
+              <PublicLogo size={28} className="h-7 w-7" />
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{brandBadge}</span>
+              <span className="mt-0.5 block truncate text-sm font-extrabold text-[#1f2233]">{appName}</span>
             </span>
           </Link>
 
@@ -324,9 +387,30 @@ export function PublicHeader({
               href="/login"
               className="hidden min-h-12 items-center rounded-full border border-[#dfe7db] bg-white px-5 text-sm font-semibold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] lg:inline-flex"
             >
-              Đăng nhập
+              {desktopAuthLabel}
             </Link>
           </div>
+        </div>
+
+        <div className="mb-2 flex gap-2 overflow-x-auto pb-2 md:hidden">
+          {navItems.map((item) => {
+            const active = isNavActive(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'inline-flex min-h-10 shrink-0 items-center rounded-full border px-4 text-[0.78rem] font-semibold transition',
+                  active
+                    ? 'border-[#132031] bg-[#132031] text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
+                    : 'border-[#dfe8db] bg-[#f8faf5] text-[#27513a]'
+                )}
+                aria-current={active ? 'page' : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
 
         <div className="hidden min-h-[82px] items-center gap-6 py-4 md:flex">
@@ -398,16 +482,29 @@ export function PublicHeader({
       </div>
 
       {menuOpen ? (
-        <div className="fixed inset-x-0 bottom-0 top-[7.5rem] z-40 md:hidden">
+        <div className="fixed inset-x-0 bottom-0 top-[6.2rem] z-40 md:hidden">
           <button type="button" className="absolute inset-0 bg-[#142419]/22 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
           <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_24px_60px_rgba(15,23,42,0.14)]">
+            <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
+              <p className="text-[0.62rem] font-semibold uppercase tracking-[0.2em] text-white/72">{appName}</p>
+              <p className="mt-2 text-[1.15rem] font-extrabold leading-tight">{mobilePanelTitle}</p>
+              <p className="mt-2 text-sm leading-6 text-white/78">{brandCaption}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.08em]">
+                {mobilePanelTags.map((tag) => (
+                  <span key={tag} className="rounded-full border border-white/12 bg-white/10 px-3 py-1.5 text-white/88">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             <form action={searchTarget} className="relative">
               <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#1f9b4b]" size={18} aria-hidden="true" />
               <input
                 type="search"
                 name="search"
                 placeholder={searchPlaceholder}
-                className="h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-11 pr-4 text-sm outline-none focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
+                className="mt-4 h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-11 pr-4 text-sm outline-none focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
               />
             </form>
 
