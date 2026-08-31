@@ -119,31 +119,31 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
               <div className="inline-flex min-h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90">
                 HTX tiêu biểu
               </div>
-              <div className="mt-4 grid gap-5 lg:grid-cols-[1.16fr_0.84fr] lg:items-end">
-                <div>
-                  <h2 className="max-w-[12ch] text-[1.95rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:text-[2.8rem]">
-                    Các HTX đã sẵn sàng đưa sản phẩm ra thị trường.
-                  </h2>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-white/82 sm:text-[0.98rem]">
-                    {featuredCooperative
-                      ? `${featuredCooperative.name} đang là một trong những hồ sơ có nhịp công khai rõ nhất, giúp người xem mở HTX, xem sản phẩm và đi tiếp sang các lớp dữ liệu liên quan.`
-                      : 'Danh sách này ưu tiên các HTX đã có dữ liệu gọn, có sản phẩm công khai và lối dẫn rõ ràng sang thị trường số.'}
-                  </p>
-                  {featuredCooperative ? (
-                    <div className="mt-4 inline-flex min-h-10 items-center rounded-full border border-white/18 bg-white/10 px-4 text-sm font-semibold text-white/92">
-                      Hồ sơ nổi bật: {featuredCooperative.name}
-                    </div>
-                  ) : null}
-                  <div className="mt-5 flex flex-wrap gap-2.5">
+              <div className="mt-4">
+                <h2 className="max-w-[13ch] text-[1.95rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[15ch] sm:text-[2.8rem]">
+                  Các HTX đã sẵn sàng đưa sản phẩm ra thị trường.
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/82 sm:text-[0.98rem]">
+                  {featuredCooperative
+                    ? `${featuredCooperative.name} đang là một trong những hồ sơ có nhịp công khai rõ nhất, giúp người xem mở HTX, xem sản phẩm và đi tiếp sang các lớp dữ liệu liên quan.`
+                    : 'Danh sách này ưu tiên các HTX đã có dữ liệu gọn, có sản phẩm công khai và lối dẫn rõ ràng sang thị trường số.'}
+                </p>
+                {featuredCooperative ? (
+                  <div className="mt-4 inline-flex min-h-10 items-center rounded-full border border-white/18 bg-white/10 px-4 text-sm font-semibold text-white/92">
+                    Hồ sơ nổi bật: {featuredCooperative.name}
+                  </div>
+                ) : null}
+
+                <div className="mt-5 grid gap-4 xl:grid-cols-[0.82fr_1.18fr] xl:items-start">
+                  <div className="flex flex-wrap gap-2.5">
                     {flowSignals.map((signal) => (
                       <span key={signal} className="rounded-full border border-white/18 bg-white/10 px-3.5 py-2 text-sm font-medium text-white/92 backdrop-blur">
                         {signal}
                       </span>
                     ))}
                   </div>
-                </div>
 
-                <div className="rounded-[1.9rem] border border-white/18 bg-white/10 p-4 backdrop-blur-xl">
+                  <div className="rounded-[1.9rem] border border-white/18 bg-white/10 p-4 backdrop-blur-xl">
                   <div className="flex items-center gap-4">
                     <PublicImage
                       src={featuredCooperative?.avatarUrl}
@@ -196,6 +196,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                     </Link>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </article>
