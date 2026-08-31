@@ -147,7 +147,7 @@ export function PublicHeader({
             </div>
           </div>
 
-          <div className="mb-3 flex gap-2 overflow-x-auto pb-2 md:hidden">
+          <div className="mb-3 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active = isNavActive(pathname, item.href);
               return (
@@ -389,7 +389,7 @@ export function PublicHeader({
           </div>
         </div>
 
-        <div className="mb-2 flex gap-2 overflow-x-auto pb-2 md:hidden">
+        <div className="mb-2 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => {
             const active = isNavActive(pathname, item.href);
             return (
