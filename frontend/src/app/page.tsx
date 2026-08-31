@@ -749,7 +749,7 @@ export default async function HomePage() {
     <section className="border-b border-[#ece8dd] bg-white">
       <div className={cn(publicContainerClass, "px-0 py-0 sm:px-5 sm:py-4 lg:px-6 lg:py-5")}>
         <div className="overflow-hidden bg-white">
-          <div className="relative isolate min-h-[23.4rem] overflow-hidden bg-[#f8fbf7] sm:min-h-[21rem] lg:min-h-[28rem]">
+          <div className="relative isolate min-h-[24.75rem] overflow-hidden bg-[#f8fbf7] sm:min-h-[21rem] lg:min-h-[28rem]">
             <PublicImage
               src={internalHeroBackdropImage}
               alt={
@@ -779,7 +779,7 @@ export default async function HomePage() {
               aria-hidden="true"
             />
 
-            <div className="absolute -left-2 top-[28%] z-10 w-[4.1rem] sm:bottom-0 sm:top-auto sm:w-[9.1rem] lg:left-2 lg:w-[15.1rem]">
+            <div className="absolute bottom-0 left-2 z-10 hidden w-[9.1rem] sm:block lg:left-2 lg:w-[15.1rem]">
               <div className="relative">
                 <div
                   className="absolute inset-0 rounded-[2rem] bg-[#0d6f80]/16 blur-2xl"
@@ -823,7 +823,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="absolute -right-4 top-[17%] z-10 w-[9.8rem] sm:bottom-0 sm:top-auto sm:-right-2 sm:w-[16.8rem] lg:-right-3 lg:w-[23.4rem]">
+            <div className="absolute -right-7 top-[26%] z-10 w-[10.8rem] opacity-70 sm:bottom-0 sm:top-auto sm:-right-2 sm:w-[16.8rem] sm:opacity-100 lg:-right-3 lg:w-[23.4rem]">
               <div className="relative overflow-hidden rounded-l-[1.85rem] sm:rounded-l-[2.55rem] lg:rounded-l-[3.1rem]">
                 <PublicImage
                   src={internalHeroShowcaseImage}
@@ -855,11 +855,11 @@ export default async function HomePage() {
               <div
                 className={cn(
                   publicContainerClass,
-                  "relative z-20 flex min-h-[23.4rem] flex-col items-center justify-start px-[4.2rem] pb-5 pt-4 text-center sm:min-h-[21rem] sm:justify-center sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
+                  "relative z-20 flex min-h-[24.75rem] flex-col items-center justify-center px-5 py-7 text-center sm:min-h-[21rem] sm:px-[8.8rem] sm:py-6 lg:min-h-[28rem] lg:px-[13.8rem] lg:py-8",
                 )}
               >
-                <div className="flex max-w-[14.25rem] flex-wrap items-center justify-center gap-1.5 sm:max-w-none sm:gap-2.5">
-                  <span className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/80 bg-white/90 px-2.5 text-[0.46rem] font-semibold uppercase tracking-[0.18em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-10 sm:gap-2 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
+                <div className="flex max-w-[17rem] flex-wrap items-center justify-center gap-1.5 sm:max-w-none sm:gap-2.5">
+                  <span className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/80 bg-white/90 px-3 text-[0.56rem] font-semibold uppercase tracking-[0.15em] text-[#0f7d63] shadow-sm backdrop-blur sm:min-h-10 sm:gap-2 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                     <span className="grid h-5 w-5 place-items-center rounded-full bg-[#1d2436] sm:h-6 sm:w-6 lg:h-7 lg:w-7">
                       <PublicLogo
                       size={16}
@@ -868,26 +868,26 @@ export default async function HomePage() {
                   </span>
                   HTXONLINE
                 </span>
-                <span className="text-[0.56rem] font-semibold uppercase tracking-[0.16em] text-[#3d5871] sm:text-xs lg:text-sm">
+                <span className="text-[0.62rem] font-semibold uppercase tracking-[0.16em] text-[#3d5871] sm:text-xs lg:text-sm">
                   x
                 </span>
-                <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-2.5 text-[0.48rem] font-semibold uppercase tracking-[0.18em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
+                <span className="inline-flex min-h-8 items-center rounded-full border border-white/70 bg-white/84 px-3 text-[0.56rem] font-semibold uppercase tracking-[0.15em] text-[#0d6f80] shadow-sm backdrop-blur sm:min-h-10 sm:px-4 sm:text-[0.66rem] lg:min-h-11 lg:px-[1.15rem] lg:text-[0.76rem]">
                   AGRIPASSPORT
                 </span>
               </div>
 
-              <p className="mt-3 text-[0.48rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-[0.72rem] lg:text-[0.88rem]">
+              <p className="mt-4 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e] sm:mt-3 sm:text-[0.72rem] lg:text-[0.88rem]">
                 Hệ sinh thái thương mại số
               </p>
-              <h1 className="mx-auto mt-2 max-w-[10.6ch] text-[1.62rem] font-extrabold leading-[0.9] tracking-[-0.06em] text-[#0d6f80] sm:mt-2.5 sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
+              <h1 className="mx-auto mt-2 max-w-[11.5ch] text-[2.08rem] font-extrabold leading-[0.92] tracking-[-0.06em] text-[#0d6f80] sm:mt-2.5 sm:max-w-[11.4ch] sm:text-[2.82rem] lg:max-w-[10.8ch] lg:text-[4.05rem]">
                 Cùng HTX kiến tạo nông nghiệp bền vững
               </h1>
-              <p className="mx-auto mt-2 max-w-[14.8rem] text-[0.66rem] leading-[1.5] text-[#31556d] sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
+              <p className="mx-auto mt-3 max-w-[18rem] text-[0.78rem] leading-[1.55] text-[#31556d] sm:mt-2 sm:max-w-[31rem] sm:text-[0.98rem] sm:leading-6 lg:max-w-[31rem] lg:text-[1.06rem] lg:leading-7">
                 Quản trị xã viên, thu chi, xuất nhập rồi mở sản phẩm công khai,
                 tin tức và QR truy xuất trên cùng một hệ sinh thái.
               </p>
 
-              <div className="mt-2.5 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-2.5 py-1.5 text-[0.44rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
+              <div className="mt-3 inline-flex flex-wrap items-center justify-center gap-1.5 rounded-full bg-[#0d6f80] px-3 py-2 text-[0.62rem] font-semibold text-white shadow-[0_16px_30px_rgba(13,111,128,0.22)] sm:mt-2.5 sm:gap-2 sm:px-[1.15rem] sm:py-2 sm:text-[0.76rem] lg:text-sm">
                 <span>{featuredCooperatives.length} HTX đang hiển thị</span>
                 <span className="opacity-45">•</span>
                 <span>{featuredProducts.length}+ sản phẩm đồng bộ</span>
@@ -895,11 +895,11 @@ export default async function HomePage() {
                 <span className="hidden sm:inline">{siteProfile.hotlineDisplay}</span>
               </div>
 
-              <div className="mt-3 flex w-full max-w-[14.5rem] flex-col items-center justify-center gap-1.5 sm:mt-4 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-2.5">
+              <div className="mt-4 flex w-full max-w-[17rem] flex-col items-center justify-center gap-1.5 sm:max-w-none sm:flex-row sm:flex-wrap sm:gap-2.5">
                 <div className="w-full sm:w-auto">
                   <Link
                     href={primaryCta.href}
-                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1rem] text-[0.7rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5 sm:min-h-11 sm:w-auto sm:px-[1.4rem] sm:text-sm"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-[1rem] text-[0.8rem] font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5 sm:w-auto sm:px-[1.4rem] sm:text-sm"
                   >
                     {primaryCta.label}
                     <ArrowRight size={14} aria-hidden="true" />
@@ -908,7 +908,7 @@ export default async function HomePage() {
                 {secondaryCta.external ? (
                   <a
                     href={secondaryCta.href}
-                    className="inline-flex min-h-10 items-center justify-center gap-2 text-[0.72rem] font-bold text-[#1f2233] transition hover:text-[#1f9b4b] sm:min-h-11 sm:text-sm"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 text-[0.8rem] font-bold text-[#1f2233] transition hover:text-[#1f9b4b] sm:min-h-11 sm:text-sm"
                   >
                     {secondaryCta.label}
                     <ArrowRight size={14} aria-hidden="true" />
@@ -916,7 +916,7 @@ export default async function HomePage() {
                 ) : (
                   <Link
                     href={secondaryCta.href}
-                    className="inline-flex min-h-10 items-center justify-center gap-2 text-[0.72rem] font-bold text-[#1f2233] transition hover:text-[#1f9b4b] sm:min-h-11 sm:text-sm"
+                    className="inline-flex min-h-10 items-center justify-center gap-2 text-[0.8rem] font-bold text-[#1f2233] transition hover:text-[#1f9b4b] sm:min-h-11 sm:text-sm"
                   >
                     {secondaryCta.label}
                     <ArrowRight size={14} aria-hidden="true" />
