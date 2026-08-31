@@ -180,44 +180,73 @@ export function productImage(product: PublicProduct) {
 
 export function CooperativeCard({ cooperative, priority = false }: { cooperative: PublicCooperative; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col overflow-hidden bg-white transition duration-300 hover:-translate-y-1 hover:shadow-soft')}>
-      <Link href={`/htx/${cooperative.code}`} className="block overflow-hidden">
-        <PublicImage
-          src={cooperative.avatarUrl}
-          alt={cooperative.name}
-          fallback={defaultCooperativeAvatar}
-          priority={priority}
-          wrapperClassName="aspect-[5/3] w-full"
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
-        />
-      </Link>
-
-      <div className="flex flex-1 flex-col p-4 sm:p-5">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{cooperative.province || 'Việt Nam'}</p>
-        <Link href={`/htx/${cooperative.code}`} className="mt-2 block min-h-11 text-[1.1rem] font-extrabold leading-[1.22] text-[#1f2233] transition hover:text-leaf sm:text-[1.2rem]">
-          {cooperative.name}
-        </Link>
-        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
-          <p className="rounded-full border border-[#d8e7d8] bg-[#f6fbf4] px-3 py-1.5 text-[0.82rem] font-semibold leading-tight text-ink sm:text-[0.92rem]">
-            {cooperative.productCount} sản phẩm công khai
-          </p>
-          <div className="flex shrink-0 gap-2">
-            <Link href={`/htx/${cooperative.code}`} className="inline-flex min-h-11 items-center">
-              <Button variant="ghost" className="min-h-11 rounded-full px-3 py-2 text-[11px]">
-                Xem HTX
-                <ArrowRight size={14} aria-hidden="true" />
-              </Button>
+    <article
+      className={cn(
+        publicCardClass,
+        'group flex h-full flex-col overflow-hidden rounded-[2rem] border-[#dfe7d8] bg-[linear-gradient(180deg,#fbfcf8_0%,#ffffff_100%)] p-3 transition duration-300 hover:-translate-y-1 hover:shadow-soft'
+      )}
+    >
+      <div className="rounded-[1.7rem] border border-[#dbe7d7] bg-[linear-gradient(135deg,#11314a_0%,#175073_58%,#1f9b4b_100%)] p-4 text-white">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/72">{cooperative.province || 'Việt Nam'}</p>
+            <Link
+              href={`/htx/${cooperative.code}`}
+              className="mt-2 block min-h-11 text-[1.12rem] font-extrabold leading-[1.18] text-white transition hover:text-white/90 sm:text-[1.25rem]"
+            >
+              {cooperative.name}
             </Link>
-            {cooperative.phone && (
-              <a
-                href={`tel:${cooperative.phone}`}
-                className="hidden h-10 w-10 place-items-center rounded-full border border-[#e8e4d8] bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf sm:grid"
-                aria-label="Gọi HTX"
-              >
-                <Phone size={17} aria-hidden="true" />
-              </a>
-            )}
           </div>
+          <p className="shrink-0 rounded-full border border-white/18 bg-white/10 px-3 py-1.5 text-[0.78rem] font-semibold text-white/92 backdrop-blur">
+            {cooperative.productCount} sản phẩm
+          </p>
+        </div>
+
+        <div className="mt-4 flex items-center gap-4">
+          <Link href={`/htx/${cooperative.code}`} className="block shrink-0 overflow-hidden rounded-[1.35rem] ring-1 ring-white/18">
+            <PublicImage
+              src={cooperative.avatarUrl}
+              alt={cooperative.name}
+              fallback={defaultCooperativeAvatar}
+              priority={priority}
+              wrapperClassName="h-[5.4rem] w-[5.4rem] bg-white/10"
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+            />
+          </Link>
+          <p className="text-sm leading-6 text-white/82">
+            Hồ sơ công khai đã nối trực tiếp sang sản phẩm để người xem chạm ít hơn khi đi từ HTX tới đầu ra.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-1 flex-col rounded-[1.45rem] border border-[#e6ebdf] bg-white p-4">
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-[1rem] bg-[#f7faf4] px-3 py-2.5">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[#2b8a3e]">Mã HTX</p>
+            <p className="mt-1 truncate text-sm font-semibold text-[#1f2233]">{cooperative.code}</p>
+          </div>
+          <div className="rounded-[1rem] bg-[#fff9ef] px-3 py-2.5">
+            <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[#2b8a3e]">Trạng thái</p>
+            <p className="mt-1 text-sm font-semibold text-[#1f2233]">Đang công khai</p>
+          </div>
+        </div>
+
+        <div className="mt-auto flex items-center justify-between gap-3 pt-4">
+          <Link href={`/htx/${cooperative.code}`} className="inline-flex min-h-11 items-center">
+            <Button className="min-h-11 rounded-full px-4 text-sm font-semibold">
+              Mở hồ sơ HTX
+              <ArrowRight size={14} aria-hidden="true" />
+            </Button>
+          </Link>
+          {cooperative.phone && (
+            <a
+              href={`tel:${cooperative.phone}`}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#e8e4d8] bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf"
+              aria-label="Gọi HTX"
+            >
+              <Phone size={17} aria-hidden="true" />
+            </a>
+          )}
         </div>
       </div>
     </article>
