@@ -98,7 +98,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       <footer className="mt-12 border-t border-[#e6ece0] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">
         <div className={publicContainerClass}>
           <div className="py-8 sm:py-10">
-            <div className="grid gap-5 border-b border-[#e4eadf] pb-8 sm:grid-cols-2 lg:grid-cols-[0.88fr_0.98fr_1.14fr_0.9fr]">
+            <div className="grid gap-5 border-b border-[#e4eadf] pb-8 sm:grid-cols-2 lg:grid-cols-[0.86fr_1fr_1.14fr]">
               <div className="sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-3">
                   <span className="grid h-14 w-14 place-items-center rounded-full border border-[#dce7d9] bg-[#1d2436] shadow-[0_14px_30px_rgba(15,23,42,0.08)]">
@@ -225,7 +225,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                 </div>
               </div>
 
-              <div className="rounded-[1.7rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:col-span-2 lg:col-span-1">
+              <div className="rounded-[1.7rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)] sm:col-span-2 lg:col-span-3">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
@@ -245,7 +245,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   </a>
                 </div>
 
-                <p className="mt-3 text-sm leading-6 text-slate-600">{mapHint}</p>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">{mapHint}</p>
 
                 {showMapPreview ? (
                   <>
@@ -270,7 +270,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                         address={profile.address}
                         location={mapLocation}
                         mapSearchUrl={mapSearchUrl}
-                        compact
+                        aspectClassName="aspect-[3/1] min-h-[17rem] sm:min-h-[18rem] lg:min-h-[20rem]"
                       />
                     </div>
                   </>
