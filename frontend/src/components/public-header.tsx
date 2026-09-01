@@ -150,7 +150,7 @@ export function PublicHeader({
             </div>
           </div>
 
-          <div className="mb-2 flex gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
+          <div className="mb-2 flex snap-x snap-mandatory scroll-px-4 gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
               const active = isNavActive(pathname, item.href);
               return (
@@ -158,7 +158,7 @@ export function PublicHeader({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'inline-flex min-h-9 shrink-0 items-center rounded-full border px-3 text-[0.72rem] font-semibold transition',
+                    'inline-flex min-h-9 shrink-0 snap-start items-center rounded-full border px-3 text-[0.72rem] font-semibold transition',
                     active
                       ? 'border-[#132031] bg-[#132031] text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
                       : 'border-[#dfe8db] bg-[#f8faf5] text-[#27513a]'
@@ -392,7 +392,7 @@ export function PublicHeader({
           </div>
         </div>
 
-        <div className="mb-2 flex gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
+        <div className="mb-2 flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => {
             const active = isNavActive(pathname, item.href);
             return (
@@ -400,7 +400,7 @@ export function PublicHeader({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'inline-flex min-h-10 shrink-0 items-center rounded-full border px-4 text-[0.78rem] font-semibold transition',
+                  'inline-flex min-h-10 shrink-0 snap-start items-center rounded-full border px-4 text-[0.78rem] font-semibold transition',
                   active
                     ? 'border-[#132031] bg-[#132031] text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
                     : 'border-[#dfe8db] bg-[#f8faf5] text-[#27513a]'
