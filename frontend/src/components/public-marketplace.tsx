@@ -86,7 +86,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.4rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-1.5 shadow-[var(--shadow-card)] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.4rem] bg-[rgba(255,253,248,0.96)] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.08)] ring-1 ring-[#e6d9c4]/70 sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">

@@ -2,17 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, Home, LogIn, Newspaper, QrCode, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
+import { Briefcase, Home, LogIn, Newspaper, QrCode, Search, ShoppingBag, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { CartCountBadge } from './cart-count-badge';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 
 const marketplaceItems = [
   { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
   { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
-  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
-  { href: '/gio-hang', label: 'Giỏ hàng', icon: ShoppingCart, match: (path: string) => path.startsWith('/gio-hang') || path.startsWith('/thanh-toan') },
+  { href: '/htx', label: 'Đối tác', icon: Store, match: (path: string) => path.startsWith('/htx') },
+  { href: '/san-pham?hasQr=true', label: 'Tra cứu', icon: Search, match: (path: string) => path.startsWith('/passport') || path.startsWith('/qr') },
   { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
 ] as const;
 
@@ -39,7 +38,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   const items = siteKey === 'htxonline' ? internalItems : siteKey === 'passport' ? passportItems : marketplaceItems;
   const enableBottomNav =
     siteKey !== 'htxonline' &&
-    (pathname.startsWith('/san-pham') || pathname.startsWith('/gio-hang') || pathname.startsWith('/thanh-toan') || pathname.startsWith('/tra-cuu-don-hang'));
+    (pathname.startsWith('/san-pham') || pathname.startsWith('/passport') || pathname.startsWith('/qr') || pathname.startsWith('/tra-cuu-don-hang'));
   const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
   useEffect(() => {
@@ -129,7 +128,6 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
             >
               <span className="relative">
                 <Icon size={15} aria-hidden="true" />
-                {item.href === '/gio-hang' && <CartCountBadge className="-right-2 -top-2" />}
               </span>
               <span className="max-w-full truncate leading-none">{item.label}</span>
             </Link>

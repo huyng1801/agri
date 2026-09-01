@@ -113,6 +113,7 @@ export default async function HomePage() {
   const siteKey = await getRequestPublicSiteKey();
   const isInternal = siteKey === "htxonline";
   const isPassport = siteKey === "passport";
+  const isMarketplace = siteKey === "agripassport" || siteKey === "local";
   const [catalog, news, siteProfile] = await Promise.all([
     fetchPublicCatalog(100),
     fetchPublicNews("/news/public?home=true&limit=3"),
@@ -302,12 +303,12 @@ export default async function HomePage() {
     ? "Giải pháp dịch vụ tiêu biểu"
     : isPassport
       ? "Giải pháp dịch vụ tiêu biểu cho truy xuất và hồ sơ số"
-      : "Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng";
+      : "HỆ SINH THÁI SỐ CHO NÔNG NGHIỆP";
   const sectionDescription = isInternal
     ? "Ba lớp nền tảng giúp HTX tách rõ quản trị nội bộ, công khai sản phẩm và truy xuất QR trên cùng một hệ sinh thái dữ liệu."
     : isPassport
       ? "Thay vì dồn hết thông tin vào một màn hình, bố cục mới ưu tiên hành trình quét QR, đọc nhanh và hiểu đúng."
-      : "Các khối chức năng được tách rõ để người mua, HTX và đối tác đi đúng hành trình công khai ngay từ lần chạm đầu.";
+      : "Từ quản lý hợp tác xã, số hóa sản phẩm đến truy xuất nguồn gốc và kết nối thị trường, các giải pháp được kết nối trên cùng một hệ sinh thái.";
   const journeyTitle = isInternal
     ? "Luồng dữ liệu từ quản trị nội bộ ra thị trường"
     : "Luồng triển khai từ dữ liệu gốc đến người mua";
@@ -316,7 +317,7 @@ export default async function HomePage() {
     : "Ba nền tảng không chồng lấn vai trò; chúng nối tiếp nhau để tạo một hành trình dữ liệu rõ ràng hơn.";
   const heroSearchPlaceholder = isPassport
     ? "Tìm hồ sơ có QR, sản phẩm hoặc HTX"
-    : "Tìm sản phẩm, HTX hoặc vùng trồng";
+    : "Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc";
   const closingPrimaryCta = isInternal
     ? { href: "/lien-he", label: "Nhận tư vấn triển khai", external: false }
     : isPassport
@@ -334,18 +335,22 @@ export default async function HomePage() {
     ? "Luồng dữ liệu rõ ràng cho hợp tác xã"
     : isPassport
       ? "HỘ CHIẾU NÔNG NGHIỆP giúp tra cứu QR rõ ràng hơn trên điện thoại"
-      : "AGRIPASSPORT chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp";
+      : "AGRIPASSPORT SỐ HÓA NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR";
   const heroLeadDescription = isInternal
     ? "Giữ lớp quản trị nội bộ cho xã viên, dịch vụ và vận hành, nhưng vẫn mở được một giao diện public sáng, thoáng và dễ hiểu khi cần kết nối thị trường."
     : isPassport
       ? "Tập trung vào trải nghiệm quét mã, mở hồ sơ số và đọc nhanh những thông tin công khai quan trọng nhất trên di động."
-      : "Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng dữ liệu để công khai bán hàng rõ ràng hơn.";
+      : "Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống.";
   const outcomeTitle = isInternal
     ? "Thắng lợi cùng HTX"
-    : "Thắng lợi cùng nhà nông";
+    : isPassport
+      ? "Thắng lợi cùng nhà nông"
+      : "ĐỒNG HÀNH CÙNG NÔNG NGHIỆP SỐ";
   const outcomeDescription = isInternal
     ? "Theo dõi xã viên, thu chi, nhập xuất và chuẩn bị dữ liệu đầu ra trên một luồng vận hành rõ ràng trước khi công khai ra thị trường."
-    : "Các chỉ số quan trọng được trình bày ngắn gọn để người mua, HTX và đối tác nắm nhanh thông tin trên điện thoại.";
+    : isPassport
+      ? "Các chỉ số quan trọng được trình bày ngắn gọn để người mua, HTX và đối tác nắm nhanh thông tin trên điện thoại."
+      : "Agripassport kết nối dữ liệu sản xuất, sản phẩm và thị trường trên một nền tảng số, giúp các chủ thể nông nghiệp từng bước chuẩn hóa thông tin và nâng cao giá trị sản phẩm.";
   const serviceTabs = isInternal
     ? ["Tất cả", "Quản trị HTX", "Sản phẩm công khai", "QR truy xuất"]
     : isPassport
@@ -656,48 +661,12 @@ export default async function HomePage() {
         },
       ]
     : [
-        {
-          title: "Sản phẩm công khai",
-          value: `${catalog.totalProducts}+`,
-          description:
-            "Danh mục công khai được kéo về bố cục dễ quét và dễ so sánh.",
-          icon: ShoppingBag,
-        },
-        {
-          title: "HTX hiển thị",
-          value: `${catalog.cooperatives.length} HTX`,
-          description:
-            "Mỗi HTX có nhận diện rõ hơn thay vì chìm trong một bảng danh sách.",
-          icon: Store,
-        },
-        {
-          title: "QR truy xuất",
-          value: "Mở nhanh",
-          description:
-            "Khi cần truy xuất sâu hơn, sản phẩm tiếp tục mở sang hồ sơ số.",
-          icon: QrCode,
-        },
-        {
-          title: "Dữ liệu chuẩn hóa",
-          value: "Một mặt bằng dữ liệu",
-          description:
-            "Tên HTX, vùng trồng và sản phẩm được chuẩn hóa trước khi công khai.",
-          icon: BadgeCheck,
-        },
-        {
-          title: "Bán hàng công khai",
-          value: "Giỏ hàng gọn hơn",
-          description:
-            "Giữ hành vi lướt, xem và thêm giỏ gần với một app thương mại điện tử.",
-          icon: Boxes,
-        },
-        {
-          title: "Niềm tin người mua",
-          value: "Hiểu nhanh hơn",
-          description:
-            "Thông tin được sắp theo nhịp card lớn, khoảng thở rộng và CTA rõ hơn.",
-          icon: Users,
-        },
+        { title: "Số hóa vùng sản xuất", value: "Chuẩn hóa dữ liệu", description: "Chuẩn hóa thông tin vùng trồng, đơn vị sản xuất và dữ liệu liên quan.", icon: Store },
+        { title: "Quản lý sản phẩm", value: "Một hệ thống", description: "Tập trung thông tin sản phẩm trên một hệ thống dễ quản lý và cập nhật.", icon: Boxes },
+        { title: "Truy xuất nguồn gốc", value: "Kết nối QR", description: "Kết nối sản phẩm với dữ liệu nguồn gốc thông qua mã QR.", icon: QrCode },
+        { title: "Minh bạch dữ liệu", value: "Đúng phạm vi", description: "Công khai những thông tin phù hợp để người dùng dễ dàng tiếp cận.", icon: BadgeCheck },
+        { title: "Kết nối thị trường", value: "Mở rộng cơ hội", description: "Hỗ trợ sản phẩm tiếp cận đối tác, nhà phân phối và người tiêu dùng.", icon: ShoppingBag },
+        { title: "Chuyển đổi số", value: "Từng bước vững chắc", description: "Từng bước đưa hoạt động quản lý nông nghiệp lên môi trường số.", icon: Users },
       ];
   const heroBannerPanel = (
     <div className="rounded-[1.85rem] border border-white/70 bg-white/90 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur sm:p-5">
@@ -959,28 +928,22 @@ export default async function HomePage() {
                         "radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)",
                     }}
                   />
-                  <div className="absolute inset-x-3 top-3 flex flex-wrap items-center gap-2 sm:inset-x-5 sm:top-5">
-                    <span className="inline-flex min-h-10 items-center rounded-full border border-white/80 bg-white/90 px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e] shadow-sm backdrop-blur">
-                      {siteProfile.appName}
-                    </span>
-                    <span className="inline-flex min-h-10 items-center rounded-full border border-white/70 bg-[rgba(255,255,255,0.72)] px-4 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-slate-600 backdrop-blur">
-                      Hệ sinh thái Agri
-                    </span>
-                  </div>
                 </div>
 
-                <div className="border-b border-[#e5eadf] bg-white px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
-                  {heroBannerPanel}
-                </div>
+                {!isMarketplace ? (
+                  <div className="border-b border-[#e5eadf] bg-white px-4 py-4 sm:px-6 lg:px-8 lg:py-5">
+                    {heroBannerPanel}
+                  </div>
+                ) : null}
 
                 <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-[#dfe9dc] bg-[#f6fbf3] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[#ecf7ed] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#18783c]">
                     <Leaf
                       size={15}
                       aria-hidden="true"
                       className="text-[#1f9b4b]"
                     />
-                    {siteProfile.pageContent.homeBadge}
+                    Số hóa dữ liệu nông nghiệp
                   </div>
                   <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
                     {heroLeadTitle}
@@ -989,7 +952,7 @@ export default async function HomePage() {
                     {heroLeadDescription}
                   </p>
                   {!isInternal ? (
-                    <div className="mx-auto mt-6 max-w-2xl rounded-[1.8rem] border border-[#e0e9dc] bg-[#f8fbf6] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.06)]">
+                    <div className="mx-auto mt-6 max-w-2xl">
                       <PublicSearch placeholder={heroSearchPlaceholder} />
                     </div>
                   ) : null}
@@ -1111,7 +1074,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <div className="-mx-4 mt-5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
+          {isInternal ? <div className="-mx-4 mt-5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0">
             <div className="flex min-w-max gap-2">
               {serviceTabs.map((tab, index) => (
                 <span
@@ -1127,7 +1090,7 @@ export default async function HomePage() {
                 </span>
               ))}
             </div>
-          </div>
+          </div> : null}
 
           <div className="mt-6">
             {isInternal ? (

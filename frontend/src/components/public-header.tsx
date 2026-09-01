@@ -2,20 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LogIn, Menu, QrCode, Search, ShoppingCart, X } from 'lucide-react';
+import { Briefcase, LogIn, Menu, QrCode, Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { CartCountBadge } from './cart-count-badge';
 import { PublicLogo } from './public-logo';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 
 const marketplaceNavItems = [
   { href: '/', label: 'Trang chủ' },
-  { href: '/ve-chung-toi', label: 'Về chúng tôi' },
+  { href: '/ve-chung-toi', label: 'Về AgriPassport' },
   { href: '/san-pham', label: 'Sản phẩm' },
-  { href: '/htx', label: 'HTX' },
+  { href: '/htx', label: 'Đối tác' },
   { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' }
+  { href: '/lien-he', label: 'Liên hệ' },
+  { href: '/tuyen-dung', label: 'Tuyển dụng' }
 ] as const;
 
 const internalNavItems = [
@@ -23,6 +23,15 @@ const internalNavItems = [
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'HTX' },
   { href: '/gioi-thieu', label: 'Dịch vụ' },
+  { href: '/tin-tuc', label: 'Tin tức' },
+  { href: '/lien-he', label: 'Liên hệ' }
+] as const;
+
+const passportNavItems = [
+  { href: '/', label: 'Trang chủ' },
+  { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
+  { href: '/htx', label: 'HTX' },
+  { href: '/gioi-thieu', label: 'Giới thiệu' },
   { href: '/tin-tuc', label: 'Tin tức' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
@@ -43,21 +52,20 @@ export function PublicHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
   const isInternal = siteKey === 'htxonline';
-  const navItems = isInternal ? internalNavItems : marketplaceNavItems;
-  const showCart = siteKey === 'agripassport';
+  const navItems = isInternal ? internalNavItems : siteKey === 'passport' ? passportNavItems : marketplaceNavItems;
   const supportText =
     isInternal
       ? 'Điều phối dữ liệu cho hợp tác xã vận hành bền vững.'
       : siteKey === 'passport'
         ? 'QR truy xuất và hồ sơ số cho nông sản.'
-        : 'Hệ sinh thái số cho hợp tác xã, sản phẩm và QR truy xuất.';
+        : 'Số hóa dữ liệu nông nghiệp - Minh bạch nguồn gốc - Kết nối thị trường.';
   const searchTarget = '/san-pham';
   const searchPlaceholder =
     isInternal
       ? 'Tìm sản phẩm, HTX hoặc dịch vụ'
       : siteKey === 'passport'
         ? 'Tìm sản phẩm có QR, vùng trồng'
-        : 'Tìm sản phẩm, hợp tác xã, vùng trồng';
+        : 'Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc';
   const searchLabel = 'Tìm kiếm';
   const navCta =
     siteKey === 'passport'
@@ -68,26 +76,26 @@ export function PublicHeader({
       ? 'Điều phối HTX'
       : siteKey === 'passport'
         ? 'QR truy xuất'
-        : 'Sàn nông sản số';
+        : 'Dữ liệu nông nghiệp số';
   const brandCaption =
     isInternal
       ? 'Luồng nội bộ, công khai và QR trong một hệ sinh thái.'
       : siteKey === 'passport'
         ? 'Tra cứu hồ sơ số gọn hơn trên điện thoại.'
-        : 'Sản phẩm, HTX và QR được mở theo nhịp mobile-first.';
+        : 'Sản phẩm, vùng trồng và QR được tổ chức thành một hành trình truy xuất rõ ràng.';
   const desktopAuthLabel = isInternal ? 'Đăng nhập / Đăng ký' : 'Đăng nhập';
   const mobilePanelTitle =
     isInternal
       ? 'Quản trị HTX, mở sản phẩm công khai và kết nối QR trên cùng hệ sinh thái.'
       : siteKey === 'passport'
         ? 'Tra cứu sản phẩm có QR và hồ sơ số nhanh hơn trên điện thoại.'
-        : 'Khám phá sản phẩm, HTX và hành trình truy xuất trên cùng một lớp giao diện.';
+        : 'Khám phá dữ liệu sản phẩm, đối tác và hành trình truy xuất nguồn gốc.';
   const mobilePanelTags =
     isInternal
       ? ['Sản phẩm', 'HTX', 'Tin tức']
       : siteKey === 'passport'
         ? ['Có QR', 'Hồ sơ số', 'HTX']
-        : ['Sản phẩm', 'HTX', 'Truy xuất'];
+        : ['Sản phẩm', 'Đối tác', 'Truy xuất'];
   const CtaIcon = isInternal ? Briefcase : siteKey === 'passport' ? QrCode : LogIn;
 
   useEffect(() => {
@@ -330,8 +338,8 @@ export function PublicHeader({
             className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-[#dfe8db] bg-[#f8faf5] px-3 py-2.5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]"
             aria-label={`${appName} - Trang chủ`}
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#21253a] shadow-[0_8px_18px_rgba(33,37,58,0.12)] ring-1 ring-[#d7ddd2]">
-              <PublicLogo size={28} className="h-7 w-7" />
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#0f7d63] shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]">
+              <PublicLogo size={30} className="h-7 w-7" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
             </span>
             <span className="min-w-0">
               <span className="block truncate text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{brandBadge}</span>
@@ -365,24 +373,13 @@ export function PublicHeader({
             >
               <Search size={21} aria-hidden="true" />
             </Link>
-            {showCart ? (
-              <Link
-                href="/gio-hang"
-                aria-label="Giỏ hàng"
-                className="relative grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
-              >
-                <ShoppingCart size={20} aria-hidden="true" />
-                <CartCountBadge />
-              </Link>
-            ) : (
-              <Link
-                href={navCta.href}
-                aria-label={navCta.label}
-                className="grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
-              >
-                <CtaIcon size={19} aria-hidden="true" />
-              </Link>
-            )}
+            <Link
+              href={navCta.href}
+              aria-label={navCta.label}
+              className="grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
+            >
+              <CtaIcon size={19} aria-hidden="true" />
+            </Link>
             <Link
               href="/login"
               className="hidden min-h-12 items-center rounded-full border border-[#dfe7db] bg-white px-5 text-sm font-semibold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] lg:inline-flex"
@@ -415,8 +412,8 @@ export function PublicHeader({
 
         <div className="hidden min-h-[82px] items-center gap-6 py-4 md:flex">
           <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
-            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#22253a] ring-1 ring-[#d8ddd3]">
-              <PublicLogo size={38} className="h-[38px] w-[38px]" />
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-[#0f7d63] ring-1 ring-[#d8ddd3]">
+              <PublicLogo size={40} className="h-[40px] w-[40px]" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
             </span>
           </Link>
 
@@ -440,16 +437,9 @@ export function PublicHeader({
             <Link href="/login" className="text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
               Đăng nhập
             </Link>
-            {showCart ? (
-              <Link href="/gio-hang" aria-label="Giỏ hàng" className="relative grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
-                <ShoppingCart size={20} aria-hidden="true" />
-                <CartCountBadge />
-              </Link>
-            ) : (
-              <Link href={navCta.href} aria-label={navCta.label} className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
-                <CtaIcon size={18} aria-hidden="true" />
-              </Link>
-            )}
+            <Link href={navCta.href} aria-label={navCta.label} className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
+              <CtaIcon size={18} aria-hidden="true" />
+            </Link>
           </div>
         </div>
 
@@ -529,16 +519,6 @@ export function PublicHeader({
             </nav>
 
             <div className="mt-4 grid gap-2 border-t border-[#ece8dd] pt-4">
-              {showCart ? (
-                <Link
-                  href="/gio-hang"
-                  onClick={closeMenu}
-                  className="flex items-center justify-between rounded-[1.25rem] bg-[#f7faf4] px-4 py-3 text-sm font-semibold text-[#1f2233]"
-                >
-                  <span>Giỏ hàng</span>
-                  <CartCountBadge className="static min-h-6 min-w-6 translate-none text-xs" />
-                </Link>
-              ) : null}
               <Link
                 href={navCta.href}
                 onClick={closeMenu}
