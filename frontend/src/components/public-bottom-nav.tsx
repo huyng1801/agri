@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, Home, LogIn, Newspaper, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
+import { Briefcase, Home, LogIn, Newspaper, QrCode, ShoppingBag, ShoppingCart, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
 import { cn } from './ui';
@@ -24,11 +24,19 @@ const internalItems = [
   { href: '/login', label: 'Đăng nhập', icon: LogIn, match: (path: string) => path.startsWith('/login') }
 ] as const;
 
+const passportItems = [
+  { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
+  { href: '/san-pham?hasQr=true', label: 'Có QR', icon: QrCode, match: (path: string) => path.startsWith('/san-pham') },
+  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
+  { href: '/tra-cuu-don-hang', label: 'Tra cứu', icon: ShoppingBag, match: (path: string) => path.startsWith('/tra-cuu-don-hang') },
+  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
+] as const;
+
 export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const pathname = usePathname();
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
-  const items = siteKey === 'htxonline' ? internalItems : marketplaceItems;
+  const items = siteKey === 'htxonline' ? internalItems : siteKey === 'passport' ? passportItems : marketplaceItems;
   const enableBottomNav =
     siteKey !== 'htxonline' &&
     (pathname.startsWith('/san-pham') || pathname.startsWith('/gio-hang') || pathname.startsWith('/thanh-toan') || pathname.startsWith('/tra-cuu-don-hang'));
