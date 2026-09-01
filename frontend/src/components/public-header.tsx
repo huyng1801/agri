@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LogIn, Menu, Search, ShoppingCart, X } from 'lucide-react';
+import { Briefcase, LogIn, Menu, QrCode, Search, ShoppingCart, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { CartCountBadge } from './cart-count-badge';
 import { PublicLogo } from './public-logo';
@@ -44,7 +44,7 @@ export function PublicHeader({
   const closeMenu = () => setMenuOpen(false);
   const isInternal = siteKey === 'htxonline';
   const navItems = isInternal ? internalNavItems : marketplaceNavItems;
-  const showCart = !isInternal;
+  const showCart = siteKey === 'agripassport';
   const supportText =
     isInternal
       ? 'Điều phối dữ liệu cho hợp tác xã vận hành bền vững.'
@@ -59,7 +59,10 @@ export function PublicHeader({
         ? 'Tìm sản phẩm có QR, vùng trồng'
         : 'Tìm sản phẩm, hợp tác xã, vùng trồng';
   const searchLabel = 'Tìm kiếm';
-  const navCta = { href: '/login', label: 'Cộng tác viên' };
+  const navCta =
+    siteKey === 'passport'
+      ? { href: '/san-pham?hasQr=true', label: 'Tìm QR' }
+      : { href: '/login', label: 'Cộng tác viên' };
   const brandBadge =
     isInternal
       ? 'Điều phối HTX'
@@ -85,7 +88,7 @@ export function PublicHeader({
       : siteKey === 'passport'
         ? ['Có QR', 'Hồ sơ số', 'HTX']
         : ['Sản phẩm', 'HTX', 'Truy xuất'];
-  const CtaIcon = isInternal ? Briefcase : LogIn;
+  const CtaIcon = isInternal ? Briefcase : siteKey === 'passport' ? QrCode : LogIn;
 
   useEffect(() => {
     setMenuOpen(false);
@@ -377,7 +380,7 @@ export function PublicHeader({
                 aria-label={navCta.label}
                 className="grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
               >
-                <Briefcase size={19} aria-hidden="true" />
+                <CtaIcon size={19} aria-hidden="true" />
               </Link>
             )}
             <Link
@@ -444,7 +447,7 @@ export function PublicHeader({
               </Link>
             ) : (
               <Link href={navCta.href} aria-label={navCta.label} className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
-                <Briefcase size={18} aria-hidden="true" />
+                <CtaIcon size={18} aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -541,7 +544,7 @@ export function PublicHeader({
                 onClick={closeMenu}
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)]"
               >
-                <LogIn size={18} aria-hidden="true" />
+                <CtaIcon size={18} aria-hidden="true" />
                 {navCta.label}
               </Link>
             </div>
