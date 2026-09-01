@@ -28,4 +28,18 @@ describe('public host proxy rules', () => {
     expect(checkoutResponse.status).toBe(308);
     expect(checkoutResponse.headers.get('location')).toBe('https://agripassport.com/gio-hang');
   });
+
+  it('keeps QR catalog pages on the passport host and redirects commerce only', () => {
+    const catalogResponse = proxy(
+      makeRequest('https://hochieunongnghiep.com/san-pham?hasQr=true', 'hochieunongnghiep.com')
+    );
+    const checkoutResponse = proxy(
+      makeRequest('https://hochieunongnghiep.com/gio-hang', 'hochieunongnghiep.com')
+    );
+
+    expect(catalogResponse.headers.get('location')).toBeNull();
+    expect(catalogResponse.headers.get('x-middleware-next')).toBe('1');
+    expect(checkoutResponse.status).toBe(308);
+    expect(checkoutResponse.headers.get('location')).toBe('https://agripassport.com/gio-hang');
+  });
 });
