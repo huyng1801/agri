@@ -30,6 +30,7 @@ const PUBLIC_MARKETPLACE_PATHS = [
 
 const PASSPORT_PATHS = ['/passport', '/qr'];
 const INTERNAL_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
+const PASSPORT_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
 
 export function proxy(request: NextRequest) {
   const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
@@ -69,10 +70,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (area === 'public' && siteKey === 'passport' && ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang', '/htx', '/san-pham', '/tin-tuc'].some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
-    if (PASSPORT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
-      return NextResponse.next();
-    }
+  if (area === 'public' && siteKey === 'passport' && PASSPORT_COMMERCE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
 
