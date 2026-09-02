@@ -38,16 +38,18 @@ export function PublicBreadcrumb({ href, label }: { href: string; label: string 
 export function PublicPageHeader({
   title,
   description,
-  action
+  action,
+  eyebrow = 'Nền tảng'
 }: {
   title: string;
   description: string;
   action?: React.ReactNode;
+  eyebrow?: string;
 }) {
   return (
     <div className="mb-5 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="max-w-3xl">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-sm">Nền tảng</p>
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-sm">{eyebrow}</p>
         <h1 className="mt-2 max-w-[18ch] text-[1.7rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1f2233] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]">
           {title}
         </h1>

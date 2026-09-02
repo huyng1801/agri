@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar, Phone, QrCode, Search } from 'lucide-react';
-import { AddToCartButton } from './add-to-cart-button';
 import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_NEWS_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { publicCardClass } from './public-layout';
 import type { NewsArticle } from '@/lib/news';
@@ -145,8 +144,17 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           </Link>
         ) : null}
         <div className="mt-3 flex items-end justify-between gap-3 border-t border-[#e8eee4] pt-3">
-          <div><p className="text-[1.22rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p><p className="mt-1 text-xs text-slate-500">/{product.unit}</p></div>
-          <AddToCartButton product={product} className="min-h-10 rounded-full px-4 text-sm font-bold" />
+          <div>
+            <p className="text-[1.22rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p>
+            <p className="mt-1 text-xs text-slate-500">/{product.unit}</p>
+          </div>
+          <Link
+            href={`/san-pham/${product.slug}`}
+            className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint"
+          >
+            Xem thông tin
+            <ArrowRight size={15} aria-hidden="true" />
+          </Link>
         </div>
       </div>
     </article>
