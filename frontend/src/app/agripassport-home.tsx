@@ -8,7 +8,6 @@ import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicNews } from '@/lib/news';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
-import { getPublicSiteProfile } from '@/lib/public-site';
 
 const steps = [
   ['01', 'Chuẩn hóa dữ liệu', 'Tổ chức thông tin đơn vị, vùng trồng và sản phẩm theo một cấu trúc dễ quản lý.', Database],
@@ -17,10 +16,9 @@ const steps = [
 ] as const;
 
 export async function AgripassportHome() {
-  const [catalog, news, profile] = await Promise.all([
+  const [catalog, news] = await Promise.all([
     fetchPublicCatalog(24),
-    fetchPublicNews('/news/public?home=true&limit=3'),
-    getPublicSiteProfile('agripassport')
+    fetchPublicNews('/news/public?home=true&limit=3')
   ]);
   const products = catalog.products.slice(0, 10);
   const cooperatives = catalog.cooperatives.slice(0, 6);
@@ -41,7 +39,7 @@ export async function AgripassportHome() {
               </div>
             </div>
             <figure className="overflow-hidden rounded-[2rem] border border-white/80 bg-[#dcebd8] shadow-[0_26px_64px_rgba(29,82,43,0.14)]">
-              <PublicImage src={profile.pageContent.homeImageUrl} alt={profile.pageContent.homeImageAlt || 'Canh tác nông nghiệp kết nối dữ liệu số'} priority wrapperClassName="aspect-[4/3]" className="h-full w-full object-cover" />
+              <PublicImage src="/hero/htx-farmer-hero-v2.png" alt="Nông hộ sẵn sàng đưa nông sản lên môi trường số" priority wrapperClassName="aspect-[4/3]" className="h-full w-full object-cover object-[55%_38%]" />
             </figure>
           </div>
         </section>
