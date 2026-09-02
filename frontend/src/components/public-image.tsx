@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from './ui';
 
 export const DEFAULT_PRODUCT_IMAGE =
-  'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=900&q=80';
+  '/hero/htx-farmer-hero-v2.png';
 
 export const DEFAULT_COOPERATIVE_IMAGE =
-  'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=900&q=80';
+  '/hero/htx-farmer-hero-v2.png';
 
 export const DEFAULT_NEWS_IMAGE =
-  'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80';
+  '/hero/htx-farmer-hero-v2.png';
 
 type PublicImageProps = {
   src?: string | null;
@@ -33,9 +33,10 @@ export function PublicImage({
   priority = false,
   decorative = false
 }: PublicImageProps) {
-  // Demo seed images are useful in development but are not reliable enough for
-  // a public page. Use the stable fallback immediately instead of showing a blank card.
-  const resolved = src && !src.includes('picsum.photos/') ? src : fallback;
+  // Demo hosts are not a production dependency. Render the bundled fallback
+  // immediately so the public UI never waits for, or exposes, a failed image.
+  const isDemoSource = (url: string) => /(?:picsum\.photos|images\.unsplash\.com)/i.test(url);
+  const resolved = src && !isDemoSource(src) ? src : fallback;
   const [currentSrc, setCurrentSrc] = useState(resolved);
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
