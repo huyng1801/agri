@@ -202,24 +202,24 @@ export default async function AboutUsPage() {
           </div>
         </section>
 
-        <section className={cn(publicContainerClass, 'grid gap-4 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5')}>
-          <article className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <section className={cn(publicContainerClass, 'grid items-stretch gap-4 py-8 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5')}>
+          <article className="flex h-full flex-col rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_16px_36px_rgba(15,23,42,0.05)] sm:p-6">
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Thông tin pháp lý</p>
-            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">{legalEntityProfile.organizationName}</h2>
+            <h2 className="mt-3 max-w-[18ch] text-[1.55rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1f2233] sm:max-w-none sm:text-[2rem]">{legalEntityProfile.organizationName}</h2>
             <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">
               Hồ sơ pháp lý được giữ riêng để đối chiếu minh bạch, trong khi thông tin hiển thị trên website phục vụ mục tiêu tư vấn và vận hành công khai.
             </p>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-[1.35rem] bg-[#f8faf7] p-4">
+            <div className="mt-5 grid auto-rows-fr gap-3 sm:grid-cols-2">
+              <div className="flex h-full flex-col rounded-[1.35rem] border border-[#e6ede2] bg-[#f8faf7] p-4">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Giấy chứng nhận</p>
                 <p className="mt-2 text-base font-bold leading-7 text-[#1f2233]">{legalEntityProfile.certificateTitle}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
+                <p className="mt-auto pt-3 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
               </div>
-              <div className="rounded-[1.35rem] bg-[#f8faf7] p-4">
+              <div className="flex h-full flex-col rounded-[1.35rem] border border-[#e6ede2] bg-[#f8faf7] p-4">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Mã số tổ hợp tác</p>
                 <p className="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-[#1f2233]">{legalEntityProfile.registrationNumber}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
+                <p className="mt-auto pt-3 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
               </div>
               <div className="rounded-[1.35rem] border border-slate-200 bg-white p-4 sm:col-span-2">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Địa chỉ và liên hệ theo hồ sơ</p>
@@ -232,24 +232,24 @@ export default async function AboutUsPage() {
             </div>
           </article>
 
-          <article className="rounded-[2rem] border border-slate-200 bg-[#f8faf7] p-5 shadow-sm sm:p-6">
+          <article className="flex h-full flex-col rounded-[2rem] border border-slate-200 bg-[#f8faf7] p-5 shadow-[0_16px_36px_rgba(15,23,42,0.05)] sm:p-6">
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Vai trò nền tảng</p>
-            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">Một lớp quản trị đứng đúng vị trí trong hệ sinh thái Agri.</h2>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <h2 className="mt-3 max-w-[18ch] text-[1.55rem] font-extrabold leading-[1.12] tracking-[-0.025em] text-[#1f2233] sm:max-w-none sm:text-[2rem]">Một lớp quản trị đứng đúng vị trí trong hệ sinh thái Agri.</h2>
+            <div className="mt-5 grid auto-rows-fr gap-3 sm:grid-cols-2">
               {valuePillars.map((item) => (
-                <article key={item.title} className="rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-sm">
-                  <span className="grid h-11 w-11 place-items-center rounded-full bg-[#1f9b4b] text-white">
+                <article key={item.title} className="flex h-full flex-col rounded-[1.35rem] border border-slate-200 bg-white p-4 shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
+                  <span className="grid h-10 w-10 place-items-center rounded-full bg-[#1f9b4b] text-white">
                     <item.icon size={20} aria-hidden="true" />
                   </span>
-                  <h3 className="mt-3 text-[1rem] font-bold leading-6 text-[#1f2233]">{item.title}</h3>
+                  <h3 className="mt-3 text-[0.95rem] font-bold leading-5 text-[#1f2233]">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
                 </article>
               ))}
             </div>
 
-            <div className="mt-5 grid gap-2.5">
+            <div className="mt-5 grid gap-2.5 lg:mt-auto lg:pt-5">
               {trustSignals.map((item) => (
-                <div key={item} className="rounded-[1.15rem] border border-[#dbe5d8] bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-700">
+                <div key={item} className="rounded-[1.15rem] border border-[#dbe5d8] bg-white px-4 py-3 text-sm font-medium leading-6 text-slate-700 shadow-[0_8px_18px_rgba(15,23,42,0.02)]">
                   {item}
                 </div>
               ))}
