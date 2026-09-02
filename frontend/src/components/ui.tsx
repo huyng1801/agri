@@ -10,7 +10,7 @@ export function Button({
   className,
   variant = 'primary',
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'danger' }) {
+}: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'danger' | 'inverse' | 'inverse-ghost' }) {
   return (
     <button
       className={cn(
@@ -18,6 +18,8 @@ export function Button({
         variant === 'primary' && 'bg-[linear-gradient(135deg,#183225_0%,#224a35_52%,#2f7d4f_100%)] text-white shadow-[0_18px_38px_rgba(24,50,37,0.22)] hover:-translate-y-0.5 hover:brightness-[1.02]',
         variant === 'ghost' && 'border border-[#e4d8c3] bg-[rgba(255,253,248,0.96)] text-ink shadow-sm hover:-translate-y-0.5 hover:bg-white',
         variant === 'danger' && 'bg-rose-600 text-white hover:bg-rose-700',
+        variant === 'inverse' && 'bg-white text-[#17442c] shadow-[0_16px_32px_rgba(8,38,23,0.22)] hover:-translate-y-0.5 hover:bg-[#eff9ed]',
+        variant === 'inverse-ghost' && 'border border-white/35 bg-white/10 text-white shadow-none hover:-translate-y-0.5 hover:bg-white/18 hover:text-white',
         className
       )}
       {...props}

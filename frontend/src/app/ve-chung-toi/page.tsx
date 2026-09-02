@@ -304,13 +304,13 @@ export default async function AboutUsPage() {
                 <p className="mt-2 text-lg font-extrabold leading-7">Chúng tôi sẽ liên hệ lại sớm nhất để chốt luồng triển khai phù hợp cho HTX của bạn.</p>
                 <div className="mt-4 flex flex-col gap-3 sm:flex-row">
                   <Link href="/lien-he">
-                    <Button className="min-h-11 w-full sm:w-auto">
+                    <Button variant="inverse" className="min-h-11 w-full sm:w-auto">
                       Liên hệ ngay
                       <ArrowRight size={16} aria-hidden="true" />
                     </Button>
                   </Link>
                   <Link href="/gioi-thieu">
-                    <Button variant="ghost" className="min-h-11 w-full border-white/18 bg-white/10 text-white hover:bg-white/16 hover:text-white sm:w-auto">
+                    <Button variant="inverse-ghost" className="min-h-11 w-full sm:w-auto">
                       Xem vai trò nền tảng
                     </Button>
                   </Link>

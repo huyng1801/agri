@@ -104,13 +104,13 @@ export default async function AboutPage() {
 
               <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                 <Link href="/ve-chung-toi">
-                  <Button className="min-h-12 w-full sm:w-auto bg-white text-[#14344b] hover:bg-white/90">
+                  <Button variant="inverse" className="min-h-12 w-full sm:w-auto">
                     Về chúng tôi
                     <ArrowRight size={18} aria-hidden="true" />
                   </Button>
                 </Link>
                 <Link href="/lien-he">
-                  <Button variant="ghost" className="min-h-12 w-full border border-white/16 bg-white/8 text-white hover:bg-white/12 sm:w-auto">
+                  <Button variant="inverse-ghost" className="min-h-12 w-full sm:w-auto">
                     Liên hệ triển khai
                   </Button>
                 </Link>
