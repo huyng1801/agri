@@ -37,16 +37,6 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
       )
     : catalog.cooperatives;
 
-  const topProvinces = Array.from(
-    cooperatives.reduce((map, cooperative) => {
-      const province = cooperative.province?.trim();
-      if (!province) return map;
-      map.set(province, (map.get(province) ?? 0) + 1);
-      return map;
-    }, new Map<string, number>())
-  )
-    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'vi'))
-    .slice(0, 4);
   const provinceCount = new Set(cooperatives.map((item) => item.province).filter(Boolean)).size || 1;
   const featuredCooperative = [...cooperatives].sort((a, b) => b.productCount - a.productCount || a.name.localeCompare(b.name, 'vi'))[0];
   const totalProducts = cooperatives.reduce((sum, cooperative) => sum + cooperative.productCount, 0);
@@ -79,11 +69,13 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
     `${totalProducts}+ sản phẩm đang đi cùng hồ sơ HTX`,
     siteKey === 'passport' ? 'Có thể nối tiếp sang trang truy xuất QR' : 'Mở chi tiết HTX và sản phẩm ngay trên cùng hệ sinh thái'
   ];
+  const displayedCooperatives = cooperatives.slice(0, 6);
 
   return (
     <PublicShell>
       <PublicPageMain>
         <PublicPageHeader
+          eyebrow="Nền tảng Agripassport"
           title={pageTitle}
           description={pageDescription}
           action={
@@ -234,24 +226,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           </div>
         </section>
 
-        <section className="mt-5 grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
-          <article className="rounded-[2rem] border border-[#e6e0d2] bg-[linear-gradient(180deg,#fffdf7_0%,#fff8ec_100%)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)] sm:p-6">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Theo tỉnh thành</p>
-            <h3 className="mt-2 text-[1.45rem] font-extrabold leading-[1.08] text-[#1f2233] sm:text-[1.8rem]">Quét nhanh khu vực đang có HTX công khai.</h3>
-            <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-              Phần này gom các tỉnh thành xuất hiện nhiều nhất để người xem định vị nhanh rồi mở thẳng hồ sơ phù hợp.
-            </p>
-            {topProvinces.length > 0 ? (
-              <div className="mt-5 flex flex-wrap gap-2.5">
-                {topProvinces.map(([province, count]) => (
-                  <span key={province} className="rounded-full border border-[#d8e7d8] bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm">
-                    {province} · {count} HTX
-                  </span>
-                ))}
-              </div>
-            ) : null}
-          </article>
-
+        <section className="mt-5">
           <div className="rounded-[2rem] border border-[#e8e4d8] bg-white p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
             <PublicSearch placeholder="Tìm HTX theo tên hoặc tỉnh thành" action="/htx" />
             <div className="mt-3 flex flex-wrap gap-2 px-1">
@@ -268,9 +243,9 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           </div>
         </section>
 
-        {cooperatives.length ? (
+        {displayedCooperatives.length ? (
           <div className="mt-6 grid gap-4 md:auto-rows-fr md:grid-cols-2 lg:grid-cols-3">
-            {cooperatives.map((cooperative, index) => (
+            {displayedCooperatives.map((cooperative, index) => (
               <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
             ))}
           </div>

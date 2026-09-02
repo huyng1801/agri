@@ -8,9 +8,9 @@ import { Button, Input, Textarea, cn } from './ui';
 const phonePattern = /^(0|\+84)[0-9]{8,10}$/;
 
 const HELP_TOPICS = [
-  { id: 'join-marketplace', label: 'Tôi muốn tham gia sàn HTXONLINE' },
-  { id: 'qr-trace', label: 'Tôi cần tư vấn QR Passport / truy xuất nguồn gốc' },
-  { id: 'order-support', label: 'Tôi cần hỗ trợ đơn hàng COD' },
+  { id: 'digitalize', label: 'Số hóa hợp tác xã & quản lý dữ liệu' },
+  { id: 'product-publish', label: 'Đưa sản phẩm lên Agripassport' },
+  { id: 'commerce', label: 'Kết nối tiêu thụ / bán hàng COD' },
   { id: 'other', label: 'Tôi có nhu cầu khác, cần được tư vấn thêm' }
 ] as const;
 

@@ -93,6 +93,83 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       ? 'Được tạo từ dữ liệu sản phẩm và truy xuất trên AGRIPASSPORT.'
       : 'Liên hệ hotline hoặc email để được đội vận hành AGRIPASSPORT hỗ trợ nhanh.';
 
+  if (siteKey === 'agripassport') {
+    const agriServiceLinks = [
+      { href: '/san-pham', label: 'Số hóa sản phẩm' },
+      { href: '/htx', label: 'Quản lý thông tin hợp tác xã' },
+      { href: '/san-pham?hasQr=true', label: 'QR truy xuất nguồn gốc' },
+      { href: '/htx', label: 'Kết nối tiêu thụ' },
+      { href: '/thanh-toan', label: 'Đặt hàng COD' }
+    ];
+    const aboutLinks = [
+      { href: '/gioi-thieu', label: 'Hướng dẫn sử dụng' },
+      { href: '/tin-tuc', label: 'Tin tức mới' },
+      { href: '/lien-he', label: 'Câu hỏi thường gặp' },
+      { href: '/lien-he', label: 'Hỗ trợ khách hàng' }
+    ];
+
+    return (
+      <footer className="mt-12 border-t border-[#d8e7e1] bg-[linear-gradient(135deg,#f5fbfb_0%,#edf8f2_48%,#e7f4fb_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#133455] lg:pb-0">
+        <div className={publicContainerClass}>
+          <div className="py-9 sm:py-12">
+            <div className="grid gap-8 border-b border-[#b9d5d3] pb-8 sm:grid-cols-2 lg:grid-cols-[1.18fr_0.95fr_0.88fr_1fr]">
+              <div className="sm:col-span-2 lg:col-span-1">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white shadow-[0_12px_28px_rgba(18,63,88,0.1)] ring-1 ring-[#cfe4de]">
+                    <PublicLogo size={38} />
+                  </span>
+                  <div>
+                    <p className="text-[1.1rem] font-extrabold tracking-[-0.03em] text-[#123a66]">AGRIPASSPORT</p>
+                    <p className="mt-1 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-[#397d63]">Nền tảng số hóa nông sản</p>
+                  </div>
+                </div>
+                <p className="mt-4 max-w-sm text-sm leading-7 text-[#496277]">
+                  Agripassport giúp hợp tác xã, nông hộ và doanh nghiệp số hóa thông tin sản phẩm, minh bạch nguồn gốc và kết nối thị trường trên một hệ sinh thái nông nghiệp số.
+                </p>
+              </div>
+
+              <div>
+                <h2 className="text-base font-extrabold text-[#123a66]">Giải pháp Agripassport</h2>
+                <nav className="mt-3 grid gap-1.5">
+                  {agriServiceLinks.map((item) => <Link key={item.label} href={item.href} className={footerLinkClass}>{item.label}</Link>)}
+                </nav>
+              </div>
+
+              <div>
+                <h2 className="text-base font-extrabold text-[#123a66]">Về Agripassport</h2>
+                <nav className="mt-3 grid gap-1.5">
+                  {aboutLinks.map((item) => <Link key={item.label} href={item.href} className={footerLinkClass}>{item.label}</Link>)}
+                </nav>
+              </div>
+
+              <div className="rounded-[1.65rem] border border-[#cfe3dc] bg-white/75 p-4 shadow-[0_14px_32px_rgba(18,63,88,0.07)]">
+                <p className="text-[0.7rem] font-bold uppercase tracking-[0.17em] text-[#397d63]">Hỗ trợ khách hàng</p>
+                <a href={telHref(profile.hotline)} className="mt-3 flex min-h-10 items-center gap-2 text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Phone size={17} aria-hidden="true" />{profile.hotlineDisplay}</a>
+                <a href={`mailto:${profile.supportEmail}`} className="flex min-h-10 items-center gap-2 break-all text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Mail size={17} aria-hidden="true" />{profile.supportEmail}</a>
+                <a href={mapSearchUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-10 items-center gap-2 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white transition hover:bg-[#185b3a]"><MapPin size={16} aria-hidden="true" />Mở bản đồ</a>
+              </div>
+            </div>
+
+            <div className="grid gap-6 py-7 lg:grid-cols-[0.95fr_1.05fr_0.8fr] lg:items-center">
+              <div>
+                <p className="text-base font-extrabold text-[#123a66]">Tổ hợp tác Công nghệ Nông nghiệp Agri Passport</p>
+                <div className="mt-3 grid gap-2 text-sm leading-6 text-[#496277]">
+                  <p className="flex gap-2"><MapPin size={17} className="mt-1 shrink-0 text-[#1f9b4b]" aria-hidden="true" />{profile.address}</p>
+                  <p className="flex gap-2"><Phone size={17} className="mt-1 shrink-0 text-[#1f9b4b]" aria-hidden="true" />{profile.hotlineDisplay}</p>
+                  <p className="flex gap-2"><Mail size={17} className="mt-1 shrink-0 text-[#1f9b4b]" aria-hidden="true" />{profile.supportEmail}</p>
+                </div>
+              </div>
+              <div className="overflow-hidden rounded-[1.5rem] border border-[#cfe3dc] bg-white p-2 shadow-[0_14px_32px_rgba(18,63,88,0.07)]">
+                <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} compact />
+              </div>
+              <p className="text-sm leading-7 text-[#496277]">ĐKKD: số 1402233422 do Sở KH&ĐT Đồng Tháp cấp ngày 13/07/2026</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   if (isInternal) {
     return (
       <footer className="mt-12 border-t border-[#e6ece0] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">

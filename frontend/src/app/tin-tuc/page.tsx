@@ -39,6 +39,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     <PublicShell>
       <PublicPageMain>
         <PublicPageHeader
+          eyebrow="Agripassport cập nhật"
           title="Tin tức"
           description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
           action={
@@ -118,11 +119,20 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {articles.length ? (
+          <section>
+            <div className="mb-4 flex items-end justify-between gap-3 sm:mb-5">
+              <div>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Khám phá & cập nhật</p>
+                <h2 className="mt-1 text-[1.5rem] font-extrabold tracking-[-0.03em] text-[#1f2233] sm:text-[2rem]">Bài viết mới nhất</h2>
+              </div>
+              <p className="hidden text-sm text-slate-500 sm:block">Kiến thức, thị trường và dữ liệu nông nghiệp.</p>
+            </div>
           <div className="grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
             {(filters.search ? articles : rest).map((article, index) => (
               <NewsCard key={article.id} article={article} priority={index < 3} />
             ))}
           </div>
+          </section>
         ) : (
           <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức do Super Admin đăng sẽ hiển thị tại đây." />
         )}
