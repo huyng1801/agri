@@ -14,8 +14,7 @@ const marketplaceNavItems = [
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'Đối tác' },
   { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' },
-  { href: '/tuyen-dung', label: 'Tuyển dụng' }
+  { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
 
 const internalNavItems = [
@@ -52,6 +51,7 @@ export function PublicHeader({
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
   const isInternal = siteKey === 'htxonline';
+  const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
   const navItems = isInternal ? internalNavItems : siteKey === 'passport' ? passportNavItems : marketplaceNavItems;
   const supportText =
     isInternal
@@ -373,13 +373,15 @@ export function PublicHeader({
             >
               <Search size={21} aria-hidden="true" />
             </Link>
-            <Link
-              href={navCta.href}
-              aria-label={navCta.label}
-              className="hidden h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b] md:grid"
-            >
-              <CtaIcon size={19} aria-hidden="true" />
-            </Link>
+            {!isMarketplace ? (
+              <Link
+                href={navCta.href}
+                aria-label={navCta.label}
+                className="hidden h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b] md:grid"
+              >
+                <CtaIcon size={19} aria-hidden="true" />
+              </Link>
+            ) : null}
             <Link
               href="/login"
               className="hidden min-h-12 items-center rounded-full border border-[#dfe7db] bg-white px-5 text-sm font-semibold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] lg:inline-flex"
@@ -462,12 +464,14 @@ export function PublicHeader({
               </Link>
             );
           })}
-          <Link
-            href={navCta.href}
-            className="inline-flex min-h-12 items-center rounded-full bg-[#58b95c] px-5 text-[1rem] font-semibold text-white shadow-[0_0_0_4px_rgba(88,185,92,0.18)] transition hover:-translate-y-0.5"
-          >
-            {navCta.label}
-          </Link>
+          {!isMarketplace ? (
+            <Link
+              href={navCta.href}
+              className="inline-flex min-h-12 items-center rounded-full bg-[#58b95c] px-5 text-[1rem] font-semibold text-white shadow-[0_0_0_4px_rgba(88,185,92,0.18)] transition hover:-translate-y-0.5"
+            >
+              {navCta.label}
+            </Link>
+          ) : null}
         </nav>
       </div>
 
@@ -518,16 +522,18 @@ export function PublicHeader({
               })}
             </nav>
 
-            <div className="mt-4 grid gap-2 border-t border-[#ece8dd] pt-4">
-              <Link
-                href={navCta.href}
-                onClick={closeMenu}
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)]"
-              >
-                <CtaIcon size={18} aria-hidden="true" />
-                {navCta.label}
-              </Link>
-            </div>
+            {!isMarketplace ? (
+              <div className="mt-4 grid gap-2 border-t border-[#ece8dd] pt-4">
+                <Link
+                  href={navCta.href}
+                  onClick={closeMenu}
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)]"
+                >
+                  <CtaIcon size={18} aria-hidden="true" />
+                  {navCta.label}
+                </Link>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : null}
