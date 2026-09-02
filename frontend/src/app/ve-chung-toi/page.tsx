@@ -10,11 +10,17 @@ import { buildPublicMetadata } from '@/lib/page-metadata';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
+import { AgripassportAboutPage } from './agripassport-about-page';
 
 export async function generateMetadata() {
+  const siteKey = await getRequestPublicSiteKey();
+  const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
+
   return buildPublicMetadata({
-    title: 'Về chúng tôi',
-    description: 'HTXONLINE mang đến lớp quản trị nội bộ, QR truy xuất và quy trình vận hành số cho hợp tác xã Việt Nam.',
+    title: isAgripassport ? 'Về Agripassport' : 'Về chúng tôi',
+    description: isAgripassport
+      ? 'Agripassport giúp số hóa nông sản, chuẩn hóa dữ liệu sản phẩm và minh bạch nguồn gốc bằng QR.'
+      : 'HTXONLINE mang đến lớp quản trị nội bộ, QR truy xuất và quy trình vận hành số cho hợp tác xã Việt Nam.',
     path: '/ve-chung-toi'
   });
 }
@@ -83,6 +89,11 @@ const trustSignals = [
 export default async function AboutUsPage() {
   const siteKey = await getRequestPublicSiteKey();
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
+
+  if (siteKey === 'agripassport' || siteKey === 'local') {
+    return <AgripassportAboutPage siteProfile={siteProfile} />;
+  }
+
   const featuredCooperatives =
     catalog.cooperatives.slice(0, 6).length > 0 ? catalog.cooperatives.slice(0, 6) : Array.from({ length: 6 }).map((_, index) => ({ id: String(index), name: `HTX ${index + 1}` }));
 

@@ -32,8 +32,37 @@ body {
     radial-gradient(circle at top right, rgba(47, 125, 79, 0.08), transparent 26%),
     linear-gradient(180deg, #fcf7ef 0%, #f6efdf 26%, #fffdf8 64%, #faf6ef 100%);
   color: #17211b;
-  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), sans-serif;
+  font-optical-sizing: auto;
+  letter-spacing: -0.012em;
   text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Keep small labels distinct without the oversized tracking that breaks Vietnamese words apart. */
+[class~='tracking-[0.12em]'] {
+  letter-spacing: 0.075em;
+}
+
+[class~='tracking-[0.16em]'],
+[class~='tracking-[0.18em]'] {
+  letter-spacing: 0.095em;
+}
+
+[class~='tracking-[0.2em]'],
+[class~='tracking-[0.22em]'],
+[class~='tracking-[0.24em]'] {
+  letter-spacing: 0.11em;
 }
 
 button,

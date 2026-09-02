@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Be_Vietnam_Pro } from 'next/font/google';
+import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
 import { QueryProvider } from '@/components/query-provider';
 import { defaultPublicSiteProfileForSite } from '@/lib/public-site';
 import { getRequestPublicOrigin, getRequestPublicSiteKey } from '@/lib/request-site';
 
-const beVietnamPro = Be_Vietnam_Pro({
+const nunitoSans = Nunito_Sans({
   subsets: ['vietnamese', 'latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-body',
@@ -40,7 +40,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="vi">
-      <body className={beVietnamPro.variable}>
+      <body className={nunitoSans.variable}>
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
