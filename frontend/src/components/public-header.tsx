@@ -335,15 +335,15 @@ export function PublicHeader({
 
           <Link
             href="/"
-            className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.35rem] border border-[#dfe8db] bg-[#f8faf5] px-3 py-2.5 shadow-[0_12px_24px_rgba(15,23,42,0.05)]"
+            className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1"
             aria-label={`${appName} - Trang chủ`}
           >
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#0f7d63] shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]">
-              <PublicLogo size={30} className="h-7 w-7" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#0f7d63] shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]">
+              <PublicLogo size={27} className="h-6 w-6" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
             </span>
             <span className="min-w-0">
-              <span className="block truncate text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{brandBadge}</span>
-              <span className="mt-0.5 block truncate text-sm font-extrabold text-[#1f2233]">{appName}</span>
+              <span className="hidden truncate text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:block">{brandBadge}</span>
+              <span className="block truncate text-[0.8rem] font-extrabold text-[#1f2233] sm:mt-0.5 sm:text-sm">{appName}</span>
             </span>
           </Link>
 
@@ -376,7 +376,7 @@ export function PublicHeader({
             <Link
               href={navCta.href}
               aria-label={navCta.label}
-              className="grid h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b]"
+              className="hidden h-10 w-10 place-items-center text-[#2b8a3e] transition hover:text-[#1f9b4b] md:grid"
             >
               <CtaIcon size={19} aria-hidden="true" />
             </Link>
@@ -389,7 +389,7 @@ export function PublicHeader({
           </div>
         </div>
 
-        <div className="mb-2 flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
+        <div className="hidden mb-2 snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => {
             const active = isNavActive(pathname, item.href);
             return (

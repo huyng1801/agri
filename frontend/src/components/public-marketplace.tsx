@@ -106,69 +106,48 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className="group flex h-full flex-col rounded-[2rem] border border-[#dce9d7] bg-white p-3 shadow-[0_18px_40px_rgba(15,23,42,0.05)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_26px_52px_rgba(15,23,42,0.08)] sm:p-4">
-      <div className="rounded-[1.7rem] border border-[#2b8a3e]/90 bg-[linear-gradient(180deg,#ffffff_0%,#f8fcf6_100%)] p-3 sm:p-4">
-        <div className="flex items-center justify-between gap-2">
-          <span className="inline-flex min-h-8 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.62rem] font-bold uppercase tracking-[0.18em] text-white">
+    <article className="group flex h-full flex-col rounded-[1.7rem] border border-[#dce9d7] bg-white p-2.5 shadow-[0_14px_32px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:p-3">
+      <div className="relative overflow-hidden rounded-[1.35rem] bg-[#f1f7ee]">
+        <div className="absolute inset-x-3 top-3 z-[2] flex items-center justify-between gap-2">
+          <span className="inline-flex min-h-7 items-center rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
             {product.category?.name ?? 'Nông sản'}
           </span>
           {hasQr ? (
-            <span className="inline-flex min-h-8 items-center gap-1 rounded-full border border-[#dbe9d9] bg-white px-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#1f2233]">
+            <span className="inline-flex min-h-7 items-center gap-1 rounded-full bg-white/92 px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-[#28513a] shadow-sm backdrop-blur">
               <QrCode size={12} aria-hidden="true" />
               Có QR
             </span>
           ) : null}
         </div>
 
-        <Link href={`/san-pham/${product.slug}`} className="mt-3 block overflow-hidden rounded-[1.45rem] bg-white ring-1 ring-[#edf3e8]">
+        <Link href={`/san-pham/${product.slug}`} className="block">
           <PublicImage
             src={product.thumbnail?.publicUrl}
             alt={product.name}
             fallback={DEFAULT_PRODUCT_IMAGE}
             testId="product-card-image"
             priority={priority}
-            wrapperClassName="aspect-[1.02/1] w-full bg-[linear-gradient(180deg,#ffffff_0%,#fbfdf9_100%)]"
+            wrapperClassName="aspect-[4/3] w-full bg-[linear-gradient(180deg,#ffffff_0%,#fbfdf9_100%)]"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
-
-        <div className="mt-4 text-center">
-          <Link href={`/san-pham/${product.slug}`} className="block min-h-11 line-clamp-2 text-[1.25rem] font-extrabold leading-[1.15] text-[#1b251f] transition hover:text-leaf sm:text-[1.35rem]">
-            {product.name}
-          </Link>
-          <p className="mt-1 text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-slate-500">
-            {product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}
-          </p>
-        </div>
       </div>
 
-      <div className="mt-3 flex flex-1 flex-col">
-        <div className="rounded-[1.25rem] border border-[#e5ebdf] bg-[#f8fbf7] px-4 py-3">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <p className="text-[1.42rem] font-extrabold leading-none text-[#17211b] sm:text-[1.6rem]">{formatPrice(product.price)}</p>
-              <p className="mt-1 text-sm text-slate-500">/{product.unit}</p>
-            </div>
-            {product.cooperative ? (
-              <Link
-                href={`/htx/${product.cooperative.code}`}
-                className="inline-flex items-center gap-2 rounded-full border border-[#dbe6d7] bg-white px-3 py-2 text-xs font-semibold text-[#1f2233] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
-              >
-                <PublicImage
-                  src={product.cooperative.avatarUrl}
-                  alt={product.cooperative.name}
-                  fallback={defaultCooperativeAvatar}
-                  decorative
-                  wrapperClassName="h-7 w-7 shrink-0 rounded-full"
-                  className="h-full w-full rounded-full object-cover"
-                />
-                <span className="max-w-[9rem] truncate">{product.cooperative.name}</span>
-              </Link>
-            ) : null}
-          </div>
+      <div className="mt-3 flex flex-1 flex-col px-1 pb-1">
+        <p className="text-[0.7rem] font-semibold text-[#5d7b67]">{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
+        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1b251f] transition hover:text-[#1c8542] sm:text-[1.2rem]">
+          {product.name}
+        </Link>
+        {product.cooperative ? (
+          <Link href={`/htx/${product.cooperative.code}`} className="mt-2 inline-flex min-h-8 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542]">
+            <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName="h-6 w-6 shrink-0 rounded-full" className="h-full w-full rounded-full object-cover" />
+            <span className="truncate">{product.cooperative.name}</span>
+          </Link>
+        ) : null}
+        <div className="mt-3 flex items-end justify-between gap-3 border-t border-[#e8eee4] pt-3">
+          <div><p className="text-[1.22rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p><p className="mt-1 text-xs text-slate-500">/{product.unit}</p></div>
+          <AddToCartButton product={product} className="min-h-10 rounded-full px-4 text-sm font-bold" />
         </div>
-
-        <AddToCartButton product={product} className="mt-auto min-h-[3.35rem] w-full rounded-full pt-3 text-base font-bold" />
       </div>
     </article>
   );

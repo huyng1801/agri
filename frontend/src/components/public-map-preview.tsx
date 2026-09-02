@@ -20,6 +20,27 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
     .filter(Boolean)
     .slice(-1)[0] || 'Việt Nam';
 
+  if (compact) {
+    return (
+      <a
+        href={mapSearchUrl}
+        target="_blank"
+        rel="noreferrer"
+        className={cn('group relative flex min-h-[11rem] items-end overflow-hidden rounded-[1.35rem] bg-[#d9eadf] p-3 text-left shadow-sm', className)}
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.64),transparent_22%),radial-gradient(circle_at_78%_72%,rgba(255,255,255,0.38),transparent_22%),linear-gradient(140deg,#dcefe1_0%,#a5d2b1_100%)]" />
+        <div className="absolute inset-0 opacity-55 [background-image:linear-gradient(rgba(255,255,255,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.3)_1px,transparent_1px)] [background-size:24px_24px]" />
+        <span className="absolute left-1/2 top-[37%] h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.16)]" aria-hidden="true" />
+        <span className="relative w-full rounded-2xl bg-white/86 px-3 py-2.5 backdrop-blur-sm">
+          <span className="flex items-center justify-between gap-3">
+            <span className="min-w-0"><span className="block text-[0.64rem] font-bold uppercase tracking-[0.1em] text-[#397e4b]">Điểm hỗ trợ</span><span className="mt-1 block line-clamp-2 text-sm font-bold leading-5 text-[#173327]">{address}</span></span>
+            <Navigation size={18} className="shrink-0 text-[#1e8745] transition group-hover:translate-x-0.5" aria-hidden="true" />
+          </span>
+        </span>
+      </a>
+    );
+  }
+
   return (
     <div className={cn('overflow-hidden rounded-[1.7rem] border border-white/18 bg-[#d9eadf]', className)}>
       <div className={cn('relative isolate w-full overflow-hidden', compact ? 'aspect-[1.1/1]' : 'aspect-[1.28/1] min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]', aspectClassName)}>

@@ -80,7 +80,7 @@ export function PublicImage({
     <div className={cn('relative overflow-hidden bg-[var(--surface-0)]', wrapperClassName)}>
       {!loaded && (
         <div
-          className="absolute inset-0 z-[1] animate-pulse bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.92),transparent_28%),linear-gradient(135deg,#e6f3e4_0%,#f8fbf5_50%,#dcefea_100%)]"
+          className="absolute inset-0 z-[1] animate-pulse bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.7),transparent_28%),linear-gradient(135deg,rgba(230,243,228,0.58)_0%,rgba(248,251,245,0.36)_50%,rgba(220,239,234,0.56)_100%)]"
           aria-hidden="true"
         />
       )}

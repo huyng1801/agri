@@ -41,6 +41,7 @@ import {
   getRequestAbsoluteUrl,
   getRequestPublicSiteKey,
 } from "@/lib/request-site";
+import { AgripassportHome } from './agripassport-home';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
@@ -114,6 +115,11 @@ export default async function HomePage() {
   const isInternal = siteKey === "htxonline";
   const isPassport = siteKey === "passport";
   const isMarketplace = siteKey === "agripassport" || siteKey === "local";
+
+  if (isMarketplace) {
+    return <AgripassportHome />;
+  }
+
   const [catalog, news, siteProfile] = await Promise.all([
     fetchPublicCatalog(100),
     fetchPublicNews("/news/public?home=true&limit=3"),

@@ -36,9 +36,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
   const items = siteKey === 'htxonline' ? internalItems : siteKey === 'passport' ? passportItems : marketplaceItems;
-  const enableBottomNav =
-    siteKey !== 'htxonline' &&
-    (pathname.startsWith('/san-pham') || pathname.startsWith('/passport') || pathname.startsWith('/qr') || pathname.startsWith('/tra-cuu-don-hang'));
+  const enableBottomNav = siteKey !== 'htxonline';
   const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
   useEffect(() => {

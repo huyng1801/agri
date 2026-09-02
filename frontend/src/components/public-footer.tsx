@@ -356,9 +356,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   return (
     <footer className="mt-10 border-t border-[#e6ece0] bg-[linear-gradient(180deg,#ffffff_0%,#f7faf5_100%)] pb-[calc(6.5rem+var(--safe-bottom))] text-[#1f2233] lg:pb-0">
       <div className={publicContainerClass}>
-        <div className="py-10 sm:py-12">
-          <div className="grid gap-8 border-b border-[#e4eadf] pb-8 lg:grid-cols-[1.12fr_0.72fr_0.78fr_1fr]">
-            <div>
+        <div className="py-8 sm:py-12">
+          <div className="grid grid-cols-2 gap-5 border-b border-[#e4eadf] pb-8 sm:gap-8 lg:grid-cols-[1.12fr_0.72fr_0.78fr_1fr]">
+            <div className="col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3 text-xl font-extrabold text-[#1f2233]">
                 <span className="grid h-14 w-14 place-items-center rounded-full border border-[#dce7d9] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
                   <PublicLogo size={40} />
@@ -411,7 +411,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </div>
             </div>
 
-            <div className="rounded-[1.7rem] border border-[#e2e9dc] bg-white/80 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)]">
+            <div className="col-span-2 rounded-[1.7rem] border border-[#e2e9dc] bg-white/80 p-4 shadow-[0_16px_34px_rgba(15,23,42,0.05)] lg:col-span-1">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Điểm hỗ trợ</p>
