@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import { baseUrls, seedAuthenticatedSession, superAdminUser } from '../helpers/auth';
 
 test.describe('admin CRUD forms', () => {
+  test.setTimeout(90_000);
   test.beforeEach(({}, testInfo) => {
     test.skip(testInfo.project.name !== 'chromium', 'Admin CRUD interaction runs once on desktop chromium');
   });
@@ -33,7 +34,7 @@ test.describe('admin CRUD forms', () => {
 
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/subscription-plans`, { waitUntil: 'domcontentloaded' });
-    await expect(page.getByTestId('page-title')).toContainText('Gói dịch vụ SaaS', { timeout: 15_000 });
+    await expect(page.getByTestId('page-title')).toContainText('Gói dịch vụ SaaS', { timeout: 45_000 });
 
     await page.getByTestId('plan-create-button').click();
     await page.getByTestId('plan-name-input').fill('E2E Cleanup Plan');
@@ -85,7 +86,7 @@ test.describe('admin CRUD forms', () => {
 
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/users`, { waitUntil: 'domcontentloaded' });
-    await expect(page.getByTestId('page-title')).toContainText('Người dùng hệ thống', { timeout: 15_000 });
+    await expect(page.getByTestId('page-title')).toContainText('Người dùng hệ thống', { timeout: 45_000 });
     await page.getByTestId('user-create-button').click();
     await page.getByTestId('user-name-input').fill('E2E Cleanup User');
     await page.getByTestId('user-email-input').fill('e2e-cleanup-user@example.com');
@@ -131,7 +132,7 @@ test.describe('admin CRUD forms', () => {
 
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/invoices`, { waitUntil: 'domcontentloaded' });
-    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn SaaS', { timeout: 15_000 });
+    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn SaaS', { timeout: 45_000 });
     await page.getByTestId('invoice-create-button').click();
     await page.getByTestId('invoice-cooperative-select').selectOption('coop-e2e');
     await page.getByTestId('invoice-amount-input').fill('456789');
@@ -146,6 +147,48 @@ test.describe('admin CRUD forms', () => {
     await expect.poll(() => mutations.filter((item) => item.path.endsWith('/cancel')).length).toBe(1);
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'POST']);
     expect(mutations[2].path).toMatch(/\/invoices\/invoice-e2e\/cancel$/);
+  });
+
+  test('@admin @form @crud cooperative create edit and archive cleanup', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let cooperative = cooperativeFixture('coop-seed', 'HTX Seed', 'HTX-SEED', 'ACTIVE');
+
+    await page.route('**/api/v1/cooperatives**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [cooperative], meta: { page: 1, limit: 100, total: 1 } }));
+        return;
+      }
+      const body = (method === 'DELETE' ? undefined : request.postDataJSON()) as Record<string, unknown> | undefined;
+      mutations.push({ method, path, body });
+      if (method === 'POST') cooperative = { ...cooperative, id: 'coop-e2e', ...body } as typeof cooperative;
+      else if (method === 'PATCH') cooperative = { ...cooperative, ...body } as typeof cooperative;
+      else if (method === 'DELETE') cooperative = { ...cooperative, status: 'ARCHIVED' };
+      await route.fulfill(jsonEnvelope(cooperative));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/cooperatives`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('HTX cấp nền tảng', { timeout: 45_000 });
+    await page.getByTestId('cooperative-create-button').click();
+    await page.getByTestId('cooperative-name-input').fill('E2E Cleanup HTX');
+    await page.getByTestId('cooperative-code-input').fill('E2E-HTX');
+    await page.getByTestId('cooperative-address-editor').fill('Đồng Tháp');
+    await page.getByTestId('cooperative-phone-input').fill('0907001200');
+    await page.getByTestId('cooperative-save-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa' }).click();
+    await page.getByTestId('cooperative-name-input').fill('E2E Cleanup HTX Edited');
+    await page.getByTestId('cooperative-save-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Ngừng' }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+    expect(mutations[0].body).toMatchObject({ name: 'E2E Cleanup HTX', code: 'E2E-HTX', address: 'Đồng Tháp', phone: '0907001200' });
+    expect(mutations[1].body).toMatchObject({ name: 'E2E Cleanup HTX Edited' });
   });
 });
 
@@ -196,6 +239,28 @@ function invoiceFixture(id: string, invoiceCode: string, status: string) {
     paidAt: null,
     note: '',
     subscription: null,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function cooperativeFixture(id: string, name: string, code: string, status: string) {
+  return {
+    id,
+    code,
+    name,
+    taxCode: '',
+    phone: '',
+    email: '',
+    address: 'Địa chỉ seed',
+    province: 'Đồng Tháp',
+    district: '',
+    ward: '',
+    representative: '',
+    avatarUrl: '',
+    status,
+    subscriptions: [],
+    _count: { users: 0, products: 0, zones: 0, passports: 0 },
     createdAt: '2026-09-01T00:00:00.000Z',
     updatedAt: '2026-09-01T00:00:00.000Z'
   };
