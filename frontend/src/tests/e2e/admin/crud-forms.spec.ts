@@ -101,6 +101,52 @@ test.describe('admin CRUD forms', () => {
     await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
   });
+
+  test('@admin @form @crud invoice create edit and cancel cleanup', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let invoice = invoiceFixture('invoice-seed', 'INV-SEED', 'DRAFT');
+
+    await page.route('**/api/v1/invoices**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [invoice], meta: { page: 1, limit: 80, total: 1 } }));
+        return;
+      }
+      const body = (method === 'POST' ? request.postDataJSON() : request.postDataJSON()) as Record<string, unknown> | undefined;
+      mutations.push({ method, path, body });
+      if (path.endsWith('/cancel')) invoice = { ...invoice, status: 'CANCELLED' };
+      else if (method === 'POST') invoice = { ...invoice, id: 'invoice-e2e', invoiceCode: 'INV-E2E', ...body } as typeof invoice;
+      else if (method === 'PATCH') invoice = { ...invoice, ...body } as typeof invoice;
+      await route.fulfill(jsonEnvelope(invoice));
+    });
+    await page.route('**/api/v1/cooperatives?*', async (route) => {
+      await route.fulfill(jsonEnvelope({ data: [{ id: 'coop-e2e', code: 'HTX-E2E', name: 'HTX E2E', status: 'ACTIVE' }], meta: { total: 1 } }));
+    });
+    await page.route('**/api/v1/cooperatives/coop-e2e/subscription', async (route) => {
+      await route.fulfill(jsonEnvelope({ id: 'subscription-e2e', status: 'ACTIVE', plan: { name: 'Basic' } }));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/invoices`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn SaaS', { timeout: 15_000 });
+    await page.getByTestId('invoice-create-button').click();
+    await page.getByTestId('invoice-cooperative-select').selectOption('coop-e2e');
+    await page.getByTestId('invoice-amount-input').fill('456789');
+    await page.getByTestId('invoice-dueDate-input').fill('2026-12-31');
+    await page.getByRole('button', { name: 'Lưu hóa đơn' }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST' && item.path.endsWith('/invoices')).length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa' }).click();
+    await page.getByTestId('invoice-amount-input').fill('567890');
+    await page.getByRole('button', { name: 'Lưu hóa đơn' }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Hủy' }).click();
+    await expect.poll(() => mutations.filter((item) => item.path.endsWith('/cancel')).length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'POST']);
+    expect(mutations[2].path).toMatch(/\/invoices\/invoice-e2e\/cancel$/);
+  });
 });
 
 function planFixture(id: string, name: string) {
@@ -132,6 +178,24 @@ function userFixture(id: string, fullName: string, email: string) {
     cooperative: { id: 'coop-e2e', code: 'HTX-E2E', name: 'HTX E2E', status: 'ACTIVE' },
     roles: ['MEMBER_HTX'],
     lastLoginAt: null,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function invoiceFixture(id: string, invoiceCode: string, status: string) {
+  return {
+    id,
+    invoiceCode,
+    cooperativeId: 'coop-e2e',
+    cooperative: { id: 'coop-e2e', code: 'HTX-E2E', name: 'HTX E2E' },
+    amount: 100000,
+    currency: 'VND',
+    status,
+    dueDate: '2026-12-01T00:00:00.000Z',
+    paidAt: null,
+    note: '',
+    subscription: null,
     createdAt: '2026-09-01T00:00:00.000Z',
     updatedAt: '2026-09-01T00:00:00.000Z'
   };
