@@ -585,6 +585,8 @@ test.describe('admin CRUD forms', () => {
     await card.getByRole('textbox').fill('Ghi chú tạm E2E');
     await card.getByRole('button', { name: 'Lưu xử lý' }).click();
     await expect.poll(() => mutations.length).toBe(1);
+    await expect(card.getByRole('combobox')).toHaveValue('IN_PROGRESS');
+    await expect(card.getByRole('textbox')).toHaveValue('Ghi chú tạm E2E');
     await card.getByRole('combobox').selectOption('NEW');
     await card.getByRole('textbox').fill('');
     await card.getByRole('button', { name: 'Lưu xử lý' }).click();
