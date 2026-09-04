@@ -62,6 +62,17 @@ export function PublicImage({
   }, [currentSrc, fallback]);
 
   useEffect(() => {
+    // Cached images may finish between hydration and the first effect, so
+    // also check on the next frame instead of leaving the loading veil up.
+    const checkLoaded = () => {
+      const img = imgRef.current;
+      if (img?.complete) setLoaded(img.naturalWidth > 0);
+    };
+    const frame = window.requestAnimationFrame(checkLoaded);
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentSrc]);
+
+  useEffect(() => {
     if (loaded || currentSrc === fallback) return;
 
     // Third-party image hosts can leave an image request pending indefinitely.
