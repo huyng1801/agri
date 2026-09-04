@@ -36,7 +36,7 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
               type="button"
               onClick={() => scrollByCards(-1)}
               className={cn(
-                'pointer-events-auto grid h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]'
+                'pointer-events-auto hidden h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233] sm:grid'
               )}
               aria-label="Xem sản phẩm trước"
             >
@@ -46,7 +46,7 @@ export function ProductSlider({ products }: { products: PublicProduct[] }) {
               type="button"
               onClick={() => scrollByCards(1)}
               className={cn(
-                'pointer-events-auto grid h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]'
+                'pointer-events-auto hidden h-12 w-12 place-items-center rounded-[1rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233] sm:grid'
               )}
               aria-label="Xem sản phẩm tiếp theo"
             >

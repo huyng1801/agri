@@ -27,10 +27,10 @@ export async function AgripassportHome() {
     <PublicShell>
       <main id="main-content" className="overflow-hidden bg-[#fffdf8]">
         <section className="relative border-b border-[#dfe9db] bg-[radial-gradient(circle_at_88%_8%,rgba(119,199,110,0.20),transparent_26%),linear-gradient(135deg,#f9fcf5_0%,#edf7eb_100%)]">
-          <div className={cn(publicContainerClass, 'grid gap-8 py-8 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-14 lg:py-16')}>
+          <div className={cn(publicContainerClass, 'grid gap-6 py-6 sm:gap-8 sm:py-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-14 lg:py-16')}>
             <div className="max-w-2xl">
               <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[#218947]">Nền tảng dữ liệu nông nghiệp</p>
-              <h1 className="mt-3 text-[2.45rem] font-extrabold leading-[1.03] text-[#163526] sm:text-6xl">Mỗi nông sản đều có một hành trình đáng tin.</h1>
+              <h1 className="mt-3 max-w-[15ch] text-[2.35rem] font-extrabold leading-[1.02] tracking-[-0.035em] text-[#163526] sm:max-w-none sm:text-6xl">Mỗi nông sản đều có một hành trình đáng tin.</h1>
               <p className="mt-5 max-w-xl text-[1rem] leading-8 text-[#52645b] sm:text-[1.1rem]">Agripassport giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản phẩm, công khai thông tin cần thiết và kết nối truy xuất QR trên cùng một nền tảng.</p>
               <div className="mt-6 max-w-xl"><PublicSearch placeholder="Nhập mã sản phẩm hoặc mã QR để tra cứu" /></div>
               <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm font-semibold text-[#3d5e49]">
@@ -38,8 +38,8 @@ export async function AgripassportHome() {
                 <span className="inline-flex items-center gap-2"><CheckCircle2 size={17} className="text-[#208d46]" aria-hidden="true" />QR mở nhanh trên mobile</span>
               </div>
             </div>
-            <figure className="overflow-hidden rounded-[2rem] border border-white/80 bg-[#dcebd8] shadow-[0_26px_64px_rgba(29,82,43,0.14)]">
-              <PublicImage src="/hero/htx-farmer-hero-v2.png" alt="Nông hộ sẵn sàng đưa nông sản lên môi trường số" priority wrapperClassName="aspect-[4/3]" className="h-full w-full object-cover object-[55%_38%]" />
+            <figure className="overflow-hidden rounded-[1.6rem] border border-white/80 bg-[#dcebd8] shadow-[0_22px_48px_rgba(29,82,43,0.14)] sm:rounded-[2rem] sm:shadow-[0_26px_64px_rgba(29,82,43,0.14)]">
+              <PublicImage src="/hero/htx-farmer-hero-v2.png" alt="Nông hộ sẵn sàng đưa nông sản lên môi trường số" priority wrapperClassName="aspect-[16/10] sm:aspect-[4/3]" className="h-full w-full object-cover object-[55%_38%]" />
             </figure>
           </div>
         </section>
