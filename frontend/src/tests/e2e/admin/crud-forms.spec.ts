@@ -190,6 +190,45 @@ test.describe('admin CRUD forms', () => {
     expect(mutations[0].body).toMatchObject({ name: 'E2E Cleanup HTX', code: 'E2E-HTX', address: 'Đồng Tháp', phone: '0907001200' });
     expect(mutations[1].body).toMatchObject({ name: 'E2E Cleanup HTX Edited' });
   });
+
+  test('@admin @form @crud role update restores original settings', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const updates: Array<Record<string, unknown>> = [];
+    await page.route('**/api/v1/roles/permissions', async (route) => {
+      await route.fulfill(jsonEnvelope({ permissions: [{ key: 'products.read', group: 'Sản phẩm', label: 'Xem sản phẩm' }], wildcard: [] }));
+    });
+    await page.route('**/api/v1/roles', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope([{ id: 'role-member', slug: 'MEMBER_HTX', name: 'Thành viên HTX', description: 'Original', permissions: ['products.read'], isSystem: true }]));
+        return;
+      }
+      updates.push(request.postDataJSON());
+      await route.fulfill(jsonEnvelope({ id: 'role-member', slug: 'MEMBER_HTX', name: updates.at(-1)?.name || 'Thành viên HTX', description: updates.at(-1)?.description || 'Original', permissions: ['products.read'], isSystem: true }));
+    });
+    await page.route('**/api/v1/roles/*', async (route) => {
+      if (new URL(route.request().url()).pathname.endsWith('/permissions')) {
+        await route.fulfill(jsonEnvelope({ permissions: [{ key: 'products.read', group: 'Sản phẩm', label: 'Xem sản phẩm' }], wildcard: [] }));
+        return;
+      }
+      const payload = route.request().postDataJSON() as Record<string, unknown>;
+      updates.push(payload);
+      await route.fulfill(jsonEnvelope({ id: 'role-member', slug: 'MEMBER_HTX', name: payload.name || 'Thành viên HTX', description: payload.description || 'Original', permissions: ['products.read'], isSystem: true }));
+    });
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/roles`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: 'Vai trò & quyền' })).toBeVisible({ timeout: 45_000 });
+    const nameInput = page.locator('label').filter({ hasText: 'Tên vai trò' }).first().locator('input');
+    await nameInput.fill('E2E Temporary Role');
+    await page.getByRole('button', { name: 'Lưu' }).first().click();
+    await expect.poll(() => updates.length).toBe(1);
+    await nameInput.fill('Thành viên HTX');
+    await page.getByRole('button', { name: 'Lưu' }).first().click();
+    await expect.poll(() => updates.length).toBe(2);
+    expect(updates[0]).toMatchObject({ name: 'E2E Temporary Role' });
+    expect(updates[1]).toMatchObject({ name: 'Thành viên HTX' });
+  });
+
 });
 
 function planFixture(id: string, name: string) {
