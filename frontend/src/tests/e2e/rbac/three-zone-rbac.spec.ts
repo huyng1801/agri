@@ -75,14 +75,13 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('admin-menu-backups')).toHaveCount(0);
   });
 
-  test('@rbac @route Admin HTX can open news management in HTX area', async ({ page }) => {
+  test('@rbac @route Admin HTX cannot open global news management in HTX area', async ({ page }) => {
     const { htxUrl } = baseUrls();
     await seedAuthenticatedSession(page, htxAdminUser);
     await page.goto(joinUrl(htxUrl, '/dashboard/news'));
 
-    await expect(page.getByTestId('page-title')).toContainText('Tin tức');
-    await expect(page.getByTestId('htx-menu-news')).toBeVisible();
-    await expect(page.getByTestId('error-state')).toHaveCount(0);
+    await expect(page.getByTestId('error-state')).toContainText('403');
+    await expect(page.getByTestId('htx-menu-news')).toHaveCount(0);
   });
 
   test('@rbac @route Admin HTX is rejected on admin domain', async ({ page }) => {

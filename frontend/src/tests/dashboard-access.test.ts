@@ -21,14 +21,14 @@ describe('dashboard route policy', () => {
     expect(isDashboardRouteAllowed('/dashboard/settings', 'htx', ['ADMIN_HTX'])).toBe(false);
   });
 
-  it('allows Admin HTX business routes', () => {
+  it('allows Admin HTX business routes but not global news management', () => {
     expect(isDashboardRouteAllowed('/dashboard/products', 'htx', ['ADMIN_HTX'])).toBe(true);
     expect(isDashboardRouteAllowed('/dashboard/zones', 'htx', ['ADMIN_HTX'])).toBe(true);
     expect(isDashboardRouteAllowed('/dashboard/farmers', 'htx', ['ADMIN_HTX'])).toBe(true);
     expect(isDashboardRouteAllowed('/dashboard/farming-logs', 'htx', ['ADMIN_HTX'])).toBe(true);
     expect(isDashboardRouteAllowed('/dashboard/passports', 'htx', ['ADMIN_HTX'])).toBe(true);
     expect(isDashboardRouteAllowed('/dashboard/orders', 'htx', ['ADMIN_HTX'])).toBe(true);
-    expect(isDashboardRouteAllowed('/dashboard/news', 'htx', ['ADMIN_HTX'])).toBe(true);
+    expect(isDashboardRouteAllowed('/dashboard/news', 'htx', ['ADMIN_HTX'])).toBe(false);
   });
 
   it('allows Super Admin to manage public news from admin area only', () => {
