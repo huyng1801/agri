@@ -65,6 +65,13 @@ try {
   if (!sampleProduct) throw new Error('missing product dependency');
 
   const suffix = Date.now().toString(36).toUpperCase();
+  const category = await must('product-category.create', 'POST', '/products/categories', {
+    name: `E2E Cleanup Category ${suffix}`,
+    slug: `e2e-cleanup-category-${suffix.toLowerCase()}`,
+    description: 'Temporary E2E category'
+  });
+  created.push(['products/categories', category.id]);
+
   const zone = await must('zone.create', 'POST', '/zones', {
     name: `E2E Cleanup Zone ${suffix}`,
     code: `E2E-${suffix}`,
@@ -82,7 +89,7 @@ try {
   });
 
   const product = await must('product.create', 'POST', '/products', {
-    categoryId: sampleProduct.categoryId,
+    categoryId: category.id,
     code: `E2E-${suffix}`,
     name: `E2E Cleanup Product ${suffix}`,
     slug: `e2e-cleanup-${suffix.toLowerCase()}`,

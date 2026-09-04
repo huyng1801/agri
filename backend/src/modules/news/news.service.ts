@@ -68,6 +68,19 @@ export class NewsService {
     return updated;
   }
 
+  async removeCategory(user: AuthUser, id: string) {
+    const existing = await this.prisma.newsCategory.findUnique({
+      where: { id },
+      include: { _count: { select: { articles: true } } }
+    });
+    if (!existing) throw new NotFoundException('Không tìm thấy danh mục tin tức');
+    const removed = existing._count.articles > 0
+      ? await this.prisma.newsCategory.update({ where: { id }, data: { isActive: false } })
+      : await this.prisma.newsCategory.delete({ where: { id } });
+    await this.audit.record({ user, action: 'news_categories.delete', entity: 'NewsCategory', entityId: id });
+    return removed;
+  }
+
   async list(query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
     const where: Prisma.NewsArticleWhereInput = {};

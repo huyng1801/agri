@@ -113,4 +113,36 @@ describe('ProductsService', () => {
 
     expect(result.zone).toBeNull();
   });
+
+  it('deletes an unused category and records the cleanup audit event', async () => {
+    const remove = jest.fn().mockResolvedValue({ id: 'category-1', name: 'E2E category' });
+    const record = jest.fn();
+    const service = new ProductsService(
+      {
+        productCategory: {
+          findFirst: jest.fn().mockResolvedValue({
+            id: 'category-1', cooperativeId: 'coop-1', _count: { products: 0 }
+          }),
+          delete: remove
+        }
+      } as never,
+      { record } as never,
+      planLimits as never
+    );
+
+    await service.removeCategory(user, 'category-1');
+
+    expect(remove).toHaveBeenCalledWith({ where: { id: 'category-1' } });
+    expect(record).toHaveBeenCalledWith(expect.objectContaining({ action: 'product_categories.delete', entityId: 'category-1' }));
+  });
+
+  it('rejects deleting a category that still has products', async () => {
+    const service = new ProductsService(
+      { productCategory: { findFirst: jest.fn().mockResolvedValue({ id: 'category-1', _count: { products: 1 } }) } } as never,
+      { record: jest.fn() } as never,
+      planLimits as never
+    );
+
+    await expect(service.removeCategory(user, 'category-1')).rejects.toThrow('đang được sản phẩm sử dụng');
+  });
 });

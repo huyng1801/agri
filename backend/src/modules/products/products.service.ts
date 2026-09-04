@@ -283,6 +283,26 @@ export class ProductsService {
     return created;
   }
 
+  async removeCategory(user: AuthUser, id: string) {
+    const existing = await this.prisma.productCategory.findFirst({
+      where: isSuperAdmin(user) ? { id } : { id, cooperativeId: user.cooperativeId },
+      include: { _count: { select: { products: true } } }
+    });
+    if (!existing) throw new NotFoundException('Không tìm thấy danh mục sản phẩm');
+    if (existing._count.products > 0) {
+      throw new BadRequestException('Không thể xóa danh mục đang được sản phẩm sử dụng');
+    }
+    const deleted = await this.prisma.productCategory.delete({ where: { id } });
+    await this.audit.record({
+      user,
+      action: 'product_categories.delete',
+      entity: 'ProductCategory',
+      entityId: id,
+      cooperativeId: existing.cooperativeId
+    });
+    return deleted;
+  }
+
   private async validateRelations(cooperativeId: string, zoneId?: string, farmerId?: string) {
     if (zoneId) {
       const zone = await this.prisma.zone.findUnique({ where: { id: zoneId } });

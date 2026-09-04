@@ -49,4 +49,40 @@ describe('NewsService', () => {
     expect(savedHtml).not.toContain('onerror');
     expect(savedHtml).not.toContain('onclick');
   });
+
+  it('deletes an unused news category and audits the cleanup', async () => {
+    const remove = jest.fn().mockResolvedValue({ id: 'category-1' });
+    const record = jest.fn();
+    const service = new NewsService(
+      {
+        newsCategory: {
+          findUnique: jest.fn().mockResolvedValue({ id: 'category-1', _count: { articles: 0 } }),
+          delete: remove
+        }
+      } as never,
+      { record } as never
+    );
+
+    await service.removeCategory(user, 'category-1');
+
+    expect(remove).toHaveBeenCalledWith({ where: { id: 'category-1' } });
+    expect(record).toHaveBeenCalledWith(expect.objectContaining({ action: 'news_categories.delete', entityId: 'category-1' }));
+  });
+
+  it('deactivates a news category that still has articles', async () => {
+    const update = jest.fn().mockResolvedValue({ id: 'category-1', isActive: false });
+    const service = new NewsService(
+      {
+        newsCategory: {
+          findUnique: jest.fn().mockResolvedValue({ id: 'category-1', _count: { articles: 2 } }),
+          update
+        }
+      } as never,
+      { record: jest.fn() } as never
+    );
+
+    await service.removeCategory(user, 'category-1');
+
+    expect(update).toHaveBeenCalledWith({ where: { id: 'category-1' }, data: { isActive: false } });
+  });
 });

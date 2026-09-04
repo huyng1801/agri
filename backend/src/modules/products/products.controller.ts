@@ -41,6 +41,13 @@ export class ProductsController {
     return this.products.createCategory(user, dto);
   }
 
+  @Delete('categories/:id')
+  @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
+  @Permissions('product_categories.delete')
+  removeCategory(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.products.removeCategory(user, id);
+  }
+
   @Get()
   @Roles(RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER)
   @Permissions('products.read')

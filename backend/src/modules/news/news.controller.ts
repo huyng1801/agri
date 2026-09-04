@@ -54,6 +54,13 @@ export class NewsController {
     return this.news.updateCategory(user, id, dto);
   }
 
+  @Delete('categories/:id')
+  @Roles(RoleSlug.SUPER_ADMIN)
+  @Permissions('news.delete')
+  removeCategory(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.news.removeCategory(user, id);
+  }
+
   @Get()
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('news.read')
