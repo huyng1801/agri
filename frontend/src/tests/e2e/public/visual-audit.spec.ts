@@ -1,4 +1,4 @@
-import { appendFileSync, mkdirSync, readFileSync, unlinkSync, writeFileSync, existsSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { expect, test, type Page } from '@playwright/test';
 import { baseUrls } from '../helpers/auth';
@@ -52,7 +52,7 @@ const AUDIT_ROUTES: AuditRoute[] = [
   { id: 'qr-alias', path: (ctx) => `/qr/${ctx.passportCode}`, batch: 'QR', note: 'QR redirect alias to passport' }
 ];
 
-const OUTPUT_ROOT = join(process.cwd(), 'test-results', 'ui-audit');
+const OUTPUT_ROOT = join(process.cwd(), 'test-results', process.env.UI_AUDIT_DIR || 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
 
 function findingsPathFor(viewport: 'desktop' | 'mobile') {
@@ -68,8 +68,10 @@ test.describe('public visual audit', () => {
   test.beforeAll(async ({ request }, testInfo) => {
     const viewportLabel = testInfo.project.name === 'iphone' ? 'mobile' : 'desktop';
     mkdirSync(OUTPUT_ROOT, { recursive: true });
-    const findingsPath = findingsPathFor(viewportLabel);
-    if (existsSync(findingsPath)) unlinkSync(findingsPath);
+    // Android skips this audit; never let its setup truncate Chromium findings.
+    if (testInfo.project.name === 'chromium' || testInfo.project.name === 'iphone') {
+      writeFileSync(findingsPathFor(viewportLabel), '', 'utf8');
+    }
 
     const { apiUrl } = baseUrls();
     try {
