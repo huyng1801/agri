@@ -445,6 +445,50 @@ test.describe('admin CRUD forms', () => {
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
   });
 
+  test('@htx @form certification document upload flow completes before cleanup', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const actions: string[] = [];
+    let certification = certificationFixture('cert-upload-seed', 'Chứng nhận seed');
+    await page.route('**/api/v1/certifications**', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [certification], meta: { total: 1 } }));
+        return;
+      }
+      const body = request.method() === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      actions.push(request.method());
+      if (request.method() === 'POST') certification = { ...certification, id: 'cert-upload-e2e', ...body } as typeof certification;
+      await route.fulfill(jsonEnvelope(certification));
+    });
+    await page.route('**/api/v1/products?*', async (route) => await route.fulfill(jsonEnvelope({ data: [productFixture('product-e2e', 'E2E Sản phẩm')], meta: { total: 1 } })));
+    await page.route('**/api/v1/zones?*', async (route) => await route.fulfill(jsonEnvelope({ data: [{ id: 'zone-e2e', code: 'ZONE-E2E', name: 'Vùng E2E', status: 'ACTIVE' }], meta: { total: 1 } })));
+    await page.route('**/api/v1/files/presign-upload', async (route) => {
+      actions.push('PRESIGN');
+      await route.fulfill(jsonEnvelope({ bucket: 'e2e', objectKey: 'e2e/cert.pdf', uploadUrl: 'http://127.0.0.1:3000/e2e-cert-upload', method: 'PUT', headers: {}, publicUrl: 'https://cdn.example.com/e2e/cert.pdf' }));
+    });
+    await page.route('http://127.0.0.1:3000/e2e-cert-upload', async (route) => {
+      actions.push('PUT');
+      await route.fulfill({ status: 200, body: '' });
+    });
+    await page.route('**/api/v1/files/confirm-upload', async (route) => {
+      actions.push('CONFIRM');
+      await route.fulfill(jsonEnvelope({ id: 'file-cert-e2e', objectKey: 'e2e/cert.pdf', publicUrl: 'https://cdn.example.com/e2e/cert.pdf' }));
+    });
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/certifications`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Chứng nhận', { timeout: 45_000 });
+    await page.getByTestId('certification-create-button').click();
+    await page.locator('input[type="file"]').setInputFiles({ name: 'e2e-cert.pdf', mimeType: 'application/pdf', buffer: Buffer.from('fake-pdf') });
+    await expect.poll(() => actions.includes('CONFIRM')).toBe(true);
+    await expect(page.getByTestId('certification-file-input')).toHaveValue('https://cdn.example.com/e2e/cert.pdf');
+    await page.getByTestId('certification-name-input').fill('E2E Chứng nhận upload');
+    await page.getByRole('button', { name: 'Lưu chứng nhận' }).click();
+    await expect.poll(() => actions.includes('POST')).toBe(true);
+    await page.getByRole('button', { name: 'Xóa', exact: true }).click();
+    await expect.poll(() => actions.includes('DELETE')).toBe(true);
+    expect(actions.slice(0, 3)).toEqual(['PRESIGN', 'PUT', 'CONFIRM']);
+  });
+
   test('@htx @form @crud farming log create edit and archive cleanup', async ({ page }) => {
     const { htxUrl } = baseUrls();
     const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
