@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { baseUrls, seedAuthenticatedSession, superAdminUser } from '../helpers/auth';
+import { baseUrls, htxAdminUser, seedAuthenticatedSession, superAdminUser } from '../helpers/auth';
 
 test.describe('admin CRUD forms', () => {
   test.setTimeout(90_000);
@@ -280,6 +280,167 @@ test.describe('admin CRUD forms', () => {
     expect(mutations[1].body).toMatchObject({ title: 'E2E Bài viết truy xuất nguồn gốc đã sửa', status: 'DRAFT' });
   });
 
+  test('@htx @form @crud product create edit and archive cleanup', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let product = productFixture('product-seed', 'Sản phẩm seed');
+
+    await page.route('**/api/v1/products**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (path.endsWith('/categories') && method === 'GET') {
+        await route.fulfill(jsonEnvelope([{ id: 'category-e2e', name: 'Nông sản', slug: 'nong-san', isActive: true }]));
+        return;
+      }
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [product], meta: { page: 1, limit: 60, total: 1 } }));
+        return;
+      }
+      const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method, path, body });
+      if (method === 'POST') product = { ...product, id: 'product-e2e', ...body } as typeof product;
+      else if (method === 'PATCH') product = { ...product, ...body } as typeof product;
+      else if (method === 'DELETE') product = { ...product, status: 'ARCHIVED' };
+      await route.fulfill(jsonEnvelope(product));
+    });
+    await page.route('**/api/v1/zones?*', async (route) => {
+      await route.fulfill(jsonEnvelope({ data: [{ id: 'zone-e2e', code: 'ZONE-E2E', name: 'Vùng E2E', status: 'ACTIVE' }], meta: { total: 1 } }));
+    });
+    await page.route('**/api/v1/users?*', async (route) => {
+      await route.fulfill(jsonEnvelope({ data: [{ id: 'farmer-e2e', fullName: 'Nông dân E2E', status: 'ACTIVE' }], meta: { total: 1 } }));
+    });
+
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/products`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Sản phẩm', { timeout: 45_000 });
+    await page.getByTestId('product-create-button').click();
+    await page.getByTestId('product-code-input').fill('E2E-PRODUCT');
+    await page.getByTestId('product-name-input').fill('E2E Sản phẩm');
+    await page.getByTestId('product-price-input').fill('89000');
+    await page.getByTestId('product-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByTestId('product-name-input').fill('E2E Sản phẩm đã sửa');
+    await page.getByTestId('product-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+    expect(mutations[0].body).toMatchObject({ code: 'E2E-PRODUCT', name: 'E2E Sản phẩm', price: 89000, status: 'DRAFT' });
+    expect(mutations[1].body).toMatchObject({ name: 'E2E Sản phẩm đã sửa' });
+  });
+
+  test('@htx @form @crud certification create edit and cleanup', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let certification = certificationFixture('cert-seed', 'Chứng nhận seed');
+    await page.route('**/api/v1/certifications**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [certification], meta: { total: 1 } }));
+        return;
+      }
+      const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method, path, body });
+      if (method === 'POST') certification = { ...certification, id: 'cert-e2e', ...body } as typeof certification;
+      else if (method === 'PATCH') certification = { ...certification, ...body } as typeof certification;
+      await route.fulfill(jsonEnvelope(certification));
+    });
+    await page.route('**/api/v1/products?*', async (route) => await route.fulfill(jsonEnvelope({ data: [productFixture('product-e2e', 'E2E Sản phẩm')], meta: { total: 1 } })));
+    await page.route('**/api/v1/zones?*', async (route) => await route.fulfill(jsonEnvelope({ data: [{ id: 'zone-e2e', code: 'ZONE-E2E', name: 'Vùng E2E', status: 'ACTIVE' }], meta: { total: 1 } })));
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/certifications`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Chứng nhận', { timeout: 45_000 });
+    await page.getByTestId('certification-create-button').click();
+    await page.getByTestId('certification-name-input').fill('E2E Chứng nhận');
+    await page.getByRole('button', { name: 'Lưu chứng nhận' }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByTestId('certification-name-input').fill('E2E Chứng nhận đã sửa');
+    await page.getByRole('button', { name: 'Lưu chứng nhận' }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Xóa', exact: true }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+  });
+
+  test('@htx @form @crud farming log create edit and archive cleanup', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let log = farmingLogFixture('log-seed', 'Nhật ký seed');
+    await page.route('**/api/v1/farming-logs**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [log], meta: { total: 1 } }));
+        return;
+      }
+      const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method, path, body });
+      if (method === 'POST') log = { ...log, id: 'log-e2e', ...body } as typeof log;
+      else if (method === 'PATCH') log = { ...log, ...body } as typeof log;
+      await route.fulfill(jsonEnvelope(log));
+    });
+    await page.route('**/api/v1/products?*', async (route) => await route.fulfill(jsonEnvelope({ data: [productFixture('product-e2e', 'E2E Sản phẩm')], meta: { total: 1 } })));
+    await page.route('**/api/v1/zones?*', async (route) => await route.fulfill(jsonEnvelope({ data: [{ id: 'zone-e2e', code: 'ZONE-E2E', name: 'Vùng E2E', status: 'ACTIVE' }], meta: { total: 1 } })));
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/farming-logs`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Nhật ký canh tác', { timeout: 45_000 });
+    await page.getByTestId('farming-log-create-button').click();
+    await page.getByTestId('farming-log-product-select').selectOption('product-e2e');
+    await page.getByTestId('farming-log-date-input').fill('2026-09-03');
+    await page.getByTestId('farming-log-description-editor').fill('E2E ghi nhận hoạt động canh tác.');
+    await page.getByTestId('farming-log-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByTestId('farming-log-description-editor').fill('E2E ghi nhận đã sửa.');
+    await page.getByTestId('farming-log-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+  });
+
+  test('@htx @form @crud passport create edit and hide cleanup', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let passport = passportFixture('passport-seed');
+    await page.route('**/api/v1/passports**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [passport], meta: { total: 1 } }));
+        return;
+      }
+      const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method, path, body });
+      if (method === 'POST') passport = { ...passport, id: 'passport-e2e', ...body } as typeof passport;
+      else if (method === 'PATCH') passport = { ...passport, ...body } as typeof passport;
+      else if (method === 'DELETE') passport = { ...passport, status: 'HIDDEN' };
+      await route.fulfill(jsonEnvelope(passport));
+    });
+    await page.route('**/api/v1/products?*', async (route) => await route.fulfill(jsonEnvelope({ data: [productFixture('product-e2e', 'E2E Sản phẩm')], meta: { total: 1 } })));
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/passports`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('QR Passport', { timeout: 45_000 });
+    await page.getByTestId('passport-create-button').click();
+    await page.getByTestId('passport-product-select').selectOption('product-e2e');
+    await page.getByTestId('passport-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByTestId('passport-status-select').selectOption('PUBLISHED');
+    await page.getByTestId('passport-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+    await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+  });
+
 });
 
 function planFixture(id: string, name: string) {
@@ -396,6 +557,61 @@ function newsFixture(id: string, title: string) {
     updatedAt: '2026-09-01T00:00:00.000Z',
     category: newsCategoryFixture(),
     author: null
+  };
+}
+
+function productFixture(id: string, name: string) {
+  return {
+    id,
+    cooperativeId: 'e2e-cooperative-id',
+    code: 'PRODUCT-SEED',
+    name,
+    slug: 'san-pham-seed',
+    status: 'DRAFT',
+    categoryId: 'category-e2e',
+    unit: 'kg',
+    price: 50000,
+    zoneId: 'zone-e2e',
+    farmerId: 'farmer-e2e',
+    description: '',
+    packagingInfo: '',
+    specification: '',
+    imageUrl: null,
+    thumbnail: null,
+    category: { id: 'category-e2e', name: 'Nông sản' },
+    zone: { id: 'zone-e2e', code: 'ZONE-E2E', name: 'Vùng E2E' },
+    farmer: { id: 'farmer-e2e', fullName: 'Nông dân E2E' },
+    _count: { farmingLogs: 0, passports: 0 },
+    passports: [],
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function certificationFixture(id: string, name: string) {
+  return {
+    id, cooperativeId: 'e2e-cooperative-id', name, issuer: 'Đơn vị E2E', productId: 'product-e2e', zoneId: 'zone-e2e',
+    issuedAt: '2026-09-01T00:00:00.000Z', expiresAt: '2027-09-01T00:00:00.000Z', note: '', isPublic: false,
+    fileId: null, fileUrl: null, fileObjectKey: '', file: null, product: { id: 'product-e2e', name: 'E2E Sản phẩm' },
+    zone: { id: 'zone-e2e', name: 'Vùng E2E' }, createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function farmingLogFixture(id: string, description: string) {
+  return {
+    id, cooperativeId: 'e2e-cooperative-id', productId: 'product-e2e', zoneId: 'zone-e2e', logDate: '2026-09-01T00:00:00.000Z',
+    activityType: 'OTHER', status: 'DRAFT', description, inputMaterialsJson: [], imagesJson: [],
+    product: { id: 'product-e2e', name: 'E2E Sản phẩm', code: 'E2E-PRODUCT' }, zone: { id: 'zone-e2e', name: 'Vùng E2E' },
+    actor: { id: 'e2e-htx-admin', fullName: 'Admin HTX E2E' }, createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function passportFixture(id: string) {
+  return {
+    id, cooperativeId: 'e2e-cooperative-id', productId: 'product-e2e', passportCode: 'E2E-PASSPORT', publicSlug: 'e2e-passport',
+    status: 'DRAFT', expiredAt: null, publishedAt: null, qrDataUrl: null, viewCount: 0,
+    product: { id: 'product-e2e', name: 'E2E Sản phẩm', code: 'E2E-PRODUCT', zone: { name: 'Vùng E2E' } },
+    createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
   };
 }
 
