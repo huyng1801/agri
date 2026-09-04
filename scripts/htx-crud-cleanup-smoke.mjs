@@ -10,9 +10,20 @@ if (!email || !password) {
 let token = '';
 const created = [];
 const results = [];
+const REQUEST_TIMEOUT_MS = Number(process.env.E2E_REQUEST_TIMEOUT_MS || 15000);
+
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
 
 async function request(method, path, body) {
-  const response = await fetch(`${API}${path}`, {
+  const response = await fetchWithTimeout(`${API}${path}`, {
     method,
     headers: {
       authorization: `Bearer ${token}`,
@@ -39,7 +50,7 @@ async function must(label, method, path, body) {
 }
 
 try {
-  const login = await fetch(`${API}/auth/login`, {
+  const login = await fetchWithTimeout(`${API}/auth/login`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ email, password })
