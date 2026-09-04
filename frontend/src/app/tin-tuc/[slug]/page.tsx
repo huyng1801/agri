@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Calendar, Eye, UserRound } from 'lucide-react';
+import { ArrowRight, Calendar, Clock3, Eye, UserRound } from 'lucide-react';
 import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
@@ -137,74 +137,39 @@ export default async function NewsDetailPage({ params }: PageProps) {
   return (
     <PublicShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
-      <PublicDetailMain className="max-w-5xl">
+      <PublicDetailMain className="max-w-6xl">
         <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
 
-        <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5">
-          <article className="order-2 overflow-hidden rounded-[1.7rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] shadow-[var(--shadow-card)] backdrop-blur-sm lg:order-1">
-            <div className="p-2.5 sm:p-3">
-              <PublicImage
-                src={article.coverImageUrl || image}
-                alt={article.coverImageAlt || article.title}
-                fallback={DEFAULT_NEWS_IMAGE}
-                wrapperClassName="aspect-[16/10] w-full rounded-[1.45rem] sm:aspect-[16/9]"
-                className="h-full w-full object-cover"
-              />
+        <article className="overflow-hidden rounded-[2rem] border border-[#e1eadc] bg-[#fbfdf9] shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
+          <header className="mx-auto max-w-4xl px-4 pb-5 pt-2 text-center sm:px-8 sm:pb-7">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+              {article.category?.name && <Badge className="bg-[#e4f4e7] text-leaf">{article.category.name}</Badge>}
+              <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={14} />{formatDate(article.publishedAt || article.createdAt)}</span>
+              <span className="inline-flex items-center gap-1 tracking-normal"><Clock3 size={14} />{readingTime(article.bodyHtml)} phút đọc</span>
+              <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
             </div>
-            <div className="border-t border-[#eadfce] p-4 sm:p-5">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Tóm tắt bài viết</p>
-              <p className="mt-2 text-[0.96rem] leading-7 text-slate-700">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
-            </div>
-          </article>
-
-          <article className="order-1 rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
-            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[0.82rem] text-white/68 sm:mb-4 sm:text-sm">
-              {article.category?.name && <Badge className="bg-white/12 text-white">{article.category.name}</Badge>}
-              <span className="inline-flex items-center gap-1">
-                <Calendar size={15} aria-hidden="true" />
-                {formatDate(article.publishedAt || article.createdAt)}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <UserRound size={15} aria-hidden="true" />
-                {article.author?.fullName || siteProfile.appName}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Eye size={15} aria-hidden="true" />
-                {article.viewCount}
-              </span>
-            </div>
-            <h1 className="text-[1.72rem] font-extrabold leading-[1.03] tracking-[-0.03em] text-white sm:text-[2.55rem]">{article.title}</h1>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {[
-                { label: 'Danh mục', value: article.category?.name ?? 'Tin nền tảng' },
-                { label: 'Lượt xem', value: `${article.viewCount}` },
-                { label: 'Miền hiển thị', value: siteProfile.appName }
-              ].map((item) => (
-                <div key={item.label} className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">{item.label}</p>
-                  <p className="mt-1.5 text-sm font-bold text-white">{item.value}</p>
-                </div>
-              ))}
-            </div>
-            {article.tagsJson?.length ? (
-              <div className="mt-5 flex flex-wrap gap-2">
-                {article.tagsJson.map((tag) => (
-                  <Badge key={tag} className="bg-black/14 text-white">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            ) : null}
-          </article>
-        </div>
-
-        <article className="mt-6 overflow-hidden rounded-[1.7rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] backdrop-blur-sm md:p-8">
-          <div className="news-body" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
+            <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
+            <p className="mt-3 text-sm font-medium text-slate-500">{article.author?.fullName || siteProfile.appName}</p>
+          </header>
+          <div className="px-2.5 sm:px-4">
+            <PublicImage
+              src={article.coverImageUrl || image}
+              alt={article.coverImageAlt || article.title}
+              fallback={DEFAULT_NEWS_IMAGE}
+              wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[#dce9d7] bg-[#eef7eb] sm:aspect-[2.1/1]"
+              className="h-full w-full object-cover"
+            />
+          </div>
+          <div className="mx-auto max-w-3xl px-4 py-7 sm:px-8 sm:py-10">
+            <div className="news-body" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[#e1eadc] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[#eef7eb] text-leaf">#{tag}</Badge>)}</div> : null}
+          </div>
         </article>
 
         {related.length > 0 && (
           <section className="mt-6 sm:mt-8">
-            <h2 className="text-2xl font-bold text-ink">Bài viết liên quan</h2>
+            <div className="flex items-end justify-between gap-3"><div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-2xl font-extrabold tracking-[-0.03em] text-ink">Bài viết liên quan</h2></div><Link href="/tin-tuc" className="hidden items-center gap-1 text-sm font-bold text-leaf sm:inline-flex">Tất cả tin tức <ArrowRight size={15} /></Link></div>
             <div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               {related.map((item) => (
                 <NewsCard key={item.id} article={item} />
@@ -234,4 +199,9 @@ async function getRelatedArticles(article: NewsArticle) {
 
 function safeJsonLd(value: unknown) {
   return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
+function readingTime(html: string) {
+  const words = html.replace(/<[^>]*>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
 }

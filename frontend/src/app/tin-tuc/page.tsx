@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Search, Sparkles } from 'lucide-react';
+import { ArrowRight, Calendar, Clock3, Search, Sparkles } from 'lucide-react';
 import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/public-layout';
@@ -34,6 +34,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const articles = news.data;
   const featured = articles[0];
   const rest = featured ? articles.slice(1) : articles;
+  const sideArticles = rest.slice(0, 3);
+  const gridArticles = rest.slice(3);
 
   return (
     <PublicShell>
@@ -92,30 +94,47 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         )}
 
         {featured && !filters.search && (
-          <article className={cn(publicCardClass, 'mb-6 overflow-hidden rounded-[2rem]')}>
-            <div className="grid gap-0 lg:grid-cols-[1.12fr_0.88fr]">
-              <Link href={`/tin-tuc/${featured.slug}`} className="block">
+          <section className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.75fr)] lg:gap-6" aria-label="Bài viết nổi bật">
+            <article className={cn(publicCardClass, 'group overflow-hidden rounded-[2rem] border-[#dfe9dc] bg-[#fbfdf9]')}>
+              <Link href={`/tin-tuc/${featured.slug}`} className="block overflow-hidden p-2.5 sm:p-3">
                 <PublicImage
                   src={featured.coverImageUrl}
                   alt={featured.coverImageAlt || featured.title}
                   fallback={DEFAULT_NEWS_IMAGE}
                   priority
-                  wrapperClassName="aspect-[16/10] w-full lg:min-h-[320px] lg:aspect-auto lg:h-full"
-                  className="h-full w-full object-cover"
+                  wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[#dce9d7] bg-[#eef7eb]"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
                 />
               </Link>
-              <div className="flex flex-col justify-center p-5 sm:p-6">
-                <p className="text-[0.76rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">{featured.category?.name ?? 'Tin nền tảng'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-3 text-[1.35rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[2.2rem]">
+              <div className="p-4 pt-1 sm:p-6 sm:pt-2">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.13em] text-slate-500">
+                  <span className="text-[#2b8a3e]">{featured.category?.name ?? 'Tin nền tảng'}</span>
+                  {featured.publishedAt && <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={13} />{new Date(featured.publishedAt).toLocaleDateString('vi-VN')}</span>}
+                </div>
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-2 block max-w-3xl text-[1.55rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-ink hover:text-leaf sm:text-[2.35rem]">
                   {featured.title}
                 </Link>
-                <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full bg-leaf px-5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
-                  Đọc bài viết
+                <p className="mt-3 max-w-2xl line-clamp-2 text-[0.96rem] leading-7 text-slate-600 sm:text-base">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-leaf transition hover:gap-3">
+                  Đọc bài viết <ArrowRight size={16} />
                 </Link>
               </div>
-            </div>
-          </article>
+            </article>
+
+            {sideArticles.length > 0 && <aside className="rounded-[2rem] border border-[#e8e4d8] bg-[#f7faf4] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:p-5">
+              <div className="flex items-center justify-between border-b border-[#dce8d8] pb-3">
+                <div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-xl font-extrabold tracking-[-0.03em] text-ink">Mới nhất</h2></div>
+                <Clock3 size={18} className="text-leaf" aria-hidden="true" />
+              </div>
+              <div className="divide-y divide-[#dce8d8]">
+                {sideArticles.map((article) => <Link key={article.id} href={`/tin-tuc/${article.slug}`} className="group block py-4 first:pt-3 last:pb-1">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[#2b8a3e]">{article.category?.name ?? 'Tin mới'}</p>
+                  <h3 className="mt-1.5 line-clamp-3 text-[1.02rem] font-extrabold leading-[1.3] text-ink transition group-hover:text-leaf">{article.title}</h3>
+                  <p className="mt-2 text-xs font-medium text-slate-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : 'Mới cập nhật'}</p>
+                </Link>)}
+              </div>
+            </aside>}
+          </section>
         )}
 
         {articles.length ? (
@@ -128,7 +147,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <p className="hidden text-sm text-slate-500 sm:block">Kiến thức, thị trường và dữ liệu nông nghiệp.</p>
             </div>
           <div className="grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3">
-            {(filters.search ? articles : rest).map((article, index) => (
+            {(filters.search ? articles : gridArticles).map((article, index) => (
               <NewsCard key={article.id} article={article} priority={index < 3} />
             ))}
           </div>
