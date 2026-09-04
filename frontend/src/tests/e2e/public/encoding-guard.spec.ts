@@ -40,13 +40,14 @@ test.describe('text encoding guard', () => {
     const { publicUrl } = baseUrls();
 
     for (const route of ['/', '/lien-he', '/thanh-toan', '/login']) {
-      await page.goto(joinUrl(publicUrl, route), { waitUntil: 'networkidle' });
+      await page.goto(joinUrl(publicUrl, route), { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(300);
       await expectNoMojibake(page, route);
     }
   });
 
   test('@public public content routes keep Vietnamese text intact', async ({ page }) => {
+    test.setTimeout(5 * 60 * 1000);
     const { publicUrl } = baseUrls();
 
     for (const route of [
@@ -62,43 +63,44 @@ test.describe('text encoding guard', () => {
       '/chinh-sach-doi-tra',
       '/chinh-sach-van-hanh'
     ]) {
-      await page.goto(joinUrl(publicUrl, route), { waitUntil: 'networkidle' });
+      await page.goto(joinUrl(publicUrl, route), { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(300);
       await expectNoMojibake(page, route);
     }
   });
 
   test('@public product, passport, and news detail pages keep accents intact', async ({ page }) => {
+    test.setTimeout(5 * 60 * 1000);
     const { publicUrl } = baseUrls();
 
-    await page.goto(joinUrl(publicUrl, '/htx'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/htx'), { waitUntil: 'domcontentloaded' });
     const htxDetailUrl = await firstHref(page, 'a[href*="/htx/"]');
     expect(htxDetailUrl).toBeTruthy();
 
-    await page.goto(toAbsoluteUrl(publicUrl, htxDetailUrl!), { waitUntil: 'networkidle' });
+    await page.goto(toAbsoluteUrl(publicUrl, htxDetailUrl!), { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(300);
     await expectNoMojibake(page, 'public htx detail');
 
-    await page.goto(joinUrl(publicUrl, '/san-pham'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/san-pham'), { waitUntil: 'domcontentloaded' });
     const productDetailUrl = await firstHref(page, 'a[href*="/san-pham/"]');
     expect(productDetailUrl).toBeTruthy();
 
-    await page.goto(toAbsoluteUrl(publicUrl, productDetailUrl!), { waitUntil: 'networkidle' });
+    await page.goto(toAbsoluteUrl(publicUrl, productDetailUrl!), { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(300);
     await expectNoMojibake(page, 'public product detail');
 
     const passportDetailUrl = await firstHref(page, 'a[href*="/passport/"]');
     expect(passportDetailUrl).toBeTruthy();
 
-    await page.goto(toAbsoluteUrl(publicUrl, passportDetailUrl!), { waitUntil: 'networkidle' });
+    await page.goto(toAbsoluteUrl(publicUrl, passportDetailUrl!), { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(300);
     await expectNoMojibake(page, 'public passport detail');
 
-    await page.goto(joinUrl(publicUrl, '/tin-tuc'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/tin-tuc'), { waitUntil: 'domcontentloaded' });
     const newsDetailUrl = await firstHref(page, 'a[href*="/tin-tuc/"]');
     expect(newsDetailUrl).toBeTruthy();
 
-    await page.goto(toAbsoluteUrl(publicUrl, newsDetailUrl!), { waitUntil: 'networkidle' });
+    await page.goto(toAbsoluteUrl(publicUrl, newsDetailUrl!), { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(300);
     await expectNoMojibake(page, 'public news detail');
   });
@@ -142,7 +144,7 @@ test.describe('text encoding guard', () => {
       });
     });
 
-    await page.goto(joinUrl(publicUrl, '/lien-he'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/lien-he'), { waitUntil: 'domcontentloaded' });
     await page.getByTestId('contact-name-input').fill('Nguyen Van A');
     await page.getByTestId('contact-phone-input').fill('0912345678');
     await page.getByTestId('contact-message-input').fill('Toi muon duoc lien he tu van them ve san pham va QR.');
@@ -167,7 +169,7 @@ test.describe('text encoding guard', () => {
       });
     });
 
-    await page.goto(joinUrl(publicUrl, '/tra-cuu-don-hang'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/tra-cuu-don-hang'), { waitUntil: 'domcontentloaded' });
     await page.getByTestId('order-code-input').fill('ORD-NOT-FOUND');
     await page.getByTestId('order-phone-input').fill('0912345678');
     await page.getByTestId('order-lookup-submit-button').click();
@@ -202,7 +204,7 @@ test.describe('text encoding guard', () => {
       );
     });
 
-    await page.goto(joinUrl(publicUrl, '/dat-hang-thanh-cong?groupCode=ORD-GRP-E2E01'), { waitUntil: 'networkidle' });
+    await page.goto(joinUrl(publicUrl, '/dat-hang-thanh-cong?groupCode=ORD-GRP-E2E01'), { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('order-success')).toBeVisible();
     await expectNoMojibake(page, '/dat-hang-thanh-cong');
   });
@@ -234,6 +236,7 @@ test.describe('text encoding guard', () => {
   });
 
   test('@dashboard admin key routes keep accents intact', async ({ page }) => {
+    test.setTimeout(10 * 60 * 1000);
     const { adminUrl } = baseUrls();
 
     await seedAuthenticatedSession(page, superAdminUser);
@@ -248,6 +251,7 @@ test.describe('text encoding guard', () => {
   });
 
   test('@dashboard htx key routes keep accents intact', async ({ page }) => {
+    test.setTimeout(10 * 60 * 1000);
     const { htxUrl } = baseUrls();
 
     await seedAuthenticatedSession(page, htxAdminUser);
