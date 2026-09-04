@@ -85,18 +85,19 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.4rem] bg-[rgba(255,253,248,0.96)] p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.08)] ring-1 ring-[#e6d9c4]/70 sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className="flex flex-col gap-2 rounded-[1.4rem] border border-[#d9e8d5] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.09)] ring-4 ring-[#eef7eb] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
       action={action}
     >
       <div className="relative flex-1">
-        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#2f7d4f]" size={18} aria-hidden="true" />
         <input
           name="search"
           placeholder={placeholder}
-          className="min-h-11 w-full rounded-[1rem] border-0 bg-[var(--surface-0)] pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:min-h-12 sm:rounded-[1.1rem] sm:text-base"
+          aria-label={placeholder}
+          className="min-h-11 w-full rounded-[1rem] border border-[#e1ebe0] bg-[#f8fbf6] pl-10 pr-3 text-[0.95rem] text-[#173327] outline-none transition placeholder:text-[#7b8d82] focus:border-[#2f7d4f] focus:bg-white focus:ring-4 focus:ring-[#dff0e0] sm:min-h-12 sm:rounded-[1.1rem] sm:text-base"
         />
       </div>
-      <Button className="min-h-11 w-full rounded-[1rem] sm:min-h-12 sm:w-auto sm:px-5 sm:rounded-[1.1rem]">Tìm</Button>
+      <Button className="min-h-11 w-full shrink-0 rounded-[1rem] px-6 sm:min-h-12 sm:w-auto sm:rounded-[1.1rem]">Tìm</Button>
     </form>
   );
 }
