@@ -3,7 +3,6 @@ import { baseUrls, htxAdminUser, seedAuthenticatedSession } from '../helpers/aut
 
 test.describe('htx cooperative edit', () => {
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Cooperative edit tests run on desktop chromium');
   });
 
   test('@htx cooperative admin can open edit form', async ({ page }) => {

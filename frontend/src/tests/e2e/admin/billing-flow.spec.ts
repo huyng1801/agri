@@ -3,7 +3,6 @@ import { baseUrls, superAdminUser, seedAuthenticatedSession } from '../helpers/a
 
 test.describe('admin billing flow', () => {
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Billing flow tests run on desktop chromium');
   });
 
   test('@rbac billing pages render for super admin', async ({ page }) => {

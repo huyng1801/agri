@@ -4,7 +4,6 @@ import { baseUrls, htxAdminUser, seedAuthenticatedSession, superAdminUser } from
 test.describe('admin CRUD forms', () => {
   test.setTimeout(90_000);
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Admin CRUD interaction runs once on desktop chromium');
   });
 
   test('@admin @form @crud subscription plan create edit and cleanup', async ({ page }) => {
@@ -647,6 +646,8 @@ test.describe('admin CRUD forms', () => {
     await form.locator('input[name="supportEmail"]').fill('e2e-temp@example.com');
     await form.getByRole('button', { name: 'Lưu' }).click();
     await expect.poll(() => mutations.length).toBe(1);
+    await expect(form.locator('input[name="appName"]')).toHaveValue('E2E Tên tạm');
+    await expect(form.locator('input[name="supportEmail"]')).toHaveValue('e2e-temp@example.com');
     await form.locator('input[name="appName"]').fill('Agri Passport');
     await form.locator('input[name="supportEmail"]').fill('support@example.com');
     await form.getByRole('button', { name: 'Lưu' }).click();

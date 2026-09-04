@@ -3,7 +3,6 @@ import { baseUrls, htxAdminUser, seedAuthenticatedSession } from '../helpers/aut
 
 test.describe('htx reports dashboard', () => {
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Reports tests run on desktop chromium');
   });
 
   test('@htx reports filters and snapshot button', async ({ page }) => {

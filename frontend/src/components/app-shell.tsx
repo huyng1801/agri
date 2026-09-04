@@ -188,6 +188,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
+                data-testid={item.testId}
                 className={cn(
                   'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
                   active && 'bg-mint text-leaf'
@@ -236,6 +237,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={`mobile-more-${item.testId}`}
                   href={item.href}
+                  data-testid={item.testId}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
                     'flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-700',

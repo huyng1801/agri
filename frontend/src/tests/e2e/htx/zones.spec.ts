@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { baseUrls, htxAdminUser, seedAuthenticatedSession } from '../helpers/auth';
 
 const farmerUser = {
@@ -12,10 +12,9 @@ const farmerUser = {
 
 test.describe('htx zones dashboard', () => {
   test.beforeEach(({}, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Zone dashboard interaction tests run once on desktop chromium');
   });
 
-  test('@smoke @htx @form zones create payload keeps public visibility and coordinates', async ({ page }) => {
+  test('@smoke @htx @form zones create payload keeps public visibility and coordinates', async ({ page }, testInfo) => {
     const { htxUrl } = baseUrls();
     const requests: Array<Record<string, unknown>> = [];
 
@@ -80,7 +79,12 @@ test.describe('htx zones dashboard', () => {
     await seedAuthenticatedSession(page, htxAdminUser);
     await page.goto(joinUrl(htxUrl, '/dashboard/zones'), { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByTestId('htx-menu-zones')).toBeVisible();
+    await openDashboardNavigation(page, testInfo.project.name);
+    await expect(visibleTestId(page, 'htx-menu-zones')).toBeVisible();
+    if (testInfo.project.name !== 'chromium') {
+      await page.getByTestId('mobile-more-button').click();
+      await expect(page.getByTestId('mobile-more-menu')).toHaveCount(0);
+    }
     await expect(page.getByText('Vùng xoài mẫu')).toBeVisible();
     await expect(page.getByTestId('zone-create-button')).toBeVisible();
 
@@ -195,4 +199,18 @@ function jsonEnvelope(data: unknown) {
       data
     })
   };
+}
+
+async function openDashboardNavigation(page: Page, projectName: string) {
+  if (projectName === 'chromium') {
+    await expect(page.getByTestId('sidebar')).toBeVisible();
+    return;
+  }
+
+  await page.getByTestId('mobile-more-button').click();
+  await expect(page.getByTestId('mobile-more-menu')).toBeVisible();
+}
+
+function visibleTestId(page: Page, testId: string) {
+  return page.locator(`[data-testid="${testId}"]:visible`).first();
 }
