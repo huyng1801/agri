@@ -114,6 +114,21 @@ describe('ProductsService', () => {
     expect(result.zone).toBeNull();
   });
 
+  it('scopes categories created by an HTX admin to that cooperative', async () => {
+    const create = jest.fn().mockResolvedValue({ id: 'category-1', cooperativeId: 'coop-1' });
+    const service = new ProductsService(
+      { productCategory: { create } } as never,
+      { record: jest.fn() } as never,
+      planLimits as never
+    );
+
+    await service.createCategory(user, { name: 'Rau xanh', slug: 'rau-xanh' });
+
+    expect(create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ cooperativeId: 'coop-1' })
+    });
+  });
+
   it('deletes an unused category and records the cleanup audit event', async () => {
     const remove = jest.fn().mockResolvedValue({ id: 'category-1', name: 'E2E category' });
     const record = jest.fn();

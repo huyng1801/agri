@@ -264,7 +264,11 @@ export class ProductsService {
   }
 
   async createCategory(user: AuthUser, dto: CreateCategoryDto) {
-    const cooperativeId = dto.cooperativeId ? requireTenant(user, dto.cooperativeId) : null;
+    const cooperativeId = dto.cooperativeId
+      ? requireTenant(user, dto.cooperativeId)
+      : isSuperAdmin(user)
+        ? null
+        : requireTenant(user);
     const created = await this.prisma.productCategory.create({
       data: {
         cooperativeId,

@@ -68,7 +68,8 @@ try {
   const category = await must('product-category.create', 'POST', '/products/categories', {
     name: `E2E Cleanup Category ${suffix}`,
     slug: `e2e-cleanup-category-${suffix.toLowerCase()}`,
-    description: 'Temporary E2E category'
+    description: 'Temporary E2E category',
+    cooperativeId: sampleProduct.cooperativeId
   });
   created.push(['products/categories', category.id]);
 
