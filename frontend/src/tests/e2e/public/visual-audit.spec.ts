@@ -115,10 +115,12 @@ test.describe('public visual audit', () => {
       const path = typeof route.path === 'function' ? route.path({ passportCode, newsSlug }) : route.path;
 
       await preparePage(page, route.prepare);
-      const response = await page.goto(path, { waitUntil: 'networkidle' });
+      // Analytics, map embeds, and lazy media can keep network activity open indefinitely.
+      // DOM readiness is the stable capture boundary; warmLazyImages handles visual assets below.
+      const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
       expect(response?.status()).toBeLessThan(400);
 
-      await page.waitForTimeout(500);
+      await page.waitForTimeout(700);
       await warmLazyImages(page);
       const shotDir = join(OUTPUT_ROOT, route.id);
       mkdirSync(shotDir, { recursive: true });
