@@ -152,7 +152,7 @@ test.describe('admin CRUD forms', () => {
   test('@admin invoice paid lifecycle restores unpaid state', async ({ page }) => {
     const { adminUrl } = baseUrls();
     const actions: string[] = [];
-    let invoice = invoiceFixture('invoice-lifecycle-e2e', 'INV-LIFECYCLE', 'UNPAID');
+    let invoice: ReturnType<typeof invoiceFixture> & { paidAt: string | null } = invoiceFixture('invoice-lifecycle-e2e', 'INV-LIFECYCLE', 'UNPAID');
     await page.route('**/api/v1/invoices**', async (route) => {
       const request = route.request();
       const path = new URL(request.url()).pathname;
@@ -740,7 +740,7 @@ function invoiceFixture(id: string, invoiceCode: string, status: string) {
     currency: 'VND',
     status,
     dueDate: '2026-12-01T00:00:00.000Z',
-    paidAt: null,
+    paidAt: null as string | null,
     note: '',
     subscription: null,
     createdAt: '2026-09-01T00:00:00.000Z',
