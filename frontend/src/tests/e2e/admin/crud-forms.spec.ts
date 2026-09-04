@@ -627,10 +627,12 @@ test.describe('admin CRUD forms', () => {
   test('@admin @form settings profile update restores original state', async ({ page }) => {
     const { adminUrl } = baseUrls();
     const mutations: Array<Record<string, unknown>> = [];
+    let profileGets = 0;
     let profile = { appName: 'Agri Passport', supportEmail: 'support@example.com', timezone: 'Asia/Ho_Chi_Minh' };
     await page.route('**/api/v1/settings', async (route) => {
       const request = route.request();
       if (request.method() === 'GET') {
+        profileGets += 1;
         await route.fulfill(jsonEnvelope([{ key: 'system.profile', value: profile, description: 'Hồ sơ hệ thống' }]));
         return;
       }
@@ -648,6 +650,7 @@ test.describe('admin CRUD forms', () => {
     await form.locator('input[name="supportEmail"]').fill('e2e-temp@example.com');
     await form.getByRole('button', { name: 'Lưu' }).click();
     await expect.poll(() => mutations.length).toBe(1);
+    await expect.poll(() => profileGets).toBeGreaterThan(1);
     await expect(form.locator('input[name="appName"]')).toHaveValue('E2E Tên tạm');
     await expect(form.locator('input[name="supportEmail"]')).toHaveValue('e2e-temp@example.com');
     await form.locator('input[name="appName"]').fill('Agri Passport');
