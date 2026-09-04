@@ -194,6 +194,7 @@ export function PublicHeader({
                   type="search"
                   name="search"
                   placeholder={searchPlaceholder}
+                  aria-label={searchPlaceholder}
                   className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[#1f2233] outline-none placeholder:text-slate-400"
                 />
                 <span className="h-5 w-px bg-[#dce6d8]" aria-hidden="true" />
@@ -274,6 +275,7 @@ export function PublicHeader({
                   type="search"
                   name="search"
                   placeholder={searchPlaceholder}
+                  aria-label={searchPlaceholder}
                   className="h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-11 pr-4 text-sm outline-none focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
                 />
               </form>
@@ -354,6 +356,7 @@ export function PublicHeader({
                 type="search"
                 name="search"
                 placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
                 className="h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-12 pr-4 text-sm text-[#1f2233] outline-none transition placeholder:text-slate-400 focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
               />
             </div>
@@ -426,6 +429,7 @@ export function PublicHeader({
                 type="search"
                 name="search"
                 placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
                 className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[#1f2233] outline-none placeholder:text-slate-400"
               />
               <span className="h-5 w-px bg-[#e6eadf]" aria-hidden="true" />
@@ -495,6 +499,7 @@ export function PublicHeader({
                 type="search"
                 name="search"
                 placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
                 className="mt-4 h-12 w-full rounded-full border border-[#dfe7db] bg-[#f7faf4] pl-11 pr-4 text-sm outline-none focus:border-[#1f9b4b] focus:ring-4 focus:ring-[#dff0e0]"
               />
             </form>

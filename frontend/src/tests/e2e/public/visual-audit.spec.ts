@@ -343,6 +343,20 @@ async function analyzeLayout(page: Page, route: AuditRoute) {
       if (window.innerWidth < 768 && header && header.scrollWidth > window.innerWidth + 4) {
         notes.push('header horizontal overflow');
       }
+      if (document.documentElement.scrollWidth > window.innerWidth + 4) {
+        notes.push('page horizontal overflow');
+      }
+      const visibleControls = Array.from(document.querySelectorAll('input, select, textarea, button')).filter((element) => {
+        const style = window.getComputedStyle(element);
+        return style.display !== 'none' && style.visibility !== 'hidden';
+      });
+      const unlabeledControl = visibleControls.find((element) => {
+        const hasLabel = element.closest('label') || (element.id && document.querySelector(`label[for="${element.id}"]`));
+        return !hasLabel && !element.getAttribute('aria-label') && !element.getAttribute('aria-labelledby') && !element.getAttribute('title') && !element.textContent?.trim();
+      });
+      if (unlabeledControl) notes.push('visible control missing accessible name');
+      const imageMissingAlt = Array.from(document.images).some((image) => !image.hasAttribute('alt'));
+      if (imageMissingAlt) notes.push('image missing alt attribute');
       if (meta.id.includes('cart') || meta.id === 'checkout') {
         const empty = document.querySelector('[data-testid="cart-empty"]');
         if (empty) notes.push('cart empty state visible');

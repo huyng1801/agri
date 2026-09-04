@@ -52,6 +52,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   name="search"
                   defaultValue={filters.search ?? ''}
                   placeholder="Tìm bài viết"
+                  aria-label="Tìm bài viết"
                   className="min-h-11 w-full rounded-[0.95rem] border-0 bg-[#f7faf4] pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:rounded-[1.05rem] sm:text-base"
                 />
               </div>

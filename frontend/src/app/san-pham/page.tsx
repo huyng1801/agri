@@ -364,6 +364,7 @@ function ProductFilterForm({
           name="search"
           defaultValue={filters.search ?? ''}
           placeholder="Tìm sản phẩm, HTX, mô tả"
+          aria-label="Tìm sản phẩm, HTX, mô tả"
           className={
             demeterLike
               ? 'min-h-12 w-full rounded-[1.2rem] border border-[#dbe7d8] bg-[#fbfcf8] pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint'
@@ -386,6 +387,7 @@ function ProductFilterForm({
             name="province"
             defaultValue={filters.province ?? ''}
             placeholder="Tỉnh/thành"
+            aria-label="Tỉnh/thành"
             className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
@@ -393,6 +395,7 @@ function ProductFilterForm({
             defaultValue={filters.minPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá từ"
+            aria-label="Giá từ"
             className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
           <input
@@ -400,6 +403,7 @@ function ProductFilterForm({
             defaultValue={filters.maxPrice ?? ''}
             inputMode="numeric"
             placeholder="Giá đến"
+            aria-label="Giá đến"
             className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
           />
         </div>
@@ -410,6 +414,7 @@ function ProductFilterForm({
           name="province"
           defaultValue={filters.province ?? ''}
           placeholder="Tỉnh/thành"
+          aria-label="Tỉnh/thành"
           className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
         <input
@@ -417,6 +422,7 @@ function ProductFilterForm({
           defaultValue={filters.minPrice ?? ''}
           inputMode="numeric"
           placeholder="Giá từ"
+          aria-label="Giá từ"
           className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
         <input
@@ -424,6 +430,7 @@ function ProductFilterForm({
           defaultValue={filters.maxPrice ?? ''}
           inputMode="numeric"
           placeholder="Giá đến"
+          aria-label="Giá đến"
           className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
         />
       </div>
