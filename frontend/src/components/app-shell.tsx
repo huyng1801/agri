@@ -14,6 +14,7 @@ import {
   LogOut,
   Map,
   MessageSquareText,
+  MoreHorizontal,
   Newspaper,
   Package,
   QrCode,
@@ -69,11 +70,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<ReturnType<typeof currentUser>>(null);
   const [area, setArea] = useState<SiteArea>('local');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     setUser(currentUser());
     setArea(siteAreaFromHost(window.location.hostname));
+    setMobileMenuOpen(false);
   }, [pathname]);
 
   const roleSet = new Set(user?.roles ?? []);
@@ -82,7 +85,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const visibleNav = nav.filter((item) => item.areas.includes(effectiveArea as NavArea) && item.roles.some((role) => roleSet.has(role)));
   const routeAllowed =
     user && (effectiveArea === 'admin' || effectiveArea === 'htx') ? isDashboardRouteAllowed(pathname, effectiveArea, user.roles) : false;
-  const mobileNav = visibleNav.slice(0, 5);
+  const mobileNav = visibleNav.slice(0, 4);
 
   function signOut() {
     logout();
@@ -190,14 +193,64 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
                   active && 'bg-mint text-leaf'
                 )}
+                onClick={() => setMobileMenuOpen(false)}
               >
                 <Icon size={18} aria-hidden="true" />
                 <span className="max-w-full truncate">{item.label}</span>
               </Link>
             );
           })}
+          <button
+            type="button"
+            data-testid="mobile-more-button"
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-more-menu"
+            onClick={() => setMobileMenuOpen((open) => !open)}
+            className={cn(
+              'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
+              mobileMenuOpen && 'bg-mint text-leaf'
+            )}
+          >
+            <MoreHorizontal size={18} aria-hidden="true" />
+            <span>Tất cả</span>
+          </button>
         </div>
       </nav>
+
+      {mobileMenuOpen && (
+        <div
+          id="mobile-more-menu"
+          data-testid="mobile-more-menu"
+          className="fixed inset-x-3 bottom-[calc(4.8rem+var(--safe-bottom))] z-30 max-h-[min(70vh,32rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_60px_rgba(15,23,42,0.18)] lg:hidden"
+        >
+          <div className="mb-2 flex items-center justify-between px-1">
+            <p className="text-sm font-bold text-ink">Tất cả khu vực</p>
+            <button type="button" onClick={() => setMobileMenuOpen(false)} className="touch-target rounded-md px-2 text-xs font-semibold text-slate-500">
+              Đóng
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {visibleNav.map((item) => {
+              const Icon = item.icon;
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={`mobile-more-${item.testId}`}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    'flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-700',
+                    active && 'border-leaf bg-mint text-leaf'
+                  )}
+                >
+                  <Icon size={17} aria-hidden="true" />
+                  <span className="min-w-0 truncate">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
