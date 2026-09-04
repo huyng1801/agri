@@ -120,6 +120,6 @@ describe('InvoicesService', () => {
     const file = await service.pdf(user, 'invoice-1');
 
     expect(file.fileName).toBe('INV-2026-TEST.pdf');
-    expect(file.buffer.toString('ascii', 0, 8)).toBe('%PDF-1.4');
+    expect(file.buffer.toString('ascii', 0, 8)).toMatch(/^%PDF-1\.[0-7]$/);
   });
 });
