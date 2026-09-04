@@ -501,6 +501,77 @@ test.describe('admin CRUD forms', () => {
     expect(mutations[1].body).toMatchObject({ note: '' });
   });
 
+  test('@admin @form settings profile update restores original state', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const mutations: Array<Record<string, unknown>> = [];
+    let profile = { appName: 'Agri Passport', supportEmail: 'support@example.com', timezone: 'Asia/Ho_Chi_Minh' };
+    await page.route('**/api/v1/settings', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope([{ key: 'system.profile', value: profile, description: 'Hồ sơ hệ thống' }]));
+        return;
+      }
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      mutations.push(payload);
+      profile = payload.value as typeof profile;
+      await route.fulfill(jsonEnvelope({ key: 'system.profile', value: profile, description: 'Hồ sơ hệ thống' }));
+    });
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/settings`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: 'Cài đặt hệ thống' })).toBeVisible({ timeout: 45_000 });
+    await page.getByTestId('settings-tab-profile').click();
+    const form = page.locator('form').first();
+    await form.locator('input[name="appName"]').fill('E2E Tên tạm');
+    await form.locator('input[name="supportEmail"]').fill('e2e-temp@example.com');
+    await form.getByRole('button', { name: 'Lưu' }).click();
+    await expect.poll(() => mutations.length).toBe(1);
+    await form.locator('input[name="appName"]').fill('Agri Passport');
+    await form.locator('input[name="supportEmail"]').fill('support@example.com');
+    await form.getByRole('button', { name: 'Lưu' }).click();
+    await expect.poll(() => mutations.length).toBe(2);
+    expect((mutations[0].value as Record<string, unknown>)).toMatchObject({ appName: 'E2E Tên tạm', supportEmail: 'e2e-temp@example.com' });
+    expect((mutations[1].value as Record<string, unknown>)).toMatchObject({ appName: 'Agri Passport', supportEmail: 'support@example.com' });
+  });
+
+  test('@admin backup create download and restore confirmation flow', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const actions: string[] = [];
+    const backup = { fileName: 'e2e-backup.sql', sizeBytes: 1024, createdAt: '2026-09-01T00:00:00.000Z', downloadPath: '/backups/e2e-backup.sql/download', restoreConfirmation: 'RESTORE E2E' };
+    await page.route('**/api/v1/backups**', async (route) => {
+      const request = route.request();
+      const path = new URL(request.url()).pathname;
+      if (path.endsWith('/download')) {
+        actions.push('download');
+        await route.fulfill({ status: 200, contentType: 'application/sql', body: 'e2e backup' });
+        return;
+      }
+      if (path.endsWith('/restore')) {
+        actions.push('restore');
+        expect(request.postDataJSON()).toMatchObject({ confirmation: 'RESTORE E2E' });
+        await route.fulfill(jsonEnvelope({ restored: true }));
+        return;
+      }
+      if (request.method() === 'POST') {
+        actions.push('create');
+        await route.fulfill(jsonEnvelope(backup));
+        return;
+      }
+      await route.fulfill(jsonEnvelope([backup]));
+    });
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/backups`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: 'Sao lưu' })).toBeVisible({ timeout: 45_000 });
+    await page.getByRole('button', { name: 'Tạo bản sao lưu' }).click();
+    await expect.poll(() => actions.filter((item) => item === 'create').length).toBe(1);
+    const card = page.getByRole('heading', { name: 'e2e-backup.sql' }).locator('..').locator('..');
+    await card.getByRole('button', { name: 'Tải' }).click();
+    await expect.poll(() => actions.filter((item) => item === 'download').length).toBe(1);
+    await card.getByRole('textbox').fill('RESTORE E2E');
+    await card.getByRole('button', { name: 'Khôi phục' }).click();
+    await expect.poll(() => actions.filter((item) => item === 'restore').length).toBe(1);
+    expect(actions).toEqual(['create', 'download', 'restore']);
+  });
+
 });
 
 function planFixture(id: string, name: string) {
