@@ -441,6 +441,66 @@ test.describe('admin CRUD forms', () => {
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
   });
 
+  test('@admin @form contact update restores original state', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let contact = contactFixture('contact-e2e');
+    await page.route('**/api/v1/contacts**', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [contact], meta: { total: 1 } }));
+        return;
+      }
+      const body = request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method: request.method(), path: new URL(request.url()).pathname, body });
+      contact = { ...contact, ...body } as typeof contact;
+      await route.fulfill(jsonEnvelope(contact));
+    });
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/contacts`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Liên hệ từ trang công khai', { timeout: 45_000 });
+    const card = page.locator('article').filter({ hasText: 'Khách E2E' });
+    await card.getByRole('combobox').selectOption('IN_PROGRESS');
+    await card.getByRole('textbox').fill('Ghi chú tạm E2E');
+    await card.getByRole('button', { name: 'Lưu xử lý' }).click();
+    await expect.poll(() => mutations.length).toBe(1);
+    await card.getByRole('combobox').selectOption('NEW');
+    await card.getByRole('textbox').fill('');
+    await card.getByRole('button', { name: 'Lưu xử lý' }).click();
+    await expect.poll(() => mutations.length).toBe(2);
+    expect(mutations[0].body).toMatchObject({ status: 'IN_PROGRESS', note: 'Ghi chú tạm E2E' });
+    expect(mutations[1].body).toMatchObject({ status: 'NEW' });
+  });
+
+  test('@htx @form order note update restores original state', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let order = orderFixture('order-e2e');
+    await page.route('**/api/v1/orders**', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [order], meta: { total: 1 } }));
+        return;
+      }
+      const body = request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method: request.method(), path: new URL(request.url()).pathname, body });
+      order = { ...order, ...body } as typeof order;
+      await route.fulfill(jsonEnvelope(order));
+    });
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/orders`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Đơn hàng COD', { timeout: 45_000 });
+    const card = page.getByTestId('order-card');
+    await card.getByRole('textbox').fill('Ghi chú tạm E2E');
+    await card.getByRole('button', { name: 'Lưu ghi chú' }).click();
+    await expect.poll(() => mutations.length).toBe(1);
+    await card.getByRole('textbox').fill('');
+    await card.getByRole('button', { name: 'Lưu ghi chú' }).click();
+    await expect.poll(() => mutations.length).toBe(2);
+    expect(mutations[0].body).toMatchObject({ note: 'Ghi chú tạm E2E' });
+    expect(mutations[1].body).toMatchObject({ note: '' });
+  });
+
 });
 
 function planFixture(id: string, name: string) {
@@ -611,6 +671,24 @@ function passportFixture(id: string) {
     id, cooperativeId: 'e2e-cooperative-id', productId: 'product-e2e', passportCode: 'E2E-PASSPORT', publicSlug: 'e2e-passport',
     status: 'DRAFT', expiredAt: null, publishedAt: null, qrDataUrl: null, viewCount: 0,
     product: { id: 'product-e2e', name: 'E2E Sản phẩm', code: 'E2E-PRODUCT', zone: { name: 'Vùng E2E' } },
+    createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function contactFixture(id: string) {
+  return {
+    id, fullName: 'Khách E2E', phone: '0907001200', email: 'e2e@example.com', message: 'Cần tư vấn E2E',
+    sourcePath: '/lien-he', status: 'NEW', note: '', createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function orderFixture(id: string) {
+  return {
+    id, cooperativeId: 'e2e-cooperative-id', orderCode: 'ORD-E2E', status: 'NEW', tenantStatus: 'NEW', totalAmount: 89000,
+    visibleSubtotal: 89000, visibleItemsCount: 1, buyerName: 'Khách E2E', buyerPhone: '0907001200', buyerEmail: 'e2e@example.com',
+    province: 'Đồng Tháp', district: '', ward: '', address: 'Địa chỉ E2E', paymentMethod: 'COD', note: '',
+    cooperative: { id: 'e2e-cooperative-id', name: 'HTX E2E', code: 'HTX-E2E' }, itemCooperatives: [],
+    items: [{ id: 'item-e2e', quantity: 1, unitPrice: 89000, status: 'NEW', note: '', cooperative: null, product: { id: 'product-e2e', name: 'E2E Sản phẩm', slug: 'e2e-san-pham', unit: 'kg', thumbnail: null } }],
     createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z'
   };
 }
