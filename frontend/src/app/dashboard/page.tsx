@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { Boxes, ClipboardList, Database, FileText, LucideIcon, Map, Package, QrCode, Users, WalletCards } from 'lucide-react';
+import { ArrowUpRight, Boxes, ClipboardList, Database, FileText, History, LucideIcon, Map, MessageSquareText, Package, QrCode, ShieldCheck, Users, WalletCards } from 'lucide-react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
 import { Button, Panel } from '@/components/ui';
@@ -64,8 +64,25 @@ export default function DashboardPage() {
           ['/dashboard/certifications', 'Quản lý chứng nhận'],
           ['/dashboard/passports', 'Tạo QR'],
           ['/dashboard/farmers', 'Thêm nông dân'],
-          ['/dashboard/zones', 'Thêm vùng trồng']
+        ['/dashboard/zones', 'Thêm vùng trồng']
         ];
+  const quickActionIcons: Record<string, LucideIcon> = {
+    '/dashboard/cooperatives': Boxes,
+    '/dashboard/users': Users,
+    '/dashboard/roles': ShieldCheck,
+    '/dashboard/subscription-plans': WalletCards,
+    '/dashboard/invoices': FileText,
+    '/dashboard/orders': ClipboardList,
+    '/dashboard/contacts': MessageSquareText,
+    '/dashboard/audit-logs': History,
+    '/dashboard/backups': Database,
+    '/dashboard/farming-logs': ClipboardList,
+    '/dashboard/certifications': ShieldCheck,
+    '/dashboard/passports': QrCode,
+    '/dashboard/farmers': Users,
+    '/dashboard/zones': Map,
+    '/dashboard/products': Package
+  };
 
   return (
     <div data-testid={isSuperAdmin ? 'admin-dashboard' : 'htx-dashboard'} className="space-y-5">
@@ -102,13 +119,22 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        {quickActions.map(([href, label]) => (
-          <Link key={href} href={href}>
-            <Panel className="transition hover:border-leaf hover:bg-mint">
-              <span className="font-bold">{label}</span>
-            </Panel>
-          </Link>
-        ))}
+        {quickActions.map(([href, label]) => {
+          const Icon = quickActionIcons[href] ?? ClipboardList;
+          return (
+            <Link key={`${href}-${label}`} href={href} className="group h-full">
+              <Panel className="flex h-full min-h-20 items-center justify-between gap-3 border-slate-200 bg-white/80 transition hover:-translate-y-0.5 hover:border-leaf hover:bg-mint">
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-mint text-leaf transition group-hover:bg-white">
+                    <Icon size={19} aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 truncate font-bold text-ink">{label}</span>
+                </span>
+                <ArrowUpRight className="shrink-0 text-slate-400 transition group-hover:text-leaf" size={18} aria-hidden="true" />
+              </Panel>
+            </Link>
+          );
+        })}
       </div>
     </div>
   );
