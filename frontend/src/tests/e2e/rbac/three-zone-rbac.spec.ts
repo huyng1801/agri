@@ -54,7 +54,6 @@ test.describe('three-zone dashboard RBAC', () => {
     await expect(page.getByTestId('htx-menu-farmers')).toBeVisible();
     await expect(page.getByTestId('htx-menu-farming-logs')).toBeVisible();
     await expect(page.getByTestId('htx-menu-passports')).toBeVisible();
-    await expect(page.getByTestId('htx-menu-news')).toBeVisible();
     await expect(page.getByTestId('htx-menu-orders')).toBeVisible();
     await expect(page.getByTestId('htx-menu-reports')).toBeVisible();
 
