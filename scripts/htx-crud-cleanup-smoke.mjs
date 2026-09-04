@@ -90,7 +90,6 @@ try {
   });
 
   const product = await must('product.create', 'POST', '/products', {
-    categoryId: category.id,
     code: `E2E-${suffix}`,
     name: `E2E Cleanup Product ${suffix}`,
     slug: `e2e-cleanup-${suffix.toLowerCase()}`,
