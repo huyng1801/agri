@@ -32,7 +32,7 @@ test.describe('public sitemap encoding audit', () => {
     }
 
     for (const url of urls) {
-      await page.goto(url, { waitUntil: 'networkidle' });
+      await gotoWithRetry(page, url);
       await page.waitForTimeout(150);
 
       const [html, text] = await Promise.all([page.content(), page.locator('body').innerText()]);
@@ -46,6 +46,21 @@ test.describe('public sitemap encoding audit', () => {
     }
   });
 });
+
+async function gotoWithRetry(page: import('@playwright/test').Page, url: string) {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      // Third-party media and analytics should not hold a content audit open.
+      await page.goto(url, { waitUntil: 'domcontentloaded' });
+      return;
+    } catch (error) {
+      lastError = error;
+      await page.waitForTimeout(250 * (attempt + 1));
+    }
+  }
+  throw lastError;
+}
 
 function joinUrl(baseUrl: string, path: string) {
   return `${baseUrl.replace(/\/$/, '')}${path}`;
