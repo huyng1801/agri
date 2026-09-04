@@ -38,20 +38,20 @@ export default async function ContactPage() {
 
         <section className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
           <div className="space-y-4">
-            <article className="relative overflow-hidden rounded-[2.2rem] bg-[linear-gradient(140deg,#0d1e30_0%,#173a50_48%,#1f9b4b_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(173,255,208,0.18),transparent_30%)]" aria-hidden="true" />
+            <article className="relative overflow-hidden rounded-[2rem] border border-[#dce9d7] bg-[linear-gradient(145deg,#f8fcf5_0%,#edf7ed_58%,#e3f3e8_100%)] p-5 text-ink shadow-[0_22px_52px_rgba(15,23,42,0.08)] sm:p-6">
+              <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#c9ebd2]/70 blur-2xl" aria-hidden="true" />
               <div className="relative z-10">
-                <p className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/88">
+                <p className="inline-flex min-h-8 items-center rounded-full border border-[#cfe4d0] bg-white/70 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-leaf">
                   Liên hệ {siteProfile.appName}
                 </p>
-                <h1 className="mt-4 max-w-[12ch] text-[2rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[14ch] sm:text-[2.85rem]">
+                <h1 className="mt-4 max-w-[18ch] text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-ink sm:max-w-[14ch] sm:text-[2.75rem]">
                   {siteProfile.pageContent.contactTitle}
                 </h1>
-                <p className="mt-4 max-w-[42rem] text-[0.96rem] leading-7 text-white/82 sm:text-[1rem]">
+                <p className="mt-3 max-w-[42rem] text-[0.95rem] leading-7 text-slate-600 sm:text-[1rem]">
                   {siteProfile.pageContent.contactDescription}
                 </p>
 
-                <div className="mt-5 grid gap-3">
+                <div className="mt-5 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
                   {[
                     {
                       icon: PhoneCall,
@@ -77,14 +77,14 @@ export default async function ContactPage() {
                       href={item.href}
                       target={item.label === 'Địa chỉ' ? '_blank' : undefined}
                       rel={item.label === 'Địa chỉ' ? 'noreferrer' : undefined}
-                      className="flex items-start gap-3 rounded-[1.35rem] border border-white/14 bg-white/10 px-4 py-3.5 text-white transition hover:-translate-y-0.5 hover:bg-white/14"
+                      className={cn('flex items-start gap-3 rounded-[1.2rem] border border-[#cfe4d0] bg-white/72 px-3.5 py-3 transition hover:-translate-y-0.5 hover:border-leaf hover:bg-white', item.label === 'Địa chỉ' && 'sm:col-span-2')}
                     >
-                      <span className="mt-0.5 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-white/12 text-white">
+                      <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#dff3e4] text-leaf">
                         <item.icon size={20} aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/64">{item.label}</span>
-                        <span className="mt-1 block break-words text-sm font-semibold leading-6 text-white/92 sm:text-[0.98rem]">{item.value}</span>
+                        <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-leaf/80">{item.label}</span>
+                        <span className="mt-1 block break-words text-sm font-semibold leading-5 text-ink sm:text-[0.95rem]">{item.value}</span>
                       </span>
                     </a>
                   ))}
@@ -93,7 +93,7 @@ export default async function ContactPage() {
                 <div className="mt-5 flex flex-wrap gap-2.5">
                   <a
                     href={telHref(siteProfile.hotline)}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[#14344b] transition hover:-translate-y-0.5"
+                    className="inline-flex min-h-10 items-center gap-2 rounded-full bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#256b43]"
                   >
                     Gọi hotline
                   </a>
@@ -101,7 +101,7 @@ export default async function ContactPage() {
                     href={mapSearchUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/18 bg-white/8 px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/14"
+                    className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#b9d8bd] bg-white/70 px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5 hover:bg-white"
                   >
                     Mở bản đồ
                   </a>
