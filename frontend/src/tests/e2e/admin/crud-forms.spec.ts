@@ -44,7 +44,7 @@ test.describe('admin CRUD forms', () => {
     await page.getByRole('button', { name: 'Lưu gói' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
 
-    await page.getByRole('button', { name: 'Sửa' }).click();
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
     await page.getByTestId('plan-name-input').fill('E2E Cleanup Plan Edited');
     await page.getByRole('button', { name: 'Lưu gói' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
@@ -94,7 +94,7 @@ test.describe('admin CRUD forms', () => {
     await page.getByTestId('user-cooperative-select').selectOption('coop-e2e');
     await page.getByRole('button', { name: 'Lưu tài khoản' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
-    await page.getByRole('button', { name: 'Sửa' }).click();
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
     await page.getByTestId('user-name-input').fill('E2E Cleanup User Edited');
     await page.getByRole('button', { name: 'Lưu tài khoản' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
@@ -229,6 +229,57 @@ test.describe('admin CRUD forms', () => {
     expect(updates[1]).toMatchObject({ name: 'Thành viên HTX' });
   });
 
+  test('@admin @form @crud news create edit and archive cleanup', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];
+    let article = newsFixture('news-seed', 'Bài seed để kiểm thử');
+
+    await page.route('**/api/v1/news**', async (route) => {
+      const request = route.request();
+      const method = request.method();
+      const path = new URL(request.url()).pathname;
+      if (path.endsWith('/categories') && method === 'GET') {
+        await route.fulfill(jsonEnvelope([newsCategoryFixture()]));
+        return;
+      }
+      if (path.endsWith('/categories')) {
+        await route.fulfill(jsonEnvelope(newsCategoryFixture()));
+        return;
+      }
+      if (method === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [article], meta: { page: 1, limit: 50, total: 1 } }));
+        return;
+      }
+      const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
+      mutations.push({ method, path, body });
+      if (method === 'POST') article = { ...article, id: 'news-e2e', ...body } as typeof article;
+      else if (method === 'PATCH') article = { ...article, ...body } as typeof article;
+      else if (method === 'DELETE') article = { ...article, status: 'ARCHIVED' };
+      await route.fulfill(jsonEnvelope(article));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
+    await page.getByRole('button', { name: 'Tạo bài' }).click();
+    await page.getByTestId('news-title-input').fill('E2E Bài viết truy xuất nguồn gốc');
+    await page.getByTestId('news-content-editor').fill('Nội dung bài viết E2E để kiểm tra luồng lưu nháp.');
+    await page.getByTestId('news-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
+
+    await page.getByRole('button', { name: 'Nâng cao', exact: true }).click();
+    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByTestId('news-title-input').fill('E2E Bài viết truy xuất nguồn gốc đã sửa');
+    await page.getByTestId('news-save-draft-button').click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
+
+    await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
+    await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
+    expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
+    expect(mutations[0].body).toMatchObject({ title: 'E2E Bài viết truy xuất nguồn gốc', status: 'DRAFT' });
+    expect(mutations[1].body).toMatchObject({ title: 'E2E Bài viết truy xuất nguồn gốc đã sửa', status: 'DRAFT' });
+  });
+
 });
 
 function planFixture(id: string, name: string) {
@@ -302,6 +353,49 @@ function cooperativeFixture(id: string, name: string, code: string, status: stri
     _count: { users: 0, products: 0, zones: 0, passports: 0 },
     createdAt: '2026-09-01T00:00:00.000Z',
     updatedAt: '2026-09-01T00:00:00.000Z'
+  };
+}
+
+function newsCategoryFixture() {
+  return { id: 'category-e2e', name: 'Tin vận hành', slug: 'tin-van-hanh', description: '', sortOrder: 1, isActive: true };
+}
+
+function newsFixture(id: string, title: string) {
+  return {
+    id,
+    categoryId: 'category-e2e',
+    title,
+    slug: 'bai-seed-de-kiem-thu',
+    excerpt: 'Mô tả bài viết seed.',
+    bodyHtml: '<p>Nội dung seed.</p>',
+    coverImageUrl: null,
+    coverImageAlt: null,
+    status: 'DRAFT',
+    isFeatured: false,
+    showOnHome: false,
+    focusKeyword: '',
+    seoTitle: '',
+    seoDescription: '',
+    canonicalUrl: '',
+    robotsNoIndex: false,
+    robotsNoFollow: false,
+    schemaType: 'NewsArticle',
+    ogTitle: '',
+    ogDescription: '',
+    ogImageUrl: '',
+    twitterTitle: '',
+    twitterDescription: '',
+    twitterImageUrl: '',
+    tagsJson: [],
+    seoScore: 0,
+    readabilityScore: 0,
+    publishedAt: null,
+    scheduledAt: null,
+    viewCount: 0,
+    createdAt: '2026-09-01T00:00:00.000Z',
+    updatedAt: '2026-09-01T00:00:00.000Z',
+    category: newsCategoryFixture(),
+    author: null
   };
 }
 
