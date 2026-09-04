@@ -614,11 +614,13 @@ test.describe('admin CRUD forms', () => {
     await page.goto(`${htxUrl}/dashboard/orders`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Đơn hàng COD', { timeout: 45_000 });
     const card = page.getByTestId('order-card');
+    const saveNoteButton = card.getByRole('button', { name: 'Lưu ghi chú' });
     await card.getByRole('textbox').fill('Ghi chú tạm E2E');
-    await card.getByRole('button', { name: 'Lưu ghi chú' }).click();
+    await saveNoteButton.click();
     await expect.poll(() => mutations.length).toBe(1);
+    await expect(saveNoteButton).toBeEnabled();
     await card.getByRole('textbox').fill('');
-    await card.getByRole('button', { name: 'Lưu ghi chú' }).click();
+    await saveNoteButton.click();
     await expect.poll(() => mutations.length).toBe(2);
     expect(mutations[0].body).toMatchObject({ note: 'Ghi chú tạm E2E' });
     expect(mutations[1].body).toMatchObject({ note: '' });
