@@ -105,7 +105,7 @@ export function PublicImage({
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"
         aria-hidden={decorative ? true : undefined}
-        className={cn('block max-w-full', className)}
+        className={cn('relative z-[2] block max-w-full', className)}
         onLoad={() => setLoaded(true)}
         onError={() => {
           if (currentSrc !== fallback) {
