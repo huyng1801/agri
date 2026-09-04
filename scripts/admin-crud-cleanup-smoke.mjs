@@ -90,6 +90,21 @@ try {
   created.push(['subscription-plans', plan.id]);
   await must('plan.update', 'PATCH', `/subscription-plans/${plan.id}`, { name: `E2E Admin Plan Edited ${suffix}`, priceMonthly: 23456 });
 
+  await must('subscription.assign', 'POST', `/cooperatives/${cooperative.id}/subscription`, {
+    planId: plan.id,
+    status: 'ACTIVE',
+    startDate: '2026-09-01T00:00:00.000Z',
+    endDate: '2027-09-01T00:00:00.000Z',
+    autoRenew: false,
+    createInvoice: false,
+    note: 'Subscription kiểm thử E2E'
+  });
+  await must('subscription.update', 'PATCH', `/cooperatives/${cooperative.id}/subscription`, {
+    status: 'TRIAL',
+    autoRenew: true
+  });
+  created.push(['subscriptions', cooperative.id]);
+
   const invoice = await must('invoice.create', 'POST', '/invoices', {
     cooperativeId: cooperative.id,
     invoiceCode: `E2E-INV-${suffix}`,
@@ -101,6 +116,8 @@ try {
   });
   created.push(['invoices', invoice.id]);
   await must('invoice.update', 'PATCH', `/invoices/${invoice.id}`, { amount: 567890, note: 'Hóa đơn E2E đã sửa' });
+  await must('invoice.mark-paid', 'POST', `/invoices/${invoice.id}/mark-paid`, { paymentMethod: 'E2E' });
+  await must('invoice.mark-unpaid', 'POST', `/invoices/${invoice.id}/mark-unpaid`);
 
   const category = await must('news-category.create', 'POST', '/news/categories', {
     name: `E2E News Category ${suffix}`,
@@ -124,8 +141,13 @@ try {
   results.push(`ERROR:${error instanceof Error ? error.message : String(error)}`);
 } finally {
   for (const [resource, id] of created.reverse()) {
-    const path = resource === 'invoices' ? `/${resource}/${id}/cancel` : `/${resource}/${id}`;
-    const method = resource === 'invoices' ? 'POST' : 'DELETE';
+    const isActionCleanup = resource === 'invoices' || resource === 'subscriptions';
+    const path = resource === 'invoices'
+      ? `/${resource}/${id}/cancel`
+      : resource === 'subscriptions'
+        ? `/cooperatives/${id}/subscription/cancel`
+        : `/${resource}/${id}`;
+    const method = isActionCleanup ? 'POST' : 'DELETE';
     const result = await request(method, path);
     results.push(`${resource}.cleanup:${result.status}`);
   }
