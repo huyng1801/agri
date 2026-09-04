@@ -62,7 +62,9 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+        # Keep client-side API calls on the production API even when the shell
+        # does not export the variable; .env.production still remains the source of truth.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.htxonline.vn/api/v1}
     container_name: agri_frontend
     restart: unless-stopped
     env_file:
