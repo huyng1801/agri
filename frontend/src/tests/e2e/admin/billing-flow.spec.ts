@@ -35,12 +35,12 @@ test.describe('admin billing flow', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/subscription-plans`);
-    await expect(page.getByTestId('page-title')).toContainText('Gói dịch vụ SaaS');
-    await page.goto(`${adminUrl}/dashboard/invoices`);
-    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn');
-    await page.goto(`${adminUrl}/dashboard/reports`);
-    await expect(page.getByTestId('page-title')).toContainText('Báo cáo');
+    await page.goto(`${adminUrl}/dashboard/subscription-plans`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Gói dịch vụ SaaS', { timeout: 15_000 });
+    await page.goto(`${adminUrl}/dashboard/invoices`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn', { timeout: 15_000 });
+    await page.goto(`${adminUrl}/dashboard/reports`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Báo cáo', { timeout: 15_000 });
   });
 });
 

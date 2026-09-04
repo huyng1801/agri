@@ -34,7 +34,7 @@ test.describe('htx cooperative edit', () => {
     });
 
     await seedAuthenticatedSession(page, htxAdminUser);
-    await page.goto(`${htxUrl}/dashboard/cooperatives`);
+    await page.goto(`${htxUrl}/dashboard/cooperatives`, { waitUntil: 'domcontentloaded' });
     await page.getByTestId('cooperative-edit-button').click();
     await expect(page.getByTestId('cooperative-save-button')).toBeVisible();
     await expect(page.getByTestId('cooperative-name-input')).toHaveValue('HTX E2E');

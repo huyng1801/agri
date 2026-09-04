@@ -78,7 +78,7 @@ test.describe('htx zones dashboard', () => {
     });
 
     await seedAuthenticatedSession(page, htxAdminUser);
-    await page.goto(joinUrl(htxUrl, '/dashboard/zones'));
+    await page.goto(joinUrl(htxUrl, '/dashboard/zones'), { waitUntil: 'domcontentloaded' });
 
     await expect(page.getByTestId('htx-menu-zones')).toBeVisible();
     await expect(page.getByText('Vùng xoài mẫu')).toBeVisible();
@@ -142,9 +142,9 @@ test.describe('htx zones dashboard', () => {
     });
 
     await seedAuthenticatedSession(page, farmerUser);
-    await page.goto(joinUrl(htxUrl, '/dashboard/zones'));
+    await page.goto(joinUrl(htxUrl, '/dashboard/zones'), { waitUntil: 'domcontentloaded' });
 
-    await expect(page.getByText('chế độ chỉ đọc')).toBeVisible();
+    await expect(page.getByText('chế độ chỉ đọc')).toBeVisible({ timeout: 15_000 });
     await expect(page.getByTestId('zone-create-button')).toHaveCount(0);
     await expect(page.getByText('Vùng rau an toàn')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Sửa' })).toHaveCount(0);

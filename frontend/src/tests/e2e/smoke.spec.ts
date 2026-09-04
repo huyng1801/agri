@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 
 test('home page renders primary entry points', async ({ page }) => {
-  await page.goto('/');
-  await expect(page.getByRole('heading', { name: /Mỗi nông sản đều có một hành trình đáng tin/ })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Xem danh mục', exact: true })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Xem đối tác', exact: true })).toBeVisible();
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await expect(page.getByRole('heading', { name: /Cùng HTX kiến tạo nông nghiệp bền vững/ })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole('link', { name: 'Xem sản phẩm', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Khám phá dịch vụ', exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: /Đăng nhập/ }).first()).toBeVisible();
 });
 

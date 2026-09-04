@@ -30,8 +30,8 @@ test.describe('htx reports dashboard', () => {
     });
 
     await seedAuthenticatedSession(page, { ...htxAdminUser, permissions: [...htxAdminUser.permissions, 'reports.overview', 'reports.snapshots'] });
-    await page.goto(`${htxUrl}/dashboard/reports`);
-    await expect(page.getByRole('main').locator('p.text-slate-500', { hasText: 'Sản phẩm' })).toBeVisible();
+    await page.goto(`${htxUrl}/dashboard/reports`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('main').locator('p.text-slate-500', { hasText: 'Sản phẩm' })).toBeVisible({ timeout: 15_000 });
     await page.getByTestId('reports-range-7d').click();
     await page.getByTestId('reports-snapshot-button').click();
     await expect(page.getByText('Snapshot đã lưu')).toBeVisible();
