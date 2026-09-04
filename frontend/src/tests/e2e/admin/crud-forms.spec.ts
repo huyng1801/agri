@@ -149,6 +149,37 @@ test.describe('admin CRUD forms', () => {
     expect(mutations[2].path).toMatch(/\/invoices\/invoice-e2e\/cancel$/);
   });
 
+  test('@admin invoice paid lifecycle restores unpaid state', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const actions: string[] = [];
+    let invoice = invoiceFixture('invoice-lifecycle-e2e', 'INV-LIFECYCLE', 'UNPAID');
+    await page.route('**/api/v1/invoices**', async (route) => {
+      const request = route.request();
+      const path = new URL(request.url()).pathname;
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [invoice], meta: { total: 1 } }));
+        return;
+      }
+      actions.push(path);
+      if (path.endsWith('/mark-paid')) invoice = { ...invoice, status: 'PAID', paidAt: '2026-09-04T00:00:00.000Z' };
+      if (path.endsWith('/mark-unpaid')) invoice = { ...invoice, status: 'UNPAID', paidAt: null };
+      await route.fulfill(jsonEnvelope(invoice));
+    });
+    await page.route('**/api/v1/cooperatives?*', async (route) => await route.fulfill(jsonEnvelope({ data: [], meta: { total: 0 } })));
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/invoices`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Hóa đơn SaaS', { timeout: 45_000 });
+    const card = page.locator('article').filter({ hasText: 'INV-LIFECYCLE' });
+    await card.getByRole('button', { name: 'Mark paid' }).click();
+    await expect.poll(() => actions.length).toBe(1);
+    await card.getByRole('button', { name: 'Mark unpaid' }).click();
+    await expect.poll(() => actions.length).toBe(2);
+    expect(actions[0]).toMatch(/\/invoices\/invoice-lifecycle-e2e\/mark-paid$/);
+    expect(actions[1]).toMatch(/\/invoices\/invoice-lifecycle-e2e\/mark-unpaid$/);
+    expect(invoice.status).toBe('UNPAID');
+    expect(invoice.paidAt).toBeNull();
+  });
+
   test('@admin @form @crud cooperative create edit and archive cleanup', async ({ page }) => {
     const { adminUrl } = baseUrls();
     const mutations: Array<{ method: string; path: string; body?: Record<string, unknown> }> = [];

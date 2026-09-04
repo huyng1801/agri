@@ -149,6 +149,36 @@ test.describe('htx zones dashboard', () => {
     await expect(page.getByText('Vùng rau an toàn')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Sửa' })).toHaveCount(0);
   });
+
+  test('@htx zone public visibility toggle restores original state', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    const requests: Array<Record<string, unknown>> = [];
+    let zone = {
+      id: 'zone-toggle-e2e', cooperativeId: 'e2e-cooperative-id', name: 'Vùng toggle E2E', code: 'ZONE-TOGGLE', address: 'Đồng Tháp',
+      areaM2: 1000, latitude: 10.4, longitude: 105.7, isPublic: true, status: 'ACTIVE', createdAt: '2026-09-01T00:00:00.000Z', updatedAt: '2026-09-01T00:00:00.000Z',
+      _count: { products: 0, farmingLogs: 0, certifications: 0 }
+    };
+    await page.route('**/api/v1/zones**', async (route) => {
+      const request = route.request();
+      if (request.method() === 'GET') {
+        await route.fulfill(jsonEnvelope({ data: [zone], meta: { total: 1 } }));
+        return;
+      }
+      const payload = request.postDataJSON() as Record<string, unknown>;
+      requests.push(payload);
+      zone = { ...zone, ...payload } as typeof zone;
+      await route.fulfill(jsonEnvelope(zone));
+    });
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(joinUrl(htxUrl, '/dashboard/zones'), { waitUntil: 'domcontentloaded' });
+    const card = page.locator('article').filter({ hasText: 'Vùng toggle E2E' });
+    await card.getByRole('button', { name: 'Ẩn công khai' }).click();
+    await expect.poll(() => requests.length).toBe(1);
+    await card.getByRole('button', { name: 'Bật công khai' }).click();
+    await expect.poll(() => requests.length).toBe(2);
+    expect(requests).toEqual([{ isPublic: false }, { isPublic: true }]);
+    expect(zone.isPublic).toBe(true);
+  });
 });
 
 function joinUrl(baseUrl: string, path: string) {
