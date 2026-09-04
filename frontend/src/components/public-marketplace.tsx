@@ -106,8 +106,8 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className="group flex h-full flex-col rounded-[1.7rem] border border-[#dce9d7] bg-white p-2.5 shadow-[0_14px_32px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:p-3">
-      <div className="relative overflow-hidden rounded-[1.35rem] bg-[#f1f7ee]">
+    <article className="group flex h-full flex-col rounded-[1.85rem] border border-[#d6e6d2] bg-[#fbfdf9] p-3 shadow-[0_14px_32px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:p-3.5">
+      <div className="relative overflow-hidden rounded-[1.5rem] border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
         <div className="absolute inset-x-3 top-3 z-[2] flex items-center justify-between gap-2">
           <span className="inline-flex min-h-7 items-center rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
             {product.category?.name ?? 'Nông sản'}
@@ -127,13 +127,13 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
             fallback={DEFAULT_PRODUCT_IMAGE}
             testId="product-card-image"
             priority={priority}
-            wrapperClassName="aspect-[4/3] w-full bg-[linear-gradient(180deg,#ffffff_0%,#fbfdf9_100%)]"
+            wrapperClassName="aspect-[4/3] w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)]"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
       </div>
 
-      <div className="mt-3 flex flex-1 flex-col px-1 pb-1">
+      <div className="mt-3 flex flex-1 flex-col px-1 pb-0.5">
         <p className="text-[0.7rem] font-semibold text-[#5d7b67]">{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
         <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1b251f] transition hover:text-[#1c8542] sm:text-[1.2rem]">
           {product.name}
@@ -243,14 +243,14 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
 
 export function NewsCard({ article, priority = false }: { article: NewsArticle; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col bg-white transition-shadow hover:shadow-md')}>
-      <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden">
+    <article className={cn(publicCardClass, 'group flex h-full flex-col border-[#dce8d8] bg-[#fbfdf9] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)]')}>
+      <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden rounded-t-[1.9rem] p-2.5 pb-0 sm:p-3 sm:pb-0">
         <PublicImage
           src={article.coverImageUrl}
           alt={article.title}
           fallback={DEFAULT_NEWS_IMAGE}
           priority={priority}
-          wrapperClassName="aspect-[16/10] w-full"
+          wrapperClassName="aspect-[16/10] w-full rounded-[1.35rem] border border-[#dce9d7] bg-[#eef7eb]"
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </Link>
