@@ -144,7 +144,8 @@ test.describe('text encoding guard', () => {
       });
     });
 
-    await page.goto(joinUrl(publicUrl, '/lien-he'), { waitUntil: 'domcontentloaded' });
+    // Wait for route-specific client code before exercising the form.
+    await page.goto(joinUrl(publicUrl, '/lien-he'), { waitUntil: 'load' });
     await page.getByTestId('contact-name-input').fill('Nguyen Van A');
     await page.getByTestId('contact-phone-input').fill('0912345678');
     await page.getByTestId('contact-message-input').fill('Toi muon duoc lien he tu van them ve san pham va QR.');
@@ -169,7 +170,7 @@ test.describe('text encoding guard', () => {
       });
     });
 
-    await page.goto(joinUrl(publicUrl, '/tra-cuu-don-hang'), { waitUntil: 'domcontentloaded' });
+    await page.goto(joinUrl(publicUrl, '/tra-cuu-don-hang'), { waitUntil: 'load' });
     await page.getByTestId('order-code-input').fill('ORD-NOT-FOUND');
     await page.getByTestId('order-phone-input').fill('0912345678');
     await page.getByTestId('order-lookup-submit-button').click();
