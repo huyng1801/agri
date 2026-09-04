@@ -23,6 +23,11 @@ vi.mock('@/components/public-footer', () => ({
   PublicFooter: () => <div data-testid="public-footer" />
 }));
 
+// Keep server-only request profile resolution outside the page content test.
+vi.mock('@/components/public-shell', () => ({
+  PublicShell: ({ children }: { children: React.ReactNode }) => <div data-testid="public-shell">{children}</div>
+}));
+
 describe('Button', () => {
   it('renders accessible button text', () => {
     render(<Button>Lưu</Button>);
