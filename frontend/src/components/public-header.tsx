@@ -439,9 +439,6 @@ export function PublicHeader({
             <Link href="/login" className="text-sm font-medium text-[#1f2233] transition hover:text-[#1f9b4b]">
               Đăng nhập
             </Link>
-            <Link href={navCta.href} aria-label={navCta.label} className="grid h-11 w-11 place-items-center text-[#1f2233] transition hover:text-[#1f9b4b]">
-              <CtaIcon size={18} aria-hidden="true" />
-            </Link>
           </div>
         </div>
 
