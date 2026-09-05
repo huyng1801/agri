@@ -68,7 +68,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <Sparkles size={16} aria-hidden="true" />
               Chủ đề nổi bật
             </div>
-            <nav className="-mx-3 flex snap-x gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:-mx-1 sm:gap-2.5 sm:px-1">
+            <nav className="topic-scroll -mx-3 flex snap-x gap-2 overflow-x-auto overscroll-x-contain px-3 pb-1 sm:-mx-1 sm:gap-2.5 sm:px-1" aria-label="Lọc theo chủ đề">
               <Link
                 href="/tin-tuc"
                 className={cn(

@@ -123,6 +123,44 @@ button {
   scrollbar-width: none;
 }
 
+.topic-scroll {
+  scrollbar-width: none;
+  scrollbar-color: #9bc9a5 transparent;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+}
+
+.topic-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 641px) {
+  .topic-scroll {
+    cursor: grab;
+    scrollbar-width: thin;
+  }
+
+  .topic-scroll:active {
+    cursor: grabbing;
+  }
+
+  .topic-scroll::-webkit-scrollbar {
+    display: block;
+    height: 7px;
+  }
+
+  .topic-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .topic-scroll::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #9bc9a5;
+    background-clip: padding-box;
+  }
+}
+
 .news-body {
   color: #334155;
   font-size: 1.08rem;
