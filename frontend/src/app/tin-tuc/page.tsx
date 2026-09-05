@@ -5,6 +5,7 @@ import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
+import { TopicScroll } from '@/components/topic-scroll';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicNews, fetchPublicNewsCategories } from '@/lib/news';
 import { buildPublicMetadata } from '@/lib/page-metadata';
@@ -68,7 +69,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <Sparkles size={16} aria-hidden="true" />
               Chủ đề nổi bật
             </div>
-            <nav className="topic-scroll -mx-3 flex snap-x gap-2 overflow-x-auto overscroll-x-contain px-3 pb-1 sm:-mx-1 sm:gap-2.5 sm:px-1" aria-label="Lọc theo chủ đề">
+            <TopicScroll className="-mx-3 flex snap-x gap-2 overflow-x-auto overscroll-x-contain px-3 pb-1 sm:-mx-1 sm:gap-2.5 sm:px-1" aria-label="Lọc theo chủ đề">
               <Link
                 href="/tin-tuc"
                 className={cn(
@@ -90,7 +91,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   {category.name}
                 </Link>
               ))}
-            </nav>
+            </TopicScroll>
           </section>
         )}
 
