@@ -104,8 +104,8 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           }
         />
 
-        <section className="grid gap-4 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-          <article className="relative overflow-hidden rounded-[2.2rem] bg-[linear-gradient(135deg,#102437_0%,#16354a_52%,#1f8a54_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
+        <section className="grid min-w-0 gap-4 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+          <article className="relative min-w-0 overflow-hidden rounded-[2.2rem] bg-[linear-gradient(135deg,#102437_0%,#16354a_52%,#1f8a54_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(160,255,202,0.18),transparent_32%)]" aria-hidden="true" />
             <div className="relative z-10">
               <div className="inline-flex min-h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90">
@@ -126,16 +126,16 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                   </div>
                 ) : null}
 
-                <div className="mt-5 grid gap-4 xl:grid-cols-[0.82fr_1.18fr] xl:items-start">
-                  <div className="flex flex-wrap gap-2.5">
+                <div className="mt-5 grid min-w-0 gap-4 xl:grid-cols-[0.82fr_1.18fr] xl:items-start">
+                  <div className="flex min-w-0 flex-wrap gap-2.5">
                     {flowSignals.map((signal) => (
-                      <span key={signal} className="rounded-full border border-white/18 bg-white/10 px-3.5 py-2 text-sm font-medium text-white/92 backdrop-blur">
+                      <span key={signal} className="w-full min-w-0 break-words rounded-[1rem] border border-white/18 bg-white/10 px-3.5 py-2 text-sm font-medium leading-6 text-white/92 backdrop-blur sm:w-auto sm:rounded-full">
                         {signal}
                       </span>
                     ))}
                   </div>
 
-                  <div className="rounded-[1.9rem] border border-white/18 bg-white/10 p-4 backdrop-blur-xl">
+                  <div className="min-w-0 rounded-[1.9rem] border border-white/18 bg-white/10 p-4 backdrop-blur-xl">
                   <div className="flex items-center gap-4">
                     <PublicImage
                       src={featuredCooperative?.avatarUrl}
