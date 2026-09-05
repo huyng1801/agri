@@ -426,7 +426,7 @@ const NEWS_ARTICLES = [
   {
     title: 'ST25 – niềm tự hào gạo Việt trên bàn ăn quốc tế',
     category: 'tin-thi-truong',
-    cover: PHOTOS.rice,
+    cover: PHOTOS.harvest,
     excerpt: 'Gạo ST25 không chỉ ngon mà còn gắn với hành trình truy xuất nguồn gốc minh bạch của nông dân Đồng bằng sông Cửu Long.'
   },
   {
