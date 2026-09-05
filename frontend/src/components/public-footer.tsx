@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
-import type { PublicSiteKey } from '@/lib/domain';
+import { passportUrl, type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
@@ -37,7 +37,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       ]
     : isPassport
       ? [
-          { href: '/passport/DEMO-PASSPORT', label: 'Mở hồ sơ mẫu' },
+          { href: passportUrl('/passport/DEMO-PASSPORT'), label: 'Mở hồ sơ mẫu' },
           { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
           { href: '/ve-chung-toi', label: 'Cách hoạt động' },
           { href: '/lien-he', label: 'Liên hệ hỗ trợ' }
@@ -469,11 +469,17 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <div>
               <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">{serviceTitle}</p>
               <div className="mt-4 grid gap-1">
-                {serviceLinks.map((item) => (
-                  <Link key={item.href} href={item.href} className={footerLinkClass}>
-                    {item.label}
-                  </Link>
-                ))}
+                    {serviceLinks.map((item) =>
+                      item.href.startsWith('http') ? (
+                        <a key={item.href} href={item.href} className={footerLinkClass}>
+                          {item.label}
+                        </a>
+                      ) : (
+                        <Link key={item.href} href={item.href} className={footerLinkClass}>
+                          {item.label}
+                        </Link>
+                      )
+                    )}
               </div>
             </div>
 
