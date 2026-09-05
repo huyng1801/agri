@@ -497,6 +497,27 @@ const NEWS_ARTICLES = [
   }
 ] as const;
 
+const DOCUMENT_NEWS_ARTICLES = [
+  {
+    title: 'Nông sản Việt cần gì để mở rộng thị trường trong nước và quốc tế?',
+    category: 'tin-thi-truong',
+    cover: PHOTOS.riceField,
+    excerpt: 'Muốn đi xa, nông sản Việt cần hồ sơ sản phẩm đáng tin cậy, dữ liệu minh bạch, chất lượng ổn định và năng lực đáp ứng từng thị trường.',
+    focusKeyword: 'nông sản Việt mở rộng thị trường',
+    seoDescription: 'Muốn nông sản Việt đi xa, cần chuẩn hóa dữ liệu, minh bạch nguồn gốc, nâng chất lượng, chuẩn hóa vùng trồng và xây dựng hồ sơ sản phẩm đủ tin cậy cho người mua.',
+    bodyHtml: `<p>Nông sản Việt Nam đang có nhiều cơ hội tại thị trường trong nước và quốc tế. Tuy nhiên, sản xuất tốt thôi chưa đủ. Khi người mua quan tâm đến chất lượng, an toàn, tính ổn định và minh bạch, mỗi sản phẩm cần có một hồ sơ có thể kiểm chứng.</p><h2>1. Nông sản phải có hồ sơ rõ ràng</h2><p>Hồ sơ sản phẩm nên cho biết đơn vị sản xuất, tên sản phẩm, mùa vụ, quy cách, vùng sản xuất, quy trình, chứng nhận, lô hàng, hình ảnh, thông tin liên hệ và mã QR tra cứu. QR chỉ có giá trị khi dữ liệu phía sau được chuẩn hóa, cập nhật và gắn đúng với sản phẩm.</p><h2>2. Truy xuất nguồn gốc phải trở thành năng lực vận hành</h2><p>Truy xuất không chỉ là để người tiêu dùng quét mã. Đó là khả năng trả lời bằng dữ liệu sản phẩm đến từ đâu, đi qua những khâu nào, thuộc lô nào và ai chịu trách nhiệm. Hợp tác xã nên bắt đầu từ dữ liệu gốc về thành viên, vùng sản xuất, sản phẩm, nhật ký, lô hàng và chứng nhận.</p><h2>3. Chất lượng cần ổn định qua từng vụ</h2><ul><li>Chuẩn hóa quy trình sản xuất và thu hoạch.</li><li>Quản lý vật tư đầu vào và thời điểm sử dụng.</li><li>Kiểm soát sau thu hoạch, phân loại và đóng gói.</li><li>Quản lý lô để đối soát và xử lý sai lệch.</li><li>Ghi nhận phản hồi của khách hàng và đối tác.</li></ul><h2>4. Vùng trồng là một tài sản dữ liệu</h2><p>Vùng sản xuất được số hóa giúp hợp tác xã nắm diện tích, thành viên, sản lượng dự kiến, mùa vụ và lô hàng đang lưu thông. Đây là nền tảng để chuyển từ bán hàng theo cảm tính sang lập kế hoạch cung ứng dựa trên dữ liệu.</p><h2>5. Bao bì và thương hiệu phải giúp người mua hiểu nhanh</h2><ul><li>Tên sản phẩm và thông tin đơn vị sản xuất nhất quán.</li><li>Quy cách, hướng dẫn bảo quản và QR đặt ở vị trí dễ quét.</li><li>Hình ảnh thật, đồng nhất giữa website, mạng xã hội và bao bì.</li><li>Câu chuyện sản phẩm ngắn gọn nhưng có căn cứ.</li></ul><h2>6. Muốn đi quốc tế, hãy chuẩn bị dữ liệu từ trong nước</h2><p>Mỗi thị trường có thể yêu cầu khác nhau về an toàn thực phẩm, dư lượng, kiểm dịch, ghi nhãn, tiêu chuẩn kỹ thuật, vùng sản xuất và truy xuất. Chuẩn hóa dữ liệu sớm giúp giảm chi phí khi mở rộng sang thị trường mới.</p><h2>7. Agripassport hỗ trợ ở đâu?</h2><p>Agripassport hướng đến việc giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa thông tin sản phẩm, công khai đúng phần cần thiết và kết nối QR truy xuất. Htxonline phục vụ quản trị nội bộ; dữ liệu đã chuẩn hóa có thể đồng bộ sang lớp sản phẩm và hộ chiếu nông nghiệp.</p><h2>8. Mô hình 5 lớp để sẵn sàng mở rộng thị trường</h2><table><thead><tr><th>Lớp</th><th>Cần chuẩn bị</th><th>Kết quả</th></tr></thead><tbody><tr><td>Sản xuất</td><td>Quy trình, vùng, nhật ký, vật tư</td><td>Chất lượng ổn định</td></tr><tr><td>Dữ liệu</td><td>HTX, sản phẩm, vùng, lô, chứng nhận</td><td>Hồ sơ kiểm chứng được</td></tr><tr><td>Minh bạch</td><td>QR và thông tin công khai</td><td>Tăng niềm tin</td></tr><tr><td>Thương mại</td><td>Bao bì, hình ảnh, giá, kênh bán</td><td>Dễ tiếp cận người mua</td></tr><tr><td>Thị trường</td><td>Tiêu chuẩn, đối tác, logistics</td><td>Có khả năng mở rộng</td></tr></tbody></table><h2>9. Hợp tác xã nên bắt đầu từ đâu?</h2><ol><li>Chọn một đến ba sản phẩm chủ lực.</li><li>Chuẩn hóa thông tin hợp tác xã, vùng sản xuất và sản phẩm.</li><li>Lập danh sách dữ liệu tối thiểu cần thu thập.</li><li>Mở QR cho sản phẩm đã đủ dữ liệu.</li><li>Thử nghiệm bán hàng, ghi nhận phản hồi rồi mở rộng dần.</li></ol><p>Nông sản Việt muốn đi xa cần sản xuất chuẩn hơn, ghi nhận tốt hơn, minh bạch hơn và kết nối thị trường hiệu quả hơn. Hãy bắt đầu từ một sản phẩm chủ lực và xây dựng hồ sơ dữ liệu đủ tin cậy.</p>`,
+  },
+  {
+    title: 'Truy xuất nguồn gốc và xuất xứ sản phẩm khác nhau như thế nào?',
+    category: 'truy-xuat-nguon-goc',
+    cover: PHOTOS.vegBasket,
+    excerpt: 'Xuất xứ cho biết sản phẩm được sản xuất hoặc hình thành từ đâu; truy xuất nguồn gốc cho biết lịch sử và hành trình của sản phẩm dựa trên dữ liệu.',
+    focusKeyword: 'truy xuất nguồn gốc và xuất xứ sản phẩm',
+    seoDescription: 'Phân biệt truy xuất nguồn gốc và xuất xứ sản phẩm: khái niệm, dữ liệu, mục đích, QR truy xuất và ví dụ thực tế cho nông sản.',
+    bodyHtml: `<p>“Truy xuất nguồn gốc” và “xuất xứ sản phẩm” thường được nhắc đến cùng nhau nhưng không đồng nghĩa. Xuất xứ tập trung vào nơi sản phẩm được sản xuất hoặc hình thành; truy xuất tập trung vào khả năng theo dõi lịch sử, quá trình sản xuất, chế biến và lưu thông bằng dữ liệu.</p><h2>1. Vì sao cần phân biệt?</h2><p>Nếu chỉ ghi một địa danh mà không có dữ liệu kiểm chứng, thông tin khó tạo niềm tin. Ngược lại, hệ thống truy xuất sẽ khó phát huy tác dụng nếu nơi sản xuất, vùng trồng và xuất xứ không được chuẩn hóa.</p><h2>2. Xuất xứ sản phẩm là gì?</h2><p>Xuất xứ là thông tin cho biết sản phẩm được sản xuất, thu hoạch, chế biến hoặc hình thành tại đâu theo tiêu chí áp dụng. Với nông sản, thông tin này có thể gắn với quốc gia, địa phương, vùng sản xuất hoặc cơ sở sản xuất.</p><h2>3. Truy xuất nguồn gốc là gì?</h2><p>Truy xuất nguồn gốc là khả năng theo dõi và xác định thông tin sản phẩm trong quá trình sản xuất, chế biến, phân phối và lưu thông dựa trên dữ liệu được ghi nhận. Hồ sơ có thể gồm đơn vị sản xuất, vùng trồng, thời gian, nhật ký, thu hoạch, sơ chế, đóng gói, mã lô và chứng nhận được phép công khai.</p><h2>4. So sánh nhanh</h2><table><thead><tr><th>Tiêu chí</th><th>Xuất xứ sản phẩm</th><th>Truy xuất nguồn gốc</th></tr></thead><tbody><tr><td>Câu hỏi chính</td><td>Sản phẩm được hình thành từ đâu?</td><td>Sản phẩm đã đi qua công đoạn nào?</td></tr><tr><td>Phạm vi</td><td>Nơi sản xuất hoặc hình thành</td><td>Chuỗi thông tin và hành trình sản phẩm</td></tr><tr><td>Mục đích</td><td>Xác định và thể hiện xuất xứ</td><td>Minh bạch, kiểm chứng, theo dõi lịch sử</td></tr><tr><td>Dữ liệu</td><td>Quốc gia, địa phương, vùng sản xuất</td><td>Mã truy vết, lô, sản xuất, thu hoạch, chế biến, đóng gói</td></tr></tbody></table><h2>5. Ví dụ với một sản phẩm trà</h2><p>Thông tin xuất xứ có thể cho biết hộp trà được sản xuất tại Việt Nam và gắn với vùng chè Hà Giang. Hồ sơ truy xuất có thể cung cấp thêm đơn vị sản xuất, vùng trồng, thời điểm thu hái, sơ chế, đóng gói, mã lô, chứng nhận và mã QR mở hồ sơ.</p><h2>6. QR có phải là truy xuất nguồn gốc không?</h2><p>Không. QR chỉ là vật mang dữ liệu hoặc phương tiện đưa người dùng đến thông tin. Một mã QR không tự chứng minh sản phẩm thật hay an toàn. Giá trị nằm ở dữ liệu phía sau: dữ liệu phải có cấu trúc, được cập nhật và gắn đúng với sản phẩm hoặc lô sản phẩm.</p><h2>7. Hồ sơ truy xuất nên có gì?</h2><ul><li>Thông tin đơn vị sản xuất hoặc hợp tác xã.</li><li>Tên sản phẩm, vùng sản xuất và mã lô.</li><li>Thời gian sản xuất, thu hoạch hoặc chế biến.</li><li>Nhật ký sản xuất, sơ chế và đóng gói ở mức phù hợp.</li><li>Chứng nhận, hình ảnh thực tế và thông tin liên hệ được phép công khai.</li><li>QR hoặc mã tra cứu dẫn đến đúng hồ sơ.</li></ul><h2>8. Những lỗi thường gặp</h2><ul><li>Chỉ tạo QR nhưng thiếu dữ liệu.</li><li>Nhầm địa danh xuất xứ với toàn bộ hệ thống truy xuất.</li><li>Dữ liệu tên sản phẩm, vùng, lô và ngày tháng không đồng nhất.</li><li>Không cập nhật khi chuyển sang sản phẩm hoặc lô mới.</li><li>Công khai quá nhiều dữ liệu nội bộ hoặc thiếu thông tin người mua cần.</li></ul><h2>9. Nên bắt đầu từ đâu?</h2><ol><li>Xác định sản phẩm và lô cần truy xuất.</li><li>Chuẩn hóa thông tin đơn vị, vùng và sản phẩm.</li><li>Xác định các điểm dữ liệu quan trọng trong hành trình.</li><li>Thiết lập mã truy vết và kiểm tra tính nhất quán.</li><li>Tạo QR, thử tra cứu trên điện thoại và cập nhật định kỳ.</li></ol><p>Xuất xứ giúp xác định sản phẩm được sản xuất từ đâu, còn truy xuất nguồn gốc giúp theo dõi và kiểm chứng hành trình của sản phẩm. QR chỉ là điểm chạm; giá trị cốt lõi nằm ở dữ liệu phía sau QR.</p>`,
+  }
+] as const;
+
 const DEMO_CODES = DEMO_COOPERATIVES.map((item) => item.code);
 
 async function ensureCategories() {
@@ -769,11 +790,17 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
 async function seedNews(superAdminId: string) {
   const categories = await prisma.newsCategory.findMany();
   const categoryBySlug = new Map(categories.map((item) => [item.slug, item.id]));
+  const allArticles = [...NEWS_ARTICLES, ...DOCUMENT_NEWS_ARTICLES];
 
-  for (const [index, article] of NEWS_ARTICLES.entries()) {
+  for (const [index, article] of allArticles.entries()) {
     const slug = slugify(article.title);
     const publishedAt = new Date();
     publishedAt.setDate(publishedAt.getDate() - index * 3);
+    const bodyHtml = 'bodyHtml' in article
+      ? article.bodyHtml
+      : `<p>${article.excerpt}</p><p>Nội dung demo HTXONLINE – bài viết số ${index + 1} về nông nghiệp và hợp tác xã Việt Nam.</p>`;
+    const focusKeyword = 'focusKeyword' in article ? article.focusKeyword : undefined;
+    const seoDescription = 'seoDescription' in article ? article.seoDescription : article.excerpt;
     await prisma.newsArticle.upsert({
       where: { slug },
       create: {
@@ -782,24 +809,46 @@ async function seedNews(superAdminId: string) {
         title: article.title,
         slug,
         excerpt: article.excerpt,
-        bodyHtml: `<p>${article.excerpt}</p><p>Nội dung demo HTXONLINE – bài viết số ${index + 1} về nông nghiệp và hợp tác xã Việt Nam.</p>`,
+        bodyHtml,
         coverImageUrl: article.cover,
         coverImageAlt: article.title,
         status: NewsStatus.PUBLISHED,
         isFeatured: index < 4,
         showOnHome: index < 6,
+        focusKeyword,
         publishedAt,
         viewCount: 120 + index * 17,
         seoTitle: article.title,
-        seoDescription: article.excerpt
+        seoDescription,
+        ogTitle: article.title,
+        ogDescription: seoDescription,
+        ogImageUrl: article.cover,
+        twitterTitle: article.title,
+        twitterDescription: seoDescription,
+        twitterImageUrl: article.cover,
+        tagsJson: focusKeyword ? [focusKeyword, article.category, 'Agripassport'] : [article.category, 'Agripassport']
       },
       update: {
         title: article.title,
         excerpt: article.excerpt,
         coverImageUrl: article.cover,
+        coverImageAlt: article.title,
         status: NewsStatus.PUBLISHED,
         isFeatured: index < 4,
         showOnHome: index < 6,
+        ...('bodyHtml' in article ? {
+          bodyHtml,
+          focusKeyword,
+          seoTitle: article.title,
+          seoDescription,
+          ogTitle: article.title,
+          ogDescription: seoDescription,
+          ogImageUrl: article.cover,
+          twitterTitle: article.title,
+          twitterDescription: seoDescription,
+          twitterImageUrl: article.cover,
+          tagsJson: [focusKeyword!, article.category, 'Agripassport']
+        } : {}),
         publishedAt
       }
     });
@@ -896,7 +945,7 @@ async function main() {
 
   if (superAdmin) {
     await seedNews(superAdmin.id);
-    console.log(`Seeded ${NEWS_ARTICLES.length} bài tin tức`);
+    console.log(`Seeded ${NEWS_ARTICLES.length + DOCUMENT_NEWS_ARTICLES.length} bài tin tức`);
   }
 
   await seedSampleOrders();
