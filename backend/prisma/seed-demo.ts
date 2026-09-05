@@ -65,7 +65,7 @@ const GLOBAL_CATEGORIES = [
 
 const PHOTOS = {
   farm: img('1464226184884-fa280b87c399', 1200),
-  rice: demoPhoto('rice', 900, 600),
+  rice: img('1536304993881-ff6e9eefa2a6', 1200),
   riceField: demoPhoto('rice-field', 1200, 700),
   veg: demoPhoto('vegetables', 900, 600),
   vegBasket: demoPhoto('veg-basket', 900, 600),
@@ -426,7 +426,7 @@ const NEWS_ARTICLES = [
   {
     title: 'ST25 – niềm tự hào gạo Việt trên bàn ăn quốc tế',
     category: 'tin-thi-truong',
-    cover: PHOTOS.harvest,
+    cover: PHOTOS.rice,
     excerpt: 'Gạo ST25 không chỉ ngon mà còn gắn với hành trình truy xuất nguồn gốc minh bạch của nông dân Đồng bằng sông Cửu Long.'
   },
   {
