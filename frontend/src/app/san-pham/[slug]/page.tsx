@@ -11,6 +11,7 @@ import { formatDate } from '@/lib/format';
 import { brandizeSiteText } from '@/lib/page-metadata';
 import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 import { Panel } from '@/components/ui';
+import { passportUrl } from '@/lib/domain';
 
 async function getProduct(slug: string) {
   try {
@@ -134,13 +135,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
 
             {passport && (
-              <Link
-                href={`/passport/${passport.passportCode}`}
+              <a
+                href={passportUrl(`/passport/${passport.passportCode}`)}
                 className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[1.15rem] border border-white/14 bg-black/14 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-white/12"
               >
                 <QrCode size={18} aria-hidden="true" />
                 Xem QR Passport
-              </Link>
+              </a>
             )}
 
             <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
@@ -273,12 +274,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               {product.cooperative?.phone && <p className="mt-1 text-slate-600">{product.cooperative.phone}</p>}
               {product.zone?.address && <p className="mt-1 text-sm leading-6 text-slate-600">{product.zone.address}</p>}
               {passport && (
-                <Link
-                  href={`/passport/${passport.passportCode}`}
+                <a
+                  href={passportUrl(`/passport/${passport.passportCode}`)}
                   className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink shadow-sm hover:bg-slate-50"
                 >
                   Xem QR Passport
-                </Link>
+                </a>
               )}
             </Panel>
           </aside>

@@ -10,6 +10,7 @@ import { buildPublicMetadata } from '@/lib/page-metadata';
 import { Button } from '@/components/ui';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
+import { passportUrl } from '@/lib/domain';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
@@ -69,7 +70,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const featuredProduct = products[0];
   const featuredProductSlug = featuredProduct?.slug ? `/san-pham/${featuredProduct.slug}` : '/san-pham';
   const featuredProductQr = featuredProduct?.passports?.[0];
-  const featuredProductQrHref = featuredProductQr ? `/passport/${featuredProductQr.publicSlug || featuredProductQr.passportCode}` : null;
+  const featuredProductQrHref = featuredProductQr ? passportUrl(`/passport/${featuredProductQr.publicSlug || featuredProductQr.passportCode}`) : null;
   const quickProductLinks = products.slice(1, 4);
   const heroTabs = [
     filters.category || categoryHighlights[0] || 'Tất cả',
@@ -159,12 +160,12 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                           Xem chi tiết
                         </Link>
                         {featuredProductQrHref ? (
-                          <Link
+                          <a
                             href={featuredProductQrHref}
                             className="inline-flex min-h-11 items-center rounded-full border border-[#d8e7d8] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
                           >
                             Mở QR Passport
-                          </Link>
+                          </a>
                         ) : null}
                       </div>
                     </div>
