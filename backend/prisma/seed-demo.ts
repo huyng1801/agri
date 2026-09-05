@@ -500,6 +500,7 @@ const NEWS_ARTICLES = [
 const DOCUMENT_NEWS_ARTICLES = [
   {
     title: 'Nông sản Việt cần gì để mở rộng thị trường trong nước và quốc tế?',
+    slug: 'nong-san-viet-can-gi-de-mo-rong-thi-truong-trong-nuoc-quoc-te',
     category: 'tin-thi-truong',
     cover: PHOTOS.riceField,
     excerpt: 'Muốn đi xa, nông sản Việt cần hồ sơ sản phẩm đáng tin cậy, dữ liệu minh bạch, chất lượng ổn định và năng lực đáp ứng từng thị trường.',
@@ -509,6 +510,7 @@ const DOCUMENT_NEWS_ARTICLES = [
   },
   {
     title: 'Truy xuất nguồn gốc và xuất xứ sản phẩm khác nhau như thế nào?',
+    slug: 'truy-xuat-nguon-goc-va-xuat-xu-san-pham-khac-nhau',
     category: 'truy-xuat-nguon-goc',
     cover: PHOTOS.vegBasket,
     excerpt: 'Xuất xứ cho biết sản phẩm được sản xuất hoặc hình thành từ đâu; truy xuất nguồn gốc cho biết lịch sử và hành trình của sản phẩm dựa trên dữ liệu.',
@@ -793,7 +795,8 @@ async function seedNews(superAdminId: string) {
   const allArticles = [...NEWS_ARTICLES, ...DOCUMENT_NEWS_ARTICLES];
 
   for (const [index, article] of allArticles.entries()) {
-    const slug = slugify(article.title);
+    const slug = 'slug' in article ? article.slug : slugify(article.title);
+    const existingByTitle = await prisma.newsArticle.findFirst({ where: { title: article.title }, select: { slug: true } });
     const publishedAt = new Date();
     publishedAt.setDate(publishedAt.getDate() - index * 3);
     const bodyHtml = 'bodyHtml' in article
@@ -802,7 +805,7 @@ async function seedNews(superAdminId: string) {
     const focusKeyword = 'focusKeyword' in article ? article.focusKeyword : undefined;
     const seoDescription = 'seoDescription' in article ? article.seoDescription : article.excerpt;
     await prisma.newsArticle.upsert({
-      where: { slug },
+      where: { slug: existingByTitle?.slug ?? slug },
       create: {
         categoryId: categoryBySlug.get(article.category),
         authorId: superAdminId,
@@ -826,10 +829,13 @@ async function seedNews(superAdminId: string) {
         twitterTitle: article.title,
         twitterDescription: seoDescription,
         twitterImageUrl: article.cover,
-        tagsJson: focusKeyword ? [focusKeyword, article.category, 'Agripassport'] : [article.category, 'Agripassport']
+        tagsJson: focusKeyword ? [focusKeyword, article.category, 'Agripassport'] : [article.category, 'Agripassport'],
+        seoScore: focusKeyword ? 92 : undefined,
+        readabilityScore: focusKeyword ? 86 : undefined
       },
       update: {
         title: article.title,
+        slug,
         excerpt: article.excerpt,
         coverImageUrl: article.cover,
         coverImageAlt: article.title,
@@ -847,7 +853,9 @@ async function seedNews(superAdminId: string) {
           twitterTitle: article.title,
           twitterDescription: seoDescription,
           twitterImageUrl: article.cover,
-          tagsJson: [focusKeyword!, article.category, 'Agripassport']
+          tagsJson: [focusKeyword!, article.category, 'Agripassport'],
+          seoScore: 92,
+          readabilityScore: 86
         } : {}),
         publishedAt
       }
