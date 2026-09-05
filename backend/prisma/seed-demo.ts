@@ -863,6 +863,13 @@ async function seedNews(superAdminId: string) {
   }
 }
 
+async function hideTestArtifacts() {
+  await prisma.product.updateMany({
+    where: { name: { startsWith: 'E2E Cleanup Product' } },
+    data: { status: ProductStatus.DRAFT }
+  });
+}
+
 async function seedSampleOrders() {
   const products = await prisma.product.findMany({
     where: { cooperative: { code: { in: DEMO_CODES } }, status: 'PUBLISHED' },
@@ -935,6 +942,7 @@ async function main() {
   console.log(`Validated ${Object.keys(PHOTOS).length} demo image URLs`);
 
   await ensureCategories();
+  await hideTestArtifacts();
 
   const [basicPlan, proPlan, adminRole, superAdmin] = await Promise.all([
     prisma.subscriptionPlan.findUniqueOrThrow({ where: { slug: 'basic' } }),
