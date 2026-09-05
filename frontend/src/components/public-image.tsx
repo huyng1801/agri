@@ -33,10 +33,9 @@ export function PublicImage({
   priority = false,
   decorative = false
 }: PublicImageProps) {
-  // Demo hosts are not a production dependency. Render the bundled fallback
-  // immediately so the public UI never waits for, or exposes, a failed image.
-  const isDemoSource = (url: string) => /(?:picsum\.photos|images\.unsplash\.com)/i.test(url);
-  const resolved = src && !isDemoSource(src) ? src : fallback;
+  // Keep the content-specific image when available; the timeout and error
+  // handler below still protect the layout when a remote asset is unavailable.
+  const resolved = src || fallback;
   const [currentSrc, setCurrentSrc] = useState(resolved);
   const [loaded, setLoaded] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
