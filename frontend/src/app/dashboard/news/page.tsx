@@ -835,7 +835,7 @@ export default function NewsDashboardPage() {
     const url = await uploadFile(file, 'body');
     if (!url) return;
     const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua paste vao bai');
+    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa paste vào bài');
     insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
     setEditorAssist({
       kind: 'pasted-image',
@@ -855,7 +855,7 @@ export default function NewsDashboardPage() {
       const url = await uploadFile(file, 'body');
       if (!url) return;
       const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-      rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua paste vao editor');
+      rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa paste vào editor');
       insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
       setEditorAssist({
         kind: 'pasted-image',
@@ -888,7 +888,7 @@ export default function NewsDashboardPage() {
     const url = await uploadFile(file, 'body');
     if (!url) return;
     const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'anh vua tha vao bai');
+    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa thả vào bài');
     const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
     if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
     else insertHtml(imageHtml);
