@@ -75,7 +75,7 @@ const PHOTOS = {
   honey: demoPhoto('honey', 900, 600),
   fish: demoPhoto('fish', 900, 600),
   chicken: demoPhoto('chicken', 900, 600),
-  tea: demoPhoto('tea', 900, 600),
+  tea: img('1544787219-7f47ccb76574', 1200),
   mushroom: demoPhoto('mushroom', 900, 600),
   orchard: demoPhoto('orchard', 1200, 700),
   market: img('1542838132-92c53300491e', 1200),
