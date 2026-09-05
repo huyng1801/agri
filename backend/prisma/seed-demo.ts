@@ -413,10 +413,10 @@ const DEMO_COOPERATIVES: DemoCoop[] = [
     ],
     products: [
       { name: 'Trà Shan Tuyết thượng hạng', category: 'tra-duoc-lieu', price: 450000, unit: 'kg', image: PHOTOS.tea, description: 'Chè Shan Tuyết búp tuyết, hái thủ công đồi cao.' },
-      { name: 'Trà Shan Tuyết túi 100g', category: 'tra-duoc-lieu', price: 95000, unit: 'túi', image: PHOTOS.harvest, description: 'Túi 100g tiện pha, hộp quà tặng.' },
-      { name: 'Trà hoa vàng', category: 'tra-duoc-lieu', price: 320000, unit: 'kg', image: PHOTOS.orchard, description: 'Trà hoa vàng quý hiếm, vị ngọt hậu.' },
-      { name: 'Trà atiso đỏ', category: 'tra-duoc-lieu', price: 180000, unit: 'kg', image: PHOTOS.market, description: 'Trà atiso đỏ Lâm Đồng phối hợp Shan Tuyết.' },
-      { name: 'Combo trà quà tặng', category: 'tra-duoc-lieu', price: 599000, unit: 'hộp', image: PHOTOS.coopTeam, description: 'Hộp quà 4 loại trà đặc sản Tây Bắc.' },
+      { name: 'Trà Shan Tuyết túi 100g', category: 'tra-duoc-lieu', price: 95000, unit: 'túi', image: PHOTOS.tea, description: 'Túi 100g tiện pha, hộp quà tặng.' },
+      { name: 'Trà hoa vàng', category: 'tra-duoc-lieu', price: 320000, unit: 'kg', image: PHOTOS.tea, description: 'Trà hoa vàng quý hiếm, vị ngọt hậu.' },
+      { name: 'Trà atiso đỏ', category: 'tra-duoc-lieu', price: 180000, unit: 'kg', image: PHOTOS.tea, description: 'Trà atiso đỏ Lâm Đồng phối hợp Shan Tuyết.' },
+      { name: 'Combo trà quà tặng', category: 'tra-duoc-lieu', price: 599000, unit: 'hộp', image: PHOTOS.tea, description: 'Hộp quà 4 loại trà đặc sản Tây Bắc.' },
       { name: 'Trà xanh Shan', category: 'tra-duoc-lieu', price: 280000, unit: 'kg', image: PHOTOS.tea, description: 'Trà xanh Shan sấy khô, vị thanh mát.' }
     ]
   }
