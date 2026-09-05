@@ -75,7 +75,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
     <PublicShell>
       <PublicPageMain>
         <PublicPageHeader
-          eyebrow="Nền tảng Agripassport"
+          eyebrow={`Nền tảng ${siteProfile.appName}`}
           title={pageTitle}
           description={pageDescription}
           action={
