@@ -1,6 +1,7 @@
 import { cn } from './ui';
 
 export const PUBLIC_LOGO_SRC = '/logo.png';
+const PUBLIC_LOGO_WIDTH_RATIO = 603 / 669;
 
 type PublicLogoProps = {
   size?: number;
@@ -28,14 +29,17 @@ export function PublicLogo({ size = 40, className, variant = 'default' }: Public
     );
   }
 
+  const width = Math.round(size * PUBLIC_LOGO_WIDTH_RATIO);
+  const height = size;
+
   return (
     <img
       src={PUBLIC_LOGO_SRC}
       alt="HTXONLINE"
-      width={size}
+      width={width}
       height={size}
       className={cn('shrink-0 object-contain', className)}
-      style={{ width: size, height: size }}
+      style={{ width, height }}
     />
   );
 }
