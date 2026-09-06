@@ -122,7 +122,7 @@ export function PublicHeader({
           <div className="flex items-center gap-2 py-2 md:hidden">
             <button
               type="button"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#d9e5d7] bg-white text-[#1f9b4b] shadow-sm transition hover:text-[#16753d]"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d9e5d7] bg-white text-[#1f9b4b] shadow-sm transition hover:text-[#16753d]"
               aria-label={menuOpen ? 'Đóng menu' : 'Mở menu'}
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
@@ -144,14 +144,14 @@ export function PublicHeader({
               <Link
                 href={searchTarget}
                 aria-label="Tìm kiếm"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#1f9b4b] text-white shadow-[0_12px_24px_rgba(31,155,75,0.2)]"
               >
                 <Search size={21} aria-hidden="true" />
               </Link>
               <Link
                 href={navCta.href}
                 aria-label={navCta.label}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#d8e5d6] bg-white text-[#252b3d] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#d8e5d6] bg-white text-[#252b3d] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
               >
                 <CtaIcon size={18} aria-hidden="true" />
               </Link>
@@ -166,7 +166,7 @@ export function PublicHeader({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    'inline-flex min-h-9 shrink-0 snap-start items-center rounded-full border px-3 text-[0.72rem] font-semibold transition',
+                    'inline-flex min-h-10 shrink-0 snap-start items-center rounded-full border px-3 text-[0.72rem] font-semibold transition',
                     active
                       ? 'border-[#132031] bg-[#132031] text-white shadow-[0_12px_24px_rgba(19,32,49,0.16)]'
                       : 'border-[#dfe8db] bg-[#f8faf5] text-[#27513a]'
@@ -254,7 +254,7 @@ export function PublicHeader({
         </div>
 
         {menuOpen ? (
-          <div className="fixed inset-x-0 bottom-0 top-[8.6rem] z-40 md:hidden">
+          <div className="fixed inset-x-0 bottom-0 top-[9.25rem] z-40 md:hidden">
             <button type="button" className="absolute inset-0 bg-[#13231a]/24 backdrop-blur-[1px]" aria-label="Đóng menu" onClick={closeMenu} />
             <div className="relative mx-3 max-h-full overflow-y-auto rounded-[2rem] border border-[#e7e3d7] bg-white p-4 shadow-[0_26px_60px_rgba(15,23,42,0.14)]">
               <div className="rounded-[1.6rem] bg-[linear-gradient(135deg,#0f172a_0%,#17314b_48%,#1f9b4b_100%)] p-4 text-white">
