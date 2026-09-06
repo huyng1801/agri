@@ -41,10 +41,10 @@ const internalFeatureCards = [
 ] as const;
 
 const workflowPoints = [
-  'Bắt đầu từ quản trị nội bộ thay vì cố đẩy toàn bộ quy trình ra giao diện public.',
+  'Bắt đầu từ dữ liệu quản trị nội bộ, sau đó chọn thông tin phù hợp để công khai.',
   'Tách rõ lớp dữ liệu HTXONLINE, AGRIPASSPORT và Hộ chiếu nông nghiệp.',
-  'Ưu tiên nhịp mobile-first: đọc nhanh, bấm rõ, ít tầng thông tin thừa.',
-  'Mỗi nền tảng có một vai trò nên người xem vào là hiểu ngay đang ở đâu.'
+  'Thông tin được sắp theo từng bước để HTX, đối tác và người mua dễ tra cứu.',
+  'Mỗi nền tảng có một vai trò rõ ràng trong hành trình từ sản xuất đến thị trường.'
 ] as const;
 
 export default async function AboutPage() {
@@ -169,7 +169,7 @@ export default async function AboutPage() {
                   Giải pháp dịch vụ tiêu biểu
                 </h2>
                 <p className="mt-3 text-[0.96rem] leading-7 text-slate-600 sm:text-base">
-                  Ba card lớn bên dưới giúp nhìn nhanh vai trò thật của từng nền tảng trong hệ sinh thái Agri.
+                  Ba nền tảng dưới đây đảm nhận những vai trò khác nhau trong cùng hệ sinh thái Agri.
                 </p>
               </div>
               <Link
@@ -252,7 +252,7 @@ export default async function AboutPage() {
 
               <div className="mt-5 rounded-[1.45rem] bg-[linear-gradient(135deg,#0f172a_0%,#12344b_48%,#1f9b4b_100%)] p-4 text-white">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/68">Bước tiếp theo</p>
-                <p className="mt-2 text-lg font-extrabold leading-7">Muốn triển khai hiệu quả, giao diện cần headline rõ, card lớn và CTA dễ bấm để HTX lẫn người mua dùng tốt trên mobile.</p>
+                <p className="mt-2 text-lg font-extrabold leading-7">Từ dữ liệu hiện có, đội ngũ sẽ cùng HTX chọn lộ trình phù hợp để quản lý, công khai và truy xuất sản phẩm.</p>
                 <Link href="/lien-he" className="mt-4 inline-flex min-h-11 items-center rounded-full bg-white px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5">
                   Nhận tư vấn triển khai
                 </Link>

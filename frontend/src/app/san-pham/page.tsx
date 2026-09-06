@@ -180,7 +180,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       <p className="mt-3 text-base leading-7 text-slate-600">
                         {hasActiveFilter
                           ? 'Bỏ bớt điều kiện lọc để xem lại sản phẩm đang có trên HTXONLINE.'
-                          : 'Khi dữ liệu sản phẩm sẵn sàng, khu vực này sẽ chuyển thành thẻ trưng bày lớn để người dùng quét nhanh hơn.'}
+                          : 'Khi HTX công khai sản phẩm, thông tin sẽ được cập nhật tại đây để bạn dễ dàng tìm hiểu và lựa chọn.'}
                       </p>
                       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                         <Link
