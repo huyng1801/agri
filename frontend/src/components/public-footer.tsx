@@ -408,7 +408,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                             {card.name}
                           </span>
                           <span className="mt-1 block text-sm leading-6 text-[rgba(255,255,255,0.86)]">
-                            {isCurrent ? 'Đang là giao diện bạn đang xem' : card.signal}
+                            {card.signal}
                           </span>
                         </span>
                       </div>
@@ -563,7 +563,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                       <span className="min-w-0">
                         <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[rgba(255,255,255,0.72)]">{card.label}</span>
                         <span className="mt-1 block text-[1rem] font-extrabold leading-tight">{card.name}</span>
-                        <span className="mt-1 block text-sm leading-6 text-[rgba(255,255,255,0.86)]">{isCurrent ? 'Đang là giao diện bạn đang xem' : card.signal}</span>
+                        <span className="mt-1 block text-sm leading-6 text-[rgba(255,255,255,0.86)]">{card.signal}</span>
                       </span>
                     </div>
                   </a>

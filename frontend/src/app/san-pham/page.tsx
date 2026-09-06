@@ -204,7 +204,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                   <section className="rounded-[2rem] border border-[#dbe7d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5">
                     <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e]">Quét nhanh theo ngữ cảnh</p>
                     <h2 className="mt-2 text-[1.36rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1f2233] sm:text-[1.7rem]">
-                      Gọn hơn cho mobile nhưng vẫn giữ đủ thông tin để chọn đúng sản phẩm.
+                      Tìm nhanh sản phẩm theo nhu cầu của bạn.
                     </h2>
                     <div className="mt-4 grid grid-cols-3 gap-2.5">
                       {[
