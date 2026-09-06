@@ -116,7 +116,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               <div className="sm:col-span-2 lg:col-span-1">
                 <div className="flex items-center gap-3">
                   <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white shadow-[0_12px_28px_rgba(18,63,88,0.1)] ring-1 ring-[#cfe4de]">
-                    <PublicLogo size={38} />
+                    <PublicLogo size={38} variant="agri" />
                   </span>
                   <div>
                     <p className="text-[1.1rem] font-extrabold tracking-[-0.03em] text-[#123a66]">AGRIPASSPORT</p>

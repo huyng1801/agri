@@ -78,14 +78,16 @@ export function cooperativeAvatar(cooperative: Pick<PublicCooperative, 'avatarUr
 
 export function PublicSearch({
   placeholder = 'Tìm sản phẩm, HTX, vùng trồng',
-  action = '/san-pham'
+  action = '/san-pham',
+  className
 }: {
   placeholder?: string;
   action?: string;
+  className?: string;
 }) {
   return (
     <form
-      className="flex flex-col gap-2 rounded-[1.4rem] border border-[#d9e8d5] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.09)] ring-4 ring-[#eef7eb] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2"
+      className={cn('flex flex-col gap-2 rounded-[1.4rem] border border-[#d9e8d5] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.09)] ring-4 ring-[#eef7eb] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2', className)}
       action={action}
     >
       <div className="relative flex-1">
@@ -202,7 +204,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
             />
           </Link>
           <p className="text-sm leading-6 text-white/82">
-            Hồ sơ công khai đã nối trực tiếp sang sản phẩm để người xem chạm ít hơn khi đi từ HTX tới đầu ra.
+            Xem nhanh thông tin HTX và các sản phẩm đang được giới thiệu trên hồ sơ công khai.
           </p>
         </div>
       </div>
