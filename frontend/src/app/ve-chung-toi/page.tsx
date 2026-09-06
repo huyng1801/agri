@@ -290,7 +290,7 @@ export default async function AboutUsPage() {
                 {[
                   'Rà soát vai trò quản trị nội bộ, xã viên, dịch vụ, thu chi và xuất nhập theo đúng mô hình HTX.',
                   'Chuẩn hóa dữ liệu sản phẩm để sẵn sàng đồng bộ sang Agripassport và Hộ chiếu nông nghiệp.',
-                  'Thiết kế giao diện public theo nhịp mobile-first để người xem vào là hiểu luồng ngay.'
+                  'Tổ chức thông tin rõ ràng để đội ngũ dễ theo dõi và thao tác ngay trên điện thoại.'
                 ].map((item) => (
                   <div key={item} className="flex items-start gap-3 rounded-[1.35rem] border border-[#dce7d9] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
                     <CheckCircle2 className="mt-0.5 shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
