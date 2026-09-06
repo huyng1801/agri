@@ -403,6 +403,7 @@ function cleanNewsHtml(value: string) {
       'blockquote',
       'figure',
       'figcaption',
+      'div',
       'img',
       'table',
       'thead',
@@ -413,6 +414,7 @@ function cleanNewsHtml(value: string) {
     ],
     allowedAttributes: {
       a: ['href', 'target', 'rel'],
+      div: ['class'],
       img: ['src', 'alt', 'loading', 'width', 'height'],
       th: ['colspan', 'rowspan'],
       td: ['colspan', 'rowspan']

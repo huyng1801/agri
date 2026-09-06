@@ -236,6 +236,45 @@ button {
   text-align: center;
 }
 
+.news-body .table-wrap {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  border: 1px solid #dce8d8;
+  border-radius: 1rem;
+  background: #fff;
+  -webkit-overflow-scrolling: touch;
+}
+
+.news-body table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.news-body th,
+.news-body td {
+  border-bottom: 1px solid #e5eee2;
+  padding: 0.8rem 0.9rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.news-body th {
+  background: #f1f8ef;
+  color: #173327;
+  font-weight: 800;
+}
+
+.news-body tr:last-child td {
+  border-bottom: 0;
+}
+
+.news-body section[data-agri-contact] {
+  display: none;
+}
+
 @media (max-width: 640px) {
   .news-body {
     font-size: 1rem;
@@ -262,5 +301,9 @@ button {
 
   .news-body img {
     border-radius: 0.8rem;
+  }
+
+  .news-body table {
+    font-size: 0.9rem;
   }
 }

@@ -9,6 +9,7 @@ import {
 } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { customAlphabet } from 'nanoid';
+import { EDITORIAL_NEWS_ARTICLES } from './editorial-news';
 
 const prisma = new PrismaClient();
 const passportCode = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 10);
@@ -792,18 +793,17 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
 async function seedNews(superAdminId: string) {
   const categories = await prisma.newsCategory.findMany();
   const categoryBySlug = new Map(categories.map((item) => [item.slug, item.id]));
-  const allArticles = [...NEWS_ARTICLES, ...DOCUMENT_NEWS_ARTICLES];
+  const editorialArticles = EDITORIAL_NEWS_ARTICLES.map((article) => ({ ...article, cover: PHOTOS[article.coverKey as keyof typeof PHOTOS] }));
+  const allArticles = [...DOCUMENT_NEWS_ARTICLES, ...editorialArticles];
 
   for (const [index, article] of allArticles.entries()) {
-    const slug = 'slug' in article ? article.slug : slugify(article.title);
+    const slug = article.slug;
     const existingByTitle = await prisma.newsArticle.findFirst({ where: { title: article.title }, select: { slug: true } });
     const publishedAt = new Date();
     publishedAt.setDate(publishedAt.getDate() - index * 3);
-    const bodyHtml = 'bodyHtml' in article
-      ? article.bodyHtml
-      : `<p>${article.excerpt}</p><p>Nội dung demo HTXONLINE – bài viết số ${index + 1} về nông nghiệp và hợp tác xã Việt Nam.</p>`;
-    const focusKeyword = 'focusKeyword' in article ? article.focusKeyword : undefined;
-    const seoDescription = 'seoDescription' in article ? article.seoDescription : article.excerpt;
+    const bodyHtml = article.bodyHtml;
+    const focusKeyword = article.focusKeyword;
+    const seoDescription = article.seoDescription;
     await prisma.newsArticle.upsert({
       where: { slug: existingByTitle?.slug ?? slug },
       create: {
@@ -829,9 +829,9 @@ async function seedNews(superAdminId: string) {
         twitterTitle: article.title,
         twitterDescription: seoDescription,
         twitterImageUrl: article.cover,
-        tagsJson: focusKeyword ? [focusKeyword, article.category, 'Agripassport'] : [article.category, 'Agripassport'],
-        seoScore: focusKeyword ? 92 : undefined,
-        readabilityScore: focusKeyword ? 86 : undefined
+        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        seoScore: 92,
+        readabilityScore: 86
       },
       update: {
         title: article.title,
@@ -842,25 +842,28 @@ async function seedNews(superAdminId: string) {
         status: NewsStatus.PUBLISHED,
         isFeatured: index < 4,
         showOnHome: index < 6,
-        ...('bodyHtml' in article ? {
-          bodyHtml,
-          focusKeyword,
-          seoTitle: article.title,
-          seoDescription,
-          ogTitle: article.title,
-          ogDescription: seoDescription,
-          ogImageUrl: article.cover,
-          twitterTitle: article.title,
-          twitterDescription: seoDescription,
-          twitterImageUrl: article.cover,
-          tagsJson: [focusKeyword!, article.category, 'Agripassport'],
-          seoScore: 92,
-          readabilityScore: 86
-        } : {}),
+        bodyHtml,
+        focusKeyword,
+        seoTitle: article.title,
+        seoDescription,
+        ogTitle: article.title,
+        ogDescription: seoDescription,
+        ogImageUrl: article.cover,
+        twitterTitle: article.title,
+        twitterDescription: seoDescription,
+        twitterImageUrl: article.cover,
+        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        seoScore: 92,
+        readabilityScore: 86,
         publishedAt
       }
     });
   }
+
+  await prisma.newsArticle.updateMany({
+    where: { title: { in: NEWS_ARTICLES.map((article) => article.title) } },
+    data: { status: NewsStatus.DRAFT, isFeatured: false, showOnHome: false }
+  });
 }
 
 async function hideTestArtifacts() {
@@ -961,7 +964,7 @@ async function main() {
 
   if (superAdmin) {
     await seedNews(superAdmin.id);
-    console.log(`Seeded ${NEWS_ARTICLES.length + DOCUMENT_NEWS_ARTICLES.length} bài tin tức`);
+    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length} bài tin tức biên tập`);
   }
 
   await seedSampleOrders();

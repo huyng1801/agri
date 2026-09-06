@@ -162,7 +162,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
             />
           </div>
           <div className="mx-auto max-w-3xl px-4 py-7 sm:px-8 sm:py-10">
-            <div className="news-body" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            <div className="news-body" dangerouslySetInnerHTML={{ __html: withoutContactBlock(article.bodyHtml) }} />
             {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[#e1eadc] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[#eef7eb] text-leaf">#{tag}</Badge>)}</div> : null}
           </div>
         </article>
@@ -204,4 +204,8 @@ function safeJsonLd(value: unknown) {
 function readingTime(html: string) {
   const words = html.replace(/<[^>]*>/g, ' ').trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(words / 220));
+}
+
+function withoutContactBlock(html: string) {
+  return html.replace(/<section\b[^>]*data-agri-contact[^>]*>[\s\S]*?<\/section>/gi, '');
 }
