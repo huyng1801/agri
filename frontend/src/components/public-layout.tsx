@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { cn } from './ui';
 
 export const publicContainerClass = 'mx-auto w-full max-w-[var(--public-container-max)] px-4 sm:px-5 lg:px-6';
@@ -144,5 +144,19 @@ export function PublicInfoTile({ title, description }: { title: string; descript
       <p className="font-semibold text-[var(--text-primary)]">{title}</p>
       <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</p>
     </div>
+  );
+}
+
+export function PublicFaqItem({ question, answer, defaultOpen = false }: { question: string; answer: string; defaultOpen?: boolean }) {
+  return (
+    <details open={defaultOpen} className="group rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left font-semibold text-[var(--text-primary)] marker:hidden focus-visible:outline-none sm:px-5 [&::-webkit-details-marker]:hidden">
+        <span>{question}</span>
+        <ChevronDown size={18} aria-hidden="true" className="shrink-0 text-[var(--brand-primary)] transition-transform duration-200 group-open:rotate-180" />
+      </summary>
+      <div className="border-t border-[var(--border)] px-4 pb-4 pt-3 text-sm leading-6 text-[var(--text-secondary)] sm:px-5 sm:pb-5">
+        {answer}
+      </div>
+    </details>
   );
 }

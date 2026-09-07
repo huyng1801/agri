@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { PublicBreadcrumbTrail, PublicInfoTile, PublicPageMain } from '@/components/public-layout';
+import { PublicBreadcrumbTrail, PublicFaqItem, PublicPageMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicSiteProfile } from '@/lib/public-site';
@@ -47,7 +47,7 @@ export default async function FaqPage() {
         <PublicBreadcrumbTrail current="Câu hỏi thường gặp" path="/cau-hoi-thuong-gap" homeUrl={homeUrl} currentUrl={currentUrl} />
         <header className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hỗ trợ nhanh</p><h1 className="type-h1 mt-3 text-3xl sm:text-5xl">Câu hỏi thường gặp</h1><p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">Những câu trả lời ngắn gọn để bạn hiểu cách đọc hồ sơ, tra cứu QR và kết nối với Agripassport.</p></header>
         <section className="mt-7 grid gap-3 md:grid-cols-2" aria-label="Danh sách câu hỏi thường gặp">
-          {faqs.map((faq) => <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />)}
+          {faqs.map((faq, index) => <PublicFaqItem key={faq.question} question={faq.question} answer={faq.answer} defaultOpen={index === 0} />)}
         </section>
       </PublicPageMain>
     </PublicShell>

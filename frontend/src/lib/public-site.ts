@@ -48,6 +48,7 @@ export const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
 const publicMediaPlaceholderUrl = '/public-media-placeholder.svg';
+const agripassportAboutIllustrationUrl = '/hero/htx-farmer-hero-v2.png';
 
 export const defaultPublicMapLocation: PublicMapLocation = {
   latitude: 10.4458,
@@ -140,8 +141,8 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       aboutTitle: 'Chúng tôi là AGRIPASSPORT',
       aboutDescription:
         'Nền tảng tập trung quản lý thông tin sản phẩm, vùng trồng, nhật ký, chứng nhận và hộ chiếu số để hỗ trợ minh bạch và kết nối thị trường.',
-      aboutImageUrl: publicMediaPlaceholderUrl,
-      aboutImageAlt: 'Sản phẩm nông nghiệp và dữ liệu truy xuất trên nền tảng số',
+      aboutImageUrl: agripassportAboutIllustrationUrl,
+      aboutImageAlt: 'Minh họa người sản xuất và nông sản trong hệ sinh thái Agripassport',
       contactTitle: 'Hãy để AGRIPASSPORT đồng hành cùng dữ liệu sản phẩm của hợp tác xã bạn',
       contactDescription:
         'Tư vấn thông tin sản phẩm, QR truy xuất, chứng nhận và kết nối với hợp tác xã phù hợp.',
@@ -316,7 +317,7 @@ function stringValue(value: unknown) {
 
 function approvedPublicImageUrl(value: unknown, fallback: string) {
   const imageUrl = stringValue(value);
-  if (!imageUrl || /(picsum\.photos|images\.unsplash\.com|source\.unsplash\.com)/i.test(imageUrl)) {
+  if (!imageUrl || imageUrl === publicMediaPlaceholderUrl || imageUrl.endsWith(publicMediaPlaceholderUrl) || /(picsum\.photos|images\.unsplash\.com|source\.unsplash\.com)/i.test(imageUrl)) {
     return fallback;
   }
   return imageUrl;

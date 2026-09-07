@@ -161,11 +161,11 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     <div className="rounded-[1.2rem] border border-white/14 bg-[#ffffff14] px-4 py-3">
                       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/68">Tỉnh thành</p>
-                      <p className="mt-1 text-lg font-extrabold text-white">{provinceCount}+</p>
+                      <p className="mt-1 text-lg font-extrabold text-white">{provinceCount}</p>
                     </div>
                     <div className="rounded-[1.2rem] border border-white/14 bg-[#ffffff14] px-4 py-3">
                       <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/68">Sản phẩm</p>
-                      <p className="mt-1 text-lg font-extrabold text-white">{totalProducts}+</p>
+                      <p className="mt-1 text-lg font-extrabold text-white">{totalProducts}</p>
                     </div>
                   </div>
 
@@ -253,7 +253,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           <div className="mt-6">
             <EmptyPublicState
               title={search ? 'Không tìm thấy HTX phù hợp' : 'Chưa có HTX công khai'}
-              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được đăng công khai lên sàn.'}
+              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được đăng công khai trên nền tảng.'}
             />
           </div>
         )}

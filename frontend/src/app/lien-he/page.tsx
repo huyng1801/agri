@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Clock3, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicMapPreview } from '@/components/public-map-preview';
-import { PublicBreadcrumbTrail, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { PublicBreadcrumbTrail, PublicFaqItem, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
@@ -214,7 +214,7 @@ export default async function ContactPage() {
             <h2 className="type-h2 text-[1.9rem] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {faqs.map((faq) => (
-                <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />
+                <PublicFaqItem key={faq.question} question={faq.question} answer={faq.answer} />
               ))}
             </div>
           </section>

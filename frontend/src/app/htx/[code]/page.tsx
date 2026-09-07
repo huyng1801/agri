@@ -160,7 +160,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                 ))}
               </div>
             ) : (
-              <p className="mt-3 text-sm text-slate-600">HTX chưa công khai vùng trồng nào trên sàn.</p>
+              <p className="mt-3 text-sm text-slate-600">HTX chưa công khai vùng trồng nào trên nền tảng.</p>
             )}
           </Panel>
 
@@ -184,7 +184,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
         </div>
 
         <section className="mt-6">
-          <PublicSectionHeader title="Sản phẩm công khai của HTX" description="Danh sách sản phẩm đang được đăng công khai trên sàn." />
+          <PublicSectionHeader title="Sản phẩm công khai của HTX" description="Danh sách sản phẩm đang được đăng công khai trên nền tảng." />
           <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {products.map((product) => (
               <ProductCard key={product.id} product={product} />
