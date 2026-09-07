@@ -56,7 +56,7 @@ export async function AgripassportHome() {
               <span className="rounded-full border border-white bg-white px-4 py-2 shadow-[0_10px_24px_rgba(28,79,45,0.06)]">Hệ sinh thái Agri</span>
             </div>
             <p className="mt-8 text-xs font-extrabold uppercase tracking-[0.18em] text-[#1f9b4b] sm:mt-10 sm:text-sm">Số hóa nông sản, minh bạch nguồn gốc</p>
-            <h1 className="mx-auto mt-3 max-w-[12ch] text-[2.65rem] font-extrabold leading-[0.96] tracking-[-0.055em] text-[#1e2233] sm:max-w-[13ch] sm:text-[4.3rem] lg:text-[5.25rem]">
+            <h1 className="mx-auto mt-3 max-w-[12ch] text-[clamp(2.25rem,10.8vw,2.65rem)] font-extrabold leading-[0.96] tracking-[-0.055em] text-[#1e2233] sm:max-w-[13ch] sm:text-[4.3rem] lg:text-[5.25rem]">
               AGRIPASSPORT chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp
             </h1>
             <p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-7 text-[#405b75] sm:mt-6 sm:text-[1.15rem] sm:leading-8">
