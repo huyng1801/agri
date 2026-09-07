@@ -408,7 +408,7 @@ export function PublicHeader({
         </div>
 
         <div className="hidden min-h-[82px] items-center gap-6 py-4 md:flex">
-          <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
+          <Link href="/" className="flex min-h-11 min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
             {isAgri ? (
               <PublicLogo size={43} variant="agri-wordmark" className="h-[43px] w-auto" />
             ) : (
@@ -436,7 +436,7 @@ export function PublicHeader({
           </form>
 
           <div className="ml-auto flex items-center gap-4">
-            <Link href="/login" className="text-sm font-medium text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]">
+            <Link href="/login" className="inline-flex min-h-11 items-center text-sm font-medium text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]">
               Đăng nhập
             </Link>
           </div>
