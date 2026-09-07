@@ -11,6 +11,7 @@ import {
   articleTitle,
   fetchPublicNews,
   fetchPublicNewsDetail,
+  publicNewsCategoryLabel,
   type NewsArticle
 } from '@/lib/news';
 import { formatDate } from '@/lib/format';
@@ -62,7 +63,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       publishedTime: article.publishedAt ?? undefined,
       modifiedTime: article.updatedAt,
-      authors: article.author?.fullName ? [article.author.fullName] : undefined,
+      authors: article.author?.fullName && !/^super\s*admin$/i.test(article.author.fullName) ? [article.author.fullName] : undefined,
       images: [{ url: article.ogImageUrl || image, alt: article.coverImageAlt || article.title }]
     },
     twitter: {
@@ -71,7 +72,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: article.twitterDescription || article.ogDescription || description,
       images: [article.twitterImageUrl || article.ogImageUrl || image]
     },
-    category: article.category?.name
+    category: publicNewsCategoryLabel(article.category) || undefined
   };
 }
 
@@ -109,6 +110,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
   const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const logoUrl = await getRequestAbsoluteUrl('/logo.png');
   const image = articleImage(article);
+  const authorName = article.author?.fullName && !/^super\s*admin$/i.test(article.author.fullName) ? article.author.fullName : siteProfile.appName;
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': article.schemaType || 'NewsArticle',
@@ -116,13 +118,13 @@ export default async function NewsDetailPage({ params }: PageProps) {
     description: articleDescription(article),
     image: [image],
     keywords: article.tagsJson?.join(', ') || article.focusKeyword || undefined,
-    articleSection: article.category?.name || undefined,
+    articleSection: publicNewsCategoryLabel(article.category) || undefined,
     datePublished: article.publishedAt || article.createdAt,
     dateModified: article.updatedAt,
     mainEntityOfPage: canonical,
     author: {
       '@type': 'Person',
-      name: article.author?.fullName || siteProfile.appName
+      name: authorName
     },
     publisher: {
       '@type': 'Organization',
@@ -143,14 +145,14 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <article className="overflow-hidden rounded-[2rem] border border-[#e1eadc] bg-[#fbfdf9] shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
           <header className="mx-auto max-w-4xl px-4 pb-5 pt-2 text-center sm:px-8 sm:pb-7">
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
-              {article.category?.name && <Badge className="bg-[#e4f4e7] text-leaf">{article.category.name}</Badge>}
+              {publicNewsCategoryLabel(article.category) && <Badge className="bg-[#e4f4e7] text-leaf">{publicNewsCategoryLabel(article.category)}</Badge>}
               <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={14} />{formatDate(article.publishedAt || article.createdAt)}</span>
               <span className="inline-flex items-center gap-1 tracking-normal"><Clock3 size={14} />{readingTime(article.bodyHtml)} phút đọc</span>
               <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
             </div>
             <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
             <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || brandizeSiteText('Tin tức nền tảng', siteKey)}</p>
-            <p className="mt-3 text-sm font-medium text-slate-500">{article.author?.fullName || siteProfile.appName}</p>
+            <p className="mt-3 text-sm font-medium text-slate-500">{authorName}</p>
           </header>
           <div className="px-2.5 sm:px-4">
             <PublicImage

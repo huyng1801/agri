@@ -92,13 +92,46 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
   const certifications = passport.product.certifications;
   const publicLogs = passport.product.farmingLogs;
+  const visibleLogs = publicLogs.slice(0, 3);
+  const remainingLogs = publicLogs.slice(3);
+  const visibleCertifications = certifications.slice(0, 3);
+  const remainingCertifications = certifications.slice(3);
+
+  const renderLog = (log: (typeof publicLogs)[number], index: number) => (
+    <div key={log.id} className="grid grid-cols-[28px_1fr] gap-2.5 sm:grid-cols-[32px_1fr] sm:gap-3">
+      <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">{index + 1}</span>
+      <div className="rounded-md bg-slate-50 p-3">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <Badge className="bg-mint text-leaf">{log.activityType}</Badge>
+          <span className="inline-flex items-center gap-1 text-slate-500"><Calendar size={14} aria-hidden="true" />{formatDate(log.logDate)}</span>
+        </div>
+        <p className="mt-2 text-[0.98rem] leading-6 text-slate-700">{log.description}</p>
+        {(log.zone?.name || log.actor?.fullName) && <p className="mt-2 text-xs font-semibold text-slate-500">{[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}</p>}
+        {logImages(log.imagesJson).length > 0 && (
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {logImages(log.imagesJson).slice(0, 6).map((image, imageIndex) => (
+              <PublicImage key={`${log.id}-${imageIndex}`} src={image.url} alt={`Ảnh nhật ký ${index + 1}`} fallback={DEFAULT_PRODUCT_IMAGE} decorative wrapperClassName="aspect-square w-full rounded-md" className="h-full w-full object-cover" />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const renderCertification = (cert: (typeof certifications)[number]) => (
+    <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
+      <strong>{cert.name}</strong>
+      <span className="block text-slate-600">{cert.issuer || 'Đơn vị cấp'} · Hết hạn {formatDate(cert.expiresAt)}</span>
+      {cert.file?.publicUrl && <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">Xem tài liệu chứng nhận</a>}
+    </div>
+  );
 
   return (
     <main className="mx-auto min-h-screen max-w-[90rem] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
       <header className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 lg:px-6 lg:py-4">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
           <PublicLogo size={30} className="ring-1 ring-slate-200" />
-          HTXONLINE
+          AGRIPASSPORT
         </Link>
         <div className="grid w-full grid-cols-2 gap-2 text-sm font-semibold sm:flex sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">
           <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-600 transition hover:border-leaf hover:text-leaf sm:min-h-0 sm:border-0 sm:bg-transparent sm:px-0">
@@ -186,43 +219,13 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
             </div>
 
             <div className="mt-3 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-              {publicLogs.map((log, index) => (
-                <div key={log.id} className="grid grid-cols-[28px_1fr] gap-2.5 sm:grid-cols-[32px_1fr] sm:gap-3">
-                  <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">
-                    {index + 1}
-                  </span>
-                  <div className="rounded-md bg-slate-50 p-3">
-                    <div className="flex flex-wrap items-center gap-2 text-sm">
-                      <Badge className="bg-mint text-leaf">{log.activityType}</Badge>
-                      <span className="inline-flex items-center gap-1 text-slate-500">
-                        <Calendar size={14} aria-hidden="true" />
-                        {formatDate(log.logDate)}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-[0.98rem] leading-6 text-slate-700">{log.description}</p>
-                    {(log.zone?.name || log.actor?.fullName) && (
-                      <p className="mt-2 text-xs font-semibold text-slate-500">
-                        {[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}
-                      </p>
-                    )}
-                    {logImages(log.imagesJson).length > 0 && (
-                      <div className="mt-3 grid grid-cols-3 gap-2">
-                        {logImages(log.imagesJson).slice(0, 6).map((image, imageIndex) => (
-                          <PublicImage
-                            key={`${log.id}-${imageIndex}`}
-                            src={image.url}
-                            alt={`Ảnh nhật ký ${index + 1}`}
-                            fallback={DEFAULT_PRODUCT_IMAGE}
-                            decorative
-                            wrapperClassName="aspect-square w-full rounded-md"
-                            className="h-full w-full object-cover"
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
+              {visibleLogs.map(renderLog)}
+              {remainingLogs.length ? (
+                <details className="xl:col-span-2 2xl:col-span-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingLogs.length} mốc truy xuất</summary>
+                  <div className="mt-3 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">{remainingLogs.map((log, index) => renderLog(log, index + visibleLogs.length))}</div>
+                </details>
+              ) : null}
               {publicLogs.length === 0 && <p className="text-slate-600">Chưa có nhật ký công khai.</p>}
             </div>
           </Panel>
@@ -261,20 +264,14 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
                 Danh sách đầy đủ vẫn hiển thị ngay bên dưới cho người mua.
               </p>
             </div>
-            <div className="mt-3 grid gap-2 xl:max-h-[38rem] xl:overflow-auto xl:pr-1">
-              {certifications.map((cert) => (
-                <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
-                  <strong>{cert.name}</strong>
-                  <span className="block text-slate-600">
-                    {cert.issuer || 'Đơn vị cấp'} · Hết hạn {formatDate(cert.expiresAt)}
-                  </span>
-                  {cert.file?.publicUrl && (
-                    <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">
-                      Xem tài liệu chứng nhận
-                    </a>
-                  )}
-                </div>
-              ))}
+            <div className="mt-3 grid gap-2">
+              {visibleCertifications.map(renderCertification)}
+              {remainingCertifications.length ? (
+                <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                  <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingCertifications.length} chứng nhận công khai</summary>
+                  <div className="mt-3 grid gap-2">{remainingCertifications.map(renderCertification)}</div>
+                </details>
+              ) : null}
               {certifications.length === 0 && <p className="text-slate-600">Chưa có chứng nhận công khai.</p>}
             </div>
           </Panel>
