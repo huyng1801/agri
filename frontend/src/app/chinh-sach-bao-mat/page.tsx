@@ -6,9 +6,11 @@ import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata() {
+  const siteKey = await getRequestPublicSiteKey();
+  const siteProfile = await getPublicSiteProfile(siteKey);
   return buildPublicMetadata({
     title: 'Chính sách bảo mật',
-    description: 'Cách HTXONLINE thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.',
+    description: `Cách ${siteProfile.appName} thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.`,
     path: '/chinh-sach-bao-mat'
   });
 }
@@ -16,26 +18,27 @@ export async function generateMetadata() {
 export default async function PrivacyPolicyPage() {
   const siteKey = await getRequestPublicSiteKey();
   const siteProfile = await getPublicSiteProfile(siteKey);
+  const platformName = siteProfile.appName;
   const sections = [
     {
       title: '1. Mục đích và phạm vi thu thập thông tin',
       paragraphs: [
-        'HTXONLINE thu thập thông tin để cung cấp và vận hành nền tảng số dành cho hợp tác xã, quản lý tài khoản, hiển thị sản phẩm, vùng trồng, QR Passport truy xuất nguồn gốc, hỗ trợ đặt hàng COD và cải thiện chất lượng dịch vụ.',
+        `${platformName} thu thập thông tin để cung cấp và vận hành nền tảng số dành cho hợp tác xã, quản lý tài khoản, hiển thị sản phẩm, vùng trồng, QR truy xuất nguồn gốc và cải thiện chất lượng dịch vụ.`,
         'Việc thu thập và xử lý dữ liệu được thực hiện theo quy định của pháp luật Việt Nam, bao gồm Nghị định số 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân, Luật An ninh mạng năm 2018 và các quy định liên quan.'
       ],
       bullets: [
         'Họ và tên, số điện thoại, địa chỉ email, địa chỉ liên hệ.',
         'Tên hợp tác xã hoặc doanh nghiệp, mã số thuế, thông tin người đại diện.',
-        'Thông tin sản phẩm, vùng trồng, dữ liệu QR Passport và dữ liệu đơn hàng.',
+        'Thông tin sản phẩm, vùng trồng, dữ liệu QR và lịch sử tương tác cần thiết cho việc hỗ trợ.',
         'Hình ảnh, video, giấy chứng nhận và tài liệu do người dùng cung cấp.',
         'Địa chỉ IP, thiết bị truy cập, trình duyệt, cookie và nhật ký truy cập.'
       ]
     },
     {
       title: '2. Cách thức thu thập thông tin',
-      paragraphs: ['HTXONLINE thu thập dữ liệu qua cả hành vi chủ động của người dùng và dữ liệu kỹ thuật phát sinh trong quá trình sử dụng website.'],
+      paragraphs: [`${platformName} thu thập dữ liệu qua cả hành vi chủ động của người dùng và dữ liệu kỹ thuật phát sinh trong quá trình sử dụng website.`],
       bullets: [
-        'Thông tin do người dùng cung cấp khi đăng ký tài khoản, điền biểu mẫu liên hệ, đăng ký hợp tác xã, khai báo sản phẩm, cập nhật vùng trồng, tạo QR Passport, đặt hàng hoặc liên hệ hỗ trợ.',
+        'Thông tin do người dùng cung cấp khi đăng ký tài khoản, điền biểu mẫu liên hệ, đăng ký hợp tác xã, khai báo sản phẩm, cập nhật vùng trồng, tạo QR hoặc liên hệ hỗ trợ.',
         'Thông tin hệ thống thu thập tự động như địa chỉ IP, cookie, loại thiết bị, trình duyệt, hệ điều hành, thời gian sử dụng, các trang đã truy cập và thông tin tương tác với hệ thống.'
       ]
     },
@@ -44,26 +47,26 @@ export default async function PrivacyPolicyPage() {
       bullets: [
         'Quản lý tài khoản người dùng và xác minh thông tin hợp tác xã.',
         'Quản lý sản phẩm, vùng trồng và vận hành QR Passport truy xuất nguồn gốc.',
-        'Hỗ trợ đặt hàng COD và chăm sóc khách hàng.',
+        'Tiếp nhận yêu cầu hỗ trợ và chăm sóc người dùng.',
         'Gửi thông báo về hệ thống, phân tích chất lượng dịch vụ và cải thiện trải nghiệm sử dụng.',
         'Phát hiện, ngăn chặn gian lận hoặc truy cập trái phép và thực hiện nghĩa vụ theo quy định pháp luật.'
       ]
     },
     {
       title: '4. Chia sẻ và tiết lộ thông tin',
-      paragraphs: ['HTXONLINE cam kết không bán hoặc trao đổi dữ liệu cá nhân vì mục đích thương mại. Thông tin chỉ được chia sẻ trong các trường hợp thật sự cần thiết.'],
+      paragraphs: [`${platformName} cam kết không bán hoặc trao đổi dữ liệu cá nhân vì mục đích thương mại. Thông tin chỉ được chia sẻ trong các trường hợp thật sự cần thiết.`],
       bullets: [
         'Có sự đồng ý của người dùng.',
         'Theo yêu cầu của cơ quan nhà nước có thẩm quyền.',
         'Với đối tác cung cấp dịch vụ kỹ thuật, lưu trữ dữ liệu hoặc vận hành hệ thống trong phạm vi cần thiết.',
-        'Để bảo vệ quyền và lợi ích hợp pháp của HTXONLINE hoặc người dùng theo quy định pháp luật.',
+        `Để bảo vệ quyền và lợi ích hợp pháp của ${platformName} hoặc người dùng theo quy định pháp luật.`,
         'Trong trường hợp sáp nhập, chuyển nhượng hoặc tái cơ cấu doanh nghiệp theo quy định pháp luật.'
       ]
     },
     {
       title: '5. Bảo mật và lưu trữ thông tin',
       paragraphs: [
-        'HTXONLINE áp dụng nhiều biện pháp kỹ thuật và tổ chức nhằm bảo vệ dữ liệu cá nhân, bao gồm mã hóa dữ liệu khi truyền tải, kiểm soát quyền truy cập, sao lưu định kỳ, giám sát an toàn hệ thống và các biện pháp chống truy cập trái phép.',
+        `${platformName} áp dụng nhiều biện pháp kỹ thuật và tổ chức nhằm bảo vệ dữ liệu cá nhân, bao gồm mã hóa dữ liệu khi truyền tải, kiểm soát quyền truy cập, sao lưu định kỳ, giám sát an toàn hệ thống và các biện pháp chống truy cập trái phép.`,
         'Thông tin được lưu trữ trên hệ thống máy chủ an toàn hoặc các nhà cung cấp dịch vụ đáp ứng yêu cầu bảo mật. Dù vậy, không có hệ thống nào có thể đảm bảo an toàn tuyệt đối và người dùng vẫn cần tự bảo mật tài khoản, mật khẩu của mình.'
       ]
     },
@@ -87,7 +90,7 @@ export default async function PrivacyPolicyPage() {
     {
       title: '8. Thay đổi chính sách bảo mật',
       paragraphs: [
-        'HTXONLINE có quyền sửa đổi hoặc cập nhật Chính sách bảo mật để phù hợp với hoạt động của nền tảng hoặc thay đổi pháp lý.',
+        `${platformName} có quyền sửa đổi hoặc cập nhật Chính sách bảo mật để phù hợp với hoạt động của nền tảng hoặc thay đổi pháp lý.`,
         'Mọi thay đổi sẽ được công bố trên website và có hiệu lực từ thời điểm đăng tải. Việc tiếp tục sử dụng dịch vụ sau khi cập nhật đồng nghĩa với việc người dùng chấp nhận nội dung sửa đổi.'
       ]
     },
@@ -95,7 +98,7 @@ export default async function PrivacyPolicyPage() {
   ];
 
   return (
-    <PublicStaticPage title="Chính sách bảo mật" description="Cách HTXONLINE thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.">
+    <PublicStaticPage title="Chính sách bảo mật" description={`Cách ${platformName} thu thập, sử dụng, lưu trữ và bảo vệ thông tin cá nhân của người dùng.`}>
       <PublicPolicyBody sections={sections} />
     </PublicStaticPage>
   );

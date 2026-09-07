@@ -6,7 +6,9 @@ export type ApiEnvelope<T> = {
   errors?: { field?: string; message: string }[];
 };
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+// Prefer the same-origin proxy in browser builds so local previews do not emit
+// noisy CORS failures when the API is unavailable or hosted on another port.
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || (typeof window !== 'undefined' ? '/api/v1' : 'http://localhost:3001/api/v1');
 
 function token() {
   if (typeof window === 'undefined') return undefined;

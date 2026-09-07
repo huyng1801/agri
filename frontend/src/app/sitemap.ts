@@ -25,7 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             '/cau-hoi-thuong-gap',
             '/dieu-khoan-su-dung',
             '/chinh-sach-bao-mat',
-            '/chinh-sach-doi-tra',
             '/chinh-sach-van-hanh'
           ];
 

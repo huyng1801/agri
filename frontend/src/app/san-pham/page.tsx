@@ -217,9 +217,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     </h2>
                     <div className="mt-4 grid grid-cols-3 gap-2.5">
                       {[
-                        { icon: Sparkles, title: 'Hiển thị', value: `${products.length}+` },
-                        { icon: QrCode, title: 'Có QR', value: `${qrProducts}+` },
-                        { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+` }
+                        { icon: Sparkles, title: 'Hiển thị', value: String(products.length) },
+                        { icon: QrCode, title: 'Có QR', value: String(qrProducts) },
+                        { icon: MapPin, title: 'Địa phương', value: String(provinceCount) }
                       ].map((item) => (
                         <article key={item.title} className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-4 text-center">
                           <span className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">

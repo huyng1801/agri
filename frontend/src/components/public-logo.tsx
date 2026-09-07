@@ -37,7 +37,7 @@ export function PublicLogo({ size = 40, className, variant = 'default' }: Public
   return (
     <img
       src={PUBLIC_LOGO_SRC}
-      alt="HTXONLINE"
+      alt="Biểu trưng nền tảng"
       width={width}
       height={size}
       className={cn('shrink-0 object-contain', className)}

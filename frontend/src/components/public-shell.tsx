@@ -10,7 +10,7 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
   const profile = defaultPublicSiteProfileForSite(siteKey);
 
   return (
-    <div id="top" data-public-site={siteKey} className="mobile-app-scroll min-h-screen bg-white text-ink">
+    <div id="top" data-public-site={siteKey} className="public-app-shell mobile-app-scroll min-h-screen">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:font-semibold focus:text-[var(--brand-primary)] focus:shadow-md"

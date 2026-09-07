@@ -675,17 +675,17 @@ export default async function HomePage() {
         { title: "Chuyển đổi số", value: "Từng bước vững chắc", description: "Từng bước đưa hoạt động quản lý nông nghiệp lên môi trường số.", icon: Users },
       ];
   const heroBannerPanel = (
-    <div className="rounded-[1.85rem] border border-white/70 bg-white/90 p-4 shadow-[0_16px_30px_rgba(15,23,42,0.1)] backdrop-blur sm:p-5">
+    <div className="rounded-[var(--public-radius-surface)] border border-white/70 bg-white/90 p-4 shadow-[var(--public-shadow-card)] backdrop-blur sm:p-5">
       <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)]">
             {isInternal
               ? "Luồng nội bộ ra công khai"
               : isPassport
                 ? "Hồ sơ số công khai"
                 : "Dữ liệu công khai trung tâm"}
           </p>
-          <p className="mt-1 text-[1rem] font-extrabold leading-tight text-[#1f2233] sm:text-[1.45rem]">
+          <p className="mt-1 text-[1rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[1.45rem]">
             {String(heroTiles[0].value)}
           </p>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
@@ -695,7 +695,7 @@ export default async function HomePage() {
         <div className="flex flex-col gap-2 sm:flex-row lg:justify-end">
           <Link
             href={primaryCta.href}
-            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.22)] transition hover:-translate-y-0.5"
+            className="brand-gradient-bg inline-flex min-h-12 items-center justify-center gap-2 rounded-[var(--public-radius-control)] px-5 text-sm font-bold text-white shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
           >
             {primaryCta.label}
             <ArrowRight size={16} aria-hidden="true" />
@@ -703,14 +703,14 @@ export default async function HomePage() {
           {secondaryCta.external ? (
             <a
               href={secondaryCta.href}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 text-sm font-bold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
             >
               {secondaryCta.label}
             </a>
           ) : (
             <Link
               href={secondaryCta.href}
-              className="inline-flex min-h-12 items-center justify-center rounded-full border border-[#dbe7da] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+              className="inline-flex min-h-12 items-center justify-center rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 text-sm font-bold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
             >
               {secondaryCta.label}
             </Link>
@@ -721,7 +721,7 @@ export default async function HomePage() {
   );
 
   const internalHeroSection = (
-    <section className="border-b border-[#ece8dd] bg-white">
+          <section className="border-b border-[var(--border)] bg-white">
       <div className={cn(publicContainerClass, "px-0 py-0 sm:px-5 sm:py-4 lg:px-6 lg:py-5")}>
         <div className="overflow-hidden bg-white">
           <div className="relative isolate min-h-[24.75rem] overflow-hidden bg-[#f8fbf7] sm:min-h-[21rem] lg:min-h-[28rem]">
@@ -943,15 +943,15 @@ export default async function HomePage() {
                 ) : null}
 
                 <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-[#ecf7ed] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#18783c]">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary-subtle)] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                     <Leaf
                       size={15}
                       aria-hidden="true"
-                      className="text-[#1f9b4b]"
+                      className="text-[var(--brand-primary)]"
                     />
                     Số hóa dữ liệu nông nghiệp
                   </div>
-                  <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[#1f2233] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
+                  <h1 className="mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[var(--text-primary)] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]">
                     {heroLeadTitle}
                   </h1>
                   <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
@@ -977,7 +977,7 @@ export default async function HomePage() {
           >
             <h2
               className={cn(
-                "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[#24283a] sm:max-w-none sm:text-[3.1rem]",
+                "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[var(--text-primary)] sm:max-w-none sm:text-[3.1rem]",
                 isInternal
                   ? "max-w-none text-[1.52rem] leading-[0.96] sm:text-[2.65rem] lg:mx-0 lg:text-[3.1rem]"
                   : "max-w-[13ch]",
@@ -1011,13 +1011,13 @@ export default async function HomePage() {
                       key={`${tile.title}-${tile.value}`}
                       className="text-center"
                     >
-                      <span className="mx-auto grid h-24 w-24 place-items-center rounded-full border border-[#dbe7da] bg-white text-[#4a8e5f] shadow-none">
+                      <span className="mx-auto grid h-24 w-24 place-items-center rounded-full border border-[var(--border)] bg-white text-[var(--brand-primary-strong)] shadow-none">
                         <Icon size={54} strokeWidth={1.55} aria-hidden="true" />
                       </span>
-                      <p className="mt-5 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
+                      <p className="mt-5 text-sm font-bold uppercase tracking-[0.08em] text-[var(--text-primary)]">
                         {tile.title}
                       </p>
-                      <p className="mt-3 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
+                      <p className="mt-3 text-[1.28rem] font-extrabold leading-tight text-[var(--brand-primary)]">
                         {tile.value}
                       </p>
                       <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -1037,13 +1037,13 @@ export default async function HomePage() {
                     key={`${tile.title}-${tile.value}`}
                     className="text-center"
                   >
-                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
+                    <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--brand-primary-strong)] shadow-[var(--public-shadow-card)]">
                       <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
                     </span>
-                    <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[#1f9b4b]">
+                    <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[var(--brand-primary)]">
                       {tile.value}
                     </p>
-                    <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[#1f2233]">
+                    <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[var(--text-primary)]">
                       {tile.title}
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -1059,7 +1059,7 @@ export default async function HomePage() {
         <PublicSection band={!isInternal}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[2.8rem]">
                 {sectionIntro}
               </h2>
               <p
@@ -1073,7 +1073,7 @@ export default async function HomePage() {
             </div>
             <Link
               href={serviceAction}
-              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] sm:self-auto"
             >
               Khám phá thêm
               <ArrowRight size={16} aria-hidden="true" />
@@ -1088,8 +1088,8 @@ export default async function HomePage() {
                   className={cn(
                     "inline-flex min-h-10 items-center whitespace-nowrap rounded-full border px-4 text-sm font-semibold shadow-sm",
                     index === 0
-                      ? "border-[#1f9b4b] bg-[#1f9b4b] text-white"
-                      : "border-[#dce6d8] bg-white text-slate-600",
+                      ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white"
+                      : "border-[var(--border)] bg-white text-[var(--text-secondary)]",
                   )}
                 >
                   {tab}
@@ -1134,10 +1134,10 @@ export default async function HomePage() {
                     "h-full rounded-[2rem] p-5 sm:p-6",
                   )}
                 >
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                     {step}
                   </p>
-                  <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[#1f2233] sm:text-[1.3rem]">
+                  <h2 className="mt-3 text-[1.18rem] font-extrabold leading-tight tracking-[-0.02em] text-[var(--text-primary)] sm:text-[1.3rem]">
                     {title}
                   </h2>
                   <p className="mt-3 text-[0.95rem] leading-7 text-slate-600">
@@ -1153,10 +1153,10 @@ export default async function HomePage() {
           {isInternal ? (
             <div className="text-center">
               <div className="mx-auto max-w-3xl">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--brand-primary-strong)]">
                   Danh mục công khai
                 </p>
-                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.9rem]">
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[2.9rem]">
                   {productSectionTitle}
                 </h2>
                 <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -1167,7 +1167,7 @@ export default async function HomePage() {
           ) : (
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-3xl">
-                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[2.8rem]">
                   {productSectionTitle}
                 </h2>
                 <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -1176,7 +1176,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/san-pham"
-                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] sm:self-auto"
               >
                 Khám phá thêm
                 <ArrowRight size={16} aria-hidden="true" />
@@ -1191,8 +1191,8 @@ export default async function HomePage() {
                 className={cn(
                   "inline-flex min-h-10 items-center rounded-full border px-4 text-sm font-semibold shadow-sm",
                   index === 0
-                    ? "border-[#1f9b4b] bg-[#1f9b4b] text-white"
-                    : "border-[#dce6d8] bg-white text-slate-600",
+                    ? "border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white"
+                    : "border-[var(--border)] bg-white text-[var(--text-secondary)]",
                 )}
               >
                 {tab}
@@ -1220,15 +1220,15 @@ export default async function HomePage() {
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                         />
                         <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-2">
-                          <span className="inline-flex min-h-9 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
+                          <span className="brand-gradient-bg inline-flex min-h-9 items-center rounded-full px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[var(--public-shadow-card)]">
                             {panel.eyebrow}
                           </span>
                         </div>
                         <div className="absolute inset-x-4 bottom-4 rounded-[1.2rem] bg-[rgba(255,255,255,0.9)] px-3 py-2.5 shadow-[0_14px_30px_rgba(15,23,42,0.12)] backdrop-blur">
-                          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                          <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                             {panel.note}
                           </p>
-                          <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1f2233]">
+                          <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[var(--text-primary)]">
                             {panel.title}
                           </p>
                         </div>
@@ -1237,7 +1237,7 @@ export default async function HomePage() {
                         <p className="line-clamp-3 text-[0.94rem] leading-7 text-slate-600">
                           {panel.description}
                         </p>
-                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
+                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--brand-primary)]">
                           {panel.cta}
                           <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
                         </span>
@@ -1248,7 +1248,7 @@ export default async function HomePage() {
                 <div className="mt-6 flex justify-center">
                   <Link
                     href="/san-pham"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_32px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5"
+                    className="brand-gradient-bg inline-flex min-h-12 items-center gap-2 rounded-[var(--public-radius-control)] px-6 text-sm font-bold text-white shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
                   >
                     Xem toàn bộ sản phẩm
                     <ArrowRight size={16} aria-hidden="true" />
@@ -1281,7 +1281,7 @@ export default async function HomePage() {
         <PublicSection>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[2.8rem]">
                 {partnerTitle}
               </h2>
               <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -1290,7 +1290,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/htx"
-              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+              className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] sm:self-auto"
             >
               Xem HTX
               <ArrowRight size={16} aria-hidden="true" />
@@ -1299,26 +1299,26 @@ export default async function HomePage() {
 
           {partnerItems.length ? (
             isInternal ? (
-              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+              <div className="mt-6 overflow-hidden rounded-[var(--public-radius-surface)] border border-[var(--border)] bg-white p-4 shadow-[var(--public-shadow-card)] sm:p-5 lg:p-6">
                 <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0 xl:grid-cols-6">
                   {partnerItems.map((cooperative) => (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group min-w-[11.25rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
+                      className="group min-w-[11.25rem] shrink-0 rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-muted)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[var(--public-shadow-hover)] lg:min-w-0"
                     >
-                      <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dce7d8] bg-[linear-gradient(180deg,#ffffff_0%,#eef6ec_100%)] shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
-                        <span className="text-[0.92rem] font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                      <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-white shadow-[var(--public-shadow-card)]">
+                        <span className="text-[0.92rem] font-extrabold uppercase tracking-[0.08em] text-[var(--text-primary)]">
                           {cooperativeMonogram(cooperative.name)}
                         </span>
                       </span>
-                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[var(--text-primary)]">
                         {cooperative.name}
                       </p>
                       <p className="mt-1 text-xs font-medium text-slate-500">
                         {cooperative.province || "Việt Nam"}
                       </p>
-                      <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">
+                      <p className="mt-3 text-[0.78rem] font-semibold text-[var(--brand-primary-strong)]">
                         {cooperative.productCount} sản phẩm công khai
                       </p>
                     </Link>
@@ -1326,15 +1326,15 @@ export default async function HomePage() {
                 </div>
               </div>
             ) : (
-              <div className="mt-6 overflow-hidden rounded-[2rem] border border-[#e2e9dc] bg-white p-4 shadow-[0_18px_40px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+              <div className="mt-6 overflow-hidden rounded-[var(--public-radius-surface)] border border-[var(--border)] bg-white p-4 shadow-[var(--public-shadow-card)] sm:p-5 lg:p-6">
                 <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:grid lg:grid-cols-4 lg:overflow-visible lg:px-0 lg:pb-0">
                   {partnerItems.map((cooperative, index) => (
                     <Link
                       key={cooperative.id}
                       href={`/htx/${cooperative.code}`}
-                      className="group min-w-[12rem] shrink-0 rounded-[1.6rem] border border-[#e5eadf] bg-[linear-gradient(180deg,#ffffff_0%,#f9fcf8_100%)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[0_18px_34px_rgba(15,23,42,0.08)] lg:min-w-0"
+                      className="group min-w-[12rem] shrink-0 rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-muted)] p-4 text-center transition hover:-translate-y-1 hover:shadow-[var(--public-shadow-hover)] lg:min-w-0"
                     >
-                      <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[#dce7d8] bg-white shadow-[0_12px_28px_rgba(15,23,42,0.06)]">
+                      <span className="mx-auto grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-[var(--border)] bg-white shadow-[var(--public-shadow-card)]">
                         <PublicImage
                           src={cooperative.avatarUrl}
                           alt={cooperative.name}
@@ -1344,13 +1344,13 @@ export default async function HomePage() {
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
                         />
                       </span>
-                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[#1f2233]">
+                      <p className="mt-4 line-clamp-2 text-sm font-extrabold uppercase tracking-[0.08em] text-[var(--text-primary)]">
                         {cooperative.name}
                       </p>
                       <p className="mt-1 text-xs font-medium text-slate-500">
                         {cooperative.province || "Việt Nam"}
                       </p>
-                      <p className="mt-3 text-[0.78rem] font-semibold text-[#2b8a3e]">
+                      <p className="mt-3 text-[0.78rem] font-semibold text-[var(--brand-primary-strong)]">
                         {cooperative.productCount} sản phẩm công khai
                       </p>
                     </Link>
@@ -1369,7 +1369,7 @@ export default async function HomePage() {
         </PublicSection>
 
         <PublicSection band={!isInternal}>
-          <div className="relative isolate overflow-hidden rounded-[2.25rem] border border-[#dce6d8] shadow-[0_28px_60px_rgba(15,23,42,0.12)]">
+          <div className="relative isolate overflow-hidden rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] shadow-[var(--public-shadow-hover)]">
             <PublicImage
               src={siteProfile.pageContent.homeImageUrl}
               alt={
@@ -1394,7 +1394,7 @@ export default async function HomePage() {
                 <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
                   <Link
                     href={closingPrimaryCta.href}
-                    className="inline-flex min-h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-bold text-[#1f9b4b] shadow-[0_16px_32px_rgba(15,23,42,0.14)] transition hover:-translate-y-0.5"
+                    className="inline-flex min-h-12 items-center justify-center rounded-[var(--public-radius-control)] bg-white px-6 text-sm font-bold text-[var(--brand-primary)] shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
                   >
                     {closingPrimaryCta.label}
                   </Link>
@@ -1423,10 +1423,10 @@ export default async function HomePage() {
           <PublicSection>
             <div className="text-center">
               <div className="mx-auto max-w-3xl">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--brand-primary-strong)]">
                   Mô hình triển khai
                 </p>
-                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[3rem]">
+                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[3rem]">
                   {journeyTitle}
                 </h2>
                 <p className="mt-3 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">
@@ -1435,7 +1435,7 @@ export default async function HomePage() {
                 <div className="mt-5 flex justify-center">
                   <Link
                     href="/gioi-thieu"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
+                    className="brand-gradient-bg inline-flex min-h-11 items-center gap-2 rounded-[var(--public-radius-control)] px-5 text-sm font-semibold text-white shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
                   >
                     Xem chi tiết hệ sinh thái
                     <ArrowRight size={16} aria-hidden="true" />
@@ -1462,15 +1462,15 @@ export default async function HomePage() {
                             <span className="inline-flex min-h-9 items-center rounded-full border border-white/70 bg-white/92 px-3 text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#1f2233] shadow-sm backdrop-blur">
                               {panel.step}
                             </span>
-                            <span className="inline-flex min-h-9 items-center rounded-full bg-[#1f9b4b] px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
+                            <span className="brand-gradient-bg inline-flex min-h-9 items-center rounded-full px-3 text-[0.64rem] font-bold uppercase tracking-[0.16em] text-white shadow-[var(--public-shadow-card)]">
                               {panel.badge}
                             </span>
                           </div>
                           <div className="absolute inset-x-4 bottom-4 rounded-[1.2rem] bg-[rgba(255,255,255,0.9)] px-3 py-2.5 shadow-[0_14px_30px_rgba(15,23,42,0.12)] backdrop-blur">
-                            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                               {panel.badge}
                             </p>
-                            <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1f2233]">
+                            <p className="mt-1 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[var(--text-primary)]">
                               {panel.title}
                             </p>
                           </div>
@@ -1480,7 +1480,7 @@ export default async function HomePage() {
                           <p className="line-clamp-4 text-[0.96rem] leading-7 text-slate-600">
                             {panel.description}
                           </p>
-                          <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
+                          <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--brand-primary)]">
                             {panel.cta}
                             <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
                           </span>
@@ -1533,7 +1533,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/tin-tuc"
-                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] sm:self-auto"
+                className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] sm:self-auto"
               >
                 Xem tin tức
                 <ArrowRight size={16} aria-hidden="true" />
@@ -1560,7 +1560,7 @@ export default async function HomePage() {
                           wrapperClassName="aspect-[16/12] w-full"
                           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                         />
-                        <div className="absolute left-0 top-4 rounded-r-[1.1rem] bg-[#1f9b4b] px-4 py-3 text-white shadow-[0_10px_24px_rgba(31,155,75,0.22)]">
+                          <div className="brand-gradient-bg absolute left-0 top-4 rounded-r-[var(--public-radius-control)] px-4 py-3 text-white shadow-[var(--public-shadow-card)]">
                           <p className="text-[0.64rem] font-semibold uppercase tracking-[0.18em] text-white/76">
                             HTXONLINE
                           </p>
@@ -1580,7 +1580,7 @@ export default async function HomePage() {
                             {article.viewCount}
                           </span>
                         </div>
-                        <h3 className="mt-4 line-clamp-3 text-[1.38rem] font-extrabold leading-[1.15] tracking-[-0.03em] text-[#1f2233] transition group-hover:text-[#1f9b4b]">
+                        <h3 className="mt-4 line-clamp-3 text-[1.38rem] font-extrabold leading-[1.15] tracking-[-0.03em] text-[var(--text-primary)] transition group-hover:text-[var(--brand-primary)]">
                           {article.title}
                         </h3>
                         <p className="mt-3 line-clamp-4 text-[0.96rem] leading-7 text-slate-600">
@@ -1589,7 +1589,7 @@ export default async function HomePage() {
                             "Tin tức về vận hành HTX, công khai sản phẩm và triển khai hệ sinh thái số.",
                           )}
                         </p>
-                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#1f9b4b]">
+                        <span className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[var(--brand-primary)]">
                           Đọc tin
                           <ArrowRight size={16} aria-hidden="true" className="transition-transform group-hover:translate-x-1" />
                         </span>
@@ -1600,7 +1600,7 @@ export default async function HomePage() {
                 <div className="mt-6 flex justify-center">
                   <Link
                     href="/tin-tuc"
-                    className="inline-flex min-h-12 items-center gap-2 rounded-full bg-[#1f9b4b] px-6 text-sm font-bold text-white shadow-[0_16px_32px_rgba(31,155,75,0.2)] transition hover:-translate-y-0.5"
+                    className="brand-gradient-bg inline-flex min-h-12 items-center gap-2 rounded-[var(--public-radius-control)] px-6 text-sm font-bold text-white shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
                   >
                     Xem toàn bộ tin tức
                     <ArrowRight size={16} aria-hidden="true" />

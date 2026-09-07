@@ -37,6 +37,15 @@
   --line-soft: rgba(42, 38, 28, 0.1);
   --shadow-soft: 0 22px 58px rgba(30, 24, 15, 0.08);
   --shadow-card: 0 18px 44px rgba(30, 24, 15, 0.08);
+  --public-container-max: 1220px;
+  --public-reading-max: 760px;
+  --public-radius-control: 0.75rem;
+  --public-radius-card: 1.25rem;
+  --public-radius-surface: 1.75rem;
+  --public-shadow-card: 0 14px 32px rgba(15, 23, 42, 0.05);
+  --public-shadow-hover: 0 22px 44px rgba(15, 23, 42, 0.09);
+  --public-motion-fast: 180ms;
+  --public-motion-standard: 220ms;
 }
 
 /* Brand values are sourced from the existing ecosystem card gradients. */
@@ -232,6 +241,26 @@ button {
 .mobile-app-scroll {
   overscroll-behavior-y: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.public-app-shell {
+  background: var(--surface-elevated);
+  color: var(--text-primary);
+}
+
+.public-card-surface {
+  border: 1px solid var(--border);
+  border-radius: var(--public-radius-card);
+  background: var(--surface-elevated);
+  box-shadow: var(--public-shadow-card);
+}
+
+.public-card-surface:hover {
+  box-shadow: var(--public-shadow-hover);
+}
+
+.public-reading-column {
+  width: min(100%, var(--public-reading-max));
 }
 
 .no-scrollbar::-webkit-scrollbar {

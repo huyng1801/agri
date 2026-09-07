@@ -370,15 +370,13 @@ export function PublicHeader({
             >
               <Search size={21} aria-hidden="true" />
             </Link>
-            {!isMarketplace ? (
-              <Link
-                href={navCta.href}
-                aria-label={navCta.label}
-                className="hidden h-10 w-10 place-items-center text-[var(--brand-primary-strong)] transition hover:text-[var(--brand-primary)] md:grid"
-              >
-                <CtaIcon size={19} aria-hidden="true" />
-              </Link>
-            ) : null}
+            <Link
+              href={navCta.href}
+              aria-label={navCta.label}
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--border)] bg-white text-[var(--brand-primary-strong)] shadow-sm transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] md:hidden"
+            >
+              <CtaIcon size={19} aria-hidden="true" />
+            </Link>
             <Link
               href="/login"
               className="hidden min-h-12 items-center rounded-xl border border-[var(--border)] bg-white px-5 text-sm font-semibold text-[var(--text-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] lg:inline-flex"
@@ -388,7 +386,7 @@ export function PublicHeader({
           </div>
         </div>
 
-        <div className="hidden mb-2 snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
+        <div className="mb-2 flex snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => {
             const active = isNavActive(pathname, hasQrQuery, item.href);
             return (
@@ -421,7 +419,7 @@ export function PublicHeader({
           </Link>
 
           <form action={searchTarget} className="flex flex-1 justify-center">
-            <div className="flex w-full max-w-[34rem] items-center rounded-full border border-[#e1e7dd] bg-white px-5 shadow-sm">
+            <div className="flex w-full max-w-[34rem] items-center rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] bg-white px-5 shadow-[var(--public-shadow-card)]">
               <Search className="shrink-0 text-[var(--brand-primary)]" size={18} aria-hidden="true" />
               <input
                 type="search"
@@ -430,7 +428,7 @@ export function PublicHeader({
                 aria-label={searchPlaceholder}
                 className="h-11 flex-1 border-0 bg-transparent px-3 text-sm text-[var(--text-primary)] outline-none placeholder:text-slate-400"
               />
-              <span className="h-5 w-px bg-[#e6eadf]" aria-hidden="true" />
+              <span className="h-5 w-px bg-[var(--border)]" aria-hidden="true" />
               <button type="submit" className="inline-flex h-11 shrink-0 items-center px-4 text-sm font-medium text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]">
                 {searchLabel}
               </button>
@@ -511,7 +509,7 @@ export function PublicHeader({
                     href={item.href}
                     onClick={closeMenu}
                     className={cn(
-                      'rounded-[1.25rem] border border-[#e8e4d8] px-4 py-3 text-base font-semibold',
+                      'rounded-[var(--public-radius-card)] border border-[var(--border)] px-4 py-3 text-base font-semibold',
                       active ? 'bg-[var(--brand-primary)] text-white' : 'bg-[var(--surface-muted)] text-[var(--text-primary)]'
                     )}
                     aria-current={active ? 'page' : undefined}

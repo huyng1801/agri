@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from './ui';
 
-export const publicContainerClass = 'mx-auto w-full max-w-[1220px] px-4 sm:px-5 lg:px-6';
+export const publicContainerClass = 'mx-auto w-full max-w-[var(--public-container-max)] px-4 sm:px-5 lg:px-6';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
@@ -118,7 +118,7 @@ export function PublicSectionHeader({
   );
 }
 
-export const publicCardClass = 'overflow-hidden rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_14px_32px_rgba(15,23,42,0.05)]';
+export const publicCardClass = 'overflow-hidden rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[var(--public-shadow-card)]';
 
 export const publicProseClass = 'text-base leading-7 text-[var(--text-secondary)]';
 

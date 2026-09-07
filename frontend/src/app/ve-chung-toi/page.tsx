@@ -260,7 +260,9 @@ export default async function AboutUsPage() {
         <section className={cn(publicContainerClass, 'grid gap-4 py-2 pb-8 lg:grid-cols-[0.98fr_1.02fr]')}>
           <article className="rounded-[2rem] bg-[linear-gradient(145deg,#0c1322_0%,#13304a_46%,#1f9b4b_100%)] p-5 text-white shadow-[0_24px_56px_rgba(15,23,42,0.14)] sm:p-6">
             <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-white/68">Đồng hành cùng HTX</p>
-            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-[1.08] sm:text-[2.3rem]">{catalog.cooperatives.length || 12}+ hợp tác xã đang có mặt trong hệ sinh thái.</h2>
+            <h2 className="mt-3 text-[1.8rem] font-extrabold leading-[1.08] sm:text-[2.3rem]">
+              {catalog.cooperatives.length ? `${catalog.cooperatives.length} hợp tác xã đang có mặt trong hệ sinh thái.` : 'Hồ sơ HTX sẽ được giới thiệu khi hoàn tất đối chiếu.'}
+            </h2>
             <p className="mt-3 max-w-xl text-sm leading-7 text-white/82 sm:text-[0.98rem]">
               Dữ liệu nội bộ, hồ sơ sản phẩm và niềm tin thị trường được kết nối theo từng vai trò cụ thể, để đội vận hành triển khai thuận hơn và người mua nhận biết rõ hơn.
             </p>

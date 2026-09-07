@@ -46,12 +46,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           { href: '/san-pham', label: 'Danh mục sản phẩm' },
           { href: '/htx', label: 'Hợp tác xã' },
           { href: '/san-pham?hasQr=true', label: 'QR truy xuất' },
-          { href: '/thanh-toan', label: 'Đặt hàng COD' }
+          { href: '/lien-he', label: 'Kết nối với Agripassport' }
         ];
   const processLinks = isInternal
     ? [
         { href: '/ve-chung-toi', label: 'Về chúng tôi' },
-        { href: '/gioi-thieu', label: 'Vai trò HTXONLINE' },
+        { href: '/gioi-thieu', label: `Vai trò ${profile.appName}` },
         { href: '/tin-tuc', label: 'Tin tức' },
         { href: '/lien-he', label: 'Liên hệ' }
       ]
@@ -59,34 +59,40 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         { href: '/ve-chung-toi', label: 'Về chúng tôi' },
         { href: '/gioi-thieu', label: 'Giới thiệu nền tảng' },
         { href: '/huong-dan-mua-hang', label: 'Hướng dẫn' },
-        { href: '/tra-cuu-don-hang', label: 'Tra cứu đơn hàng' }
+        { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' }
       ];
-  const policyLinks = [
-    { href: '/dieu-khoan-su-dung', label: 'Điều khoản sử dụng' },
-    { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
-    { href: '/chinh-sach-doi-tra', label: 'Chính sách đổi trả' },
-    { href: '/chinh-sach-van-hanh', label: 'Chính sách vận hành' }
-  ];
+  const policyLinks = isInternal
+    ? [
+        { href: '/dieu-khoan-su-dung', label: 'Điều khoản sử dụng' },
+        { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
+        { href: '/chinh-sach-doi-tra', label: 'Chính sách đổi trả' },
+        { href: '/chinh-sach-van-hanh', label: 'Chính sách vận hành' }
+      ]
+    : [
+        { href: '/dieu-khoan-su-dung', label: 'Điều khoản sử dụng' },
+        { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
+        { href: '/chinh-sach-van-hanh', label: 'Chính sách vận hành' }
+      ];
   const supportNote = isInternal
     ? 'Nếu cần hỗ trợ quản trị, phân quyền hoặc đồng bộ dữ liệu giữa các lớp hệ thống, hãy liên hệ hotline hoặc email.'
     : isPassport
       ? 'Nếu quét QR không ra hồ sơ hoặc thông tin truy xuất chưa đúng, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.'
-      : 'Nếu tra cứu QR hoặc đơn hàng gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.';
+      : 'Nếu tra cứu QR hoặc thông tin sản phẩm gặp vấn đề, hãy liên hệ hotline hoặc email để được hỗ trợ nhanh.';
   const mapHint = isInternal
     ? 'Xem nhanh vị trí hỗ trợ triển khai và mở Google Maps khi cần lấy chỉ đường rõ hơn.'
     : isPassport
       ? 'Xem nhanh vị trí hỗ trợ hồ sơ số và mở Google Maps khi cần lấy chỉ đường rõ hơn.'
       : 'Xem nhanh vị trí hỗ trợ nền tảng và mở Google Maps khi cần lấy chỉ đường rõ hơn.';
   const emptyMapText = isInternal
-    ? 'Liên hệ HTXONLINE để được hỗ trợ tư vấn triển khai và vận hành nội bộ phù hợp.'
+    ? `Liên hệ ${profile.appName} để được hỗ trợ tư vấn triển khai và vận hành nội bộ phù hợp.`
     : isPassport
       ? 'Liên hệ đội vận hành Hộ chiếu nông nghiệp để được hỗ trợ cấu hình QR và hồ sơ số.'
-      : 'Liên hệ AGRIPASSPORT để được hỗ trợ chuẩn hóa dữ liệu sản phẩm và truy xuất.';
+      : `Liên hệ ${profile.appName} để được hỗ trợ chuẩn hóa dữ liệu sản phẩm và truy xuất.`;
   const transparencyText = isInternal
-    ? 'HTXONLINE hỗ trợ hợp tác xã số hóa vận hành nội bộ, còn dữ liệu sản phẩm và truy xuất được kết nối sang AGRIPASSPORT khi cần công khai.'
+    ? `${profile.appName} hỗ trợ hợp tác xã số hóa vận hành nội bộ, còn dữ liệu sản phẩm và truy xuất được kết nối sang AGRIPASSPORT khi cần công khai.`
     : isPassport
-      ? 'Hộ chiếu nông nghiệp hiển thị hồ sơ công khai được tạo từ dữ liệu sản phẩm trên AGRIPASSPORT.'
-      : 'AGRIPASSPORT hỗ trợ hợp tác xã chuẩn hóa dữ liệu sản phẩm, vùng trồng, nhật ký và QR truy xuất để tăng tính minh bạch.';
+      ? `Hộ chiếu nông nghiệp hiển thị hồ sơ công khai được tạo từ dữ liệu sản phẩm trên ${profile.appName}.`
+      : `${profile.appName} hỗ trợ hợp tác xã chuẩn hóa dữ liệu sản phẩm, vùng trồng, nhật ký và QR truy xuất để tăng tính minh bạch.`;
   const operatorLine = isInternal
     ? 'Dữ liệu sản phẩm và hồ sơ công khai được kết nối với AGRIPASSPORT khi cần công khai hoặc tiêu thụ.'
     : isPassport
@@ -225,7 +231,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
               <div className="sm:col-span-2 lg:col-span-1">
                 <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#1f2233]">
-                  Trung tâm hỗ trợ HTXONLINE
+                  Trung tâm hỗ trợ {profile.appName}
                 </p>
                 <div className="mt-4 space-y-3 text-sm leading-7 text-slate-700">
                   <p className="flex items-start gap-2">

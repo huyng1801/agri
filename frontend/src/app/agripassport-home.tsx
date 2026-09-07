@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ArrowRight, Boxes, CheckCircle2, Database, Leaf, QrCode, Store } from 'lucide-react';
-import { NewsCard, PublicSearch } from '@/components/public-marketplace';
+import { EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-marketplace';
 import { ProductSlider } from '@/components/product-slider';
 import { PublicImage } from '@/components/public-image';
 import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
@@ -65,7 +65,7 @@ export async function AgripassportHome() {
               Agripassport chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp để người mua tìm hiểu nguồn gốc, đơn vị sản xuất và thông tin QR rõ ràng hơn.
             </p>
             <div className="mx-auto mt-7 max-w-3xl sm:mt-8">
-              <PublicSearch placeholder="Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc" className="border-[#e0e7d9] ring-0 shadow-[0_20px_46px_rgba(30,72,41,0.1)]" />
+              <PublicSearch placeholder="Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc" className="rounded-[var(--public-radius-surface)] border-[var(--border-strong)] ring-0 shadow-[var(--public-shadow-card)]" />
             </div>
           </div>
         </section>
@@ -96,7 +96,7 @@ export async function AgripassportHome() {
 
           <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {platformPillars.map(({ title, description, icon: Icon }) => (
-              <article key={title} className="rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:rounded-[1.5rem] sm:p-5">
+              <article key={title} className="flex h-full flex-col rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--public-shadow-hover)] sm:p-5">
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)] sm:h-11 sm:w-11"><Icon size={21} aria-hidden="true" /></span>
                 <h3 className="mt-4 text-[0.98rem] font-extrabold leading-[1.2] text-[var(--text-primary)] sm:text-lg">{title}</h3>
                 <p className="mt-2 text-[0.78rem] leading-5 text-[var(--text-secondary)] sm:text-sm sm:leading-6">{description}</p>
@@ -129,12 +129,12 @@ export async function AgripassportHome() {
             <Link href="/htx" className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-sm font-bold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 sm:self-auto">Xem HTX <ArrowRight size={16} aria-hidden="true" /></Link>
           </div>
           <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {cooperatives.map((cooperative, index) => (
-              <Link key={cooperative.id} href={`/htx/${cooperative.code}`} className="group flex min-h-[8.5rem] items-center gap-4 rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)] transition hover:-translate-y-1 hover:border-[var(--brand-primary)]">
-                <PublicImage src={cooperative.avatarUrl} alt={cooperative.name} decorative priority={index < 3} wrapperClassName="h-14 w-14 shrink-0 rounded-2xl bg-[var(--brand-primary-subtle)]" className="h-full w-full object-cover" />
+            {cooperatives.length ? cooperatives.map((cooperative, index) => (
+              <Link key={cooperative.id} href={`/htx/${cooperative.code}`} className="group flex min-h-[8.5rem] items-center gap-4 rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[var(--public-shadow-card)] transition hover:-translate-y-1 hover:border-[var(--brand-primary)] hover:shadow-[var(--public-shadow-hover)]">
+                <PublicImage src={cooperative.avatarUrl} alt={cooperative.name} decorative priority={index < 3} wrapperClassName="h-14 w-14 shrink-0 rounded-[var(--public-radius-control)] bg-[var(--brand-primary-subtle)]" className="h-full w-full object-cover" />
                 <span className="min-w-0"><span className="block line-clamp-2 font-extrabold leading-5 text-[var(--text-primary)]">{cooperative.name}</span><span className="mt-1 block text-sm text-[var(--text-secondary)]">{cooperative.province || 'Việt Nam'} · {cooperative.productCount} sản phẩm</span></span>
               </Link>
-            ))}
+            )) : <EmptyPublicState title="Chưa có HTX công khai" description="HTX sẽ xuất hiện khi có dữ liệu đã được đối chiếu và mở phạm vi công khai." />}
           </div>
         </section>
 
@@ -147,7 +147,7 @@ export async function AgripassportHome() {
         <section className="border-y border-[var(--border)] bg-[var(--surface-1)] py-10 sm:py-14 lg:py-16">
           <div className={publicContainerClass}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)] sm:text-sm">Từ đội vận hành</p><h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Tin tức và kiến thức thực tế.</h2></div><Link href="/tin-tuc" className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-sm font-bold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 sm:self-auto">Xem tất cả <ArrowRight size={16} aria-hidden="true" /></Link></div>
-            {news.data.length ? <div className="mt-7 grid gap-4 md:grid-cols-3">{news.data.slice(0, 3).map((article, index) => <NewsCard key={article.id} article={article} priority={index === 0} />)}</div> : null}
+            {news.data.length ? <div className="mt-7 grid gap-4 md:grid-cols-3">{news.data.slice(0, 3).map((article, index) => <NewsCard key={article.id} article={article} priority={index === 0} />)}</div> : <div className="mt-7"><EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức đã được biên tập và công khai sẽ xuất hiện tại đây." /></div>}
           </div>
         </section>
 

@@ -37,7 +37,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
       )
     : catalog.cooperatives;
 
-  const provinceCount = new Set(cooperatives.map((item) => item.province).filter(Boolean)).size || 1;
+  const provinceCount = new Set(cooperatives.map((item) => item.province).filter(Boolean)).size;
   const featuredCooperative = [...cooperatives].sort((a, b) => b.productCount - a.productCount || a.name.localeCompare(b.name, 'vi'))[0];
   const totalProducts = cooperatives.reduce((sum, cooperative) => sum + cooperative.productCount, 0);
   const pageTitle =
@@ -66,7 +66,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         ];
   const quickNotes = [
     `Tổng ${cooperatives.length} HTX đang hiển thị công khai`,
-    `${totalProducts}+ sản phẩm đang đi cùng hồ sơ HTX`,
+    `${totalProducts} sản phẩm đang đi cùng hồ sơ HTX`,
     siteKey === 'passport' ? 'Có thể nối tiếp sang trang truy xuất QR' : 'Mở chi tiết HTX và sản phẩm ngay trên cùng hệ sinh thái'
   ];
   const displayedCooperatives = cooperatives.slice(0, 6);
@@ -195,8 +195,8 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
 
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             {[
-              { icon: Building2, title: 'HTX hiển thị', value: `${cooperatives.length}+`, note: 'Danh sách đã có mặt trên lớp công khai' },
-              { icon: MapPin, title: 'Tỉnh thành', value: `${provinceCount}+`, note: 'Mỗi hồ sơ giữ lối dẫn địa phương rõ ràng' },
+              { icon: Building2, title: 'HTX hiển thị', value: String(cooperatives.length), note: 'Danh sách đã có mặt trên lớp công khai' },
+              { icon: MapPin, title: 'Tỉnh thành', value: String(provinceCount), note: 'Mỗi hồ sơ giữ lối dẫn địa phương rõ ràng' },
               { icon: ShieldCheck, title: 'Luồng đi tiếp', value: 'Mạch lạc', note: 'Từ HTX sang sản phẩm và thông tin liên hệ nhanh hơn' }
             ].map((item) => (
               <article

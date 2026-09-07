@@ -10,7 +10,7 @@ const phonePattern = /^(0|\+84)[0-9]{8,10}$/;
 const HELP_TOPICS = [
   { id: 'digitalize', label: 'Số hóa hợp tác xã & quản lý dữ liệu' },
   { id: 'product-publish', label: 'Đưa sản phẩm lên Agripassport' },
-  { id: 'commerce', label: 'Kết nối tiêu thụ / bán hàng COD' },
+  { id: 'commerce', label: 'Kết nối tiêu thụ / vận hành nội bộ' },
   { id: 'other', label: 'Tôi có nhu cầu khác, cần được tư vấn thêm' }
 ] as const;
 
@@ -180,8 +180,8 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     return (
       <form className="grid gap-4 rounded-[2rem] border border-[#e7e3d7] bg-white p-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-6" onSubmit={submit}>
         <div className="border-b border-[#ece8dd] pb-4">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Điền thông tin</p>
-          <h2 className="mt-2 text-[1.45rem] font-extrabold leading-[1.06] text-[#1f2233] sm:text-[1.95rem]">Để lại thông tin để được tư vấn</h2>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)]">Điền thông tin</p>
+          <h2 className="mt-2 text-[1.45rem] font-extrabold leading-[1.06] text-[var(--text-primary)] sm:text-[1.95rem]">Để lại thông tin để được tư vấn</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-[0.96rem]">
             Chọn điều bạn đang quan tâm để chúng tôi phản hồi đúng nội dung và nhanh hơn.
           </p>
@@ -213,13 +213,13 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
                   key={item.id}
                   className={cn(
                     'flex cursor-pointer items-start gap-3 rounded-[1.2rem] border px-3.5 py-3 text-sm transition',
-                    selected ? 'border-[#1f9b4b] bg-[#f5fbf4] text-[#1f2233]' : 'border-[#e6eadf] bg-white text-slate-600 hover:border-[#b7d6bf]'
+                    selected ? 'border-[var(--brand-primary)] bg-[var(--brand-primary-subtle)] text-[var(--text-primary)]' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--border-strong)]'
                   )}
                 >
                   <span
                     className={cn(
                       'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border-2',
-                      selected ? 'border-[#1f9b4b] bg-[#1f9b4b]' : 'border-[#c8d4c8] bg-white'
+                      selected ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)]' : 'border-[var(--border-strong)] bg-white'
                     )}
                     aria-hidden="true"
                   >
