@@ -66,6 +66,11 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "vi_VN",
       type: "website",
     },
+    twitter: {
+      card: "summary",
+      title: pageTitle,
+      description: profile.pageContent.homeDescription,
+    },
   };
 }
 

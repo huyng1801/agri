@@ -61,6 +61,11 @@ export async function buildPublicMetadata(input: PublicMetadataInput): Promise<M
       siteName: profile.appName,
       locale: 'vi_VN',
       type: input.type || 'website'
+    },
+    twitter: {
+      card: 'summary',
+      title: brandizeSiteText(input.openGraphTitle || input.title, siteKey),
+      description: brandizeSiteText(input.openGraphDescription || input.description, siteKey)
     }
   };
 }

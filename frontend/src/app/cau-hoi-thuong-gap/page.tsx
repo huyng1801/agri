@@ -3,6 +3,7 @@ import { PublicBreadcrumbTrail, PublicInfoTile, PublicPageMain } from '@/compone
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicSiteProfile } from '@/lib/public-site';
+import { getRequestAbsoluteUrl } from '@/lib/request-site';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,7 +32,11 @@ const extraFaqs = [
 ] as const;
 
 export default async function FaqPage() {
-  const profile = await getPublicSiteProfile('agripassport');
+  const [profile, homeUrl, currentUrl] = await Promise.all([
+    getPublicSiteProfile('agripassport'),
+    getRequestAbsoluteUrl('/'),
+    getRequestAbsoluteUrl('/cau-hoi-thuong-gap')
+  ]);
   const faqs = [...extraFaqs.map(([question, answer]) => ({ question, answer })), ...profile.faqs].filter((faq, index, list) => list.findIndex((item) => item.question === faq.question) === index);
   const jsonLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((faq) => ({ '@type': 'Question', name: faq.question, acceptedAnswer: { '@type': 'Answer', text: faq.answer } })) };
 
@@ -39,7 +44,7 @@ export default async function FaqPage() {
     <PublicShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
       <PublicPageMain className="pb-12 sm:pb-16">
-        <PublicBreadcrumbTrail current="Câu hỏi thường gặp" />
+        <PublicBreadcrumbTrail current="Câu hỏi thường gặp" path="/cau-hoi-thuong-gap" homeUrl={homeUrl} currentUrl={currentUrl} />
         <header className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hỗ trợ nhanh</p><h1 className="type-h1 mt-3 text-3xl sm:text-5xl">Câu hỏi thường gặp</h1><p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">Những câu trả lời ngắn gọn để bạn hiểu cách đọc hồ sơ, tra cứu QR và kết nối với Agripassport.</p></header>
         <section className="mt-7 grid gap-3 md:grid-cols-2" aria-label="Danh sách câu hỏi thường gặp">
           {faqs.map((faq) => <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />)}

@@ -35,19 +35,35 @@ export function PublicBreadcrumb({ href, label }: { href: string; label: string 
   );
 }
 
-export function PublicBreadcrumbTrail({ current }: { current: string }) {
+export function PublicBreadcrumbTrail({ current, path, homeUrl = '/', currentUrl = path }: { current: string; path: string; homeUrl?: string; currentUrl?: string }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Trang chủ', item: homeUrl },
+      { '@type': 'ListItem', position: 2, name: current, item: currentUrl }
+    ]
+  };
+
   return (
-    <nav
-      aria-label="Đường dẫn"
-      className="mb-4 inline-flex min-h-11 flex-wrap items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 text-sm text-[var(--text-primary)]"
-    >
-      <Link href="/" className="inline-flex min-h-11 items-center font-semibold transition hover:text-[var(--brand-primary)]">
-        Trang chủ
-      </Link>
-      <span aria-hidden="true">/</span>
-      <span className="font-medium">{current}</span>
-    </nav>
+    <>
+      <nav
+        aria-label="Đường dẫn"
+        className="mb-4 inline-flex min-h-11 flex-wrap items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 text-sm text-[var(--text-primary)]"
+      >
+        <Link href="/" className="inline-flex min-h-11 items-center font-semibold transition hover:text-[var(--brand-primary)]">
+          Trang chủ
+        </Link>
+        <span aria-hidden="true">/</span>
+        <span className="font-medium">{current}</span>
+      </nav>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+    </>
   );
+}
+
+export function PublicStructuredData({ data }: { data: unknown }) {
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, '\\u003c') }} />;
 }
 
 export function PublicPageHeader({

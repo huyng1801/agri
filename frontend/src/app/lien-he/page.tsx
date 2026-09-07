@@ -8,7 +8,7 @@ import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
-import { getRequestPublicSiteKey } from '@/lib/request-site';
+import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
@@ -24,7 +24,11 @@ export async function generateMetadata() {
 }
 
 export default async function ContactPage() {
-  const siteKey = await getRequestPublicSiteKey();
+  const [siteKey, homeUrl, currentUrl] = await Promise.all([
+    getRequestPublicSiteKey(),
+    getRequestAbsoluteUrl('/'),
+    getRequestAbsoluteUrl('/lien-he')
+  ]);
   const siteProfile = await getPublicSiteProfile(siteKey);
   const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
@@ -40,7 +44,7 @@ export default async function ContactPage() {
   return (
     <PublicShell>
       <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
-        <PublicBreadcrumbTrail current="Liên hệ" />
+        <PublicBreadcrumbTrail current="Liên hệ" path="/lien-he" homeUrl={homeUrl} currentUrl={currentUrl} />
 
         <section className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
           <div className="space-y-4">

@@ -4,16 +4,18 @@ import { EmptyPublicState, NewsCard, PublicSearch } from '@/components/public-ma
 import { ProductSlider } from '@/components/product-slider';
 import { PublicImage } from '@/components/public-image';
 import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
-import { publicContainerClass } from '@/components/public-layout';
+import { PublicStructuredData, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicNews } from '@/lib/news';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
+import { getRequestAbsoluteUrl } from '@/lib/request-site';
 
 export async function AgripassportHome() {
-  const [catalog, news] = await Promise.all([
+  const [catalog, news, canonical] = await Promise.all([
     fetchPublicCatalog(24),
-    fetchPublicNews('/news/public?home=true&limit=3')
+    fetchPublicNews('/news/public?home=true&limit=3'),
+    getRequestAbsoluteUrl('/')
   ]);
   const products = catalog.products.slice(0, 5);
   const cooperatives = catalog.cooperatives.slice(0, 6);
@@ -51,9 +53,36 @@ export async function AgripassportHome() {
       icon: Boxes
     }
   ];
+  const organizationId = `${canonical}#organization`;
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': organizationId,
+        name: 'AGRIPASSPORT',
+        url: canonical,
+        email: 'Agripassport@gmail.com',
+        telephone: '+84907001200'
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${canonical}#website`,
+        name: 'AGRIPASSPORT',
+        url: canonical,
+        publisher: { '@id': organizationId },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: `${canonical}san-pham?search={search_term_string}`,
+          'query-input': 'required name=search_term_string'
+        }
+      }
+    ]
+  };
 
   return (
     <PublicShell>
+      <PublicStructuredData data={structuredData} />
       <main id="main-content" className="overflow-hidden bg-[var(--surface-1)]">
         <section className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--brand-primary)_14%,transparent),transparent_42%),linear-gradient(180deg,var(--brand-primary-subtle)_0%,var(--surface-1)_100%)]">
           <div className={cn(publicContainerClass, 'px-4 py-10 text-center sm:px-5 sm:py-16 lg:px-6 lg:py-20')}>

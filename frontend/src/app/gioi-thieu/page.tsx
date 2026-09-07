@@ -5,7 +5,7 @@ import { PublicBreadcrumbTrail, PublicPageHeader, PublicPageMain, publicContaine
 import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { buildPublicMetadata } from '@/lib/page-metadata';
-import { getRequestPublicSiteKey } from '@/lib/request-site';
+import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
@@ -31,14 +31,18 @@ const audiences = [
 ] as const;
 
 export default async function AboutPage() {
-  const siteKey = await getRequestPublicSiteKey();
+  const [siteKey, homeUrl, currentUrl] = await Promise.all([
+    getRequestPublicSiteKey(),
+    getRequestAbsoluteUrl('/'),
+    getRequestAbsoluteUrl('/gioi-thieu')
+  ]);
   const isInternal = siteKey === 'htxonline';
 
   if (isInternal) {
     return (
       <PublicShell>
         <PublicPageMain>
-          <PublicBreadcrumbTrail current="Cách hoạt động" />
+          <PublicBreadcrumbTrail current="Cách hoạt động" path="/gioi-thieu" homeUrl={homeUrl} currentUrl={currentUrl} />
           <PublicPageHeader eyebrow="HTXONLINE" title="Quản trị nội bộ trước, công khai đúng lớp sau." description="HTXONLINE tập trung vào thành viên, thu chi, xuất nhập và dữ liệu vận hành. Khi thông tin đủ chuẩn, dữ liệu phù hợp mới được kết nối sang Agripassport và Hộ chiếu nông nghiệp." />
           <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step) => <article key={step.number} className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5"><step.icon size={24} className="text-[var(--brand-primary)]" aria-hidden="true" /><p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand-primary)]">{step.number}</p><h2 className="mt-2 text-xl font-extrabold text-[var(--text-primary)]">{step.title}</h2><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{step.description}</p></article>)}
@@ -51,7 +55,7 @@ export default async function AboutPage() {
   return (
     <PublicShell>
       <PublicPageMain className="pb-10 sm:pb-14 lg:pb-16">
-        <PublicBreadcrumbTrail current="Cách hoạt động" />
+        <PublicBreadcrumbTrail current="Cách hoạt động" path="/gioi-thieu" homeUrl={homeUrl} currentUrl={currentUrl} />
         <section className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(135deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] shadow-[0_22px_55px_rgba(15,23,42,0.07)]">
           <div className={cn(publicContainerClass, 'px-5 py-9 sm:px-8 sm:py-12 lg:px-12 lg:py-16')}>
             <PublicPageHeader eyebrow="Cách Agripassport hoạt động" title="Từ dữ liệu sản xuất đến hồ sơ nông sản minh bạch." description="Agripassport không thay thế quy trình sản xuất. Nền tảng giúp tổ chức những dữ liệu đã có, kiểm tra trước khi công khai và kết nối người mua với thông tin đúng sản phẩm." />
