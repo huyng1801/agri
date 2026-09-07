@@ -46,6 +46,39 @@ export const ecosystemCards: EcosystemCard[] = [
   }
 ];
 
+const publicEcosystemCards: EcosystemCard[] = [
+  {
+    key: 'agripassport',
+    name: 'AGRIPASSPORT',
+    label: 'Khám phá sản phẩm',
+    description: 'Tìm sản phẩm, giá bán, đơn vị sản xuất và vùng trồng trong một danh mục công khai, dễ đọc.',
+    href: '/san-pham',
+    icon: Boxes,
+    gradientClassName: 'bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]',
+    signal: 'Danh mục sản phẩm'
+  },
+  {
+    key: 'htxonline',
+    name: 'HỢP TÁC XÃ',
+    label: 'Tìm đơn vị sản xuất',
+    description: 'Xem hồ sơ HTX, khu vực hoạt động và những sản phẩm đang được giới thiệu công khai.',
+    href: '/htx',
+    icon: Store,
+    gradientClassName: 'bg-[linear-gradient(135deg,#123d49_0%,#176d70_48%,#2b9d83_100%)]',
+    signal: 'Hồ sơ HTX'
+  },
+  {
+    key: 'passport',
+    name: 'HỘ CHIẾU NÔNG NGHIỆP',
+    label: 'Kiểm tra nguồn gốc',
+    description: 'Quét QR để xem vùng trồng, nhật ký, chứng nhận và thông tin nguồn gốc theo phạm vi công khai.',
+    href: passportUrl('/'),
+    icon: QrCode,
+    gradientClassName: 'bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]',
+    signal: 'QR truy xuất'
+  }
+];
+
 const demeterCardStyles = {
   htxonline: {
     surface:
@@ -82,6 +115,8 @@ export function PublicEcosystemShowcase({
   showHeading?: boolean;
 }) {
   const demeterLike = siteKey === 'htxonline';
+  const marketplacePublic = siteKey === 'agripassport' || siteKey === 'local';
+  const cards = marketplacePublic ? publicEcosystemCards : ecosystemCards;
   return (
     <section className={className}>
       {showHeading ? (
@@ -102,9 +137,9 @@ export function PublicEcosystemShowcase({
           demeterLike && 'gap-4 sm:gap-5'
         )}
       >
-        {ecosystemCards.map((card, index) => {
+        {cards.map((card, index) => {
           const Icon = card.icon;
-          const isCurrent = siteKey === card.key;
+          const isCurrent = siteKey === card.key || (siteKey === 'local' && card.key === 'agripassport');
           if (demeterLike) {
             const demeterStyle = demeterCardStyles[card.key];
             return (

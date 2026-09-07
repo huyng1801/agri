@@ -141,7 +141,7 @@ export async function AgripassportHome() {
             <div className="mx-auto max-w-4xl text-center">
               <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Hệ sinh thái số cho nông nghiệp</p>
               <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Nối các chủ thể trong nông nghiệp số</h2>
-              <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Từ quản lý hợp tác xã, số hóa sản phẩm đến truy xuất nguồn gốc và kết nối thị trường, các giải pháp được kết nối trên cùng một hệ sinh thái.</p>
+              <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Từ sản phẩm, đơn vị sản xuất đến QR truy xuất, mọi thông tin quan trọng được sắp xếp thành một hành trình rõ ràng hơn cho người mua.</p>
             </div>
             <PublicEcosystemShowcase siteKey="agripassport" className="mt-8" showHeading={false} />
           </div>
