@@ -171,7 +171,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
 
         {related.length > 0 && (
           <section className="mt-6 sm:mt-8">
-            <div className="flex items-end justify-between gap-3"><div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-2xl font-extrabold tracking-[-0.03em] text-ink">Bài viết liên quan</h2></div><Link href="/tin-tuc" className="hidden items-center gap-1 text-sm font-bold text-leaf sm:inline-flex">Tất cả tin tức <ArrowRight size={15} /></Link></div>
+            <div className="flex items-end justify-between gap-3"><div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-2xl font-extrabold tracking-[-0.03em] text-ink">Bài viết liên quan</h2></div><Link href="/tin-tuc" className="hidden min-h-11 items-center gap-1 rounded-full px-3 text-sm font-bold text-leaf transition hover:bg-[var(--brand-primary-subtle)] sm:inline-flex">Tất cả tin tức <ArrowRight size={15} aria-hidden="true" /></Link></div>
             <div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
               {related.map((item) => (
                 <NewsCard key={item.id} article={item} />
