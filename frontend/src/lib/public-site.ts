@@ -124,12 +124,12 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
         answer: 'Không. QR truy xuất và thông tin công khai có thể được mở trực tiếp cho khách truy cập.'
       },
       {
-        question: 'Ai xác nhận đơn hàng COD?',
-        answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+        question: 'Người mua có cần đăng nhập để xem sản phẩm và QR không?',
+        answer: 'Không. Bạn có thể mở thông tin sản phẩm, hồ sơ HTX và QR truy xuất trực tiếp từ trang công khai.'
       },
       {
-        question: 'Nếu tra cứu QR hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
-        answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+        question: 'Nếu tra cứu QR chưa ra kết quả thì liên hệ ai?',
+        answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để chúng tôi hỗ trợ kiểm tra nhanh.'
       }
     ],
     pageContent: {
@@ -153,7 +153,7 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       aboutImageAlt: 'Sản phẩm nông nghiệp và dữ liệu truy xuất trên nền tảng số',
       contactTitle: 'Hãy để AGRIPASSPORT đồng hành cùng dữ liệu sản phẩm của hợp tác xã bạn',
       contactDescription:
-        'Tư vấn chuẩn hóa danh mục sản phẩm, vùng trồng, QR truy xuất, chứng nhận và luồng công khai dữ liệu phục vụ kết nối tiêu thụ.',
+        'Tư vấn thông tin sản phẩm, QR truy xuất, chứng nhận và kết nối với hợp tác xã phù hợp.',
       contactImageUrl:
         'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
       contactImageAlt: 'Không gian hỗ trợ chuẩn hóa dữ liệu sản phẩm nông nghiệp'

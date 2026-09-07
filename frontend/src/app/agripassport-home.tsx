@@ -60,7 +60,7 @@ export async function AgripassportHome() {
               AGRIPASSPORT chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp
             </h1>
             <p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-7 text-[#405b75] sm:mt-6 sm:text-[1.15rem] sm:leading-8">
-              Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng dữ liệu để công khai bán hàng rõ ràng hơn.
+              Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng thông tin để bạn tìm hiểu nguồn gốc và lựa chọn dễ dàng hơn.
             </p>
             <div className="mx-auto mt-7 max-w-3xl sm:mt-8">
               <PublicSearch placeholder="Tìm sản phẩm, HTX hoặc vùng trồng" className="border-[#e0e7d9] ring-0 shadow-[0_20px_46px_rgba(30,72,41,0.1)]" />

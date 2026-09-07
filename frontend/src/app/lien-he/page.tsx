@@ -11,9 +11,14 @@ import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/publi
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata() {
+  const siteKey = await getRequestPublicSiteKey();
+  const appName = siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
   return buildPublicMetadata({
-    title: 'Liên hệ',
-    description: 'Liên hệ HTXONLINE để được tư vấn tham gia sàn, hỗ trợ đơn hàng hoặc triển khai truy xuất nguồn gốc.',
+    title: `Liên hệ ${appName}`,
+    description:
+      siteKey === 'htxonline'
+        ? 'Liên hệ HTXONLINE để được tư vấn quản trị và vận hành hợp tác xã.'
+        : 'Liên hệ Agripassport để tìm hiểu sản phẩm, QR truy xuất và kết nối với hợp tác xã.',
     path: '/lien-he'
   });
 }
@@ -21,9 +26,16 @@ export async function generateMetadata() {
 export default async function ContactPage() {
   const siteKey = await getRequestPublicSiteKey();
   const siteProfile = await getPublicSiteProfile(siteKey);
+  const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
   const mapLocation = getPublicMapLocation(siteProfile);
   const showMapPreview = Boolean(siteProfile.address.trim());
+  const contactDescription = isAgripassport
+    ? 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.'
+    : siteProfile.pageContent.contactDescription;
+  const faqs = isAgripassport
+    ? siteProfile.faqs.filter((faq) => !/COD|đơn hàng/i.test(`${faq.question} ${faq.answer}`))
+    : siteProfile.faqs;
 
   return (
     <PublicShell>
@@ -42,7 +54,7 @@ export default async function ContactPage() {
                   {siteProfile.pageContent.contactTitle}
                 </h1>
                 <p className="mt-3 max-w-[42rem] text-[0.95rem] leading-7 text-slate-600 sm:text-[1rem]">
-                  {siteProfile.pageContent.contactDescription}
+                  {contactDescription}
                 </p>
 
                 <div className="mt-5 grid gap-2.5 sm:grid-cols-2 sm:gap-3">
@@ -119,7 +131,9 @@ export default async function ContactPage() {
 
               <article className="rounded-[1.9rem] border border-[#e6eadf] bg-[#fffaf2] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Nhịp phản hồi</p>
-                <h2 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[#1f2233]">Hỗ trợ rõ luồng nội bộ, công khai và QR.</h2>
+                <h2 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[#1f2233]">
+                  {isAgripassport ? 'Chúng tôi sẽ giúp bạn tìm đúng thông tin.' : 'Hỗ trợ rõ luồng nội bộ, công khai và QR.'}
+                </h2>
                 <div className="mt-4 space-y-3">
                   <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3">
                     <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
@@ -129,14 +143,16 @@ export default async function ContactPage() {
                     </p>
                   </div>
                   <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
-                    Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.
+                    {isAgripassport
+                      ? 'Gửi câu hỏi về sản phẩm, QR, nguồn gốc hoặc HTX; đội ngũ sẽ phản hồi theo đúng nội dung bạn cần.'
+                      : 'Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'}
                   </div>
                 </div>
               </article>
             </div>
           </div>
 
-          <PublicContactForm sourcePath="/lien-he" variant="contact" />
+          <PublicContactForm sourcePath="/lien-he" variant="contact" audience={isAgripassport ? 'public' : 'operator'} />
         </section>
 
         <section className="mt-6">
@@ -166,7 +182,9 @@ export default async function ContactPage() {
 
             <article className="rounded-[1.8rem] border border-slate-200 bg-[#f8faf7] p-5 shadow-sm sm:p-6">
               <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Lưu ý khi liên hệ</p>
-              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.1rem]">Luồng hỗ trợ được tách rõ giữa nội bộ HTX và lớp công khai.</h2>
+              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.1rem]">
+                {isAgripassport ? 'Kênh liên hệ chính thức của Agripassport.' : 'Luồng hỗ trợ được tách rõ giữa nội bộ HTX và lớp công khai.'}
+              </h2>
               <div className="mt-5 grid gap-3">
                 <div className="rounded-[1.2rem] border border-[#dde7d9] bg-white p-4">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Hotline công khai</p>
@@ -177,18 +195,20 @@ export default async function ContactPage() {
                   <p className="mt-2 break-all text-lg font-bold text-[#1f2233]">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-7 text-slate-600">
-                  HTXONLINE ưu tiên hỗ trợ chuẩn hóa quản trị nội bộ, phân quyền, dữ liệu vận hành và kết nối sang các lớp công khai của hệ sinh thái khi cần.
+                  {isAgripassport
+                    ? 'Bạn có thể gọi hotline hoặc gửi email để được hỗ trợ tra cứu sản phẩm, QR và thông tin hợp tác xã.'
+                    : 'HTXONLINE ưu tiên hỗ trợ chuẩn hóa quản trị nội bộ, phân quyền, dữ liệu vận hành và kết nối sang các lớp công khai của hệ sinh thái khi cần.'}
                 </p>
               </div>
             </article>
           </div>
         </section>
 
-        {siteProfile.faqs.length > 0 && (
+        {faqs.length > 0 && (
           <section className="pb-[calc(10.5rem+var(--safe-bottom))] pt-6 sm:pb-12">
             <h2 className="text-[1.9rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {siteProfile.faqs.map((faq) => (
+              {faqs.map((faq) => (
                 <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />
               ))}
             </div>

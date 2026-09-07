@@ -14,16 +14,25 @@ const HELP_TOPICS = [
   { id: 'other', label: 'Tôi có nhu cầu khác, cần được tư vấn thêm' }
 ] as const;
 
+const PUBLIC_HELP_TOPICS = [
+  { id: 'product-info', label: 'Tìm hiểu sản phẩm và giá' },
+  { id: 'traceability', label: 'Tra cứu QR và nguồn gốc' },
+  { id: 'cooperative', label: 'Kết nối với hợp tác xã' },
+  { id: 'other', label: 'Câu hỏi khác' }
+] as const;
+
 type PublicContactFormProps = {
   sourcePath?: string;
   variant?: 'default' | 'hero' | 'contact';
+  audience?: 'operator' | 'public';
 };
 
-export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default' }: PublicContactFormProps) {
+export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default', audience = 'operator' }: PublicContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const [topic, setTopic] = useState<string>(HELP_TOPICS[0].id);
+  const helpTopics = audience === 'public' ? PUBLIC_HELP_TOPICS : HELP_TOPICS;
+  const [topic, setTopic] = useState<string>(helpTopics[0].id);
   const isHero = variant === 'hero';
   const isContact = variant === 'contact';
 
@@ -38,7 +47,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     const phone = String(payload.get('phone') || '').trim();
     const email = String(payload.get('email') || '').trim();
     const message = String(payload.get('message') || '').trim();
-    const topicLabel = HELP_TOPICS.find((item) => item.id === topic)?.label ?? topic;
+    const topicLabel = helpTopics.find((item) => item.id === topic)?.label ?? topic;
     const composedMessage = `[${topicLabel}]\n${message}`;
 
     if (!fullName) return setError('Họ tên là bắt buộc');
@@ -63,7 +72,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
         throw new Error(body?.errors?.[0]?.message || body?.message || 'Không thể gửi liên hệ');
       }
       form.reset();
-      setTopic(HELP_TOPICS[0].id);
+      setTopic(helpTopics[0].id);
       setSuccess('Thông tin đã được gửi. Đội vận hành sẽ liên hệ với bạn trong thời gian sớm nhất.');
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : 'Không thể gửi liên hệ');
@@ -174,7 +183,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
           <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Điền thông tin</p>
           <h2 className="mt-2 text-[1.45rem] font-extrabold leading-[1.06] text-[#1f2233] sm:text-[1.95rem]">Để lại thông tin để được tư vấn</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-[0.96rem]">
-            Chọn đúng nhu cầu của bạn, đội vận hành sẽ phản hồi trong thời gian sớm nhất và hướng dẫn luồng triển khai phù hợp.
+            Chọn điều bạn đang quan tâm để chúng tôi phản hồi đúng nội dung và nhanh hơn.
           </p>
         </div>
 
@@ -197,7 +206,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
         <div className="grid gap-2.5">
           <p className="text-sm font-semibold text-ink">Nhu cầu hỗ trợ</p>
           <div className="grid gap-2 sm:grid-cols-2">
-            {HELP_TOPICS.map((item) => {
+            {helpTopics.map((item) => {
               const selected = topic === item.id;
               return (
                 <label
@@ -226,7 +235,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
         <label className="grid gap-1.5 text-sm font-semibold text-ink">
           <span>Nội dung</span>
-          <Textarea data-testid="contact-message-input" name="message" required className="min-h-36 bg-white" placeholder="Mô tả ngắn mô hình HTX, sản phẩm hoặc nhu cầu hỗ trợ của bạn..." />
+          <Textarea data-testid="contact-message-input" name="message" required className="min-h-36 bg-white" placeholder={audience === 'public' ? 'Bạn muốn biết thêm về sản phẩm, nguồn gốc hoặc HTX nào?' : 'Mô tả ngắn mô hình HTX, sản phẩm hoặc nhu cầu hỗ trợ của bạn...'} />
         </label>
 
         {success && (

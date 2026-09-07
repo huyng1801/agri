@@ -271,34 +271,6 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               description="Khám phá các sản phẩm được số hóa trên Agripassport từ nông sản, sản phẩm OCOP đến các sản phẩm của hợp tác xã và doanh nghiệp. Tìm hiểu thông tin sản phẩm, đơn vị sản xuất và dữ liệu truy xuất nguồn gốc được công khai trên hệ thống."
             />
 
-            <section className="hidden rounded-[2rem] border border-[#e8e4d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:block sm:p-5 lg:p-6">
-              <div className="grid gap-3 lg:grid-cols-[0.88fr_1.12fr] lg:items-start xl:grid-cols-[0.8fr_1.2fr]">
-                <div>
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm sm:tracking-[0.24em]">Danh mục sản phẩm</p>
-                  <h2 className="mt-2 text-[1.32rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#24283a] sm:text-[2rem] lg:text-[2.15rem]">Tìm sản phẩm theo hợp tác xã, địa phương và thông tin truy xuất</h2>
-                  <p className="mt-2 max-w-2xl text-[0.95rem] leading-[1.7] text-slate-600 sm:mt-3 sm:text-base sm:leading-7">
-                    Khám phá sản phẩm nông nghiệp từ nhiều vùng sản xuất và hợp tác xã. Tìm kiếm nhanh theo tên sản phẩm, đơn vị sản xuất, địa phương hoặc trạng thái truy xuất nguồn gốc.
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                  {[
-                    { icon: Sparkles, title: 'Kết quả', value: `${products.length}+`, note: 'Sản phẩm đang được công khai trên hệ thống.' },
-                    { icon: QrCode, title: 'QR Agripassport', value: `${qrProducts}+`, note: 'Sản phẩm có dữ liệu truy xuất nguồn gốc.' },
-                    { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+`, note: 'Tỉnh/thành đang có sản phẩm trên hệ thống.' }
-                  ].map((item) => (
-                    <article key={item.title} className="rounded-[1.35rem] border border-[#e8e4d8] bg-[#fbfcf8] p-3 shadow-[0_14px_30px_rgba(15,23,42,0.04)] sm:rounded-[1.55rem] sm:p-4 lg:min-h-[132px]">
-                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#eef7ef] text-[#1f9b4b] sm:h-11 sm:w-11">
-                        <item.icon size={18} aria-hidden="true" />
-                      </span>
-                      <p className="mt-2 text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e] sm:mt-3 sm:text-sm">{item.title}</p>
-                      <p className="mt-1 text-[1.18rem] font-extrabold text-[#1f2233] sm:text-2xl">{item.value}</p>
-                      <p className="mt-1 hidden text-sm leading-[1.6] text-slate-600 sm:block">{item.note}</p>
-                    </article>
-                  ))}
-                </div>
-              </div>
-            </section>
           </>
         )}
 

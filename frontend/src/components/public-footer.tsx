@@ -93,13 +93,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       ? 'Được tạo từ dữ liệu sản phẩm và truy xuất trên AGRIPASSPORT.'
       : 'Liên hệ hotline hoặc email để được đội vận hành AGRIPASSPORT hỗ trợ nhanh.';
 
-  if (siteKey === 'agripassport') {
+  if (siteKey === 'agripassport' || siteKey === 'local') {
     const agriServiceLinks = [
-      { href: '/san-pham', label: 'Số hóa sản phẩm' },
-      { href: '/htx', label: 'Quản lý thông tin hợp tác xã' },
-      { href: '/san-pham?hasQr=true', label: 'QR truy xuất nguồn gốc' },
-      { href: '/htx', label: 'Kết nối tiêu thụ' },
-      { href: '/thanh-toan', label: 'Đặt hàng COD' }
+      { href: '/san-pham', label: 'Xem sản phẩm' },
+      { href: '/htx', label: 'Tìm hợp tác xã' },
+      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
+      { href: '/lien-he', label: 'Kết nối và hỗ trợ' }
     ];
     const aboutLinks = [
       { href: '/gioi-thieu', label: 'Hướng dẫn sử dụng' },

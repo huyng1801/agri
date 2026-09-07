@@ -108,9 +108,9 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className="group flex h-full flex-col rounded-[1.85rem] border border-[#d6e6d2] bg-[#fbfdf9] p-3 shadow-[0_14px_32px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:p-3.5">
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-        <div className="absolute inset-x-3 top-3 z-[2] flex items-center justify-between gap-2">
+    <article className="group flex h-full flex-col rounded-[1.45rem] border border-[#d6e6d2] bg-[#fbfdf9] p-2.5 shadow-[0_12px_28px_rgba(15,23,42,0.055)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:rounded-[1.85rem] sm:p-3.5">
+      <div className="relative overflow-hidden rounded-[1.2rem] border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:rounded-[1.5rem]">
+        <div className="absolute inset-x-2.5 top-2.5 z-[2] flex items-center justify-between gap-2 sm:inset-x-3 sm:top-3">
           <span className="inline-flex min-h-7 items-center rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
             {product.category?.name ?? 'Nông sản'}
           </span>
@@ -129,31 +129,31 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
             fallback={DEFAULT_PRODUCT_IMAGE}
             testId="product-card-image"
             priority={priority}
-            wrapperClassName="aspect-[4/3] w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)]"
+            wrapperClassName="aspect-[5/3] w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)] sm:aspect-[4/3]"
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
       </div>
 
-      <div className="mt-3 flex flex-1 flex-col px-1 pb-0.5">
+      <div className="mt-2.5 flex flex-1 flex-col px-0.5 pb-0.5 sm:mt-3 sm:px-1">
         <p className="text-[0.7rem] font-semibold text-[#5d7b67]">{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
-        <Link href={`/san-pham/${product.slug}`} className="mt-1 block min-h-11 line-clamp-2 text-[1.08rem] font-extrabold leading-6 text-[#1b251f] transition hover:text-[#1c8542] sm:text-[1.2rem]">
+        <Link href={`/san-pham/${product.slug}`} className="mt-1 block line-clamp-2 text-[1.04rem] font-extrabold leading-[1.2] text-[#1b251f] transition hover:text-[#1c8542] sm:min-h-11 sm:text-[1.2rem] sm:leading-6">
           {product.name}
         </Link>
         {product.cooperative ? (
-          <Link href={`/htx/${product.cooperative.code}`} className="mt-2 inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542]">
+          <Link href={`/htx/${product.cooperative.code}`} className="mt-1.5 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542] sm:mt-2 sm:min-h-11">
             <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName="h-6 w-6 shrink-0 rounded-full" className="h-full w-full rounded-full object-cover" />
             <span className="truncate">{product.cooperative.name}</span>
           </Link>
         ) : null}
-        <div className="mt-3 flex items-end justify-between gap-3 border-t border-[#e8eee4] pt-3">
+        <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-[#e8eee4] pt-2.5 sm:mt-3 sm:gap-3 sm:pt-3">
           <div>
-            <p className="text-[1.22rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p>
+            <p className="text-[1.12rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p>
             <p className="mt-1 text-xs text-slate-500">/{product.unit}</p>
           </div>
           <Link
             href={`/san-pham/${product.slug}`}
-            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full bg-[#1f7048] px-3 text-[0.78rem] font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint sm:gap-1.5 sm:px-4 sm:text-sm"
           >
             Xem thông tin
             <ArrowRight size={15} aria-hidden="true" />

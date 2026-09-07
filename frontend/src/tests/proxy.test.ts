@@ -42,4 +42,14 @@ describe('public host proxy rules', () => {
     expect(checkoutResponse.status).toBe(308);
     expect(checkoutResponse.headers.get('location')).toBe('https://agripassport.com/gio-hang');
   });
+
+  it('keeps the Agripassport public flow informational instead of exposing commerce pages', () => {
+    const cartResponse = proxy(makeRequest('https://agripassport.com/gio-hang', 'agripassport.com'));
+    const guideResponse = proxy(makeRequest('https://agripassport.com/huong-dan-mua-hang', 'agripassport.com'));
+
+    expect(cartResponse.status).toBe(308);
+    expect(cartResponse.headers.get('location')).toBe('https://agripassport.com/san-pham');
+    expect(guideResponse.status).toBe(308);
+    expect(guideResponse.headers.get('location')).toBe('https://agripassport.com/san-pham');
+  });
 });

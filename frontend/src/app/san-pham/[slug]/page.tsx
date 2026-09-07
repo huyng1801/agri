@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Calendar, MapPin, Phone, QrCode } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { PublicProduct } from '@/components/public-marketplace';
-import { AddToCartButton } from '@/components/add-to-cart-button';
 import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicBreadcrumb, PublicDetailMain, publicCardClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
@@ -121,18 +120,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <p className="mt-1 text-sm text-white/68">/{product.unit}</p>
             </div>
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
-              <AddToCartButton product={product} className="min-h-12 justify-center rounded-[1.15rem]" />
-              {product.cooperative?.phone && (
+            {product.cooperative?.phone && (
+              <div className="mt-4">
                 <a
                   href={`tel:${product.cooperative.phone}`}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-[1.15rem] border border-white/14 bg-white/12 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-white/16"
+                  className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[1.15rem] border border-white/14 bg-white/12 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-white/16"
                 >
                   <Phone size={18} aria-hidden="true" />
                   Gọi HTX
                 </a>
-              )}
-            </div>
+              </div>
+            )}
 
             {passport && (
               <a
