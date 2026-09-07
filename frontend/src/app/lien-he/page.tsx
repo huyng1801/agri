@@ -83,7 +83,7 @@ export default async function ContactPage() {
                       href={item.href}
                       target={item.label === 'Địa chỉ' ? '_blank' : undefined}
                       rel={item.label === 'Địa chỉ' ? 'noreferrer' : undefined}
-                      className={cn('flex items-start gap-3 rounded-[1.2rem] border border-[var(--border-strong)] bg-white/72 px-3.5 py-3 transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:bg-white', item.label === 'Địa chỉ' && 'sm:col-span-2')}
+                      className={cn('flex items-start gap-3 rounded-[1.2rem] border border-[var(--border-strong)] bg-white/72 px-3.5 py-3 transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:bg-white', (item.label === 'Địa chỉ' || item.label === 'Email') && 'sm:col-span-2')}
                     >
                       <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
                         <item.icon size={20} aria-hidden="true" />
@@ -122,6 +122,7 @@ export default async function ContactPage() {
                     address={siteProfile.address}
                     location={mapLocation}
                     mapSearchUrl={mapSearchUrl}
+                    mapEmbedUrl={siteProfile.mapEmbedUrl}
                     compact
                     className="rounded-none border-0 bg-[var(--brand-primary-subtle)]"
                     frameClassName="rounded-none"

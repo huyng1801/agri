@@ -200,6 +200,10 @@ export class CreateCooperativeDto {
   @IsOptional()
   @IsEnum(CooperativeStatus)
   status?: CooperativeStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
 }
 
 export class UpdateCooperativeDto extends CreateCooperativeDto {
@@ -546,6 +550,10 @@ export class CreateNewsArticleDto {
   schemaType?: string;
 
   @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
+
+  @IsOptional()
   @IsString()
   ogTitle?: string;
 
@@ -630,6 +638,10 @@ export class CreateProductDto {
   @IsOptional()
   @IsEnum(ProductStatus)
   status?: ProductStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
 
   @IsOptional()
   @IsUUID()

@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { cn } from './ui';
 
 export const DEFAULT_PRODUCT_IMAGE =
-  '/hero/htx-farmer-hero-v2.png';
+  '/public-media-placeholder.svg';
 
 export const DEFAULT_COOPERATIVE_IMAGE =
-  '/hero/htx-farmer-hero-v2.png';
+  '/public-media-placeholder.svg';
 
 export const DEFAULT_NEWS_IMAGE =
-  '/hero/htx-farmer-hero-v2.png';
+  '/public-media-placeholder.svg';
 
 type PublicImageProps = {
   src?: string | null;

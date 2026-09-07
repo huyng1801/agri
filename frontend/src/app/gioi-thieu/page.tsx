@@ -1,261 +1,80 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
-import { ArrowRight, CheckCircle2, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
-import { PublicImage } from '@/components/public-image';
-import { PublicBreadcrumbTrail, PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { ArrowRight, CheckCircle2, Database, Leaf, QrCode, Users } from 'lucide-react';
+import { PublicBreadcrumbTrail, PublicPageHeader, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
-import { ecosystemCards } from '@/components/public-ecosystem-showcase';
 import { Button, cn } from '@/components/ui';
 import { buildPublicMetadata } from '@/lib/page-metadata';
-import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
-    title: 'Giới thiệu',
-    description: 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
-    path: '/gioi-thieu'
+    title: 'Cách Agripassport hoạt động',
+    description: 'Tìm hiểu cách Agripassport tổ chức dữ liệu sản phẩm, kết nối hợp tác xã và mở hồ sơ QR truy xuất.',
+    path: '/gioi-thieu',
+    keywords: ['cách Agripassport hoạt động', 'dữ liệu sản phẩm', 'QR truy xuất', 'hợp tác xã']
   });
 }
 
-const internalFeatureCards = [
-  {
-    title: 'Quản trị xã viên tập trung',
-    description: 'Tập trung hồ sơ thành viên, trạng thái tham gia và dữ liệu hoạt động nội bộ trên cùng một nơi dễ theo dõi.',
-    icon: Users
-  },
-  {
-    title: 'Theo dõi dịch vụ, thu chi, xuất nhập',
-    description: 'Ghi nhận mức độ sử dụng dịch vụ, các khoản thu chi và biến động nhập xuất để hỗ trợ đối soát tốt hơn.',
-    icon: ShoppingBag
-  },
-  {
-    title: 'Đồng bộ dữ liệu sản phẩm',
-    description: 'Sản phẩm sau khi chuẩn hóa có thể đẩy sang Agripassport mà không phải nhập lại nhiều lần.',
-    icon: Store
-  },
-  {
-    title: 'Chuẩn bị sẵn QR truy xuất',
-    description: 'Khi dữ liệu đã đủ chuẩn, HTX có thể mở hồ sơ số và QR truy xuất trên đúng lớp công khai.',
-    icon: QrCode
-  }
+const steps = [
+  { number: '01', title: 'Chuẩn hóa dữ liệu', description: 'Hợp tác xã và đơn vị sản xuất tập hợp thông tin sản phẩm, vùng sản xuất, hình ảnh và chứng nhận theo một cấu trúc thống nhất.', icon: Database },
+  { number: '02', title: 'Đối chiếu và xác minh', description: 'Đội vận hành kiểm tra hồ sơ trước khi mở công khai. Dữ liệu thiếu hoặc chưa xác minh không xuất hiện trên website.', icon: CheckCircle2 },
+  { number: '03', title: 'Công khai đúng ngữ cảnh', description: 'Thông tin đã duyệt được trình bày thành hồ sơ sản phẩm, hồ sơ đối tác và nội dung hướng dẫn dễ đọc trên mọi thiết bị.', icon: Leaf },
+  { number: '04', title: 'Kết nối bằng QR', description: 'Mã QR dẫn người mua đến hồ sơ số phù hợp để kiểm tra nguồn gốc, nhật ký và dữ liệu liên quan khi có.', icon: QrCode }
 ] as const;
 
-const workflowPoints = [
-  'Bắt đầu từ dữ liệu quản trị nội bộ, sau đó chọn thông tin phù hợp để công khai.',
-  'Tách rõ lớp dữ liệu HTXONLINE, AGRIPASSPORT và Hộ chiếu nông nghiệp.',
-  'Thông tin được sắp theo từng bước để HTX, đối tác và người mua dễ tra cứu.',
-  'Mỗi nền tảng có một vai trò rõ ràng trong hành trình từ sản xuất đến thị trường.'
+const audiences = [
+  ['Hợp tác xã', 'Tổ chức dữ liệu sản phẩm và giới thiệu năng lực rõ ràng hơn.'],
+  ['Nông hộ và trang trại', 'Kể câu chuyện vùng sản xuất bằng dữ liệu dễ kiểm tra.'],
+  ['Doanh nghiệp và đối tác', 'Tìm kiếm thông tin sản phẩm, đơn vị và vùng sản xuất công khai.'],
+  ['Người mua', 'Đọc thông tin minh bạch và quét QR khi cần truy xuất.']
 ] as const;
 
 export default async function AboutPage() {
   const siteKey = await getRequestPublicSiteKey();
-  const siteProfile = await getPublicSiteProfile(siteKey);
   const isInternal = siteKey === 'htxonline';
-  if (siteKey === 'agripassport' || siteKey === 'local') redirect('/ve-chung-toi');
-  const cards = isInternal ? ecosystemCards : ecosystemCards.filter((card) => card.key !== 'htxonline');
-  const heroStats = isInternal
-    ? ['Xã viên', 'Thu chi', 'Đồng bộ dữ liệu']
-    : ['Sản phẩm', 'QR truy xuất', 'Công khai'];
+
+  if (isInternal) {
+    return (
+      <PublicShell>
+        <PublicPageMain>
+          <PublicBreadcrumbTrail current="Cách hoạt động" />
+          <PublicPageHeader eyebrow="HTXONLINE" title="Quản trị nội bộ trước, công khai đúng lớp sau." description="HTXONLINE tập trung vào thành viên, thu chi, xuất nhập và dữ liệu vận hành. Khi thông tin đủ chuẩn, dữ liệu phù hợp mới được kết nối sang Agripassport và Hộ chiếu nông nghiệp." />
+          <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step) => <article key={step.number} className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5"><step.icon size={24} className="text-[var(--brand-primary)]" aria-hidden="true" /><p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand-primary)]">{step.number}</p><h2 className="mt-2 text-xl font-extrabold text-[var(--text-primary)]">{step.title}</h2><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{step.description}</p></article>)}
+          </section>
+        </PublicPageMain>
+      </PublicShell>
+    );
+  }
 
   return (
     <PublicShell>
-      <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
-        <PublicBreadcrumbTrail current="Vai trò nền tảng" />
-
-        <section className="grid gap-5 lg:grid-cols-[0.94fr_1.06fr] lg:items-start lg:gap-8">
-          <article className="relative overflow-hidden rounded-[2.25rem] bg-[linear-gradient(145deg,#0d1e30_0%,#173a50_48%,#1f9b4b_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.18),transparent_34%),radial-gradient(circle_at_bottom_left,rgba(173,255,208,0.18),transparent_30%)]" aria-hidden="true" />
-            <div className="relative z-10">
-              <p className="inline-flex min-h-9 items-center rounded-full border border-white/16 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/88">
-                Vai trò nền tảng
-              </p>
-              <h1 className="mt-4 max-w-[12ch] text-[2rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[14ch] sm:text-[2.9rem]">
-                {isInternal ? 'Giải pháp dịch vụ tiêu biểu cho HTX số' : siteProfile.pageContent.introTitle}
-              </h1>
-              <p className="mt-4 max-w-[42rem] text-[0.96rem] leading-7 text-white/82 sm:text-[1rem]">
-                {isInternal
-                  ? 'HTXONLINE giữ vai trò quản trị nội bộ, còn AGRIPASSPORT và Hộ chiếu nông nghiệp là hai lớp công khai bên ngoài. Nhìn vào là hiểu ngay lớp nào dùng để vận hành, lớp nào dùng để công khai sản phẩm và lớp nào dùng để truy xuất QR.'
-                  : siteProfile.pageContent.introDescription}
-              </p>
-
-              <div className="mt-5 flex flex-wrap gap-2.5">
-                {heroStats.map((item) => (
-                  <span
-                    key={item}
-                    className="inline-flex min-h-10 items-center rounded-full border border-white/16 bg-white/10 px-4 text-[0.74rem] font-semibold uppercase tracking-[0.12em] text-white/92"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-5 grid gap-3">
-                {workflowPoints.slice(0, 3).map((item) => (
-                  <div key={item} className="rounded-[1.3rem] border border-white/12 bg-white/10 px-4 py-3 text-sm leading-6 text-white/88">
-                    {item}
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-                <Link href="/ve-chung-toi">
-                  <Button variant="inverse" className="min-h-12 w-full sm:w-auto">
-                    Về chúng tôi
-                    <ArrowRight size={18} aria-hidden="true" />
-                  </Button>
-                </Link>
-                <Link href="/lien-he">
-                  <Button variant="inverse-ghost" className="min-h-12 w-full sm:w-auto">
-                    Liên hệ triển khai
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </article>
-
-          <div className="grid gap-4">
-            <article className="overflow-hidden rounded-[2rem] border border-[#e1e7dd] bg-white shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-              <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
-                <div className="p-3 sm:p-4">
-                  <div className="overflow-hidden rounded-[1.6rem] border border-[#e6ebdf]">
-                    <PublicImage
-                      src={siteProfile.pageContent.introImageUrl}
-                      alt={siteProfile.pageContent.introImageAlt || siteProfile.pageContent.introTitle}
-                      wrapperClassName="aspect-[1.18/1] w-full"
-                      className="h-full w-full object-cover"
-                      priority
-                    />
-                  </div>
-                </div>
-                <div className="bg-[linear-gradient(145deg,#0e1321_0%,#12344b_52%,#1f9b4b_100%)] p-5 text-white sm:p-6">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-white/68">HTXONLINE</p>
-                  <h2 className="mt-3 text-[1.55rem] font-extrabold leading-[1.06] sm:text-[2rem]">
-                    Quản trị nội bộ trước, công khai đúng lớp sau.
-                  </h2>
-                  <p className="mt-3 text-sm leading-7 text-white/82 sm:text-[0.98rem]">
-                    Đây là điểm khác biệt cốt lõi của hệ sinh thái Agri: dữ liệu trong HTXONLINE được chuẩn hóa trước, sau đó mới đẩy sang lớp sản phẩm công khai hoặc QR truy xuất khi cần.
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {[
-                { label: 'Lớp 1', value: 'Nội bộ HTX', note: 'Xã viên, thu chi, dữ liệu vận hành' },
-                { label: 'Lớp 2', value: 'Công khai', note: 'Sản phẩm, HTX, đơn hàng và liên hệ' },
-                { label: 'Lớp 3', value: 'QR hồ sơ số', note: 'Truy xuất sâu khi cần làm thị trường' }
-              ].map((item) => (
-                <article key={item.label} className="rounded-[1.6rem] border border-[#e5e8db] bg-[#fffdf8] p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)]">
-                  <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{item.label}</p>
-                  <p className="mt-2 text-lg font-extrabold leading-6 text-[#1f2233]">{item.value}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{item.note}</p>
-                </article>
-              ))}
+      <PublicPageMain className="pb-10 sm:pb-14 lg:pb-16">
+        <PublicBreadcrumbTrail current="Cách hoạt động" />
+        <section className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(135deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] shadow-[0_22px_55px_rgba(15,23,42,0.07)]">
+          <div className={cn(publicContainerClass, 'px-5 py-9 sm:px-8 sm:py-12 lg:px-12 lg:py-16')}>
+            <PublicPageHeader eyebrow="Cách Agripassport hoạt động" title="Từ dữ liệu sản xuất đến hồ sơ nông sản minh bạch." description="Agripassport không thay thế quy trình sản xuất. Nền tảng giúp tổ chức những dữ liệu đã có, kiểm tra trước khi công khai và kết nối người mua với thông tin đúng sản phẩm." />
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link href="/san-pham"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Xem sản phẩm <ArrowRight size={17} aria-hidden="true" /></Button></Link>
+              <Link href="/lien-he"><Button variant="ghost" className="min-h-12 w-full rounded-full border-[var(--border-strong)] bg-white px-6 text-[var(--brand-primary)] sm:w-auto">Đưa sản phẩm lên nền tảng</Button></Link>
             </div>
           </div>
         </section>
 
-        <section className="bg-[#faf9f3] py-8 sm:py-10 lg:py-12">
-          <div className={publicContainerClass}>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-              <div className="max-w-3xl">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#82a954] sm:text-sm">Hệ sinh thái giải pháp toàn diện</p>
-                <h2 className="mt-2 text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#24283a] sm:text-[2.75rem]">
-                  Giải pháp dịch vụ tiêu biểu
-                </h2>
-                <p className="mt-3 text-[0.96rem] leading-7 text-slate-600 sm:text-base">
-                  Ba nền tảng dưới đây đảm nhận những vai trò khác nhau trong cùng hệ sinh thái Agri.
-                </p>
-              </div>
-              <Link
-                href="/ve-chung-toi"
-                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 text-sm font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
-              >
-                Khám phá thêm
-                <ArrowRight size={16} aria-hidden="true" />
-              </Link>
-            </div>
-
-            <div className="mt-5 grid gap-4">
-              {cards.map((card) => {
-                const Icon = card.icon;
-                return (
-                  <a
-                    key={card.key}
-                    href={card.href}
-                    className="group relative overflow-hidden rounded-[2rem] text-white shadow-[0_20px_42px_rgba(15,23,42,0.12)] transition hover:-translate-y-1"
-                  >
-                    <div className={cn('absolute inset-0', card.gradientClassName)} />
-                    <div
-                      aria-hidden="true"
-                      className="absolute inset-0 opacity-80"
-                      style={{
-                        background:
-                          'radial-gradient(circle at left top, rgba(255,255,255,0.18), transparent 28%), radial-gradient(circle at 90% 22%, rgba(255,255,255,0.12), transparent 24%)'
-                      }}
-                    />
-                    <div className="relative grid gap-4 px-5 py-5 sm:px-6 sm:py-6 md:grid-cols-[6.2rem_1fr] md:items-center">
-                      <div className="grid h-[5.8rem] w-[5.8rem] place-items-center rounded-full border border-white/16 bg-white/8 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] sm:h-[6.4rem] sm:w-[6.4rem]">
-                        <Icon size={42} strokeWidth={1.8} aria-hidden="true" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/70">{card.label}</p>
-                        <h3 className="mt-2 text-[1.35rem] font-extrabold leading-tight sm:text-[1.85rem]">{card.name}</h3>
-                        <p className="mt-2 max-w-3xl text-sm leading-7 text-white/84 sm:text-[1rem]">{card.description}</p>
-                      </div>
-                    </div>
-                  </a>
-                );
-              })}
-            </div>
+        <section className="mt-8 sm:mt-10" aria-labelledby="workflow-title">
+          <div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Một quy trình rõ ràng</p><h2 id="workflow-title" className="type-h2 mt-3 text-3xl sm:text-5xl">Bốn bước để dữ liệu trở nên hữu ích.</h2><p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">Mỗi bước có một mục đích riêng để giảm thông tin thiếu, tránh hiểu nhầm và giúp người xem tra cứu nhanh hơn.</p></div>
+          <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step) => <article key={step.number} className="relative rounded-[1.6rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5 shadow-[0_12px_28px_rgba(15,23,42,0.05)]"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--brand-primary)] text-white"><step.icon size={21} aria-hidden="true" /></span><p className="mt-5 text-xs font-bold uppercase tracking-[0.16em] text-[var(--brand-primary)]">Bước {step.number}</p><h3 className="mt-2 text-xl font-extrabold leading-6 text-[var(--text-primary)]">{step.title}</h3><p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{step.description}</p></article>)}
           </div>
         </section>
 
-        <section className="bg-white py-8 sm:py-10 lg:py-12">
-          <div className={cn(publicContainerClass, 'grid gap-4 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5')}>
-            <article className="rounded-[2rem] border border-[#e4eadf] bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#82a954] sm:text-sm">HTXONLINE quản trị gì</p>
-              <h2 className="mt-2 text-[1.85rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-[#24283a] sm:text-[2.55rem]">
-                Một lớp dữ liệu quản trị rõ ràng để không bị rối trong hệ Agri.
-              </h2>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {internalFeatureCards.map((item) => (
-                  <article key={item.title} className="rounded-[1.45rem] border border-[#e3eadf] bg-[#f9fbf7] p-4">
-                    <span className="grid h-11 w-11 place-items-center rounded-full bg-[#eaf7eb] text-[#2b8a3e]">
-                      <item.icon size={20} aria-hidden="true" />
-                    </span>
-                    <h3 className="mt-3 text-[1rem] font-bold leading-6 text-[#1f2233]">{item.title}</h3>
-                    <p className="mt-2 text-sm leading-6 text-slate-600">{item.description}</p>
-                  </article>
-                ))}
-              </div>
-            </article>
-
-            <article className="rounded-[2rem] border border-[#e4eadf] bg-[#f8faf7] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#82a954] sm:text-sm">Nguyên tắc triển khai</p>
-              <h2 className="mt-2 text-[1.85rem] font-extrabold leading-[1.04] tracking-[-0.03em] text-[#24283a] sm:text-[2.55rem]">
-                Nhìn vào là hiểu luồng từ nội bộ ra công khai.
-              </h2>
-              <div className="mt-5 grid gap-3">
-                {workflowPoints.map((item) => (
-                  <div key={item} className="flex items-start gap-3 rounded-[1.35rem] border border-[#dce7d9] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
-                    <CheckCircle2 className="mt-0.5 shrink-0 text-[#1f9b4b]" size={18} aria-hidden="true" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 rounded-[1.45rem] bg-[linear-gradient(135deg,#0f172a_0%,#12344b_48%,#1f9b4b_100%)] p-4 text-white">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/68">Bước tiếp theo</p>
-                <p className="mt-2 text-lg font-extrabold leading-7">Từ dữ liệu hiện có, đội ngũ sẽ cùng HTX chọn lộ trình phù hợp để quản lý, công khai và truy xuất sản phẩm.</p>
-                <Link href="/lien-he" className="mt-4 inline-flex min-h-11 items-center rounded-full bg-white px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5">
-                  Nhận tư vấn triển khai
-                </Link>
-              </div>
-            </article>
-          </div>
+        <section className="mt-8 grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start sm:mt-10">
+          <article className="rounded-[1.8rem] bg-[var(--brand-primary)] p-6 text-white shadow-[0_20px_45px_rgba(15,81,91,0.16)] sm:p-8"><p className="text-xs font-bold uppercase tracking-[0.18em] text-white/75">Ai cùng tham gia?</p><h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-4xl">Một hệ sinh thái, nhiều vai trò rõ ràng.</h2><p className="mt-4 text-sm leading-7 text-white/80">Mỗi chủ thể đóng góp một phần dữ liệu và nhận lại một cách trình bày phù hợp với nhu cầu của mình.</p></article>
+          <div className="grid gap-3 sm:grid-cols-2">{audiences.map(([title, description]) => <article key={title} className="rounded-[1.45rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5"><Users size={21} className="text-[var(--brand-primary)]" aria-hidden="true" /><h3 className="mt-4 text-lg font-extrabold text-[var(--text-primary)]">{title}</h3><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</p></article>)}</div>
         </section>
+
+        <section className="mt-8 rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 sm:mt-10 sm:p-8" aria-labelledby="principles-title"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Nguyên tắc công khai</p><h2 id="principles-title" className="mt-3 text-2xl font-extrabold text-[var(--text-primary)] sm:text-3xl">Rõ dữ liệu, đúng nhận diện, không phóng đại.</h2><div className="mt-5 grid gap-3 sm:grid-cols-3"><p className="rounded-2xl bg-white px-4 py-4 text-sm font-semibold leading-6 text-[var(--text-secondary)]">Chỉ hiển thị hồ sơ đã được xác minh.</p><p className="rounded-2xl bg-white px-4 py-4 text-sm font-semibold leading-6 text-[var(--text-secondary)]">Không dùng ảnh ngẫu nhiên để đại diện sản phẩm.</p><p className="rounded-2xl bg-white px-4 py-4 text-sm font-semibold leading-6 text-[var(--text-secondary)]">Mở QR để xem đúng hồ sơ công khai.</p></div></section>
       </PublicPageMain>
     </PublicShell>
   );

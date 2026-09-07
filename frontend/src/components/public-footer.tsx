@@ -96,15 +96,16 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   if (siteKey === 'agripassport' || siteKey === 'local') {
     const agriServiceLinks = [
       { href: '/san-pham', label: 'Xem sản phẩm' },
-      { href: '/htx', label: 'Tìm hợp tác xã' },
-      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
-      { href: '/lien-he', label: 'Kết nối và hỗ trợ' }
+      { href: '/htx', label: 'Đối tác HTX' },
+      { href: '/san-pham?hasQr=true', label: 'Tra cứu sản phẩm có QR' },
+      { href: '/lien-he', label: 'Đưa sản phẩm lên Agripassport' }
     ];
     const aboutLinks = [
-      { href: '/ve-chung-toi', label: 'Cách hoạt động' },
-      { href: '/tin-tuc', label: 'Tin tức mới' },
-      { href: '/lien-he', label: 'Câu hỏi thường gặp' },
-      { href: '/lien-he', label: 'Hỗ trợ khách hàng' }
+      { href: '/ve-chung-toi', label: 'Về Agripassport' },
+      { href: '/gioi-thieu', label: 'Cách hoạt động' },
+      { href: '/tin-tuc', label: 'Tin tức' },
+      { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
+      { href: '/tuyen-dung', label: 'Tuyển dụng' }
     ];
 
     return (
@@ -144,19 +145,15 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </div>
             </div>
 
-            <div className="grid gap-6 py-7 lg:grid-cols-[0.95fr_1.05fr_0.8fr] lg:items-center">
+            <div className="grid gap-6 py-7 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
               <div>
-                <p className="text-base font-extrabold text-[var(--text-primary)]">Tổ hợp tác Công nghệ Nông nghiệp Agri Passport</p>
-                <div className="mt-3 grid gap-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  <p className="flex gap-2"><MapPin size={17} className="mt-1 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />{profile.address}</p>
-                  <p className="flex gap-2"><Phone size={17} className="mt-1 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />{profile.hotlineDisplay}</p>
-                  <p className="flex gap-2"><Mail size={17} className="mt-1 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />{profile.supportEmail}</p>
-                </div>
+                <p className="text-base font-extrabold text-[var(--text-primary)]">Thông tin đăng ký</p>
+                <p className="mt-2 max-w-xl text-sm leading-7 text-[var(--text-secondary)]">ĐKKD: số 1402233422 do Sở KH&ĐT Đồng Tháp cấp ngày 13/07/2026.</p>
+                <p className="mt-2 max-w-xl text-sm leading-7 text-[var(--text-secondary)]">Dữ liệu sản phẩm và hồ sơ QR công khai chỉ hiển thị sau khi được đối chiếu và xác minh.</p>
               </div>
               <div className="overflow-hidden rounded-[1.5rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-2 shadow-[0_14px_32px_rgba(15,23,42,0.07)]">
-                <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} compact />
+                <PublicMapPreview address={profile.address} location={mapLocation} mapSearchUrl={mapSearchUrl} mapEmbedUrl={profile.mapEmbedUrl} compact />
               </div>
-              <p className="text-sm leading-7 text-[var(--text-secondary)]">ĐKKD: số 1402233422 do Sở KH&ĐT Đồng Tháp cấp ngày 13/07/2026</p>
             </div>
           </div>
         </div>

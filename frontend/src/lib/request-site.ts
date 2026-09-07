@@ -6,8 +6,13 @@ function normalizePath(path: string) {
 }
 
 export async function getRequestHostname() {
-  const headerStore = await headers();
-  return normalizeHostname(headerStore.get('x-forwarded-host') || headerStore.get('host') || '');
+  try {
+    const headerStore = await headers();
+    return normalizeHostname(headerStore.get('x-forwarded-host') || headerStore.get('host') || '');
+  } catch {
+    // Server components can also be called directly by unit tests without a request store.
+    return '';
+  }
 }
 
 export async function getRequestPublicSiteKey(): Promise<PublicSiteKey> {

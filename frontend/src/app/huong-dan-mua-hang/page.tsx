@@ -6,49 +6,41 @@ import { buildPublicMetadata } from '@/lib/page-metadata';
 
 export async function generateMetadata() {
   return buildPublicMetadata({
-    title: 'Hướng dẫn mua hàng',
-    description: 'Hướng dẫn tìm sản phẩm, thêm giỏ hàng, đặt hàng COD và tra cứu đơn hàng trên HTXONLINE.',
+    title: 'Hướng dẫn sử dụng Agripassport',
+    description: 'Hướng dẫn tìm sản phẩm, đọc hồ sơ công khai và tra cứu nguồn gốc bằng QR trên Agripassport.',
     path: '/huong-dan-mua-hang'
   });
 }
 
 const steps = [
   {
-    title: 'Tìm sản phẩm hoặc HTX',
-    description: 'Dùng thanh tìm kiếm trên trang chủ, vào mục Sản phẩm hoặc HTX để lọc theo tỉnh thành, giá và sản phẩm có QR Passport.'
+    title: 'Tìm sản phẩm hoặc đối tác',
+    description: 'Dùng thanh tìm kiếm, vào mục Sản phẩm hoặc Đối tác để lọc thông tin theo nhu cầu. Chỉ các hồ sơ đã được xác minh mới hiển thị công khai.'
   },
   {
-    title: 'Xem chi tiết và QR Passport',
-    description: 'Mở trang sản phẩm để xem mô tả, vùng trồng, chứng nhận công khai và quét QR Passport khi cần kiểm tra nguồn gốc.'
+    title: 'Đọc hồ sơ sản phẩm',
+    description: 'Mở chi tiết để xem tên sản phẩm, đơn vị sản xuất, vùng sản xuất, thông tin chứng nhận và các dữ liệu đã được công khai.'
   },
   {
-    title: 'Thêm vào giỏ hàng',
-    description: 'Chọn số lượng phù hợp và thêm sản phẩm vào giỏ. Bạn có thể đặt nhiều sản phẩm từ nhiều HTX trong cùng một lần checkout.'
+    title: 'Tra cứu bằng mã QR',
+    description: 'Quét mã QR trên bao bì hoặc mở đường dẫn hồ sơ số để kiểm tra nguồn gốc, nhật ký và thông tin liên quan khi dữ liệu đã được công khai.'
   },
   {
-    title: 'Đặt hàng COD',
-    description: 'Điền họ tên, số điện thoại và địa chỉ giao hàng tại trang Thanh toán. HTX hoặc đội vận hành sẽ gọi xác nhận trước khi giao.'
-  },
-  {
-    title: 'Tra cứu đơn hàng',
-    description: 'Sau khi đặt hàng, dùng mã đơn và số điện thoại tại trang Tra cứu đơn hàng để theo dõi trạng thái xử lý.'
+    title: 'Kết nối trực tiếp',
+    description: 'Nếu muốn hợp tác, đưa sản phẩm lên nền tảng hoặc cần làm rõ thông tin, hãy gửi nhu cầu tại trang Liên hệ để đội vận hành phản hồi.'
   }
 ];
 
 export default function BuyingGuidePage() {
   return (
-    <PublicStaticPage title="Hướng dẫn mua hàng" description="Tìm sản phẩm, thêm vào giỏ hàng, đặt hàng COD và tra cứu trạng thái đơn hàng trên HTXONLINE.">
+    <PublicStaticPage title="Hướng dẫn sử dụng Agripassport" description="Tìm sản phẩm, đọc hồ sơ công khai và tra cứu nguồn gốc bằng QR trên Agripassport.">
       <div className="space-y-4">
         <PublicGuideSteps steps={steps} />
         <Panel className="text-sm leading-7 text-slate-700">
           <p>
-            Cần hỗ trợ thêm? Xem{' '}
-            <Link href="/chinh-sach-van-hanh" className="inline-flex min-h-10 items-center rounded-full bg-mint/80 px-3 align-middle font-semibold text-leaf">
-              chính sách vận hành
-            </Link>{' '}
-            hoặc{' '}
+            Hồ sơ chưa có đủ dữ liệu hoặc QR không mở đúng thông tin?{' '}
             <Link href="/lien-he" className="inline-flex min-h-10 items-center rounded-full bg-mint/80 px-3 align-middle font-semibold text-leaf">
-              liên hệ đội vận hành
+              Liên hệ Agripassport
             </Link>
             .
           </p>

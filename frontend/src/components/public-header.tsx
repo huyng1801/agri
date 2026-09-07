@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Briefcase, LogIn, Menu, QrCode, Search, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PublicLogo } from './public-logo';
@@ -9,13 +9,12 @@ import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 
 const marketplaceNavItems = [
-  { href: '/', label: 'Trang chủ' },
+  { href: '/ve-chung-toi', label: 'Về Agripassport' },
   { href: '/san-pham', label: 'Sản phẩm' },
-  { href: '/htx', label: 'Hợp tác xã' },
-  { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' },
-  { href: '/ve-chung-toi', label: 'Giải pháp' },
+  { href: '/htx', label: 'Đối tác' },
   { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' }
+  { href: '/lien-he', label: 'Liên hệ' },
+  { href: '/tuyen-dung', label: 'Tuyển dụng' }
 ] as const;
 
 const internalNavItems = [
@@ -36,8 +35,8 @@ const passportNavItems = [
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
 
-function isNavActive(pathname: string, searchParams: Pick<URLSearchParams, 'get'>, href: string) {
-  if (href.includes('?hasQr=true')) return pathname === '/san-pham' && searchParams.get('hasQr') === 'true';
+function isNavActive(pathname: string, hasQrQuery: boolean, href: string) {
+  if (href.includes('?hasQr=true')) return pathname === '/san-pham' && hasQrQuery;
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -50,7 +49,7 @@ export function PublicHeader({
   siteKey?: PublicSiteKey;
 }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const [hasQrQuery, setHasQrQuery] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const closeMenu = () => setMenuOpen(false);
   const isInternal = siteKey === 'htxonline';
@@ -104,6 +103,10 @@ export function PublicHeader({
 
   useEffect(() => {
     setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
   }, [pathname]);
 
   useEffect(() => {
@@ -164,7 +167,7 @@ export function PublicHeader({
 
           <div className="mb-2 flex snap-x snap-mandatory scroll-px-4 gap-1.5 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
             {navItems.map((item) => {
-              const active = isNavActive(pathname, searchParams, item.href);
+              const active = isNavActive(pathname, hasQrQuery, item.href);
               return (
                 <Link
                   key={item.href}
@@ -230,7 +233,7 @@ export function PublicHeader({
           <div className="mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6">
             <nav className="hidden items-center justify-center gap-3 overflow-x-auto py-3.5 md:flex" aria-label="Menu chính">
               {navItems.map((item) => {
-                const active = isNavActive(pathname, searchParams, item.href);
+                const active = isNavActive(pathname, hasQrQuery, item.href);
                 return (
                   <Link
                     key={item.href}
@@ -286,7 +289,7 @@ export function PublicHeader({
 
               <nav className="mt-4 grid gap-2" aria-label="Menu di động">
                 {navItems.map((item) => {
-                  const active = isNavActive(pathname, searchParams, item.href);
+                  const active = isNavActive(pathname, hasQrQuery, item.href);
                   return (
                     <Link
                       key={item.href}
@@ -359,25 +362,6 @@ export function PublicHeader({
             )}
           </Link>
 
-          <form action={searchTarget} className="hidden flex-1 items-center md:flex">
-            <div className="relative w-full">
-              <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--brand-primary)]" size={19} aria-hidden="true" />
-              <input
-                type="search"
-                name="search"
-                placeholder={searchPlaceholder}
-                aria-label={searchPlaceholder}
-                className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] pl-12 pr-4 text-sm text-[var(--text-primary)] outline-none transition placeholder:text-slate-400 focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
-              />
-            </div>
-            <button
-              type="submit"
-              className="ml-3 inline-flex h-12 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-5 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(15,81,91,0.2)] transition hover:-translate-y-0.5"
-            >
-              {searchLabel}
-            </button>
-          </form>
-
           <div className="ml-auto flex items-center gap-2">
             <Link
               href={searchTarget}
@@ -406,7 +390,7 @@ export function PublicHeader({
 
         <div className="hidden mb-2 snap-x snap-mandatory scroll-px-4 gap-2 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] md:hidden [&::-webkit-scrollbar]:hidden">
           {navItems.map((item) => {
-            const active = isNavActive(pathname, searchParams, item.href);
+            const active = isNavActive(pathname, hasQrQuery, item.href);
             return (
               <Link
                 key={item.href}
@@ -462,7 +446,7 @@ export function PublicHeader({
 
         <nav className="hidden border-t border-[var(--border)] py-3 md:flex md:flex-wrap md:items-center md:justify-center md:gap-8" aria-label="Menu chính">
           {navItems.map((item) => {
-            const active = isNavActive(pathname, searchParams, item.href);
+            const active = isNavActive(pathname, hasQrQuery, item.href);
             return (
               <Link
                 key={item.href}
@@ -520,7 +504,7 @@ export function PublicHeader({
 
             <nav className="mt-4 grid gap-2" aria-label="Menu di động">
               {navItems.map((item) => {
-                const active = isNavActive(pathname, searchParams, item.href);
+                const active = isNavActive(pathname, hasQrQuery, item.href);
                 return (
                   <Link
                     key={item.href}

@@ -199,6 +199,7 @@ model Cooperative {
   representative  String?
   avatarUrl       String?
   status          CooperativeStatus         @default(ACTIVE)
+  publicVerified  Boolean                   @default(false)
   members         CooperativeMember[]
   users           User[]
   products        Product[]
@@ -364,6 +365,7 @@ model NewsArticle {
   robotsNoIndex      Boolean       @default(false)
   robotsNoFollow     Boolean       @default(false)
   schemaType         String        @default("NewsArticle")
+  publicVerified     Boolean       @default(false)
   ogTitle            String?
   ogDescription      String?
   ogImageUrl         String?
@@ -398,6 +400,7 @@ model Product {
   price           Decimal                 @default(0)
   unit            String
   status          ProductStatus           @default(DRAFT)
+  publicVerified  Boolean                 @default(false)
   thumbnailFileId String?
   zoneId          String?
   farmerId        String?

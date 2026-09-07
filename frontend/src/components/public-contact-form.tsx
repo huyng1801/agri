@@ -15,10 +15,10 @@ const HELP_TOPICS = [
 ] as const;
 
 const PUBLIC_HELP_TOPICS = [
-  { id: 'product-info', label: 'Tìm hiểu sản phẩm và giá' },
-  { id: 'traceability', label: 'Tra cứu QR và nguồn gốc' },
-  { id: 'cooperative', label: 'Kết nối với hợp tác xã' },
-  { id: 'other', label: 'Câu hỏi khác' }
+  { id: 'digitalize', label: 'Số hóa hợp tác xã & quản lý dữ liệu' },
+  { id: 'product-publish', label: 'Đưa sản phẩm lên Agripassport' },
+  { id: 'market-connect', label: 'Kết nối tiêu thụ' },
+  { id: 'other', label: 'Tôi có nhu cầu khác, cần được tư vấn thêm' }
 ] as const;
 
 type PublicContactFormProps = {

@@ -11,7 +11,7 @@ export function buildPolicyContactSection(siteProfile: PublicSiteProfile, lead: 
       `Hotline: ${siteProfile.hotlineDisplay}`,
       `Email: ${siteProfile.supportEmail}`,
       `Website: ${new URL(publicOriginForSite(siteKey)).host}`,
-      'Thời gian hỗ trợ: Thứ Hai đến Thứ Sáu, 08:00 - 17:00 (Giờ Việt Nam)'
+      'Thời gian hỗ trợ: Thứ Hai đến Thứ Bảy, 08:00 - 17:30 (Giờ Việt Nam)'
     ]
   };
 }

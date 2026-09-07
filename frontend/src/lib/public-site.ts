@@ -47,6 +47,8 @@ export type PublicMapLocation = {
 export const defaultMapEmbedUrl =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
 
+const publicMediaPlaceholderUrl = '/public-media-placeholder.svg';
+
 export const defaultPublicMapLocation: PublicMapLocation = {
   latitude: 10.4458,
   longitude: 105.718
@@ -89,25 +91,21 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       homeTitle: 'HTXONLINE giúp hợp tác xã quản lý thành viên và vận hành nội bộ rõ ràng hơn.',
       homeDescription:
         'Tập trung hồ sơ xã viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và báo cáo điều hành trên một hệ thống số gọn, dễ theo dõi và dễ đối soát.',
-      homeImageUrl:
-        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageUrl: publicMediaPlaceholderUrl,
       homeImageAlt: 'Hệ thống số hỗ trợ quản trị nội bộ cho hợp tác xã',
       introTitle: 'Giới thiệu HTXONLINE',
       introDescription: 'Nền tảng phục vụ quản trị thành viên, vận hành nội bộ và số hóa dữ liệu quản lý của hợp tác xã.',
-      introImageUrl:
-        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageUrl: publicMediaPlaceholderUrl,
       introImageAlt: 'Hoạt động điều hành nội bộ và dữ liệu quản trị hợp tác xã',
       aboutTitle: 'HTXONLINE là lớp quản trị nội bộ của hợp tác xã',
       aboutDescription:
         'Nền tảng tập trung vào thành viên, dịch vụ, thu chi, xuất nhập và lịch sử hoạt động, thay vì lấy bán hàng công khai làm chức năng cốt lõi.',
-      aboutImageUrl:
-        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageUrl: publicMediaPlaceholderUrl,
       aboutImageAlt: 'Quản trị nội bộ hợp tác xã theo hướng số hóa',
       contactTitle: 'Cần tư vấn triển khai quản trị số cho hợp tác xã?',
       contactDescription:
         'Đội vận hành sẽ hỗ trợ chuẩn hóa quy trình quản lý nội bộ, phân quyền và luồng đồng bộ dữ liệu giữa HTXONLINE và Agripassport.',
-      contactImageUrl:
-        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageUrl: publicMediaPlaceholderUrl,
       contactImageAlt: 'Tư vấn triển khai chuyển đổi số cho hợp tác xã'
     }
   },
@@ -133,25 +131,21 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       homeTitle: 'AGRIPASSPORT giúp hợp tác xã công khai sản phẩm và QR truy xuất đồng bộ hơn.',
       homeDescription:
         'Chuẩn hóa tên hợp tác xã, dữ liệu sản phẩm, vùng trồng, chứng nhận và hồ sơ truy xuất để thuận lợi cho công khai, kết nối tiêu thụ và làm hồ sơ phù hợp quy định.',
-      homeImageUrl:
-        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageUrl: publicMediaPlaceholderUrl,
       homeImageAlt: 'Nền tảng dữ liệu sản phẩm nông nghiệp và truy xuất số',
       introTitle: 'Giới thiệu AGRIPASSPORT',
       introDescription: 'Nền tảng chuyên trách cho dữ liệu sản phẩm nông nghiệp, QR truy xuất và kênh công khai tiêu thụ.',
-      introImageUrl:
-        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageUrl: publicMediaPlaceholderUrl,
       introImageAlt: 'Dữ liệu sản phẩm, vùng trồng và truy xuất được chuẩn hóa',
       aboutTitle: 'Chúng tôi là AGRIPASSPORT',
       aboutDescription:
         'Nền tảng tập trung quản lý thông tin sản phẩm, vùng trồng, nhật ký, chứng nhận và hộ chiếu số để hỗ trợ minh bạch và kết nối thị trường.',
-      aboutImageUrl:
-        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageUrl: publicMediaPlaceholderUrl,
       aboutImageAlt: 'Sản phẩm nông nghiệp và dữ liệu truy xuất trên nền tảng số',
       contactTitle: 'Hãy để AGRIPASSPORT đồng hành cùng dữ liệu sản phẩm của hợp tác xã bạn',
       contactDescription:
         'Tư vấn thông tin sản phẩm, QR truy xuất, chứng nhận và kết nối với hợp tác xã phù hợp.',
-      contactImageUrl:
-        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageUrl: publicMediaPlaceholderUrl,
       contactImageAlt: 'Không gian hỗ trợ chuẩn hóa dữ liệu sản phẩm nông nghiệp'
     }
   },
@@ -181,25 +175,21 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       homeTitle: 'HỘ CHIẾU NÔNG NGHIỆP giúp người mua truy xuất nguồn gốc nhanh và rõ hơn.',
       homeDescription:
         'Mỗi QR mở ra một hồ sơ công khai về sản phẩm, vùng trồng, quá trình canh tác và chứng nhận phù hợp để minh bạch thông tin với người tiêu dùng và đối tác.',
-      homeImageUrl:
-        'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+      homeImageUrl: publicMediaPlaceholderUrl,
       homeImageAlt: 'QR truy xuất cho sản phẩm nông nghiệp',
       introTitle: 'Giới thiệu Hộ chiếu nông nghiệp',
       introDescription: 'Hồ sơ số được tạo từ dữ liệu sản phẩm trên Agripassport để phục vụ truy xuất và minh bạch thông tin.',
-      introImageUrl:
-        'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+      introImageUrl: publicMediaPlaceholderUrl,
       introImageAlt: 'Hồ sơ QR và truy xuất nguồn gốc nông nghiệp',
       aboutTitle: 'Mỗi QR là một hồ sơ nguồn gốc công khai',
       aboutDescription:
         'Người mua, đối tác và các bên được phép tra cứu có thể xem vùng trồng, nhật ký, chứng nhận và dữ liệu nguồn gốc theo phạm vi HTX công khai.',
-      aboutImageUrl:
-        'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+      aboutImageUrl: publicMediaPlaceholderUrl,
       aboutImageAlt: 'Minh bạch nguồn gốc thông qua hồ sơ số',
       contactTitle: 'Cần tư vấn triển khai QR và hộ chiếu số cho sản phẩm?',
       contactDescription:
         'Đội vận hành hỗ trợ chuẩn hóa dữ liệu truy xuất, cấu trúc QR và phạm vi thông tin công khai để hồ sơ số rõ ràng, đáng tin hơn.',
-      contactImageUrl:
-        'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+      contactImageUrl: publicMediaPlaceholderUrl,
       contactImageAlt: 'Hỗ trợ triển khai QR và hồ sơ số cho nông sản'
     }
   }
@@ -293,25 +283,33 @@ function pageContentItems(
     homeBadge: normalizeBrandCopy(stringValue(object.homeBadge), siteKey) || defaults.pageContent.homeBadge,
     homeTitle: normalizeBrandCopy(stringValue(object.homeTitle), siteKey) || defaults.pageContent.homeTitle,
     homeDescription: normalizeBrandCopy(stringValue(object.homeDescription), siteKey) || defaults.pageContent.homeDescription,
-    homeImageUrl: stringValue(object.homeImageUrl) || defaults.pageContent.homeImageUrl,
+    homeImageUrl: approvedPublicImageUrl(object.homeImageUrl, defaults.pageContent.homeImageUrl),
     homeImageAlt: normalizeBrandCopy(stringValue(object.homeImageAlt), siteKey) || defaults.pageContent.homeImageAlt,
     introTitle: normalizeBrandCopy(stringValue(object.introTitle), siteKey) || defaults.pageContent.introTitle,
     introDescription: normalizeBrandCopy(stringValue(object.introDescription), siteKey) || defaults.pageContent.introDescription,
-    introImageUrl: stringValue(object.introImageUrl) || defaults.pageContent.introImageUrl,
+    introImageUrl: approvedPublicImageUrl(object.introImageUrl, defaults.pageContent.introImageUrl),
     introImageAlt: normalizeBrandCopy(stringValue(object.introImageAlt), siteKey) || defaults.pageContent.introImageAlt,
     aboutTitle: normalizeBrandCopy(stringValue(object.aboutTitle), siteKey) || defaults.pageContent.aboutTitle,
     aboutDescription: normalizeBrandCopy(stringValue(object.aboutDescription), siteKey) || defaults.pageContent.aboutDescription,
-    aboutImageUrl: stringValue(object.aboutImageUrl) || defaults.pageContent.aboutImageUrl,
+    aboutImageUrl: approvedPublicImageUrl(object.aboutImageUrl, defaults.pageContent.aboutImageUrl),
     aboutImageAlt: normalizeBrandCopy(stringValue(object.aboutImageAlt), siteKey) || defaults.pageContent.aboutImageAlt,
     contactTitle: normalizeBrandCopy(stringValue(object.contactTitle), siteKey) || defaults.pageContent.contactTitle,
     contactDescription: normalizeBrandCopy(stringValue(object.contactDescription), siteKey) || defaults.pageContent.contactDescription,
-    contactImageUrl: stringValue(object.contactImageUrl) || defaults.pageContent.contactImageUrl,
+    contactImageUrl: approvedPublicImageUrl(object.contactImageUrl, defaults.pageContent.contactImageUrl),
     contactImageAlt: normalizeBrandCopy(stringValue(object.contactImageAlt), siteKey) || defaults.pageContent.contactImageAlt
   };
 }
 
 function stringValue(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
+}
+
+function approvedPublicImageUrl(value: unknown, fallback: string) {
+  const imageUrl = stringValue(value);
+  if (!imageUrl || /(picsum\.photos|images\.unsplash\.com|source\.unsplash\.com)/i.test(imageUrl)) {
+    return fallback;
+  }
+  return imageUrl;
 }
 
 function normalizePublicCopy(value: string) {

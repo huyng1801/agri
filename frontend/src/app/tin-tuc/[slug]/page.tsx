@@ -87,7 +87,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <PublicDetailMain className="max-w-3xl">
           <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
           <div className="space-y-4">
-            <EmptyPublicState title="Không tìm thấy bài viết" description="Bài viết chưa được đăng công khai hoặc đã bị ẩn khỏi trang công khai." />
+            <EmptyPublicState headingLevel="h1" title="Không tìm thấy bài viết" description="Bài viết chưa được đăng công khai hoặc đã bị ẩn khỏi trang công khai." />
             <Panel className="text-center">
               <h2 className="text-lg font-bold text-ink">Tiếp tục khám phá nội dung công khai</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">Bạn có thể quay về danh sách tin tức hoặc xem thêm sản phẩm đang hiển thị trên sàn.</p>

@@ -300,13 +300,14 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
   );
 }
 
-export function EmptyPublicState({ title, description }: { title: string; description: string }) {
+export function EmptyPublicState({ title, description, headingLevel = 'h2' }: { title: string; description: string; headingLevel?: 'h1' | 'h2' }) {
+  const heading = headingLevel === 'h1' ? <h1 className="mt-3 text-xl font-bold text-ink">{title}</h1> : <h2 className="mt-3 text-xl font-bold text-ink">{title}</h2>;
   return (
     <Panel className="text-center">
       <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-[var(--surface-0)] text-ink text-xl font-bold" aria-hidden="true">
         HTX
       </span>
-      <h2 className="mt-3 text-xl font-bold text-ink">{title}</h2>
+      {heading}
       <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
     </Panel>
   );

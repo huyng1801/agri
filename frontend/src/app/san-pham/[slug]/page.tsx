@@ -32,10 +32,28 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
   const product = await getProduct(slug);
   if (!product) return { title: 'Không tìm thấy sản phẩm' };
   const siteKey = await getRequestPublicSiteKey();
+  const canonical = await getRequestAbsoluteUrl(`/san-pham/${product.slug}`);
+  const description = brandizeSiteText(product.description || `Xem ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên nền tảng công khai.`, siteKey);
+  const image = product.thumbnail?.publicUrl || (await getRequestAbsoluteUrl('/public-media-placeholder.svg'));
   return {
     title: product.name,
-    description: brandizeSiteText(product.description || `Xem ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên nền tảng công khai.`, siteKey),
-    alternates: { canonical: await getRequestAbsoluteUrl(`/san-pham/${product.slug}`) }
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: product.name,
+      description,
+      url: canonical,
+      siteName: 'AGRIPASSPORT',
+      locale: 'vi_VN',
+      type: 'website',
+      images: [{ url: image, alt: product.name }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description,
+      images: [image]
+    }
   };
 }
 
@@ -66,6 +84,25 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const remainingLogs = publicLogs.slice(3);
   const visibleCertifications = certifications.slice(0, 3);
   const remainingCertifications = certifications.slice(3);
+  const canonical = await getRequestAbsoluteUrl(`/san-pham/${product.slug}`);
+  const placeholderUrl = await getRequestAbsoluteUrl('/public-media-placeholder.svg');
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description: product.description || undefined,
+    image: [product.thumbnail?.publicUrl || placeholderUrl],
+    sku: product.code,
+    brand: { '@type': 'Brand', name: 'Agripassport' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'VND',
+      price: Number(product.price ?? 0),
+      availability: 'https://schema.org/InStock',
+      url: canonical
+    },
+    manufacturer: product.cooperative?.name || undefined
+  };
   const renderLog = (log: (typeof publicLogs)[number], index: number) => (
     <div key={log.id} className="grid grid-cols-[2.5rem_1fr] gap-3 sm:grid-cols-[2.75rem_1fr]">
       <div className="flex flex-col items-center">
@@ -100,6 +137,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   return (
     <PublicShell>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(productJsonLd) }} />
       <PublicDetailMain>
         <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
 
@@ -317,4 +355,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
 function formatPrice(value: string | number) {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(Number(value ?? 0));
+}
+
+function safeJsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
 }

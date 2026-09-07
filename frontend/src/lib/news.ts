@@ -30,6 +30,7 @@ export type NewsArticle = {
   coverImageUrl?: string | null;
   coverImageAlt?: string | null;
   status: 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
+  publicVerified: boolean;
   isFeatured: boolean;
   showOnHome: boolean;
   focusKeyword?: string | null;
@@ -119,5 +120,5 @@ export function articleDescription(article: NewsArticle) {
 }
 
 export function articleImage(article: NewsArticle) {
-  return article.ogImageUrl || article.coverImageUrl || 'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80';
+  return article.ogImageUrl || article.coverImageUrl || '/public-media-placeholder.svg';
 }

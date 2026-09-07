@@ -57,6 +57,7 @@ type Cooperative = {
   representative?: string | null;
   avatarUrl?: string | null;
   status: CooperativeStatus;
+  publicVerified: boolean;
   subscriptions?: Subscription[];
   _count?: {
     users?: number;
@@ -81,6 +82,7 @@ type CooperativeForm = {
   representative: string;
   avatarUrl: string;
   status: CooperativeStatus;
+  publicVerified: boolean;
 };
 
 type CooperativeStats = {
@@ -122,7 +124,8 @@ const emptyCooperativeForm: CooperativeForm = {
   ward: '',
   representative: '',
   avatarUrl: '',
-  status: 'ACTIVE'
+  status: 'ACTIVE',
+  publicVerified: false
 };
 
 const emptySubscriptionForm: SubscriptionForm = {
@@ -408,6 +411,14 @@ export default function CooperativesPage() {
                   </Select>
                 </Field>
               )}
+              <label className="md:col-span-2 flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-ink">
+                <input
+                  type="checkbox"
+                  checked={form.publicVerified}
+                  onChange={(event) => update('publicVerified', event.target.checked)}
+                />
+                Đã xác minh hồ sơ để hiển thị public
+              </label>
               <Field label="Quận/huyện">
                 <Input value={form.district} onChange={(event) => update('district', event.target.value)} />
               </Field>
@@ -754,7 +765,8 @@ function cooperativePayload(form: CooperativeForm) {
     ward: form.ward || undefined,
     representative: form.representative || undefined,
     avatarUrl: form.avatarUrl || undefined,
-    status: form.status
+    status: form.status,
+    publicVerified: form.publicVerified
   };
 }
 
@@ -785,7 +797,8 @@ function fromCooperative(cooperative: Cooperative): CooperativeForm {
     ward: cooperative.ward ?? '',
     representative: cooperative.representative ?? '',
     avatarUrl: cooperative.avatarUrl ?? '',
-    status: cooperative.status
+    status: cooperative.status,
+    publicVerified: cooperative.publicVerified ?? false
   };
 }
 

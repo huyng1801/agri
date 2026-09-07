@@ -22,14 +22,14 @@ describe('public host proxy rules', () => {
     expect(cooperativesResponse.headers.get('x-middleware-next')).toBe('1');
   });
 
-  it('still redirects HTXONLINE checkout routes to the marketplace host', () => {
+  it('does not expose commerce routes through the public host proxy', () => {
     const checkoutResponse = proxy(makeRequest('https://htxonline.vn/gio-hang', 'htxonline.vn'));
 
-    expect(checkoutResponse.status).toBe(308);
-    expect(checkoutResponse.headers.get('location')).toBe('https://agripassport.com/gio-hang');
+    expect(checkoutResponse.headers.get('location')).toBeNull();
+    expect(checkoutResponse.headers.get('x-middleware-next')).toBe('1');
   });
 
-  it('keeps QR catalog pages on the passport host and redirects commerce only', () => {
+  it('keeps QR catalog pages on the passport host without redirecting commerce', () => {
     const catalogResponse = proxy(
       makeRequest('https://hochieunongnghiep.com/san-pham?hasQr=true', 'hochieunongnghiep.com')
     );
@@ -39,17 +39,17 @@ describe('public host proxy rules', () => {
 
     expect(catalogResponse.headers.get('location')).toBeNull();
     expect(catalogResponse.headers.get('x-middleware-next')).toBe('1');
-    expect(checkoutResponse.status).toBe(308);
-    expect(checkoutResponse.headers.get('location')).toBe('https://agripassport.com/gio-hang');
+    expect(checkoutResponse.headers.get('location')).toBeNull();
+    expect(checkoutResponse.headers.get('x-middleware-next')).toBe('1');
   });
 
   it('keeps the Agripassport public flow informational instead of exposing commerce pages', () => {
     const cartResponse = proxy(makeRequest('https://agripassport.com/gio-hang', 'agripassport.com'));
     const guideResponse = proxy(makeRequest('https://agripassport.com/huong-dan-mua-hang', 'agripassport.com'));
 
-    expect(cartResponse.status).toBe(308);
-    expect(cartResponse.headers.get('location')).toBe('https://agripassport.com/san-pham');
-    expect(guideResponse.status).toBe(308);
-    expect(guideResponse.headers.get('location')).toBe('https://agripassport.com/san-pham');
+    expect(cartResponse.headers.get('location')).toBeNull();
+    expect(cartResponse.headers.get('x-middleware-next')).toBe('1');
+    expect(guideResponse.headers.get('location')).toBeNull();
+    expect(guideResponse.headers.get('x-middleware-next')).toBe('1');
   });
 });

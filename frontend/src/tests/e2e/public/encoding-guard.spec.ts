@@ -5,7 +5,6 @@ const suspiciousTextPattern = /(?:\u00c3|\u00c2|\u00c4|\u00c5|\u00c6)[\u0080-\u0
 const invalidLoginMessage = 'Email ho\u1eb7c m\u1eadt kh\u1ea9u kh\u00f4ng \u0111\u00fang';
 const dashboardTitle = 'T\u1ed5ng quan';
 const contactErrorMessage = 'Kh\u00f4ng th\u1ec3 g\u1eedi li\u00ean h\u1ec7';
-const orderLookupErrorMessage = 'Kh\u00f4ng t\u00ecm th\u1ea5y \u0111\u01a1n h\u00e0ng';
 const adminRoutes = [
   '/dashboard',
   '/dashboard/cooperatives',
@@ -39,7 +38,7 @@ test.describe('text encoding guard', () => {
   test('@public public routes keep Vietnamese text intact', async ({ page }) => {
     const { publicUrl } = baseUrls();
 
-    for (const route of ['/', '/lien-he', '/thanh-toan', '/login']) {
+    for (const route of ['/', '/lien-he', '/login']) {
       await page.goto(joinUrl(publicUrl, route), { waitUntil: 'domcontentloaded' });
       await page.waitForTimeout(300);
       await expectNoMojibake(page, route);
@@ -51,12 +50,12 @@ test.describe('text encoding guard', () => {
     const { publicUrl } = baseUrls();
 
     for (const route of [
-      '/gio-hang',
       '/htx',
       '/gioi-thieu',
       '/ve-chung-toi',
       '/san-pham',
       '/tin-tuc',
+      '/cau-hoi-thuong-gap',
       '/huong-dan-mua-hang',
       '/dieu-khoan-su-dung',
       '/chinh-sach-bao-mat',
@@ -73,36 +72,22 @@ test.describe('text encoding guard', () => {
     test.setTimeout(5 * 60 * 1000);
     const { publicUrl } = baseUrls();
 
-    await page.goto(joinUrl(publicUrl, '/htx'), { waitUntil: 'domcontentloaded' });
-    const htxDetailUrl = await firstHref(page, 'a[href*="/htx/"]');
-    expect(htxDetailUrl).toBeTruthy();
-
-    await page.goto(toAbsoluteUrl(publicUrl, htxDetailUrl!), { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(300);
-    await expectNoMojibake(page, 'public htx detail');
-
-    await page.goto(joinUrl(publicUrl, '/san-pham'), { waitUntil: 'domcontentloaded' });
-    const productDetailUrl = await firstHref(page, 'a[href*="/san-pham/"]');
-    expect(productDetailUrl).toBeTruthy();
-
-    await page.goto(toAbsoluteUrl(publicUrl, productDetailUrl!), { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(300);
-    await expectNoMojibake(page, 'public product detail');
-
-    const passportDetailUrl = await firstHref(page, 'a[href*="/passport/"]');
-    expect(passportDetailUrl).toBeTruthy();
-
-    await page.goto(toAbsoluteUrl(publicUrl, passportDetailUrl!), { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(300);
-    await expectNoMojibake(page, 'public passport detail');
-
-    await page.goto(joinUrl(publicUrl, '/tin-tuc'), { waitUntil: 'domcontentloaded' });
-    const newsDetailUrl = await firstHref(page, 'a[href*="/tin-tuc/"]');
-    expect(newsDetailUrl).toBeTruthy();
-
-    await page.goto(toAbsoluteUrl(publicUrl, newsDetailUrl!), { waitUntil: 'domcontentloaded' });
-    await page.waitForTimeout(300);
-    await expectNoMojibake(page, 'public news detail');
+    const detailChecks = [
+      { list: '/htx', selector: 'a[href*="/htx/"]', label: 'public htx detail' },
+      { list: '/san-pham', selector: 'a[href*="/san-pham/"]', label: 'public product detail' },
+      { list: '/tin-tuc', selector: 'a[href*="/tin-tuc/"]', label: 'public news detail' }
+    ];
+    for (const detail of detailChecks) {
+      await page.goto(joinUrl(publicUrl, detail.list), { waitUntil: 'domcontentloaded' });
+      const href = await firstHref(page, detail.selector);
+      if (!href) {
+        await expectNoMojibake(page, 'detail empty state');
+        continue;
+      }
+      await page.goto(toAbsoluteUrl(publicUrl, href), { waitUntil: 'domcontentloaded' });
+      await page.waitForTimeout(300);
+      await expectNoMojibake(page, detail.label);
+    }
   });
 
   test('@public login error message keeps accents intact', async ({ page }) => {
@@ -153,61 +138,6 @@ test.describe('text encoding guard', () => {
 
     await expect(page.getByTestId('toast-error')).toContainText(contactErrorMessage);
     await expectNoMojibake(page, '/lien-he error');
-  });
-
-  test('@public order lookup error message keeps accents intact', async ({ page }) => {
-    const { publicUrl } = baseUrls();
-
-    await page.route('**/api/v1/orders/public/lookup**', async (route) => {
-      await route.fulfill({
-        status: 404,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          success: false,
-          message: orderLookupErrorMessage,
-          errors: []
-        })
-      });
-    });
-
-    await page.goto(joinUrl(publicUrl, '/tra-cuu-don-hang'), { waitUntil: 'load' });
-    await page.getByTestId('order-code-input').fill('ORD-NOT-FOUND');
-    await page.getByTestId('order-phone-input').fill('0912345678');
-    await page.getByTestId('order-lookup-submit-button').click();
-
-    await expect(page.getByTestId('toast-error')).toContainText(orderLookupErrorMessage);
-    await expectNoMojibake(page, '/tra-cuu-don-hang error');
-  });
-
-  test('@public order success page keeps accents intact', async ({ page }) => {
-    const { publicUrl } = baseUrls();
-
-    await page.addInitScript(() => {
-      window.localStorage.setItem(
-        'htxonline_last_order',
-        JSON.stringify({
-          groupCode: 'ORD-GRP-E2E01',
-          orders: [
-            {
-              orderCode: 'ORD-A',
-              status: 'NEW',
-              totalAmount: 100000,
-              cooperative: { name: 'HTX A', code: 'htx-a' },
-              buyerName: 'Khach hang',
-              buyerPhone: '0912345678',
-              address: '123 Duong A',
-              province: 'Dong Thap',
-              paymentMethod: 'COD',
-              items: []
-            }
-          ]
-        })
-      );
-    });
-
-    await page.goto(joinUrl(publicUrl, '/dat-hang-thanh-cong?groupCode=ORD-GRP-E2E01'), { waitUntil: 'domcontentloaded' });
-    await expect(page.getByTestId('order-success')).toBeVisible();
-    await expectNoMojibake(page, '/dat-hang-thanh-cong');
   });
 
   test('@dashboard admin shell keeps accents intact', async ({ page }) => {
@@ -279,6 +209,7 @@ function joinUrl(baseUrl: string, path: string) {
 
 async function firstHref(page: Page, selector: string) {
   const link = page.locator(selector).first();
+  if ((await page.locator(selector).count()) === 0) return null;
   await expect(link).toBeVisible();
   return link.getAttribute('href');
 }

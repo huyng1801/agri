@@ -14,10 +14,6 @@ const PUBLIC_MARKETPLACE_PATHS = [
   '/passport',
   '/qr',
   '/tin-tuc',
-  '/gio-hang',
-  '/thanh-toan',
-  '/dat-hang-thanh-cong',
-  '/tra-cuu-don-hang',
   '/lien-he',
   '/gioi-thieu',
   '/chinh-sach-bao-mat',
@@ -29,9 +25,6 @@ const PUBLIC_MARKETPLACE_PATHS = [
 ];
 
 const PASSPORT_PATHS = ['/passport', '/qr'];
-const INTERNAL_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
-const PASSPORT_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang'];
-const AGRIPASSPORT_COMMERCE_REDIRECT_PATHS = ['/gio-hang', '/thanh-toan', '/dat-hang-thanh-cong', '/tra-cuu-don-hang', '/huong-dan-mua-hang'];
 
 export function proxy(request: NextRequest) {
   const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
@@ -59,24 +52,12 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
 
-  if (area === 'public' && siteKey === 'htxonline' && INTERNAL_COMMERCE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
-    return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
-  }
-
   if (area === 'public' && siteKey === 'htxonline' && PASSPORT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
     return NextResponse.redirect(passportRedirectUrl(pathname, search), 308);
   }
 
   if (area === 'public' && siteKey === 'passport' && pathname.startsWith('/dashboard')) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  if (area === 'public' && siteKey === 'passport' && PASSPORT_COMMERCE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
-    return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
-  }
-
-  if (area === 'public' && (siteKey === 'agripassport' || siteKey === 'local') && AGRIPASSPORT_COMMERCE_REDIRECT_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))) {
-    return NextResponse.redirect(new URL('/san-pham', request.url), 308);
   }
 
   return NextResponse.next();

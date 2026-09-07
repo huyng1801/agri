@@ -6,13 +6,14 @@ type PublicMapPreviewProps = {
   address: string;
   location: PublicMapLocation;
   mapSearchUrl: string;
+  mapEmbedUrl?: string;
   className?: string;
   frameClassName?: string;
   aspectClassName?: string;
   compact?: boolean;
 };
 
-export function PublicMapPreview({ address, location, mapSearchUrl, className, frameClassName, aspectClassName, compact = false }: PublicMapPreviewProps) {
+export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl, className, frameClassName, aspectClassName, compact = false }: PublicMapPreviewProps) {
   const locationLabel = `${location.latitude.toFixed(4)}, ${location.longitude.toFixed(4)}`;
   const regionLabel = address
     .split(',')
@@ -22,22 +23,17 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
 
   if (compact) {
     return (
-      <a
-        href={mapSearchUrl}
-        target="_blank"
-        rel="noreferrer"
-        className={cn('group relative flex min-h-[11rem] items-end overflow-hidden rounded-[1.35rem] bg-[#d9eadf] p-3 text-left shadow-sm', className)}
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_24%,rgba(255,255,255,0.64),transparent_22%),radial-gradient(circle_at_78%_72%,rgba(255,255,255,0.38),transparent_22%),linear-gradient(140deg,#dcefe1_0%,#a5d2b1_100%)]" />
-        <div className="absolute inset-0 opacity-55 [background-image:linear-gradient(rgba(255,255,255,0.3)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.3)_1px,transparent_1px)] [background-size:24px_24px]" />
-        <span className="absolute left-1/2 top-[37%] h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.16)]" aria-hidden="true" />
-        <span className="relative w-full rounded-2xl bg-white/86 px-3 py-2.5 backdrop-blur-sm">
-          <span className="flex items-center justify-between gap-3">
-            <span className="min-w-0"><span className="block text-[0.64rem] font-bold uppercase tracking-[0.1em] text-[#397e4b]">Điểm hỗ trợ</span><span className="mt-1 block line-clamp-2 text-sm font-bold leading-5 text-[#173327]">{address}</span></span>
-            <Navigation size={18} className="shrink-0 text-[#1e8745] transition group-hover:translate-x-0.5" aria-hidden="true" />
-          </span>
-        </span>
-      </a>
+      <div className={cn('group relative flex min-h-[11rem] items-end overflow-hidden rounded-[1.35rem] bg-[#d9eadf] p-3 text-left shadow-sm', className)}>
+        {mapEmbedUrl ? <iframe title={`Bản đồ văn phòng hỗ trợ tại ${regionLabel}`} src={mapEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="absolute inset-0 h-full w-full border-0" /> : null}
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_25%,rgba(15,23,42,0.22)_100%)]" />
+        <span className="pointer-events-none absolute left-1/2 top-[37%] h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.16)]" aria-hidden="true" />
+        <div className="relative z-10 w-full rounded-2xl bg-white/90 px-3 py-2.5 backdrop-blur-sm">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0"><p className="text-[0.64rem] font-bold uppercase tracking-[0.1em] text-[#397e4b]">Điểm hỗ trợ</p><p className="mt-1 line-clamp-2 text-sm font-bold leading-5 text-[#173327]">{address}</p></div>
+            <a href={mapSearchUrl} target="_blank" rel="noreferrer" aria-label="Mở vị trí trên Google Maps" className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#eaf5ec] text-[#1e8745] transition hover:bg-[#d9efdf]"><Navigation size={18} aria-hidden="true" /></a>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -45,7 +41,8 @@ export function PublicMapPreview({ address, location, mapSearchUrl, className, f
     <div className={cn('overflow-hidden rounded-[1.7rem] border border-white/18 bg-[#d9eadf]', className)}>
       <div className={cn('relative isolate w-full overflow-hidden', compact ? 'aspect-[1.1/1]' : 'aspect-[1.28/1] min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]', aspectClassName)}>
         <div className={cn('absolute inset-0 overflow-hidden', frameClassName)}>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.42),transparent_42%),linear-gradient(140deg,rgba(235,247,239,0.96)_0%,rgba(199,228,208,0.92)_52%,rgba(143,186,155,0.96)_100%)]" />
+          {mapEmbedUrl ? <iframe title={`Bản đồ văn phòng hỗ trợ tại ${regionLabel}`} src={mapEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" className="absolute inset-0 z-0 h-full w-full border-0" /> : null}
+          <div className={cn('absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.42),transparent_42%),linear-gradient(140deg,rgba(235,247,239,0.96)_0%,rgba(199,228,208,0.92)_52%,rgba(143,186,155,0.96)_100%)]', mapEmbedUrl && 'bg-[linear-gradient(140deg,rgba(235,247,239,0.20)_0%,rgba(199,228,208,0.14)_52%,rgba(143,186,155,0.22)_100%)]')} />
           <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.24)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.24)_1px,transparent_1px)] bg-[length:32px_32px]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_26%,rgba(255,255,255,0.48),transparent_18%),radial-gradient(circle_at_82%_72%,rgba(255,255,255,0.36),transparent_20%)]" />
           <svg

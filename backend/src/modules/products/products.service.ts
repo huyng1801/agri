@@ -55,7 +55,11 @@ export class ProductsService {
 
   async publicList(query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
-    const where: Prisma.ProductWhereInput = { status: 'PUBLISHED' };
+    const where: Prisma.ProductWhereInput = {
+      status: 'PUBLISHED',
+      publicVerified: true,
+      cooperative: { publicVerified: true, status: 'ACTIVE' }
+    };
     if (query.search) {
       const search = String(query.search);
       where.OR = [
@@ -114,6 +118,8 @@ export class ProductsService {
     const product = await this.prisma.product.findFirst({
       where: {
         status: 'PUBLISHED',
+        publicVerified: true,
+        cooperative: { publicVerified: true, status: 'ACTIVE' },
         OR: [{ slug }, { id: slug }, { code: slug }]
       },
       include: {
@@ -188,6 +194,7 @@ export class ProductsService {
         price: dto.price,
         unit: dto.unit,
         status: dto.status ?? 'DRAFT',
+        publicVerified: dto.publicVerified ?? false,
         thumbnailFileId: dto.thumbnailFileId,
         zoneId: dto.zoneId,
         farmerId: dto.farmerId,
@@ -223,6 +230,7 @@ export class ProductsService {
         price: dto.price,
         unit: dto.unit,
         status: dto.status,
+        publicVerified: dto.publicVerified,
         thumbnailFileId: dto.thumbnailFileId,
         zoneId: dto.zoneId,
         farmerId: dto.farmerId,

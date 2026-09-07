@@ -31,7 +31,14 @@ export function brandizeSiteText(value: string, siteKey: PublicSiteKey = 'agripa
   return value
     .replace(/\bHTXONLINE\b/gi, 'AGRIPASSPORT')
     .replace(/\bAgri Passport\b/gi, 'AGRIPASSPORT')
-    .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'AGRIPASSPORT');
+    .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'AGRIPASSPORT')
+    .replace(/Đặt hàng COD/gi, 'Kết nối với HTX')
+    .replace(/bán hàng COD/gi, 'kết nối thị trường')
+    .replace(/đơn hàng COD/gi, 'yêu cầu hỗ trợ')
+    .replace(/Thanh toán COD/gi, 'Gửi yêu cầu')
+    .replace(/Tra cứu đơn hàng/gi, 'Theo dõi yêu cầu')
+    .replace(/Giỏ hàng/gi, 'Danh sách sản phẩm')
+    .replace(/\bCOD\b/gi, 'kết nối trực tiếp');
 }
 
 export async function buildPublicMetadata(input: PublicMetadataInput): Promise<Metadata> {

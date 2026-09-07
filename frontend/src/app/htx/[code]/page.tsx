@@ -50,8 +50,20 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
     );
   }
 
+  const canonical = await getRequestAbsoluteUrl(`/htx/${cooperative.code}`);
+  const cooperativeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: cooperative.name,
+    url: canonical,
+    telephone: cooperative.phone || undefined,
+    areaServed: cooperative.province || 'Việt Nam',
+    brand: { '@type': 'Brand', name: 'Agripassport' }
+  };
+
   return (
     <PublicShell>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(cooperativeJsonLd).replace(/</g, '\\u003c') }} />
       <PublicDetailMain>
         <PublicBreadcrumb href="/htx" label="Quay lại danh sách HTX" />
 

@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 const SECRET_KEYS = new Set(['system.r2', 'system.email', 'system.security']);
 const DEFAULT_MAP_EMBED_URL =
   'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
+const PUBLIC_MEDIA_PLACEHOLDER_URL = '/public-media-placeholder.svg';
 const DEFAULT_PUBLIC_FAQS = [
   {
     question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
@@ -134,6 +135,14 @@ function faqItems(value: unknown) {
   return [...DEFAULT_PUBLIC_FAQS];
 }
 
+function approvedPublicImageUrl(value: unknown) {
+  const imageUrl = stringValue(value);
+  if (!imageUrl || /(picsum\.photos|images\.unsplash\.com|source\.unsplash\.com)/i.test(imageUrl)) {
+    return PUBLIC_MEDIA_PLACEHOLDER_URL;
+  }
+  return imageUrl;
+}
+
 function pageContentItems(value: unknown) {
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
   return {
@@ -142,31 +151,23 @@ function pageContentItems(value: unknown) {
     homeDescription:
       normalizePublicCopy(stringValue(object.homeDescription)) ||
       'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
-    homeImageUrl:
-      stringValue(object.homeImageUrl) ||
-      'https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?auto=format&fit=crop&w=1200&q=80',
+    homeImageUrl: approvedPublicImageUrl(object.homeImageUrl),
     homeImageAlt: normalizePublicCopy(stringValue(object.homeImageAlt)) || 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
     introTitle: normalizePublicCopy(stringValue(object.introTitle)) || 'Giới thiệu HTXONLINE',
     introDescription: normalizePublicCopy(stringValue(object.introDescription)) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
-    introImageUrl:
-      stringValue(object.introImageUrl) ||
-      'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1200&q=80',
+    introImageUrl: approvedPublicImageUrl(object.introImageUrl),
     introImageAlt: normalizePublicCopy(stringValue(object.introImageAlt)) || 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
     aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || 'Chúng tôi là HTXONLINE',
     aboutDescription:
       normalizePublicCopy(stringValue(object.aboutDescription)) ||
       'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
-    aboutImageUrl:
-      stringValue(object.aboutImageUrl) ||
-      'https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=1200&q=80',
+    aboutImageUrl: approvedPublicImageUrl(object.aboutImageUrl),
     aboutImageAlt: normalizePublicCopy(stringValue(object.aboutImageAlt)) || 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
     contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
     contactDescription:
       normalizePublicCopy(stringValue(object.contactDescription)) ||
       'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
-    contactImageUrl:
-      stringValue(object.contactImageUrl) ||
-      'https://images.unsplash.com/photo-1492496913980-501348b61469?auto=format&fit=crop&w=1200&q=80',
+    contactImageUrl: approvedPublicImageUrl(object.contactImageUrl),
     contactImageAlt: normalizePublicCopy(stringValue(object.contactImageAlt)) || 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
   };
 }

@@ -41,6 +41,7 @@ type NewsForm = {
   coverImageUrl: string;
   coverImageAlt: string;
   status: NewsArticle['status'];
+  publicVerified: boolean;
   isFeatured: boolean;
   showOnHome: boolean;
   focusKeyword: string;
@@ -207,6 +208,7 @@ const emptyForm: NewsForm = {
   coverImageUrl: '',
   coverImageAlt: '',
   status: 'DRAFT',
+  publicVerified: false,
   isFeatured: false,
   showOnHome: false,
   focusKeyword: '',
@@ -1616,6 +1618,14 @@ export default function NewsDashboardPage() {
                   <option value="SCHEDULED">Hẹn giờ</option>
                   <option value="ARCHIVED">Lưu trữ</option>
                 </Select>
+              </label>
+              <label className="flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-ink">
+                <input
+                  type="checkbox"
+                  checked={form.publicVerified}
+                  onChange={(event) => update('publicVerified', event.target.checked)}
+                />
+                Đã xác minh để hiển thị public
               </label>
               <label className="space-y-1 text-sm font-semibold md:col-span-2">
                 <span>Mô tả ngắn</span>
@@ -3512,6 +3522,7 @@ export default function NewsDashboardPage() {
 function formPayload(form: NewsForm) {
   return {
     ...form,
+    publicVerified: form.publicVerified,
     categoryId: form.categoryId || undefined,
     coverImageUrl: form.coverImageUrl || undefined,
     coverImageAlt: form.coverImageAlt || undefined,
@@ -3542,6 +3553,7 @@ function fromArticle(article: NewsArticle): NewsForm {
     coverImageUrl: article.coverImageUrl ?? '',
     coverImageAlt: article.coverImageAlt ?? '',
     status: article.status,
+    publicVerified: article.publicVerified ?? false,
     isFeatured: article.isFeatured,
     showOnHome: article.showOnHome,
     focusKeyword: article.focusKeyword ?? '',

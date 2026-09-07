@@ -44,6 +44,7 @@ type DashboardProduct = {
   price: string | number;
   unit: string;
   status: ProductStatus;
+  publicVerified: boolean;
   categoryId?: string | null;
   thumbnailFileId?: string | null;
   zoneId?: string | null;
@@ -80,6 +81,7 @@ type ProductForm = {
   price: string;
   unit: string;
   status: ProductStatus;
+  publicVerified: boolean;
   categoryId: string;
   zoneId: string;
   farmerId: string;
@@ -97,6 +99,7 @@ const emptyForm: ProductForm = {
   price: '0',
   unit: 'kg',
   status: 'DRAFT',
+  publicVerified: false,
   categoryId: '',
   zoneId: '',
   farmerId: '',
@@ -299,6 +302,14 @@ export default function ProductsPage() {
                       <option value="ARCHIVED">Lưu trữ</option>
                     </Select>
                   </Field>
+                  <label className="flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-ink">
+                    <input
+                      type="checkbox"
+                      checked={form.publicVerified}
+                      onChange={(event) => update('publicVerified', event.target.checked)}
+                    />
+                    Đã xác minh để hiển thị public
+                  </label>
                   <Field label="Danh mục">
                     <Select data-testid="product-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
                       <option value="">Không chọn</option>
@@ -515,6 +526,7 @@ function productPayload(form: ProductForm) {
     price: Number(form.price || 0),
     unit: form.unit,
     status: form.status,
+    publicVerified: form.publicVerified,
     categoryId: form.categoryId || undefined,
     zoneId: form.zoneId || undefined,
     farmerId: form.farmerId || undefined,
@@ -533,6 +545,7 @@ function fromProduct(product: DashboardProduct): ProductForm {
     price: String(product.price ?? 0),
     unit: product.unit || 'kg',
     status: product.status,
+    publicVerified: product.publicVerified ?? false,
     categoryId: product.categoryId ?? '',
     zoneId: product.zoneId ?? '',
     farmerId: product.farmerId ?? '',

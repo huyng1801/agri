@@ -250,6 +250,7 @@ export class NewsService {
       coverImageUrl: dto.coverImageUrl,
       coverImageAlt: dto.coverImageAlt,
       status,
+      publicVerified: existing ? dto.publicVerified : dto.publicVerified ?? false,
       isFeatured: dto.isFeatured,
       showOnHome: dto.showOnHome,
       focusKeyword: dto.focusKeyword,
@@ -300,6 +301,7 @@ export class NewsService {
     const now = new Date();
     return {
       status: NewsStatus.PUBLISHED,
+      publicVerified: true,
       AND: [
         { OR: [{ publishedAt: null }, { publishedAt: { lte: now } }] },
         { OR: [{ categoryId: null }, { category: { isActive: true } }] }
