@@ -66,6 +66,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const qrProducts = products.filter((product) => product.passports?.length).length;
   const provinceCount = new Set(products.map((product) => product.cooperative?.province).filter(Boolean)).size;
   const categoryHighlights = Array.from(new Set(products.map((product) => product.category?.name).filter(Boolean))).slice(0, 6) as string[];
+  const categoryOptions = Array.from(
+    new Map(
+      products
+        .map((product) => product.category)
+        .filter((category): category is NonNullable<PublicProduct['category']> => Boolean(category))
+        .map((category) => [category.slug, category])
+    ).values()
+  ).slice(0, 6);
   const displayedProducts = isInternal ? products : products.slice(0, 5);
   const featuredProduct = products[0];
   const featuredProductSlug = featuredProduct?.slug ? `/san-pham/${featuredProduct.slug}` : '/san-pham';
@@ -271,15 +279,40 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               description="Khám phá các sản phẩm được số hóa trên Agripassport từ nông sản, sản phẩm OCOP đến các sản phẩm của hợp tác xã và doanh nghiệp. Tìm hiểu thông tin sản phẩm, đơn vị sản xuất và dữ liệu truy xuất nguồn gốc được công khai trên hệ thống."
             />
 
+            {categoryOptions.length > 0 ? (
+              <nav aria-label="Lọc nhanh theo nhóm sản phẩm" className="-mx-1 mb-4 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <div className="flex min-w-max items-center gap-2">
+                  <span className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#6b7b72]">Lọc nhanh</span>
+                  <Link
+                    href="/san-pham"
+                    aria-current={!filters.category ? 'page' : undefined}
+                    className={!filters.category ? 'inline-flex min-h-10 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(31,155,75,0.15)]' : 'inline-flex min-h-10 items-center rounded-full border border-[#d8e7d8] bg-white px-4 text-sm font-semibold text-[#315441]'}
+                  >
+                    Tất cả
+                  </Link>
+                  {categoryOptions.map((category) => (
+                    <Link
+                      key={category.slug}
+                      href={`/san-pham?category=${encodeURIComponent(category.slug)}`}
+                      aria-current={filters.category === category.slug ? 'page' : undefined}
+                      className={filters.category === category.slug ? 'inline-flex min-h-10 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(31,155,75,0.15)]' : 'inline-flex min-h-10 items-center rounded-full border border-[#d8e7d8] bg-white px-4 text-sm font-semibold text-[#315441]'}
+                    >
+                      {category.name}
+                    </Link>
+                  ))}
+                </div>
+              </nav>
+            ) : null}
+
           </>
         )}
 
         <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} demeterLike={isInternal} categoryHighlights={categoryHighlights} />
 
         {displayedProducts.length ? (
-          <div className="mt-6 grid gap-4 sm:auto-rows-fr sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:auto-rows-fr sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {displayedProducts.map((product, index) => (
-              <ProductCard key={product.id} product={product} priority={index < 4} />
+              <ProductCard key={product.id} product={product} priority={index < 4} compact={!isInternal} />
             ))}
           </div>
         ) : (
@@ -308,7 +341,7 @@ function ProductFilterForm({
       className={
         demeterLike
           ? 'mt-5 rounded-[2rem] border border-[#dbe7d8] bg-white p-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[2.2rem] sm:p-4'
-          : 'mt-4 rounded-[1.7rem] border border-[#e8e4d8] bg-white p-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:mt-5 sm:rounded-[2rem] sm:p-4'
+          : 'mt-4 rounded-[1.45rem] border border-[#e8e4d8] bg-white p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:mt-5 sm:rounded-[2rem] sm:p-4'
       }
       action="/san-pham"
     >
@@ -408,12 +441,16 @@ function ProductFilterForm({
         />
       </div>
 
-      <div className="mt-2.5 grid gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3">
+      <div className={
+        demeterLike
+          ? 'mt-2.5 grid gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3'
+          : 'mt-2.5 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center sm:gap-3'
+      }>
         <label
           className={
             demeterLike
               ? 'inline-flex min-h-11 items-center gap-2 rounded-full border border-[#dbe7d8] bg-[#fbfcf8] px-4 text-sm font-semibold text-slate-700'
-              : 'inline-flex min-h-11 items-center gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-3 text-sm font-semibold text-slate-700'
+              : 'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-2 text-sm font-semibold text-slate-700 sm:w-auto sm:justify-start sm:px-3'
           }
         >
           <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="peer sr-only" />
@@ -424,7 +461,7 @@ function ProductFilterForm({
           className={
             demeterLike
               ? 'inline-flex min-h-11 items-center justify-between gap-2 rounded-full border border-[#dbe7d8] bg-[#fbfcf8] px-4 text-sm font-semibold text-slate-700'
-              : 'inline-flex min-h-11 items-center justify-between gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-3 text-sm font-semibold text-slate-700'
+              : 'inline-flex min-h-11 w-full items-center justify-between gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-2 text-sm font-semibold text-slate-700 sm:w-auto sm:px-3'
           }
         >
           <SlidersHorizontal size={16} aria-hidden="true" />
@@ -436,14 +473,14 @@ function ProductFilterForm({
         </label>
         {filters.category && <input type="hidden" name="category" value={filters.category} />}
         {filters.cooperative && <input type="hidden" name="cooperative" value={filters.cooperative} />}
-        <Button className={demeterLike ? 'min-h-11 rounded-full px-5 lg:min-w-[150px]' : 'min-h-11 px-5 lg:min-w-[150px]'}>Tìm sản phẩm</Button>
+        <Button className={demeterLike ? 'min-h-11 rounded-full px-5 lg:min-w-[150px]' : 'col-span-2 min-h-11 px-5 sm:col-span-1 lg:min-w-[150px]'}>Tìm sản phẩm</Button>
         {hasActiveFilter && (
           <Link
             href="/san-pham"
             className={
               demeterLike
                 ? 'inline-flex min-h-11 items-center justify-center rounded-full px-4 text-sm font-semibold text-slate-600 hover:bg-[var(--surface-0)]'
-                : 'inline-flex min-h-11 items-center justify-center rounded-[1rem] px-3 text-sm font-semibold text-slate-600 hover:bg-[var(--surface-0)]'
+                : 'col-span-2 inline-flex min-h-11 items-center justify-center rounded-[1rem] px-3 text-sm font-semibold text-slate-600 hover:bg-[var(--surface-0)] sm:col-span-1'
             }
           >
             Xóa lọc

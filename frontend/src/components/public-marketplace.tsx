@@ -104,14 +104,20 @@ export function PublicSearch({
   );
 }
 
-export function ProductCard({ product, priority = false }: { product: PublicProduct; priority?: boolean }) {
+export function ProductCard({ product, priority = false, compact = false }: { product: PublicProduct; priority?: boolean; compact?: boolean }) {
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className="group flex h-full flex-col rounded-[1.45rem] border border-[#d6e6d2] bg-[#fbfdf9] p-2.5 shadow-[0_12px_28px_rgba(15,23,42,0.055)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)] sm:rounded-[1.85rem] sm:p-3.5">
-      <div className="relative overflow-hidden rounded-[1.2rem] border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:rounded-[1.5rem]">
+    <article className={cn(
+      'group flex h-full flex-col border border-[#d6e6d2] bg-[#fbfdf9] shadow-[0_12px_28px_rgba(15,23,42,0.055)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)]',
+      compact ? 'rounded-[1.15rem] p-2 sm:rounded-[1.65rem] sm:p-3.5' : 'rounded-[1.45rem] p-2.5 sm:rounded-[1.85rem] sm:p-3.5'
+    )}>
+      <div className={cn(
+        'relative overflow-hidden border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
+        compact ? 'rounded-[0.95rem] sm:rounded-[1.35rem]' : 'rounded-[1.2rem] sm:rounded-[1.5rem]'
+      )}>
         <div className="absolute inset-x-2.5 top-2.5 z-[2] flex items-center justify-between gap-2 sm:inset-x-3 sm:top-3">
-          <span className="inline-flex min-h-7 items-center rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
+          <span className="inline-flex min-h-7 max-w-[72%] items-center truncate rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
             {product.category?.name ?? 'Nông sản'}
           </span>
           {hasQr ? (
@@ -129,33 +135,49 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
             fallback={DEFAULT_PRODUCT_IMAGE}
             testId="product-card-image"
             priority={priority}
-            wrapperClassName="aspect-[5/3] w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)] sm:aspect-[4/3]"
+            wrapperClassName={cn(
+              'w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)]',
+              compact ? 'aspect-[5/3]' : 'aspect-[5/3] sm:aspect-[4/3]'
+            )}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
           />
         </Link>
       </div>
 
-      <div className="mt-2.5 flex flex-1 flex-col px-0.5 pb-0.5 sm:mt-3 sm:px-1">
-        <p className="text-[0.7rem] font-semibold text-[#5d7b67]">{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
-        <Link href={`/san-pham/${product.slug}`} className="mt-1 block line-clamp-2 text-[1.04rem] font-extrabold leading-[1.2] text-[#1b251f] transition hover:text-[#1c8542] sm:min-h-11 sm:text-[1.2rem] sm:leading-6">
+      <div className={cn('flex flex-1 flex-col', compact ? 'mt-2 px-0.5 pb-0' : 'mt-2.5 px-0.5 pb-0.5 sm:mt-3 sm:px-1')}>
+        <p className={cn('font-semibold text-[#5d7b67]', compact ? 'text-[0.62rem]' : 'text-[0.7rem]')}>{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
+        <Link href={`/san-pham/${product.slug}`} className={cn(
+          'mt-1 block line-clamp-2 font-extrabold text-[#1b251f] transition hover:text-[#1c8542]',
+          compact ? 'text-[0.9rem] leading-[1.18] sm:min-h-11 sm:text-[1.2rem] sm:leading-6' : 'text-[1.04rem] leading-[1.2] sm:min-h-11 sm:text-[1.2rem] sm:leading-6'
+        )}>
           {product.name}
         </Link>
         {product.cooperative ? (
-          <Link href={`/htx/${product.cooperative.code}`} className="mt-1.5 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542] sm:mt-2 sm:min-h-11">
-            <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName="h-6 w-6 shrink-0 rounded-full" className="h-full w-full rounded-full object-cover" />
-            <span className="truncate">{product.cooperative.name}</span>
+          <Link href={`/htx/${product.cooperative.code}`} className={cn(
+            'inline-flex items-center gap-2 font-semibold text-[#466352] transition hover:text-[#1c8542]',
+            compact ? 'mt-1 min-h-8 text-[0.65rem] sm:mt-2 sm:min-h-11 sm:text-xs' : 'mt-1.5 min-h-10 text-xs sm:mt-2 sm:min-h-11'
+          )}>
+            <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName={cn('shrink-0 rounded-full', compact ? 'h-5 w-5 sm:h-6 sm:w-6' : 'h-6 w-6')} className="h-full w-full rounded-full object-cover" />
+            <span className="line-clamp-2 min-w-0">{product.cooperative.name}</span>
           </Link>
         ) : null}
-        <div className="mt-2.5 flex items-end justify-between gap-2 border-t border-[#e8eee4] pt-2.5 sm:mt-3 sm:gap-3 sm:pt-3">
+        <div className={cn(
+          'mt-auto flex items-end justify-between border-t border-[#e8eee4]',
+          compact ? 'mt-2 gap-1 pt-2 sm:mt-3 sm:gap-3 sm:pt-3' : 'mt-2.5 gap-2 pt-2.5 sm:mt-3 sm:gap-3 sm:pt-3'
+        )}>
           <div>
-            <p className="text-[1.12rem] font-extrabold leading-none text-[#17211b] sm:text-[1.4rem]">{formatPrice(product.price)}</p>
-            <p className="mt-1 text-xs text-slate-500">/{product.unit}</p>
+            <p className={cn('font-extrabold leading-none text-[#17211b]', compact ? 'text-[0.92rem] sm:text-[1.4rem]' : 'text-[1.12rem] sm:text-[1.4rem]')}>{formatPrice(product.price)}</p>
+            <p className={cn('mt-1 text-slate-500', compact ? 'text-[0.62rem] sm:text-xs' : 'text-xs')}>/{product.unit}</p>
           </div>
           <Link
             href={`/san-pham/${product.slug}`}
-            className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-full bg-[#1f7048] px-3 text-[0.78rem] font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint sm:gap-1.5 sm:px-4 sm:text-sm"
+            aria-label={`Xem thông tin ${product.name}`}
+            className={cn(
+              'inline-flex shrink-0 items-center gap-1 rounded-full bg-[#1f7048] font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint',
+              compact ? 'min-h-9 px-2 text-[0.66rem] sm:min-h-11 sm:gap-1.5 sm:px-4 sm:text-sm' : 'min-h-11 px-3 text-[0.78rem] sm:gap-1.5 sm:px-4 sm:text-sm'
+            )}
           >
-            Xem thông tin
+            {compact ? <><span className="sm:hidden">Xem</span><span className="hidden sm:inline">Xem thông tin</span></> : 'Xem thông tin'}
             <ArrowRight size={15} aria-hidden="true" />
           </Link>
         </div>
