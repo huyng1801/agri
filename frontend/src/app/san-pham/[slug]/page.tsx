@@ -62,6 +62,41 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const hasCooperative = Boolean(product.cooperative);
   const certifications = product.certifications ?? [];
   const publicLogs = product.farmingLogs ?? [];
+  const visibleLogs = publicLogs.slice(0, 3);
+  const remainingLogs = publicLogs.slice(3);
+  const visibleCertifications = certifications.slice(0, 3);
+  const remainingCertifications = certifications.slice(3);
+  const renderLog = (log: (typeof publicLogs)[number], index: number) => (
+    <div key={log.id} className="grid grid-cols-[2.5rem_1fr] gap-3 sm:grid-cols-[2.75rem_1fr]">
+      <div className="flex flex-col items-center">
+        <span className="grid h-10 w-10 place-items-center rounded-2xl bg-leaf text-sm font-bold text-white shadow-sm sm:h-11 sm:w-11">{index + 1}</span>
+        <span className="mt-2 h-full min-h-8 w-px bg-slate-200" aria-hidden="true" />
+      </div>
+      <div className="rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4">
+        <div className="flex flex-wrap items-center gap-2 text-sm">
+          <span className="rounded-full bg-mint px-2.5 py-1 font-semibold text-leaf">{log.activityType}</span>
+          <span className="inline-flex items-center gap-1 text-slate-500">
+            <Calendar size={14} aria-hidden="true" />
+            {formatDate(log.logDate)}
+          </span>
+        </div>
+        <p className="mt-3 text-[0.98rem] leading-7 text-slate-700">{log.description}</p>
+      </div>
+    </div>
+  );
+  const renderCertification = (cert: (typeof certifications)[number]) => (
+    <div key={cert.id} className="rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4 text-sm">
+      <strong className="text-ink">{cert.name}</strong>
+      <span className="mt-1 block leading-6 text-slate-600">
+        {cert.issuer || 'Đơn vị cấp'} · {formatDate(cert.expiresAt)}
+      </span>
+      {cert.file?.publicUrl && (
+        <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">
+          Xem tài liệu chứng nhận
+        </a>
+      )}
+    </div>
+  );
 
   return (
     <PublicShell>
@@ -189,24 +224,15 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
               <div className="mt-4 grid gap-3 xl:grid-cols-2">
                 {publicLogs.length ? (
-                  publicLogs.map((log, index) => (
-                    <div key={log.id} className="grid grid-cols-[2.75rem_1fr] gap-3">
-                      <div className="flex flex-col items-center">
-                        <span className="grid h-11 w-11 place-items-center rounded-2xl bg-leaf text-sm font-bold text-white shadow-sm">{index + 1}</span>
-                        <span className="mt-2 h-full min-h-8 w-px bg-slate-200" aria-hidden="true" />
-                      </div>
-                      <div className="rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4">
-                        <div className="flex flex-wrap items-center gap-2 text-sm">
-                          <span className="rounded-full bg-mint px-2.5 py-1 font-semibold text-leaf">{log.activityType}</span>
-                          <span className="inline-flex items-center gap-1 text-slate-500">
-                            <Calendar size={14} aria-hidden="true" />
-                            {formatDate(log.logDate)}
-                          </span>
-                        </div>
-                        <p className="mt-3 text-[0.98rem] leading-7 text-slate-700">{log.description}</p>
-                      </div>
-                    </div>
-                  ))
+                  <>
+                    {visibleLogs.map(renderLog)}
+                    {remainingLogs.length ? (
+                      <details className="xl:col-span-2 rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4">
+                        <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingLogs.length} bản ghi công khai</summary>
+                        <div className="mt-4 grid gap-3 xl:grid-cols-2">{remainingLogs.map((log, index) => renderLog(log, index + visibleLogs.length))}</div>
+                      </details>
+                    ) : null}
+                  </>
                 ) : (
                   <p className="text-sm text-slate-600">Chưa có nhật ký công khai.</p>
                 )}
@@ -245,21 +271,17 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 </div>
                 <p className="max-w-[12rem] text-right text-xs leading-5 text-slate-500">Danh sách đầy đủ vẫn hiển thị ngay bên dưới để người mua kiểm tra trực tiếp.</p>
               </div>
-              <div className="mt-4 grid max-h-[28rem] gap-3 overflow-auto overscroll-contain pr-1 sm:max-h-[34rem] xl:max-h-[42rem]">
+              <div className="mt-4 grid gap-3">
                 {certifications.length ? (
-                  certifications.map((cert) => (
-                    <div key={cert.id} className="rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4 text-sm">
-                      <strong className="text-ink">{cert.name}</strong>
-                      <span className="mt-1 block leading-6 text-slate-600">
-                        {cert.issuer || 'Đơn vị cấp'} · {formatDate(cert.expiresAt)}
-                      </span>
-                      {cert.file?.publicUrl && (
-                        <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">
-                          Xem tài liệu chứng nhận
-                        </a>
-                      )}
-                    </div>
-                  ))
+                  <>
+                    {visibleCertifications.map(renderCertification)}
+                    {remainingCertifications.length ? (
+                      <details className="rounded-[1.25rem] border border-[#eadfce] bg-[var(--surface-0)] p-4">
+                        <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingCertifications.length} chứng nhận công khai</summary>
+                        <div className="mt-4 grid gap-3">{remainingCertifications.map(renderCertification)}</div>
+                      </details>
+                    ) : null}
+                  </>
                 ) : (
                   <p className="text-sm text-slate-600">Chưa có chứng nhận công khai.</p>
                 )}

@@ -1,10 +1,8 @@
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, Database, Leaf, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
+import { ArrowRight, Boxes, CheckCircle2, Database, Leaf, QrCode, Store } from 'lucide-react';
 import { NewsCard, PublicSearch } from '@/components/public-marketplace';
 import { ProductSlider } from '@/components/product-slider';
-import { PublicEcosystemShowcase } from '@/components/public-ecosystem-showcase';
 import { PublicImage } from '@/components/public-image';
-import { PublicMetricCarousel, type PublicMetricCarouselItem } from '@/components/public-metric-carousel';
 import { publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
@@ -19,31 +17,37 @@ export async function AgripassportHome() {
   const products = catalog.products.slice(0, 10);
   const cooperatives = catalog.cooperatives.slice(0, 6);
 
-  const metrics: PublicMetricCarouselItem[] = [
+  const platformPillars = [
     {
-      title: 'Sản phẩm công khai',
-      value: `${catalog.totalProducts}+`,
-      description: 'Tìm thông tin sản phẩm, đơn vị sản xuất và giá bán công khai.',
-      icon: 'shoppingBag'
+      title: 'Số hóa vùng sản xuất',
+      description: 'Chuẩn hóa thông tin vùng trồng, đơn vị sản xuất và dữ liệu liên quan.',
+      icon: Leaf
     },
     {
-      title: 'HTX hiển thị',
-      value: `${catalog.cooperatives.length} HTX`,
-      description: 'Khám phá hồ sơ và các sản phẩm đang được giới thiệu.',
-      icon: 'store'
+      title: 'Quản lý sản phẩm',
+      description: 'Tập trung thông tin sản phẩm trên một hệ thống dễ quản lý và cập nhật.',
+      icon: Database
     },
     {
-      title: 'QR truy xuất',
-      value: 'Mở nhanh',
-      description: 'Quét mã để xem nguồn gốc và hành trình của sản phẩm.',
-      icon: 'qrCode'
+      title: 'Truy xuất nguồn gốc',
+      description: 'Kết nối sản phẩm với dữ liệu nguồn gốc thông qua mã QR.',
+      icon: QrCode
     },
     {
-      title: 'Dữ liệu chuẩn hóa',
-      value: 'Một mặt bằng dữ liệu',
-      description: 'Thông tin được cập nhật thống nhất trên hồ sơ sản phẩm.',
-      icon: 'boxes'
+      title: 'Minh bạch dữ liệu',
+      description: 'Công khai những thông tin phù hợp để người dùng dễ dàng tiếp cận.',
+      icon: CheckCircle2
     },
+    {
+      title: 'Kết nối thị trường',
+      description: 'Hỗ trợ sản phẩm tiếp cận đối tác, nhà phân phối và người tiêu dùng.',
+      icon: Store
+    },
+    {
+      title: 'Chuyển đổi số',
+      description: 'Từng bước đưa hoạt động quản lý nông nghiệp lên môi trường số.',
+      icon: Boxes
+    }
   ];
 
   return (
@@ -51,19 +55,15 @@ export async function AgripassportHome() {
       <main id="main-content" className="overflow-hidden bg-[#fffdf8]">
         <section className="border-b border-[#e4eadf] bg-[radial-gradient(circle_at_50%_0%,rgba(185,225,178,0.34),transparent_42%),linear-gradient(180deg,#f8fbf4_0%,#fffdf8_100%)]">
           <div className={cn(publicContainerClass, 'px-4 py-10 text-center sm:px-5 sm:py-16 lg:px-6 lg:py-20')}>
-            <div className="flex flex-wrap items-center justify-center gap-2 text-[0.7rem] font-extrabold uppercase tracking-[0.22em] text-[#3d5871] sm:text-xs">
-              <span className="rounded-full border border-white bg-white px-4 py-2 text-[#14773d] shadow-[0_10px_24px_rgba(28,79,45,0.06)]">AGRIPASSPORT</span>
-              <span className="rounded-full border border-white bg-white px-4 py-2 shadow-[0_10px_24px_rgba(28,79,45,0.06)]">Hệ sinh thái Agri</span>
-            </div>
-            <p className="mt-8 text-xs font-extrabold uppercase tracking-[0.18em] text-[#1f9b4b] sm:mt-10 sm:text-sm">Số hóa nông sản, minh bạch nguồn gốc</p>
-            <h1 className="mx-auto mt-3 max-w-[12ch] text-[clamp(2.25rem,10.8vw,2.65rem)] font-extrabold leading-[0.96] tracking-[-0.055em] text-[#1e2233] sm:max-w-[13ch] sm:text-[4.3rem] lg:text-[5.25rem]">
-              AGRIPASSPORT chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp
+            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#1f9b4b] sm:text-sm">Agripassport</p>
+            <h1 className="mx-auto mt-4 max-w-[16ch] text-[clamp(2.2rem,9.8vw,2.8rem)] font-extrabold leading-[0.98] tracking-[-0.055em] text-[#1e2233] sm:max-w-[14ch] sm:text-[4.3rem] lg:text-[5.25rem]">
+              Số hóa nông sản, minh bạch nguồn gốc bằng QR
             </h1>
             <p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-7 text-[#405b75] sm:mt-6 sm:text-[1.15rem] sm:leading-8">
-              Đưa HTX, sản phẩm, vùng trồng và QR truy xuất lên cùng một mặt bằng thông tin để bạn tìm hiểu nguồn gốc và lựa chọn dễ dàng hơn.
+              Agripassport chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp để người mua tìm hiểu nguồn gốc, đơn vị sản xuất và thông tin QR rõ ràng hơn.
             </p>
             <div className="mx-auto mt-7 max-w-3xl sm:mt-8">
-              <PublicSearch placeholder="Tìm sản phẩm, HTX hoặc vùng trồng" className="border-[#e0e7d9] ring-0 shadow-[0_20px_46px_rgba(30,72,41,0.1)]" />
+              <PublicSearch placeholder="Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc" className="border-[#e0e7d9] ring-0 shadow-[0_20px_46px_rgba(30,72,41,0.1)]" />
             </div>
           </div>
         </section>
@@ -71,26 +71,18 @@ export async function AgripassportHome() {
         <section className={cn(publicContainerClass, 'py-10 sm:py-14 lg:py-16')}>
           <div className="mx-auto max-w-4xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Đồng hành cùng nông nghiệp số</p>
-            <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Thắng lợi cùng nhà nông</h2>
+            <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Dữ liệu rõ ràng cho từng bước sản xuất</h2>
             <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">
-              Những thông tin cần thiết để tìm hiểu sản phẩm, đơn vị sản xuất và truy xuất nguồn gốc.
+              Agripassport kết nối dữ liệu sản xuất, sản phẩm và thị trường trên một nền tảng số, giúp các chủ thể nông nghiệp từng bước chuẩn hóa thông tin và nâng cao giá trị sản phẩm.
             </p>
           </div>
 
-          <div className="mt-8 md:hidden"><PublicMetricCarousel items={metrics} variant="demeter" /></div>
-          <div className="mt-10 hidden gap-x-6 gap-y-10 md:grid md:grid-cols-3 xl:grid-cols-6">
-            {metrics.map((metric) => (
-              <article key={`${metric.title}-${metric.value}`} className="text-center">
-                <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[#dbe7da] bg-[#f5fbf3] text-[#2b8a3e] shadow-[0_14px_30px_rgba(35,77,45,0.05)]">
-                  {metric.icon === 'shoppingBag' ? <ShoppingBag size={38} strokeWidth={1.55} aria-hidden="true" /> : null}
-                  {metric.icon === 'store' ? <Store size={38} strokeWidth={1.55} aria-hidden="true" /> : null}
-                  {metric.icon === 'qrCode' ? <QrCode size={38} strokeWidth={1.55} aria-hidden="true" /> : null}
-                  {metric.icon === 'boxes' ? <Database size={38} strokeWidth={1.55} aria-hidden="true" /> : null}
-                  {metric.icon === 'users' ? <Users size={38} strokeWidth={1.55} aria-hidden="true" /> : null}
-                </span>
-                <p className="mt-5 min-h-10 text-[0.72rem] font-extrabold uppercase tracking-[0.1em] text-[#1e2233]">{metric.title}</p>
-                <p className="mt-2 min-h-12 text-[1.16rem] font-extrabold leading-tight tracking-[-0.03em] text-[#1f9b4b]">{metric.value}</p>
-                <p className="mt-2 text-sm leading-6 text-[#52667a]">{metric.description}</p>
+          <div className="mx-auto mt-8 grid max-w-5xl grid-cols-2 gap-3 sm:mt-10 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+            {platformPillars.map(({ title, description, icon: Icon }) => (
+              <article key={title} className="rounded-[1.35rem] border border-[#dce8d8] bg-white p-4 shadow-[0_14px_32px_rgba(35,77,45,0.05)] sm:rounded-[1.6rem] sm:p-5">
+                <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#e7f5e7] text-[#1f9b4b] sm:h-11 sm:w-11"><Icon size={21} aria-hidden="true" /></span>
+                <h3 className="mt-4 text-[0.98rem] font-extrabold leading-[1.2] text-[#173327] sm:text-lg">{title}</h3>
+                <p className="mt-2 text-[0.78rem] leading-5 text-[#64746b] sm:text-sm sm:leading-6">{description}</p>
               </article>
             ))}
           </div>
@@ -111,39 +103,6 @@ export async function AgripassportHome() {
             </div>
 
             {products.length ? <ProductSlider products={products} /> : <div className="mt-7 rounded-[1.6rem] border border-[#d7e5d2] bg-white p-6 text-[#52645b]">Sản phẩm công khai sẽ xuất hiện tại đây khi đơn vị hoàn thiện hồ sơ.</div>}
-          </div>
-        </section>
-
-        <section className={cn(publicContainerClass, 'py-10 sm:py-14 lg:py-16')}>
-          <div className="mx-auto max-w-4xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Chúng tôi bắt đầu từ dữ liệu</p>
-            <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Mỗi sản phẩm là một hồ sơ dữ liệu</h2>
-            <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Agripassport kết nối dữ liệu sản xuất, sản phẩm và thị trường trên một nền tảng số để thông tin rõ ràng hơn và dễ tiếp cận hơn.</p>
-          </div>
-          <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              ['Số hóa vùng sản xuất', 'Chuẩn hóa thông tin vùng trồng, đơn vị sản xuất và dữ liệu liên quan.', Leaf],
-              ['Quản lý sản phẩm', 'Tập trung thông tin sản phẩm trên một hệ thống dễ quản lý và cập nhật.', Database],
-              ['Truy xuất nguồn gốc', 'Kết nối sản phẩm với dữ liệu nguồn gốc thông qua mã QR.', QrCode],
-              ['Minh bạch dữ liệu', 'Công khai những thông tin phù hợp để người dùng dễ dàng tiếp cận.', CheckCircle2]
-            ].map(([title, description, Icon]) => (
-              <article key={String(title)} className="rounded-[1.6rem] border border-[#dce8d8] bg-white p-5 shadow-[0_14px_32px_rgba(35,77,45,0.05)]">
-                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[#e7f5e7] text-[#1f9b4b]"><Icon size={22} aria-hidden="true" /></span>
-                <h3 className="mt-5 text-lg font-extrabold leading-tight text-[#173327]">{String(title)}</h3>
-                <p className="mt-2 text-sm leading-6 text-[#64746b]">{String(description)}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="border-y border-[#e2e5da] bg-[#f5f7ef] py-10 sm:py-14 lg:py-16">
-          <div className={publicContainerClass}>
-            <div className="mx-auto max-w-4xl text-center">
-              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Hệ sinh thái số cho nông nghiệp</p>
-              <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Nối các chủ thể trong nông nghiệp số</h2>
-              <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Từ sản phẩm, đơn vị sản xuất đến QR truy xuất, mọi thông tin quan trọng được sắp xếp thành một hành trình rõ ràng hơn cho người mua.</p>
-            </div>
-            <PublicEcosystemShowcase siteKey="agripassport" className="mt-8" showHeading={false} />
           </div>
         </section>
 

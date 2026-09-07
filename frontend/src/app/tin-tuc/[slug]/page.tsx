@@ -149,7 +149,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
               <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
             </div>
             <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
-            <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}</p>
+            <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || brandizeSiteText('Tin tức nền tảng', siteKey)}</p>
             <p className="mt-3 text-sm font-medium text-slate-500">{article.author?.fullName || siteProfile.appName}</p>
           </header>
           <div className="px-2.5 sm:px-4">

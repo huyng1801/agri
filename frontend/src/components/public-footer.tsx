@@ -101,7 +101,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       { href: '/lien-he', label: 'Kết nối và hỗ trợ' }
     ];
     const aboutLinks = [
-      { href: '/gioi-thieu', label: 'Hướng dẫn sử dụng' },
+      { href: '/ve-chung-toi', label: 'Cách hoạt động' },
       { href: '/tin-tuc', label: 'Tin tức mới' },
       { href: '/lien-he', label: 'Câu hỏi thường gặp' },
       { href: '/lien-he', label: 'Hỗ trợ khách hàng' }

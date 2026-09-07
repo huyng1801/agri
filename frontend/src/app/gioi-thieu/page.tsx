@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { ArrowRight, CheckCircle2, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
 import { PublicImage } from '@/components/public-image';
 import { PublicBreadcrumbTrail, PublicPageMain, publicContainerClass } from '@/components/public-layout';
@@ -51,6 +52,7 @@ export default async function AboutPage() {
   const siteKey = await getRequestPublicSiteKey();
   const siteProfile = await getPublicSiteProfile(siteKey);
   const isInternal = siteKey === 'htxonline';
+  if (siteKey === 'agripassport' || siteKey === 'local') redirect('/ve-chung-toi');
   const cards = isInternal ? ecosystemCards : ecosystemCards.filter((card) => card.key !== 'htxonline');
   const heroStats = isInternal
     ? ['Xã viên', 'Thu chi', 'Đồng bộ dữ liệu']

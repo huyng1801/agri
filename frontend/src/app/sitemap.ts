@@ -19,7 +19,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             '/htx',
             '/tin-tuc',
             '/ve-chung-toi',
-            '/gioi-thieu',
             '/lien-he',
             '/dieu-khoan-su-dung',
             '/chinh-sach-bao-mat',

@@ -7,7 +7,7 @@ import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/
 import { PublicShell } from '@/components/public-shell';
 import { TopicScroll } from '@/components/topic-scroll';
 import { Button, cn } from '@/components/ui';
-import { fetchPublicNews, fetchPublicNewsCategories } from '@/lib/news';
+import { fetchPublicNews, fetchPublicNewsCategories, publicNewsCategoryLabel } from '@/lib/news';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -25,6 +25,15 @@ type NewsPageProps = {
   searchParams?: Promise<{ search?: string; category?: string }>;
 };
 
+const publicTopicDefinitions = [
+  { label: 'Nông nghiệp', slugs: ['nong-nghiep'] },
+  { label: 'Truy xuất', slugs: ['truy-xuat'] },
+  { label: 'Hợp tác', slugs: ['hop-tac'] },
+  { label: 'Sản phẩm', slugs: ['san-pham'] },
+  { label: 'Thị trường', slugs: ['tin-thi-truong', 'thi-truong'] },
+  { label: 'Kiến thức', slugs: ['cau-chuyen-san-pham'] }
+] as const;
+
 export default async function NewsPage({ searchParams }: NewsPageProps) {
   const filters = (await searchParams) ?? {};
   const params = new URLSearchParams({ limit: '24' });
@@ -32,6 +41,10 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   if (filters.category) params.set('category', filters.category);
 
   const [news, categories] = await Promise.all([fetchPublicNews(`/news/public?${params.toString()}`), fetchPublicNewsCategories()]);
+  const publicTopics = publicTopicDefinitions.flatMap((topic) => {
+    const category = categories.find((item) => (topic.slugs as readonly string[]).includes(item.slug));
+    return category ? [{ ...category, name: topic.label, id: topic.label }] : [];
+  });
   const articles = news.data;
   const featured = articles[0];
   const rest = featured ? articles.slice(1) : articles;
@@ -63,7 +76,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           }
         />
 
-        {categories.length > 0 && (
+        {publicTopics.length > 0 && (
           <section className="mb-5 overflow-hidden rounded-[1.4rem] border border-[#e8e4d8] bg-white p-3 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:mb-6 sm:rounded-[1.7rem] sm:p-4">
             <div className="mb-2.5 flex items-center gap-2 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:mb-3 sm:text-sm">
               <Sparkles size={16} aria-hidden="true" />
@@ -79,7 +92,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               >
                 Tất cả
               </Link>
-              {categories.map((category) => (
+              {publicTopics.map((category) => (
                 <Link
                   key={category.id}
                   href={`/tin-tuc?category=${category.slug}`}
@@ -110,7 +123,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               </Link>
               <div className="p-4 pt-1 sm:p-6 sm:pt-2">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.13em] text-slate-500">
-                  <span className="text-[#2b8a3e]">{featured.category?.name ?? 'Tin nền tảng'}</span>
+                  <span className="text-[#2b8a3e]">{publicNewsCategoryLabel(featured.category) ?? 'Tin nền tảng'}</span>
                   {featured.publishedAt && <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={13} />{new Date(featured.publishedAt).toLocaleDateString('vi-VN')}</span>}
                 </div>
                 <Link href={`/tin-tuc/${featured.slug}`} className="mt-2 block max-w-3xl text-[1.55rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-ink hover:text-leaf sm:text-[2.35rem]">
@@ -130,7 +143,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               </div>
               <div className="divide-y divide-[#dce8d8]">
                 {sideArticles.map((article) => <Link key={article.id} href={`/tin-tuc/${article.slug}`} className="group block py-4 first:pt-3 last:pb-1">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[#2b8a3e]">{article.category?.name ?? 'Tin mới'}</p>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[#2b8a3e]">{publicNewsCategoryLabel(article.category) ?? 'Tin mới'}</p>
                   <h3 className="mt-1.5 line-clamp-3 text-[1.02rem] font-extrabold leading-[1.3] text-ink transition group-hover:text-leaf">{article.title}</h3>
                   <p className="mt-2 text-xs font-medium text-slate-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : 'Mới cập nhật'}</p>
                 </Link>)}
@@ -155,7 +168,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           </div>
           </section>
         ) : (
-          <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức do Super Admin đăng sẽ hiển thị tại đây." />
+          <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức mới sẽ hiển thị tại đây khi được đăng tải." />
         )}
       </PublicPageMain>
     </PublicShell>

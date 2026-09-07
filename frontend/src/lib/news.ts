@@ -9,6 +9,17 @@ export type NewsCategory = {
   isActive: boolean;
 };
 
+const publicCategoryLabels: Record<string, string> = {
+  'cau-chuyen-san-pham': 'Kiến thức',
+  'nong-nghiep': 'Nông nghiệp',
+  'truy-xuat': 'Truy xuất',
+  'truy-xuat-nguon-goc': 'Truy xuất',
+  'hop-tac': 'Hợp tác',
+  'san-pham': 'Sản phẩm',
+  'thi-truong': 'Thị trường',
+  'tin-thi-truong': 'Thị trường'
+};
+
 export type NewsArticle = {
   id: string;
   categoryId?: string | null;
@@ -77,6 +88,11 @@ export async function fetchPublicNewsCategories() {
   }
 }
 
+export function publicNewsCategoryLabel(category?: Pick<NewsCategory, 'slug' | 'name'> | null) {
+  if (!category) return null;
+  return publicCategoryLabels[category.slug] || category.name;
+}
+
 export async function fetchPublicNewsDetail(slug: string) {
   try {
     const response = await fetch(`${API_URL}/news/public/${encodeURIComponent(slug)}`, { cache: 'no-store' });
@@ -99,7 +115,7 @@ export function articleTitle(article: NewsArticle) {
 }
 
 export function articleDescription(article: NewsArticle) {
-  return article.seoDescription || article.excerpt || 'Tin tức HTXONLINE';
+  return article.seoDescription || article.excerpt || 'Tin tức Agripassport';
 }
 
 export function articleImage(article: NewsArticle) {

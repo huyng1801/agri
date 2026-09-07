@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, Calendar, Phone, QrCode, Search } from 'lucide-react';
 import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_NEWS_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { publicCardClass } from './public-layout';
-import type { NewsArticle } from '@/lib/news';
+import { publicNewsCategoryLabel, type NewsArticle } from '@/lib/news';
 import { Button, Panel, cn } from './ui';
 
 export type PublicProduct = {
@@ -259,7 +259,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-slate-500">
-          {article.category?.name && <span className="text-[#2b8a3e]">{article.category.name}</span>}
+          {publicNewsCategoryLabel(article.category) && <span className="text-[#2b8a3e]">{publicNewsCategoryLabel(article.category)}</span>}
           {article.publishedAt && (
             <span className="inline-flex items-center gap-1 text-slate-500">
               <Calendar size={13} aria-hidden="true" />
@@ -271,7 +271,7 @@ export function NewsCard({ article, priority = false }: { article: NewsArticle; 
           {article.title}
         </Link>
         <p className="mt-auto line-clamp-3 pt-2 text-sm leading-[1.62] text-slate-600 sm:pt-3 sm:leading-[1.7]">
-          {article.excerpt || article.seoDescription || 'Tin tức HTXONLINE'}
+          {article.excerpt || article.seoDescription || 'Tin tức Agripassport'}
         </p>
       </div>
     </article>
