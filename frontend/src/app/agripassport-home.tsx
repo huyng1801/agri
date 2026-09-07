@@ -14,7 +14,7 @@ export async function AgripassportHome() {
     fetchPublicCatalog(24),
     fetchPublicNews('/news/public?home=true&limit=3')
   ]);
-  const products = catalog.products.slice(0, 10);
+  const products = catalog.products.slice(0, 5);
   const cooperatives = catalog.cooperatives.slice(0, 6);
 
   const platformPillars = [
