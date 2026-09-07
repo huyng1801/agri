@@ -50,12 +50,21 @@ const AUDIT_ROUTES: AuditRoute[] = [
   { id: 'order-lookup', path: '/tra-cuu-don-hang', batch: 'Mua hàng', note: 'Lookup form' },
   { id: 'contact', path: '/lien-he', batch: 'Mua hàng', note: 'Contact form + map iframe' },
   { id: 'order-success', path: '/dat-hang-thanh-cong', batch: 'Mua hàng', prepare: 'order-success', note: 'Post-checkout confirmation' },
-  { id: 'passport', path: (ctx) => `/passport/${ctx.passportCode}`, batch: 'QR', note: 'Minimal HTXONLINE strip + product' },
+  { id: 'passport', path: (ctx) => `/passport/${ctx.passportCode}`, batch: 'QR', note: 'Minimal passport header + product' },
   { id: 'qr-alias', path: (ctx) => `/qr/${ctx.passportCode}`, batch: 'QR', note: 'QR redirect alias to passport' }
 ];
 
 const OUTPUT_ROOT = join(process.cwd(), 'test-results', process.env.UI_AUDIT_DIR || 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
+const auditHost = (process.env.PUBLIC_BASE_URL || '').toLowerCase();
+const auditSiteName = auditHost.includes('htxonline')
+  ? 'HTXONLINE'
+  : auditHost.includes('agripassport')
+    ? 'AGRIPASSPORT'
+    : auditHost.includes('passport')
+      ? 'HỘ CHIẾU NÔNG NGHIỆP'
+      : 'Public platform';
+const reportOutputLabel = process.env.UI_AUDIT_DIR ? `frontend/test-results/${process.env.UI_AUDIT_DIR}` : 'frontend/test-results/ui-audit';
 
 function findingsPathFor(viewport: 'desktop' | 'mobile') {
   return join(OUTPUT_ROOT, `findings-${viewport}.jsonl`);
@@ -184,7 +193,7 @@ test.describe('public visual audit', () => {
     const fails = findings.filter((item) => item.status === 'fail');
     const warns = findings.filter((item) => item.status === 'warn');
 
-    const markdown = `# HTXONLINE public UI audit
+    const markdown = `# ${auditSiteName} public UI audit
 
 Generated: ${new Date().toISOString()}
 Passport fixture: \`${passportCode}\`
@@ -214,7 +223,7 @@ ${Array.from(new Set(AUDIT_ROUTES.map((route) => route.batch)))
 
 ## Screenshots
 
-Saved under \`frontend/test-results/ui-audit/{route}/{desktop|mobile}.png\`.
+Saved under \`${reportOutputLabel}/{route}/{desktop|mobile}.png\`.
 Mobile long pages also save \`mobile-mid.png\` and \`mobile-bottom.png\` when needed.
 `;
 
