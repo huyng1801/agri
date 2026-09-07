@@ -100,7 +100,7 @@ export async function AgripassportHome() {
           <div className={publicContainerClass}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-4xl">
-                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Dịch vụ và dữ liệu</p>
+                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Sản phẩm nổi bật</p>
                 <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Sản phẩm đang được giới thiệu</h2>
                 <p className="mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Chọn sản phẩm để xem giá, đơn vị sản xuất, vùng trồng và thông tin truy xuất trước khi liên hệ.</p>
               </div>

@@ -43,7 +43,7 @@ export function PublicMetricCarousel({
       className={cn(
         'relative rounded-[2rem] border border-[#e6ece1] bg-white px-12 py-6 shadow-[0_18px_42px_rgba(15,23,42,0.05)]',
         demeterVariant &&
-          'mx-auto max-w-[23rem] rounded-[2rem] border border-[#e6ece1] bg-white px-12 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:max-w-none sm:px-12 sm:py-8',
+          'mx-auto max-w-[23rem] rounded-[2rem] border border-[#e6ece1] bg-white px-10 py-5 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:max-w-none sm:px-12 sm:py-8',
         className
       )}
     >
@@ -111,14 +111,14 @@ export function PublicMetricCarousel({
           {active.description}
         </p>
 
-        <div className={cn('mt-5 flex items-center justify-center gap-2', demeterVariant && 'mt-5')}>
+        <div className={cn('mt-5 flex items-center justify-center gap-1', demeterVariant && 'mt-5')}>
           {items.map((item, itemIndex) => (
             <button
               key={`${item.title}-${item.value}`}
               type="button"
               aria-label={`Chọn mục ${itemIndex + 1}`}
               aria-pressed={itemIndex === activeIndex}
-              className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-[#f1f7ef]"
+              className="grid h-11 min-w-11 shrink-0 place-items-center rounded-full transition hover:bg-[#f1f7ef]"
               onClick={() => setIndex(itemIndex)}
             >
               <span className={cn('block h-2.5 rounded-full transition', itemIndex === activeIndex ? 'w-8 bg-[#1f9b4b]' : 'w-2.5 bg-[#d8e2d7]')} />
