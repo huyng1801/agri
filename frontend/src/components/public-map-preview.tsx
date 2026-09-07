@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ExternalLink, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/components/ui';
 import { type PublicMapLocation } from '@/lib/public-site';
@@ -66,11 +66,19 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
   const mapTitle = `Bản đồ văn phòng hỗ trợ tại ${regionLabel}`;
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedFailed, setEmbedFailed] = useState(false);
+  const [embedLoaded, setEmbedLoaded] = useState(false);
   const hasEmbed = Boolean(mapEmbedUrl) && showEmbed && !embedFailed;
+
+  useEffect(() => {
+    if (!showEmbed || !mapEmbedUrl || embedFailed || embedLoaded) return;
+    const timeoutId = window.setTimeout(() => setEmbedFailed(true), 6000);
+    return () => window.clearTimeout(timeoutId);
+  }, [embedFailed, embedLoaded, mapEmbedUrl, showEmbed]);
 
   function openEmbed() {
     if (mapEmbedUrl) {
       setEmbedFailed(false);
+      setEmbedLoaded(false);
       setShowEmbed(true);
     }
   }
@@ -85,6 +93,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="absolute inset-0 h-full w-full border-0"
+            onLoad={() => setEmbedLoaded(true)}
             onError={() => setEmbedFailed(true)}
           />
         ) : (
@@ -119,6 +128,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="absolute inset-0 z-0 h-full w-full border-0"
+              onLoad={() => setEmbedLoaded(true)}
               onError={() => setEmbedFailed(true)}
             />
           ) : (
