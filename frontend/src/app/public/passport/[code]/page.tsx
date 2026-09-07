@@ -130,7 +130,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
     <main className="mx-auto min-h-screen max-w-[90rem] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
       <header className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 lg:px-6 lg:py-4">
         <Link href="/" className="inline-flex items-center gap-2 text-sm font-bold text-leaf">
-          <PublicLogo size={30} className="ring-1 ring-slate-200" />
+          <PublicLogo size={30} variant="agri" className="ring-1 ring-slate-200" />
           AGRIPASSPORT
         </Link>
         <div className="grid w-full grid-cols-2 gap-2 text-sm font-semibold sm:flex sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">

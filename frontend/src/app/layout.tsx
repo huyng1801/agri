@@ -15,6 +15,7 @@ const nunitoSans = Nunito_Sans({
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
   const profile = defaultPublicSiteProfileForSite(siteKey);
+  const favicon = siteKey === 'agripassport' || siteKey === 'local' ? '/agripassport-mark.png' : '/logo.png';
   return {
     metadataBase: new URL(await getRequestPublicOrigin()),
     title: {
@@ -24,8 +25,8 @@ export async function generateMetadata(): Promise<Metadata> {
     description: profile.pageContent.homeDescription,
     manifest: '/manifest.webmanifest',
     icons: {
-      icon: '/logo.png',
-      apple: '/logo.png'
+      icon: favicon,
+      apple: favicon
     }
   };
 }

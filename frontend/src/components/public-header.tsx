@@ -52,6 +52,7 @@ export function PublicHeader({
   const closeMenu = () => setMenuOpen(false);
   const isInternal = siteKey === 'htxonline';
   const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
+  const isAgri = siteKey === 'agripassport' || siteKey === 'local';
   const navItems = isInternal ? internalNavItems : siteKey === 'passport' ? passportNavItems : marketplaceNavItems;
   const supportText =
     isInternal
@@ -340,8 +341,8 @@ export function PublicHeader({
             className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1"
             aria-label={`${appName} - Trang chủ`}
           >
-            <span className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-full shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]', isMarketplace ? 'bg-[#111827]' : 'bg-[#0f7d63]')}>
-              <PublicLogo size={27} className="h-6 w-6" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
+            <span className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-full shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]', isAgri ? 'bg-white' : isMarketplace ? 'bg-[#111827]' : 'bg-[#0f7d63]')}>
+              <PublicLogo size={27} className="h-7 w-7" variant={isAgri ? 'agri' : 'default'} />
             </span>
             <span className="min-w-0">
               <span className="hidden truncate text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:block">{brandBadge}</span>
@@ -417,9 +418,13 @@ export function PublicHeader({
 
         <div className="hidden min-h-[82px] items-center gap-6 py-4 md:flex">
           <Link href="/" className="flex min-w-0 items-center gap-3" aria-label={`${appName} - Trang chủ`}>
-            <span className={cn('grid h-14 w-14 shrink-0 place-items-center rounded-full ring-1 ring-[#d8ddd3]', isMarketplace ? 'bg-[#111827]' : 'bg-[#0f7d63]')}>
-              <PublicLogo size={40} className="h-[40px] w-[40px]" variant={siteKey === 'agripassport' || siteKey === 'local' ? 'agri' : 'default'} />
-            </span>
+            {isAgri ? (
+              <PublicLogo size={43} variant="agri-wordmark" className="h-[43px] w-auto" />
+            ) : (
+              <span className={cn('grid h-14 w-14 shrink-0 place-items-center rounded-full ring-1 ring-[#d8ddd3]', isMarketplace ? 'bg-[#111827]' : 'bg-[#0f7d63]')}>
+                <PublicLogo size={40} className="h-[40px] w-[40px]" variant="default" />
+              </span>
+            )}
           </Link>
 
           <form action={searchTarget} className="flex flex-1 justify-center">
