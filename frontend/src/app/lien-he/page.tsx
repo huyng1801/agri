@@ -137,7 +137,7 @@ export default async function ContactPage() {
                 <div className="mt-4 space-y-3">
                   <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3">
                     <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
-                    <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-[#1f2233]">
+                    <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
                       <Clock3 size={15} aria-hidden="true" />
                       08:00 - 17:30, thứ Hai đến thứ Bảy
                     </p>
@@ -157,42 +157,42 @@ export default async function ContactPage() {
 
         <section className="mt-6">
           <div className="grid gap-4 lg:grid-cols-2">
-            <article className="rounded-[1.8rem] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Thông tin pháp lý đối chiếu</p>
-              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.1rem]">{legalEntityProfile.organizationName}</h2>
+            <article className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5 shadow-sm sm:p-6">
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Thông tin pháp lý đối chiếu</p>
+              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[2.1rem]">{legalEntityProfile.organizationName}</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[1.2rem] bg-[#f8faf7] p-4">
+                <div className="rounded-[1.2rem] bg-[var(--surface-muted)] p-4">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Mã số tổ hợp tác</p>
-                  <p className="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-[#1f2233]">{legalEntityProfile.registrationNumber}</p>
+                  <p className="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-[var(--text-primary)]">{legalEntityProfile.registrationNumber}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
                 </div>
-                <div className="rounded-[1.2rem] bg-[#f8faf7] p-4">
+                <div className="rounded-[1.2rem] bg-[var(--surface-muted)] p-4">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Người đại diện</p>
-                  <p className="mt-2 text-lg font-bold text-[#1f2233]">{legalEntityProfile.representative}</p>
+                  <p className="mt-2 text-lg font-bold text-[var(--text-primary)]">{legalEntityProfile.representative}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
                 </div>
-                <div className="rounded-[1.2rem] border border-slate-200 bg-white p-4 sm:col-span-2">
+                <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 sm:col-span-2">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Địa chỉ và liên hệ theo hồ sơ</p>
-                  <p className="mt-2 text-[0.98rem] font-semibold leading-7 text-[#1f2233]">{legalEntityProfile.legalAddress}</p>
+                  <p className="mt-2 text-[0.98rem] font-semibold leading-7 text-[var(--text-primary)]">{legalEntityProfile.legalAddress}</p>
                   <p className="mt-3 text-sm leading-6 text-slate-600">Điện thoại: {legalEntityProfile.legalPhone}</p>
                   <p className="text-sm leading-6 text-slate-600">Email: {legalEntityProfile.legalEmail}</p>
                 </div>
               </div>
             </article>
 
-            <article className="rounded-[1.8rem] border border-slate-200 bg-[#f8faf7] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[#1f9b4b]">Lưu ý khi liên hệ</p>
-              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.1rem]">
+            <article className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-sm sm:p-6">
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Lưu ý khi liên hệ</p>
+              <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[2.1rem]">
                 {isAgripassport ? 'Kênh liên hệ chính thức của Agripassport.' : 'Luồng hỗ trợ được tách rõ giữa nội bộ HTX và lớp công khai.'}
               </h2>
               <div className="mt-5 grid gap-3">
-                <div className="rounded-[1.2rem] border border-[#dde7d9] bg-white p-4">
+                <div className="rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-4">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Hotline công khai</p>
-                  <p className="mt-2 text-lg font-medium text-[#1f2233]">{siteProfile.hotlineDisplay}</p>
+                  <p className="mt-2 text-lg font-medium text-[var(--text-primary)]">{siteProfile.hotlineDisplay}</p>
                 </div>
-                <div className="rounded-[1.2rem] border border-[#dde7d9] bg-white p-4">
+                <div className="rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-4">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Email hỗ trợ</p>
-                  <p className="mt-2 break-all text-lg font-bold text-[#1f2233]">{siteProfile.supportEmail}</p>
+                  <p className="mt-2 break-all text-lg font-bold text-[var(--text-primary)]">{siteProfile.supportEmail}</p>
                 </div>
                 <p className="text-sm leading-7 text-slate-600">
                   {isAgripassport
@@ -206,7 +206,7 @@ export default async function ContactPage() {
 
         {faqs.length > 0 && (
           <section className="pb-[calc(10.5rem+var(--safe-bottom))] pt-6 sm:pb-12">
-            <h2 className="text-[1.9rem] font-extrabold leading-tight text-[#1f2233] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
+            <h2 className="type-h2 text-[1.9rem] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {faqs.map((faq) => (
                 <PublicInfoTile key={faq.question} title={faq.question} description={faq.answer} />

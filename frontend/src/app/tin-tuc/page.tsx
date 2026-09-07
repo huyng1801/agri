@@ -123,7 +123,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               </Link>
               <div className="p-4 pt-1 sm:p-6 sm:pt-2">
                 <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.13em] text-slate-500">
-                  <span className="text-[#2b8a3e]">{publicNewsCategoryLabel(featured.category) ?? 'Tin nền tảng'}</span>
+                  <span className="text-[var(--brand-primary-strong)]">{publicNewsCategoryLabel(featured.category) ?? 'Tin nền tảng'}</span>
                   {featured.publishedAt && <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={13} />{new Date(featured.publishedAt).toLocaleDateString('vi-VN')}</span>}
                 </div>
                 <Link href={`/tin-tuc/${featured.slug}`} className="mt-2 block max-w-3xl text-[1.55rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-ink hover:text-leaf sm:text-[2.35rem]">
@@ -143,7 +143,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               </div>
               <div className="divide-y divide-[var(--border)]">
                 {sideArticles.map((article) => <Link key={article.id} href={`/tin-tuc/${article.slug}`} className="group block py-4 first:pt-3 last:pb-1">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[#2b8a3e]">{publicNewsCategoryLabel(article.category) ?? 'Tin mới'}</p>
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[var(--brand-primary-strong)]">{publicNewsCategoryLabel(article.category) ?? 'Tin mới'}</p>
                   <h3 className="mt-1.5 line-clamp-3 text-[1.02rem] font-extrabold leading-[1.3] text-ink transition group-hover:text-leaf">{article.title}</h3>
                   <p className="mt-2 text-xs font-medium text-slate-500">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('vi-VN') : 'Mới cập nhật'}</p>
                 </Link>)}

@@ -62,6 +62,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const siteKey = await getRequestPublicSiteKey();
   const isInternal = siteKey === 'htxonline';
   const [products, siteProfile] = await Promise.all([getProducts(filters), getPublicSiteProfile(siteKey)]);
+  const platformName = siteProfile.appName;
   const hasActiveFilter = Boolean(filters.search || filters.category || filters.cooperative || filters.province || filters.minPrice || filters.maxPrice || filters.hasQr || filters.sort);
   const qrProducts = products.filter((product) => product.passports?.length).length;
   const provinceCount = new Set(products.map((product) => product.cooperative?.province).filter(Boolean)).size;
@@ -94,17 +95,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             <section>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div className="max-w-3xl">
-                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-sm">Khám phá sản phẩm</p>
-                  <h1 className="mt-2 max-w-[11ch] text-[2rem] font-extrabold leading-[0.95] tracking-[-0.05em] text-[#1f2233] sm:max-w-none sm:text-[3.2rem]">
+                  <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--brand-primary-strong)] sm:text-sm">Khám phá sản phẩm</p>
+                  <h1 className="type-h1 mt-2 max-w-[11ch] text-[2rem] sm:max-w-none sm:text-[3.2rem]">
                     Sản phẩm công khai được trình bày để quét nhanh hơn.
                   </h1>
                 </div>
                 <Link
                   href="/htx"
-                  className="inline-flex min-h-11 w-fit items-center gap-2 self-start rounded-full border border-[#d8e7d8] bg-white px-5 text-base font-semibold text-[#1f2233] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b] sm:self-auto"
+                  className="inline-flex min-h-11 w-fit items-center gap-2 self-start rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-base font-semibold text-[var(--text-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] sm:self-auto"
                 >
                   Khám phá thêm
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[#1f9b4b] text-white">
+                  <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--brand-primary)] text-white">
                     <ArrowRight size={16} aria-hidden="true" />
                   </span>
                 </Link>
@@ -117,8 +118,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       key={`${tab}-${index}`}
                       className={
                         index === 0
-                          ? 'inline-flex min-h-12 items-center rounded-full bg-[#1f9b4b] px-6 text-[1.02rem] font-semibold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)]'
-                          : 'inline-flex min-h-12 items-center rounded-full border border-[#d8e7d8] bg-white px-6 text-[1.02rem] font-semibold text-[#2f3b4f] shadow-sm'
+                          ? 'inline-flex min-h-12 items-center rounded-full bg-[var(--brand-primary)] px-6 text-[1.02rem] font-semibold text-white shadow-[0_14px_28px_color-mix(in_srgb,var(--brand-primary)_18%,transparent)]'
+                          : 'inline-flex min-h-12 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-6 text-[1.02rem] font-semibold text-[var(--text-secondary)] shadow-sm'
                       }
                     >
                       {tab}
@@ -129,48 +130,48 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
               <div className="mt-5 grid gap-4 lg:grid-cols-[1.06fr_0.94fr]">
                 {featuredProduct ? (
-                  <article className={`${publicCardClass} overflow-visible rounded-[2.2rem] border-[#dbe7d8] p-4 sm:p-5`}>
-                    <div className="rounded-[1.7rem] border-2 border-[#1f9b4b] bg-white p-3 sm:p-4">
-                      <div className="mx-auto inline-flex min-h-10 items-center gap-2 rounded-b-[1.2rem] rounded-t-[0.95rem] bg-[#1f9b4b] px-4 text-[0.78rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_22px_rgba(31,155,75,0.18)]">
+                  <article className={`${publicCardClass} overflow-visible rounded-[2.2rem] border-[var(--border-strong)] p-4 sm:p-5`}>
+                    <div className="rounded-[1.7rem] border-2 border-[var(--brand-primary)] bg-[var(--surface-elevated)] p-3 sm:p-4">
+                      <div className="mx-auto inline-flex min-h-10 items-center gap-2 rounded-b-[1.2rem] rounded-t-[0.95rem] bg-[var(--brand-primary)] px-4 text-[0.78rem] font-bold uppercase tracking-[0.12em] text-white shadow-[0_10px_22px_color-mix(in_srgb,var(--brand-primary)_18%,transparent)]">
                         <span>{siteProfile.appName}</span>
                         <span className="opacity-60">x</span>
                         <span>{featuredProduct.cooperative?.name || 'HTX Việt Nam'}</span>
                       </div>
-                      <Link href={featuredProductSlug} className="mt-4 block overflow-hidden rounded-[1.5rem] bg-[#fbfdf9]">
+                      <Link href={featuredProductSlug} className="mt-4 block overflow-hidden rounded-[1.5rem] bg-[var(--surface-muted)]">
                         <PublicImage
                           src={productImage(featuredProduct)}
                           alt={featuredProduct.name}
                           priority
-                          wrapperClassName="aspect-[1/1] w-full bg-[linear-gradient(180deg,#ffffff_0%,#f7fbf4_100%)] sm:aspect-[16/11]"
+                          wrapperClassName="aspect-[1/1] w-full bg-[linear-gradient(180deg,var(--surface-elevated)_0%,var(--surface-muted)_100%)] sm:aspect-[16/11]"
                           className="h-full w-full object-cover"
                         />
                       </Link>
                     </div>
 
                     <div className="px-2 pb-1 pt-5 text-center sm:px-4">
-                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                         {featuredProduct.category?.name || 'Nông sản công khai'}
                       </p>
                       <Link
                         href={featuredProductSlug}
-                        className="mt-3 block text-[1.38rem] font-extrabold leading-[1.16] tracking-[-0.03em] text-[#1f2233] transition hover:text-[#1f9b4b] sm:text-[1.72rem]"
+                        className="mt-3 block text-[1.38rem] font-extrabold leading-[1.16] tracking-[-0.03em] text-[var(--text-primary)] transition hover:text-[var(--brand-primary)] sm:text-[1.72rem]"
                       >
                         {featuredProduct.name}
                       </Link>
                       <p className="mt-2 text-base leading-7 text-slate-600">
-                        {featuredProduct.cooperative?.province || featuredProduct.zone?.name || 'Sản phẩm đang được công khai trên HTXONLINE'}
+                        {featuredProduct.cooperative?.province || featuredProduct.zone?.name || `Sản phẩm đang được công khai trên ${platformName}`}
                       </p>
                       <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
                         <Link
                           href={featuredProductSlug}
-                          className="inline-flex min-h-11 items-center rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
+                          className="inline-flex min-h-11 items-center rounded-full bg-[var(--brand-primary)] px-5 text-sm font-bold text-white shadow-[0_14px_28px_color-mix(in_srgb,var(--brand-primary)_18%,transparent)] transition hover:-translate-y-0.5"
                         >
                           Xem chi tiết
                         </Link>
                         {featuredProductQrHref ? (
                           <a
                             href={featuredProductQrHref}
-                            className="inline-flex min-h-11 items-center rounded-full border border-[#d8e7d8] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                            className="inline-flex min-h-11 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-sm font-bold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
                           >
                             Mở QR Passport
                           </a>
@@ -179,27 +180,27 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     </div>
                   </article>
                 ) : (
-                  <article className={`${publicCardClass} rounded-[2.2rem] border-[#dbe7d8] bg-[linear-gradient(180deg,#ffffff_0%,#f8fbf6_100%)] p-5 sm:p-6`}>
-                    <div className="rounded-[1.8rem] border border-[#dbe7d8] bg-white/80 p-5 text-center shadow-[0_14px_30px_rgba(15,23,42,0.04)]">
-                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Khối trưng bày sản phẩm</p>
-                      <h2 className="mt-3 text-[1.4rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-[#1f2233] sm:text-[1.8rem]">
+                  <article className={`${publicCardClass} rounded-[2.2rem] border-[var(--border-strong)] bg-[linear-gradient(180deg,var(--surface-elevated)_0%,var(--surface-muted)_100%)] p-5 sm:p-6`}>
+                    <div className="rounded-[1.8rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)]/80 p-5 text-center shadow-[0_14px_30px_rgba(15,23,42,0.04)]">
+                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Khối trưng bày sản phẩm</p>
+                      <h2 className="mt-3 text-[1.4rem] font-extrabold leading-[1.1] tracking-[-0.03em] text-[var(--text-primary)] sm:text-[1.8rem]">
                         Dữ liệu nổi bật sẽ xuất hiện ở đây khi HTX công khai sản phẩm.
                       </h2>
                       <p className="mt-3 text-base leading-7 text-slate-600">
                         {hasActiveFilter
-                          ? 'Bỏ bớt điều kiện lọc để xem lại sản phẩm đang có trên HTXONLINE.'
+                          ? `Bỏ bớt điều kiện lọc để xem lại sản phẩm đang có trên ${platformName}.`
                           : 'Khi HTX công khai sản phẩm, thông tin sẽ được cập nhật tại đây để bạn dễ dàng tìm hiểu và lựa chọn.'}
                       </p>
                       <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                         <Link
                           href="/san-pham"
-                          className="inline-flex min-h-11 items-center rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_14px_28px_rgba(31,155,75,0.18)] transition hover:-translate-y-0.5"
+                          className="inline-flex min-h-11 items-center rounded-full bg-[var(--brand-primary)] px-5 text-sm font-bold text-white shadow-[0_14px_28px_color-mix(in_srgb,var(--brand-primary)_18%,transparent)] transition hover:-translate-y-0.5"
                         >
                           Xem toàn bộ sản phẩm
                         </Link>
                         <Link
                           href="/htx"
-                          className="inline-flex min-h-11 items-center rounded-full border border-[#d8e7d8] bg-white px-5 text-sm font-bold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                          className="inline-flex min-h-11 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 text-sm font-bold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
                         >
                           Xem danh sách HTX
                         </Link>
@@ -209,9 +210,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 )}
 
                 <div className="grid gap-3">
-                  <section className="rounded-[2rem] border border-[#dbe7d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5">
-                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e]">Quét nhanh theo ngữ cảnh</p>
-                    <h2 className="mt-2 text-[1.36rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[#1f2233] sm:text-[1.7rem]">
+                  <section className="rounded-[2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5">
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--brand-primary-strong)]">Quét nhanh theo ngữ cảnh</p>
+                    <h2 className="mt-2 text-[1.36rem] font-extrabold leading-[1.08] tracking-[-0.03em] text-[var(--text-primary)] sm:text-[1.7rem]">
                       Tìm nhanh sản phẩm theo nhu cầu của bạn.
                     </h2>
                     <div className="mt-4 grid grid-cols-3 gap-2.5">
@@ -220,25 +221,25 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         { icon: QrCode, title: 'Có QR', value: `${qrProducts}+` },
                         { icon: MapPin, title: 'Địa phương', value: `${provinceCount || 1}+` }
                       ].map((item) => (
-                        <article key={item.title} className="rounded-[1.4rem] border border-[#e6ede1] bg-[#fbfcf8] px-3 py-4 text-center">
-                          <span className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                        <article key={item.title} className="rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-4 text-center">
+                          <span className="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
                             <item.icon size={18} aria-hidden="true" />
                           </span>
-                          <p className="mt-2 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-[#2b8a3e]">{item.title}</p>
-                          <p className="mt-1 text-[1.2rem] font-extrabold text-[#1f2233]">{item.value}</p>
+                          <p className="mt-2 text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-[var(--brand-primary-strong)]">{item.title}</p>
+                          <p className="mt-1 text-[1.2rem] font-extrabold text-[var(--text-primary)]">{item.value}</p>
                         </article>
                       ))}
                     </div>
                   </section>
 
                   {quickProductLinks.length > 0 ? (
-                    <section className="rounded-[2rem] border border-[#dbe7d8] bg-[linear-gradient(180deg,#ffffff_0%,#f9fbf7_100%)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5">
+                    <section className="rounded-[2rem] border border-[var(--border-strong)] bg-[linear-gradient(180deg,var(--surface-elevated)_0%,var(--surface-muted)_100%)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5">
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e]">Lướt nhanh</p>
-                          <p className="mt-1 text-[1.08rem] font-extrabold text-[#1f2233]">Sản phẩm nổi bật khác</p>
+                          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[var(--brand-primary-strong)]">Lướt nhanh</p>
+                          <p className="mt-1 text-[1.08rem] font-extrabold text-[var(--text-primary)]">Sản phẩm nổi bật khác</p>
                         </div>
-                        <Link href="/htx" className="text-sm font-semibold text-[#1f9b4b]">
+                        <Link href="/htx" className="text-sm font-semibold text-[var(--brand-primary)]">
                           Xem HTX
                         </Link>
                       </div>
@@ -247,21 +248,21 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                           <Link
                             key={product.id}
                             href={`/san-pham/${product.slug}`}
-                            className="flex items-center gap-3 rounded-[1.25rem] border border-[#e6ede1] bg-white px-3 py-3 transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+                            className="flex items-center gap-3 rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 py-3 transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)]"
                           >
                             <PublicImage
                               src={productImage(product)}
                               alt={product.name}
-                              wrapperClassName="h-14 w-14 shrink-0 rounded-[1rem] bg-[#f3f7ef]"
+                              wrapperClassName="h-14 w-14 shrink-0 rounded-[1rem] bg-[var(--surface-muted)]"
                               className="h-full w-full object-cover"
                             />
                             <div className="min-w-0 flex-1">
-                              <p className="line-clamp-2 text-sm font-extrabold leading-5 text-[#1f2233]">{product.name}</p>
+                              <p className="line-clamp-2 text-sm font-extrabold leading-5 text-[var(--text-primary)]">{product.name}</p>
                               <p className="mt-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                                {product.cooperative?.province || product.category?.name || 'HTXONLINE'}
+                                {product.cooperative?.province || product.category?.name || platformName}
                               </p>
                             </div>
-                            <ArrowRight size={16} aria-hidden="true" className="shrink-0 text-[#1f9b4b]" />
+                            <ArrowRight size={16} aria-hidden="true" className="shrink-0 text-[var(--brand-primary)]" />
                           </Link>
                         ))}
                       </div>
@@ -282,11 +283,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
             {categoryOptions.length > 0 ? (
               <nav aria-label="Lọc nhanh theo nhóm sản phẩm" className="-mx-1 mb-4 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <div className="flex min-w-max items-center gap-2">
-                  <span className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[#6b7b72]">Lọc nhanh</span>
+                  <span className="mr-1 text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[var(--text-tertiary)]">Lọc nhanh</span>
                   <Link
                     href="/san-pham"
                     aria-current={!filters.category ? 'page' : undefined}
-                    className={!filters.category ? 'inline-flex min-h-10 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(31,155,75,0.15)]' : 'inline-flex min-h-10 items-center rounded-full border border-[#d8e7d8] bg-white px-4 text-sm font-semibold text-[#315441]'}
+                    className={!filters.category ? 'inline-flex min-h-10 items-center rounded-full bg-[var(--brand-primary)] px-4 text-sm font-bold text-white shadow-[0_10px_22px_color-mix(in_srgb,var(--brand-primary)_15%,transparent)]' : 'inline-flex min-h-10 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold text-[var(--text-secondary)]'}
                   >
                     Tất cả
                   </Link>
@@ -295,7 +296,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                       key={category.slug}
                       href={`/san-pham?category=${encodeURIComponent(category.slug)}`}
                       aria-current={filters.category === category.slug ? 'page' : undefined}
-                      className={filters.category === category.slug ? 'inline-flex min-h-10 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-bold text-white shadow-[0_10px_22px_rgba(31,155,75,0.15)]' : 'inline-flex min-h-10 items-center rounded-full border border-[#d8e7d8] bg-white px-4 text-sm font-semibold text-[#315441]'}
+                      className={filters.category === category.slug ? 'inline-flex min-h-10 items-center rounded-full bg-[var(--brand-primary)] px-4 text-sm font-bold text-white shadow-[0_10px_22px_color-mix(in_srgb,var(--brand-primary)_15%,transparent)]' : 'inline-flex min-h-10 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold text-[var(--text-secondary)]'}
                     >
                       {category.name}
                     </Link>
@@ -310,7 +311,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <ProductFilterForm filters={filters} hasActiveFilter={hasActiveFilter} demeterLike={isInternal} categoryHighlights={categoryHighlights} />
 
         {displayedProducts.length ? (
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:auto-rows-fr sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:auto-rows-fr sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
             {displayedProducts.map((product, index) => (
               <ProductCard key={product.id} product={product} priority={index < 4} compact={!isInternal} />
             ))}
@@ -340,8 +341,8 @@ function ProductFilterForm({
     <form
       className={
         demeterLike
-          ? 'mt-5 rounded-[2rem] border border-[#dbe7d8] bg-white p-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[2.2rem] sm:p-4'
-          : 'mt-4 rounded-[1.45rem] border border-[#e8e4d8] bg-white p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:mt-5 sm:rounded-[2rem] sm:p-4'
+          ? 'mt-5 rounded-[2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-3 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:rounded-[2.2rem] sm:p-4'
+          : 'mt-4 rounded-[1.45rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:mt-5 sm:rounded-[2rem] sm:p-4'
       }
       action="/san-pham"
     >
@@ -353,8 +354,8 @@ function ProductFilterForm({
                 key={category}
                 className={
                   category === filters.category || (!filters.category && index === 0)
-                    ? 'inline-flex min-h-10 items-center rounded-full bg-[#1f9b4b] px-4 text-sm font-semibold text-white'
-                    : 'inline-flex min-h-10 items-center rounded-full border border-[#d8e7d8] bg-[#fbfcf8] px-4 text-sm font-semibold text-[#314665]'
+                    ? 'inline-flex min-h-10 items-center rounded-full bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white'
+                    : 'inline-flex min-h-10 items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 text-sm font-semibold text-[var(--text-secondary)]'
                 }
               >
                 {category}
@@ -373,8 +374,8 @@ function ProductFilterForm({
           aria-label="Tìm sản phẩm, HTX, mô tả"
           className={
             demeterLike
-              ? 'min-h-12 w-full rounded-[1.2rem] border border-[#dbe7d8] bg-[#fbfcf8] pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint'
-              : 'min-h-11 w-full rounded-[1.1rem] border border-[#e8e4d8] bg-[#f7faf4] pl-10 pr-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint sm:min-h-12'
+              ? 'min-h-12 w-full rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-muted)] pl-10 pr-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]'
+              : 'min-h-11 w-full rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)] sm:min-h-12'
           }
         />
       </div>
@@ -382,8 +383,8 @@ function ProductFilterForm({
       <details
         className={
           demeterLike
-            ? 'mt-2.5 rounded-[1.3rem] border border-[#dbe7d8] bg-[#fbfcf8] p-2.5 lg:hidden'
-            : 'mt-2.5 rounded-[1.2rem] border border-[#e8e4d8] bg-[#f7faf4] p-2.5 lg:hidden'
+            ? 'mt-2.5 rounded-[1.3rem] border border-[var(--border-strong)] bg-[var(--surface-muted)] p-2.5 lg:hidden'
+            : 'mt-2.5 rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-muted)] p-2.5 lg:hidden'
         }
         open={Boolean(filters.province || filters.minPrice || filters.maxPrice)}
       >
@@ -394,7 +395,7 @@ function ProductFilterForm({
             defaultValue={filters.province ?? ''}
             placeholder="Tỉnh/thành"
             aria-label="Tỉnh/thành"
-            className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
           />
           <input
             name="minPrice"
@@ -402,7 +403,7 @@ function ProductFilterForm({
             inputMode="numeric"
             placeholder="Giá từ"
             aria-label="Giá từ"
-            className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
           />
           <input
             name="maxPrice"
@@ -410,7 +411,7 @@ function ProductFilterForm({
             inputMode="numeric"
             placeholder="Giá đến"
             aria-label="Giá đến"
-            className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+            className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
           />
         </div>
       </details>
@@ -421,7 +422,7 @@ function ProductFilterForm({
           defaultValue={filters.province ?? ''}
           placeholder="Tỉnh/thành"
           aria-label="Tỉnh/thành"
-          className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
         />
         <input
           name="minPrice"
@@ -429,7 +430,7 @@ function ProductFilterForm({
           inputMode="numeric"
           placeholder="Giá từ"
           aria-label="Giá từ"
-          className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
         />
         <input
           name="maxPrice"
@@ -437,7 +438,7 @@ function ProductFilterForm({
           inputMode="numeric"
           placeholder="Giá đến"
           aria-label="Giá đến"
-          className="min-h-11 w-full rounded-[1rem] border border-[#e8e4d8] bg-white px-3 text-base outline-none focus:border-leaf focus:ring-4 focus:ring-mint"
+          className="min-h-11 w-full rounded-[1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-3 text-base outline-none focus:border-[var(--brand-primary)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)]"
         />
       </div>
 
@@ -449,8 +450,8 @@ function ProductFilterForm({
         <label
           className={
             demeterLike
-              ? 'inline-flex min-h-11 items-center gap-2 rounded-full border border-[#dbe7d8] bg-[#fbfcf8] px-4 text-sm font-semibold text-slate-700'
-              : 'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-2 text-sm font-semibold text-slate-700 sm:w-auto sm:justify-start sm:px-3'
+              ? 'inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 text-sm font-semibold text-[var(--text-secondary)]'
+              : 'inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[1rem] border border-[var(--border)] bg-[var(--surface-muted)] px-2 text-sm font-semibold text-[var(--text-secondary)] sm:w-auto sm:justify-start sm:px-3'
           }
         >
           <input name="hasQr" type="checkbox" value="true" defaultChecked={filters.hasQr === 'true'} className="peer sr-only" />
@@ -460,8 +461,8 @@ function ProductFilterForm({
         <label
           className={
             demeterLike
-              ? 'inline-flex min-h-11 items-center justify-between gap-2 rounded-full border border-[#dbe7d8] bg-[#fbfcf8] px-4 text-sm font-semibold text-slate-700'
-              : 'inline-flex min-h-11 w-full items-center justify-between gap-2 rounded-[1rem] border border-[#e8e4d8] bg-[#f7faf4] px-2 text-sm font-semibold text-slate-700 sm:w-auto sm:px-3'
+              ? 'inline-flex min-h-11 items-center justify-between gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--surface-muted)] px-4 text-sm font-semibold text-[var(--text-secondary)]'
+              : 'inline-flex min-h-11 w-full items-center justify-between gap-2 rounded-[1rem] border border-[var(--border)] bg-[var(--surface-muted)] px-2 text-sm font-semibold text-[var(--text-secondary)] sm:w-auto sm:px-3'
           }
         >
           <SlidersHorizontal size={16} aria-hidden="true" />
