@@ -880,6 +880,34 @@ async function seedNews(superAdminId: string) {
         publishedAt
       }
     });
+
+    // Older demo runs may have left a second row with the same title. Keep every
+    // matching public row aligned so stale cover URLs cannot leak into the catalog.
+    await prisma.newsArticle.updateMany({
+      where: { title: article.title },
+      data: {
+        excerpt: article.excerpt,
+        bodyHtml,
+        coverImageUrl: article.cover,
+        coverImageAlt,
+        status: NewsStatus.PUBLISHED,
+        publicVerified: true,
+        isFeatured: index < 4,
+        showOnHome: index < 6,
+        focusKeyword,
+        seoTitle: article.title,
+        seoDescription,
+        ogTitle: article.title,
+        ogDescription: seoDescription,
+        ogImageUrl: article.cover,
+        twitterTitle: article.title,
+        twitterDescription: seoDescription,
+        twitterImageUrl: article.cover,
+        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        seoScore: 92,
+        readabilityScore: 86
+      }
+    });
   }
 
   await prisma.newsArticle.updateMany({
