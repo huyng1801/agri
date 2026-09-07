@@ -4,20 +4,20 @@ import * as bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 const defaultPublicFaqs = [
   {
-    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và bán hàng COD trên cùng một nền tảng.'
+    question: 'Agripassport hỗ trợ gì cho hợp tác xã?',
+    answer: 'Chuẩn hóa dữ liệu sản phẩm, vùng trồng, nhật ký, chứng nhận, QR truy xuất và thông tin công khai.'
   },
   {
     question: 'Người mua có cần tài khoản để xem QR không?',
     answer: 'Không. QR Passport công khai được mở trực tiếp cho khách truy cập.'
   },
   {
-    question: 'Ai xác nhận đơn hàng COD?',
-    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+    question: 'Dữ liệu công khai được kiểm soát thế nào?',
+    answer: 'Chỉ thông tin và hồ sơ đã được hợp tác xã xác minh, phê duyệt công khai mới xuất hiện trên Agripassport.'
   },
   {
-    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
-    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+    question: 'Nếu tra cứu QR chưa ra kết quả thì liên hệ ai?',
+    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để chúng tôi hỗ trợ kiểm tra nhanh.'
   }
 ] as const;
 
@@ -217,7 +217,7 @@ async function main() {
     create: {
       key: 'public.siteProfile',
       value: {
-        appName: 'HTXONLINE',
+        appName: 'AGRIPASSPORT',
         hotline: '0907001200',
         hotlineDisplay: '0907 001 200',
         supportEmail: 'Agripassport@gmail.com',
@@ -227,7 +227,7 @@ async function main() {
         mapEmbedUrl: siteMapEmbedUrl,
         faqs: defaultPublicFaqs
       },
-      description: 'Thông tin công khai của HTXONLINE dùng cho contact/footer/floating actions'
+      description: 'Thông tin công khai của Agripassport dùng cho liên hệ, chân trang và hỗ trợ'
     },
     update: {}
   });
@@ -265,10 +265,12 @@ async function main() {
     const hasLookupSupportFaq = currentFaqs.some(
       (item) => normalizePlainText(item.question) === normalizePlainText(defaultPublicFaqs[3].question)
     );
+    const hasInternalFaqCopy = currentFaqs.some((item) => /HTXONLINE|COD|giỏ hàng|thanh toán|đơn hàng/i.test(`${item.question} ${item.answer}`));
     const nextFaqs =
-      currentFaqs.length === 0 ? [...defaultPublicFaqs] : hasLookupSupportFaq ? currentFaqs : [...currentFaqs, defaultPublicFaqs[3]];
+      currentFaqs.length === 0 || hasInternalFaqCopy ? [...defaultPublicFaqs] : hasLookupSupportFaq ? currentFaqs : [...currentFaqs, defaultPublicFaqs[3]];
     const nextValue: Prisma.InputJsonObject = {
       ...current,
+      appName: 'AGRIPASSPORT',
       hotline:
         typeof current.hotline === 'string' && current.hotline.trim() && current.hotline !== '0900000000' ? current.hotline : '0907001200',
       hotlineDisplay:
@@ -286,6 +288,7 @@ async function main() {
     };
     if (
       current.hotline !== nextValue.hotline ||
+      current.appName !== nextValue.appName ||
       current.hotlineDisplay !== nextValue.hotlineDisplay ||
       current.supportEmail !== nextValue.supportEmail ||
       current.address !== nextValue.address ||

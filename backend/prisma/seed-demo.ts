@@ -597,7 +597,8 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
       ward: demo.ward,
       representative: demo.representative,
       avatarUrl: demo.avatarUrl,
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      publicVerified: true
     },
     update: {
       name: demo.name,
@@ -609,7 +610,8 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
       ward: demo.ward,
       representative: demo.representative,
       avatarUrl: demo.avatarUrl,
-      status: 'ACTIVE'
+      status: 'ACTIVE',
+      publicVerified: true
     }
   });
 
@@ -721,7 +723,8 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
         farmerId: admin.id,
         createdBy: admin.id,
         packagingInfo: 'Đóng gói tiêu chuẩn HTX',
-        specification: 'Sản phẩm nông nghiệp địa phương, có QR truy xuất'
+        specification: 'Sản phẩm nông nghiệp địa phương, có QR truy xuất',
+        publicVerified: true
       },
       update: {
         name: product.name,
@@ -731,7 +734,8 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
         status: ProductStatus.PUBLISHED,
         thumbnailFileId: thumbnail.id,
         zoneId: zone?.id,
-        categoryId
+        categoryId,
+        publicVerified: true
       }
     });
 
@@ -816,6 +820,7 @@ async function seedNews(superAdminId: string) {
         coverImageUrl: article.cover,
         coverImageAlt: article.title,
         status: NewsStatus.PUBLISHED,
+        publicVerified: true,
         isFeatured: index < 4,
         showOnHome: index < 6,
         focusKeyword,
@@ -840,6 +845,7 @@ async function seedNews(superAdminId: string) {
         coverImageUrl: article.cover,
         coverImageAlt: article.title,
         status: NewsStatus.PUBLISHED,
+        publicVerified: true,
         isFeatured: index < 4,
         showOnHome: index < 6,
         bodyHtml,

@@ -12,20 +12,20 @@ const DEFAULT_MAP_EMBED_URL =
 const PUBLIC_MEDIA_PLACEHOLDER_URL = '/public-media-placeholder.svg';
 const DEFAULT_PUBLIC_FAQS = [
   {
-    question: 'HTXONLINE hỗ trợ gì cho hợp tác xã?',
-    answer: 'Quản lý sản phẩm, vùng trồng, QR truy xuất và đơn COD trên cùng một nền tảng.'
+    question: 'Agripassport hỗ trợ gì cho hợp tác xã?',
+    answer: 'Chuẩn hóa dữ liệu sản phẩm, vùng trồng, nhật ký, chứng nhận, QR truy xuất và thông tin công khai.'
   },
   {
     question: 'Người mua có cần đăng nhập để xem QR?',
     answer: 'Không. Khách truy cập có thể xem QR Passport công khai trực tiếp.'
   },
   {
-    question: 'Ai xác nhận đơn hàng COD?',
-    answer: 'HTX hoặc bộ phận vận hành sẽ gọi điện xác nhận trước khi giao hàng.'
+    question: 'Dữ liệu công khai được kiểm soát thế nào?',
+    answer: 'Chỉ thông tin và hồ sơ đã được hợp tác xã xác minh, phê duyệt công khai mới xuất hiện trên Agripassport.'
   },
   {
-    question: 'Nếu tra cứu QR Passport hoặc đơn hàng chưa ra kết quả thì liên hệ ai?',
-    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để đội vận hành hỗ trợ kiểm tra nhanh.'
+    question: 'Nếu tra cứu QR chưa ra kết quả thì liên hệ ai?',
+    answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để chúng tôi hỗ trợ kiểm tra nhanh.'
   }
 ] as const;
 
@@ -54,7 +54,7 @@ export class SettingsService {
     const publicProfile = jsonObject(publicProfileSetting?.value);
     const systemProfile = jsonObject(systemProfileSetting?.value);
     return {
-      appName: normalizePublicCopy(stringValue(publicProfile.appName)) || 'HTXONLINE',
+      appName: 'AGRIPASSPORT',
       hotline: stringValue(publicProfile.hotline) || '0907001200',
       hotlineDisplay: stringValue(publicProfile.hotlineDisplay) || stringValue(publicProfile.hotline) || '0907 001 200',
       supportEmail: stringValue(publicProfile.supportEmail) || stringValue(systemProfile.supportEmail) || 'Agripassport@gmail.com',
@@ -147,26 +147,26 @@ function pageContentItems(value: unknown) {
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
   return {
     homeBadge: normalizePublicCopy(stringValue(object.homeBadge)) || 'Nền tảng số cho hợp tác xã',
-    homeTitle: normalizePublicCopy(stringValue(object.homeTitle)) || 'HTXONLINE giúp hợp tác xã bán hàng minh bạch hơn trên môi trường số.',
+    homeTitle: normalizePublicCopy(stringValue(object.homeTitle)) || 'Agripassport giúp hợp tác xã công khai sản phẩm và dữ liệu truy xuất rõ ràng hơn.',
     homeDescription:
       normalizePublicCopy(stringValue(object.homeDescription)) ||
-      'Công khai sản phẩm, mở QR Passport cho người mua và vận hành quy trình đơn COD trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
+      'Chuẩn hóa sản phẩm, mở QR truy xuất cho người mua và kết nối dữ liệu công khai trên cùng một hệ thống gọn, rõ và dễ tin tưởng.',
     homeImageUrl: approvedPublicImageUrl(object.homeImageUrl),
     homeImageAlt: normalizePublicCopy(stringValue(object.homeImageAlt)) || 'Nông sản tươi và hoạt động kết nối của hợp tác xã trên môi trường số',
-    introTitle: normalizePublicCopy(stringValue(object.introTitle)) || 'Giới thiệu HTXONLINE',
-    introDescription: normalizePublicCopy(stringValue(object.introDescription)) || 'Nền tảng sàn nông sản số và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
+    introTitle: normalizePublicCopy(stringValue(object.introTitle)) || 'Giới thiệu Agripassport',
+    introDescription: normalizePublicCopy(stringValue(object.introDescription)) || 'Nền tảng dữ liệu sản phẩm và QR truy xuất nguồn gốc cho hợp tác xã Việt Nam.',
     introImageUrl: approvedPublicImageUrl(object.introImageUrl),
     introImageAlt: normalizePublicCopy(stringValue(object.introImageAlt)) || 'Khu vực trồng trọt xanh và nông dân đang chăm sóc nông sản',
-    aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || 'Chúng tôi là HTXONLINE',
+    aboutTitle: normalizePublicCopy(stringValue(object.aboutTitle)) || 'Chúng tôi là Agripassport',
     aboutDescription:
       normalizePublicCopy(stringValue(object.aboutDescription)) ||
-      'Sàn nông sản số giúp hợp tác xã kết nối thị trường, minh bạch nguồn gốc và bán hàng COD hiệu quả.',
+      'Nền tảng dữ liệu giúp hợp tác xã kết nối thị trường và minh bạch nguồn gốc sản phẩm.',
     aboutImageUrl: approvedPublicImageUrl(object.aboutImageUrl),
     aboutImageAlt: normalizePublicCopy(stringValue(object.aboutImageAlt)) || 'Thành viên hợp tác xã và nông sản đặc trưng Việt Nam',
-    contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || 'Hãy để HTXONLINE kết nối và đồng hành cùng hợp tác xã của bạn',
+    contactTitle: normalizePublicCopy(stringValue(object.contactTitle)) || 'Hãy để Agripassport đồng hành cùng hợp tác xã của bạn',
     contactDescription:
       normalizePublicCopy(stringValue(object.contactDescription)) ||
-      'Tư vấn tham gia sàn, QR truy xuất nguồn gốc, hỗ trợ đơn hàng COD và vận hành số cho HTX.',
+      'Tư vấn chuẩn hóa dữ liệu sản phẩm, QR truy xuất nguồn gốc và kết nối tiêu thụ cho HTX.',
     contactImageUrl: approvedPublicImageUrl(object.contactImageUrl),
     contactImageAlt: normalizePublicCopy(stringValue(object.contactImageAlt)) || 'Không gian trao đổi và hỗ trợ vận hành cho hợp tác xã'
   };

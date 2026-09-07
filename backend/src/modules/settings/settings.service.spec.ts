@@ -14,7 +14,7 @@ describe('SettingsService', () => {
 
     const profile = await service.publicSiteProfile();
 
-    expect(profile.appName).toBe('HTXONLINE');
+    expect(profile.appName).toBe('AGRIPASSPORT');
     expect(profile.hotline).toBe('0907001200');
     expect(profile.supportEmail).toBe('Agripassport@gmail.com');
     expect(profile.faqs.length).toBeGreaterThan(0);
@@ -54,7 +54,7 @@ describe('SettingsService', () => {
     const profile = await service.publicSiteProfile();
 
     expect(profile).toMatchObject({
-      appName: 'HTXONLINE Premium',
+      appName: 'AGRIPASSPORT',
       hotline: '0988000111',
       hotlineDisplay: '0988 000 111',
       supportEmail: 'care@htxonline.vn',
