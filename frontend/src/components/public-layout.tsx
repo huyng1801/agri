@@ -35,6 +35,21 @@ export function PublicBreadcrumb({ href, label }: { href: string; label: string 
   );
 }
 
+export function PublicBreadcrumbTrail({ current }: { current: string }) {
+  return (
+    <nav
+      aria-label="Đường dẫn"
+      className="mb-4 inline-flex min-h-11 flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-3 text-sm text-[#1f2233]"
+    >
+      <Link href="/" className="inline-flex min-h-11 items-center font-semibold transition hover:text-[#1f9b4b]">
+        Trang chủ
+      </Link>
+      <span aria-hidden="true">/</span>
+      <span className="font-medium">{current}</span>
+    </nav>
+  );
+}
+
 export function PublicPageHeader({
   title,
   description,

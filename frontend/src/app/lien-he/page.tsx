@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Clock3, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicMapPreview } from '@/components/public-map-preview';
-import { PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { PublicBreadcrumbTrail, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
@@ -28,13 +28,7 @@ export default async function ContactPage() {
   return (
     <PublicShell>
       <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
-        <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-4 py-2 text-sm text-[#1f2233]">
-          <Link href="/" className="transition hover:text-[#1f9b4b]">
-            Trang chủ
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="font-medium">Liên hệ</span>
-        </div>
+        <PublicBreadcrumbTrail current="Liên hệ" />
 
         <section className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
           <div className="space-y-4">

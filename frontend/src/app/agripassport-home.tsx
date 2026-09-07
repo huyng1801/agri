@@ -11,13 +11,6 @@ import { Button, cn } from '@/components/ui';
 import { fetchPublicNews } from '@/lib/news';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
 
-const productTabs = [
-  { label: 'Tất cả', href: '/san-pham' },
-  { label: 'Dữ liệu sản phẩm', href: '/san-pham' },
-  { label: 'Bán hàng công khai', href: '/san-pham' },
-  { label: 'Liên kết QR', href: '/san-pham?hasQr=true' }
-] as const;
-
 export async function AgripassportHome() {
   const [catalog, news] = await Promise.all([
     fetchPublicCatalog(24),
@@ -51,18 +44,6 @@ export async function AgripassportHome() {
       description: 'Thông tin được cập nhật thống nhất trên hồ sơ sản phẩm.',
       icon: 'boxes'
     },
-    {
-      title: 'Bán hàng công khai',
-      value: 'Đặt hàng rõ ràng',
-      description: 'Xem giá, đơn vị và cách liên hệ trước khi gửi nhu cầu mua.',
-      icon: 'shoppingBag'
-    },
-    {
-      title: 'Niềm tin người mua',
-      value: 'Hiểu nhanh hơn',
-      description: 'Thông tin quan trọng được trình bày rõ ràng, dễ đọc trên mọi thiết bị.',
-      icon: 'users'
-    }
   ];
 
   return (
@@ -120,19 +101,14 @@ export async function AgripassportHome() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-4xl">
                 <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[#1f9b4b] sm:text-sm">Dịch vụ và dữ liệu</p>
-                <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Giải pháp dịch vụ tiêu biểu cho dữ liệu sản phẩm và bán hàng</h2>
-                <p className="mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Tìm sản phẩm, xem thông tin nguồn gốc và kết nối với đơn vị sản xuất từ một điểm truy cập.</p>
+                <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] text-[#1e2233] sm:text-5xl">Sản phẩm đang được giới thiệu</h2>
+                <p className="mt-4 max-w-3xl text-[1rem] leading-7 text-[#52667a] sm:text-[1.08rem] sm:leading-8">Chọn sản phẩm để xem giá, đơn vị sản xuất, vùng trồng và thông tin truy xuất trước khi liên hệ.</p>
               </div>
-              <Link href="/san-pham" className="inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-[#d4e3d1] bg-white px-5 text-sm font-bold text-[#1b7138] shadow-sm transition hover:-translate-y-0.5 sm:self-auto">Khám phá thêm <ArrowRight size={16} aria-hidden="true" /></Link>
+              <div className="flex flex-wrap gap-2.5">
+                <Link href="/san-pham" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-5 text-sm font-bold text-white shadow-[0_12px_24px_rgba(31,155,75,0.16)] transition hover:-translate-y-0.5">Xem tất cả <ArrowRight size={16} aria-hidden="true" /></Link>
+                <Link href="/san-pham?hasQr=true" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d4e3d1] bg-white px-5 text-sm font-bold text-[#1b7138] shadow-sm transition hover:-translate-y-0.5">Có QR Passport</Link>
+              </div>
             </div>
-
-            <nav className="-mx-1 mt-7 flex gap-2 overflow-x-auto px-1 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" aria-label="Nhóm dữ liệu sản phẩm">
-              {productTabs.map((tab, index) => (
-                <Link key={tab.label} href={tab.href} className={cn('inline-flex min-h-11 shrink-0 items-center rounded-full px-5 text-sm font-bold shadow-sm transition hover:-translate-y-0.5', index === 0 ? 'bg-[#1f9b4b] text-white' : 'border border-[#d8e4d4] bg-white text-[#31506a]')}>
-                  {tab.label}
-                </Link>
-              ))}
-            </nav>
 
             {products.length ? <ProductSlider products={products} /> : <div className="mt-7 rounded-[1.6rem] border border-[#d7e5d2] bg-white p-6 text-[#52645b]">Sản phẩm công khai sẽ xuất hiện tại đây khi đơn vị hoàn thiện hồ sơ.</div>}
           </div>

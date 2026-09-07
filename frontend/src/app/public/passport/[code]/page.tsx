@@ -230,7 +230,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
         <div className="grid gap-3 self-start sm:gap-4 xl:sticky xl:top-6">
           <Panel>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Trust Snapshot</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Tóm tắt kiểm chứng</p>
             <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
               <div className="rounded-xl bg-slate-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mã QR</p>

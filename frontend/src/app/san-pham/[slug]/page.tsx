@@ -218,7 +218,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
           <aside className="grid gap-4 self-start xl:sticky xl:top-6">
             <Panel>
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Trust Snapshot</p>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Tóm tắt kiểm chứng</p>
               <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
                 <div className="rounded-[1.25rem] bg-[var(--surface-0)] p-4">
                   <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Đơn vị bán</p>

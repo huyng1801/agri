@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, QrCode, ShoppingBag, Store, Users } from 'lucide-react';
 import { PublicImage } from '@/components/public-image';
-import { PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { PublicBreadcrumbTrail, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { ecosystemCards } from '@/components/public-ecosystem-showcase';
 import { Button, cn } from '@/components/ui';
@@ -59,13 +59,7 @@ export default async function AboutPage() {
   return (
     <PublicShell>
       <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
-        <div className="mb-4 inline-flex flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-4 py-2 text-sm text-[#1f2233]">
-          <Link href="/" className="transition hover:text-[#1f9b4b]">
-            Trang chủ
-          </Link>
-          <span aria-hidden="true">/</span>
-          <span className="font-medium">Vai trò nền tảng</span>
-        </div>
+        <PublicBreadcrumbTrail current="Vai trò nền tảng" />
 
         <section className="grid gap-5 lg:grid-cols-[0.94fr_1.06fr] lg:items-start lg:gap-8">
           <article className="relative overflow-hidden rounded-[2.25rem] bg-[linear-gradient(145deg,#0d1e30_0%,#173a50_48%,#1f9b4b_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">

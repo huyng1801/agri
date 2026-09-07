@@ -95,7 +95,7 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
           </article>
 
           <article className="rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/66">Trust Snapshot</p>
+            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/66">Tóm tắt hồ sơ</p>
             <h2 className="mt-3 text-[1.55rem] font-extrabold leading-[1.04] sm:text-[2rem]">Công khai đủ để tin, gọn đủ để xem nhanh trên mobile.</h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
               <div className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3.5">
