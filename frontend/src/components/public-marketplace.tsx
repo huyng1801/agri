@@ -87,7 +87,7 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className={cn('flex flex-col gap-2 rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-1.5 shadow-[var(--public-shadow-card)] ring-4 ring-[var(--brand-primary-subtle)] sm:flex-row sm:gap-2 sm:p-2', className)}
+      className={cn('flex flex-col gap-2 rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-1.5 shadow-[var(--public-shadow-card)] ring-4 ring-[var(--brand-primary-subtle)] focus-within:border-[var(--brand-primary)] focus-within:ring-4 focus-within:ring-[var(--brand-primary-subtle)] sm:flex-row sm:gap-2 sm:p-2', className)}
       action={action}
     >
       <div className="relative flex-1">
@@ -96,7 +96,7 @@ export function PublicSearch({
           name="search"
           placeholder={placeholder}
           aria-label={placeholder}
-          className="min-h-11 w-full rounded-[var(--public-radius-control)] border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none transition placeholder:text-slate-400 focus:border-[var(--brand-primary)] focus:bg-[var(--surface-elevated)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)] sm:min-h-12 sm:text-base"
+          className="min-h-11 w-full rounded-[var(--public-radius-control)] border-0 bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none transition placeholder:text-slate-400 focus:bg-[var(--surface-elevated)] focus:ring-0 sm:min-h-12 sm:text-base"
         />
       </div>
       <Button className="min-h-11 w-full shrink-0 rounded-[var(--public-radius-control)] px-6 sm:min-h-12 sm:w-auto">Tìm</Button>

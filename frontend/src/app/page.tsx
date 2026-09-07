@@ -52,15 +52,19 @@ export async function generateMetadata(): Promise<Metadata> {
       ? "HTXONLINE — Hệ thống quản trị nội bộ cho hợp tác xã"
       : siteKey === "passport"
         ? "HỘ CHIẾU NÔNG NGHIỆP — QR truy xuất cho sản phẩm và lô sản phẩm"
-        : "AGRIPASSPORT — Nền tảng dữ liệu sản phẩm nông nghiệp";
+        : "AGRIPASSPORT — Số hóa nông sản, truy xuất nguồn gốc bằng QR";
+  const pageDescription =
+    siteKey === "agripassport" || siteKey === "local"
+      ? "Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống."
+      : profile.pageContent.homeDescription;
 
   return {
     title: pageTitle,
-    description: profile.pageContent.homeDescription,
+    description: pageDescription,
     alternates: { canonical },
     openGraph: {
       title: pageTitle,
-      description: profile.pageContent.homeDescription,
+      description: pageDescription,
       url: canonical,
       siteName: profile.appName,
       locale: "vi_VN",
@@ -69,7 +73,7 @@ export async function generateMetadata(): Promise<Metadata> {
     twitter: {
       card: "summary",
       title: pageTitle,
-      description: profile.pageContent.homeDescription,
+      description: pageDescription,
     },
   };
 }

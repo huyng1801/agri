@@ -13,7 +13,7 @@ import { getRequestAbsoluteUrl } from '@/lib/request-site';
 
 export async function AgripassportHome() {
   const [catalog, news, canonical] = await Promise.all([
-    fetchPublicCatalog(24),
+    fetchPublicCatalog(100),
     fetchPublicNews('/news/public?home=true&limit=3'),
     getRequestAbsoluteUrl('/')
   ]);
@@ -86,12 +86,12 @@ export async function AgripassportHome() {
       <main id="main-content" className="overflow-hidden bg-[var(--surface-1)]">
         <section className="border-b border-[var(--border)] bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--brand-primary)_14%,transparent),transparent_42%),linear-gradient(180deg,var(--brand-primary-subtle)_0%,var(--surface-1)_100%)]">
           <div className={cn(publicContainerClass, 'px-4 py-10 text-center sm:px-5 sm:py-16 lg:px-6 lg:py-20')}>
-            <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[var(--brand-primary)] sm:text-sm">Agripassport</p>
+            <p className="mx-auto max-w-2xl text-[0.68rem] font-extrabold uppercase tracking-[0.18em] text-[var(--brand-primary)] sm:text-sm">Số hóa dữ liệu nông nghiệp · Minh bạch nguồn gốc · Kết nối thị trường</p>
             <h1 className="type-h1 mx-auto mt-4 max-w-[16ch] text-[clamp(2.2rem,9.8vw,2.8rem)] sm:max-w-[14ch] sm:text-[4.3rem] lg:text-[5.25rem]">
-              Số hóa nông sản, minh bạch nguồn gốc bằng QR
+              Agripassport số hóa nông sản, truy xuất nguồn gốc bằng QR
             </h1>
             <p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-7 text-[var(--text-secondary)] sm:mt-6 sm:text-[1.15rem] sm:leading-8">
-              Agripassport chuẩn hóa dữ liệu và công khai sản phẩm nông nghiệp để người mua tìm hiểu nguồn gốc, đơn vị sản xuất và thông tin QR rõ ràng hơn.
+              Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống.
             </p>
             <div className="mx-auto mt-7 max-w-3xl sm:mt-8">
               <PublicSearch placeholder="Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc" className="rounded-[var(--public-radius-surface)] border-[var(--border-strong)] ring-0 shadow-[var(--public-shadow-card)]" />
@@ -102,7 +102,7 @@ export async function AgripassportHome() {
         <section aria-label="Tổng quan dữ liệu công khai" className="border-b border-[var(--border)] bg-[var(--surface-elevated)]">
           <div className={cn(publicContainerClass, 'grid grid-cols-3 divide-x divide-[var(--border)] py-4 sm:py-5')}>
             {[
-              { value: catalog.products.length, label: 'Sản phẩm công khai' },
+              { value: catalog.totalProducts, label: 'Sản phẩm công khai' },
               { value: catalog.cooperatives.length, label: 'HTX đang kết nối' },
               { value: qrProductCount, label: 'Sản phẩm có QR' }
             ].map((stat) => (
@@ -116,8 +116,8 @@ export async function AgripassportHome() {
 
         <section className={cn(publicContainerClass, 'py-10 sm:py-14 lg:py-16')}>
           <div className="mx-auto max-w-4xl text-center">
-            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)] sm:text-sm">Đồng hành cùng nông nghiệp số</p>
-            <h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Dữ liệu rõ ràng cho từng bước sản xuất</h2>
+            <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)] sm:text-sm">Agripassport</p>
+            <h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Đồng hành cùng nông nghiệp số</h2>
             <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[var(--text-secondary)] sm:text-[1.08rem] sm:leading-8">
               Agripassport kết nối dữ liệu sản xuất, sản phẩm và thị trường trên một nền tảng số, giúp các chủ thể nông nghiệp từng bước chuẩn hóa thông tin và nâng cao giá trị sản phẩm.
             </p>
@@ -169,7 +169,14 @@ export async function AgripassportHome() {
 
         <section className="border-y border-[var(--border)] bg-[var(--surface-muted)] py-10 sm:py-14 lg:py-16">
           <div className={cn(publicContainerClass, 'max-w-5xl')}>
-            <PublicEcosystemShowcase siteKey="agripassport" compact />
+            <div className="mx-auto max-w-4xl text-center">
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)] sm:text-sm">Hệ sinh thái số cho nông nghiệp</p>
+              <h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Nối các chủ thể trong nông nghiệp số</h2>
+              <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-[var(--text-secondary)] sm:text-[1.08rem] sm:leading-8">
+                Từ quản lý hợp tác xã, số hóa sản phẩm đến truy xuất nguồn gốc và kết nối thị trường, các giải pháp được kết nối trên cùng một hệ sinh thái.
+              </p>
+            </div>
+            <PublicEcosystemShowcase siteKey="agripassport" compact showHeading={false} className="mt-8" />
           </div>
         </section>
 
@@ -180,7 +187,35 @@ export async function AgripassportHome() {
           </div>
         </section>
 
-        <section className="brand-gradient-bg py-10 text-white sm:py-14"><div className={publicContainerClass}><div className="mx-auto max-w-3xl text-center"><p className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/80 sm:text-sm">Bắt đầu cùng Agripassport</p><h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] sm:text-5xl">Số hóa sản phẩm bắt đầu từ dữ liệu</h2><p className="mt-4 text-[1rem] leading-7 text-white/80 sm:text-[1.08rem] sm:leading-8">Không cần thay đổi mọi thứ cùng lúc. Agripassport giúp các đơn vị từng bước chuẩn hóa dữ liệu và xây dựng nền tảng truy xuất phù hợp với nhu cầu thực tế.</p><div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/lien-he"><Button variant="inverse" className="min-h-12 w-full rounded-full px-6 sm:w-auto">Liên hệ tư vấn <ArrowRight size={17} aria-hidden="true" /></Button></Link><Link href="/ve-chung-toi"><Button variant="inverse-ghost" className="min-h-12 w-full rounded-full px-6 sm:w-auto">Khám phá giải pháp</Button></Link></div></div></div></section>
+        <section className="brand-gradient-bg py-10 text-white sm:py-14">
+          <div className={publicContainerClass}>
+            <div className="mx-auto max-w-4xl text-center">
+              <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-white/80 sm:text-sm">Bắt đầu cùng Agripassport</p>
+              <h2 className="mt-3 text-3xl font-extrabold leading-tight tracking-[-0.04em] sm:text-5xl">Số hóa sản phẩm bắt đầu từ dữ liệu</h2>
+              <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-white/80 sm:text-[1.08rem] sm:leading-8">Không cần thay đổi mọi thứ cùng lúc. Agripassport giúp các đơn vị từng bước chuẩn hóa dữ liệu và xây dựng nền tảng truy xuất phù hợp với nhu cầu thực tế.</p>
+              <ol className="mx-auto mt-7 grid max-w-3xl gap-2 text-left sm:grid-cols-3 sm:gap-3">
+                {[
+                  'Xác định thông tin về đơn vị, vùng sản xuất và sản phẩm.',
+                  'Tổ chức dữ liệu sản phẩm theo cấu trúc rõ ràng và thống nhất.',
+                  'Kết nối sản phẩm với thông tin truy xuất để người tiêu dùng dễ dàng tra cứu.'
+                ].map((step, index) => (
+                  <li key={step} className="flex gap-3 rounded-[var(--public-radius-control)] border border-white/15 bg-white/10 p-3 text-sm leading-6 text-white/90">
+                    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/15 text-xs font-extrabold" aria-hidden="true">{index + 1}</span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <div className="mt-7">
+                <p className="text-lg font-extrabold">Bạn đã sẵn sàng số hóa sản phẩm?</p>
+                <p className="mt-1 text-sm leading-6 text-white/75">Chúng tôi sẵn sàng đồng hành cùng bạn trong từng bước triển khai.</p>
+              </div>
+              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+                <Link href="/lien-he"><Button variant="inverse" className="min-h-12 w-full rounded-full px-6 sm:w-auto">Liên hệ tư vấn <ArrowRight size={17} aria-hidden="true" /></Button></Link>
+                <Link href="/ve-chung-toi"><Button variant="inverse-ghost" className="min-h-12 w-full rounded-full px-6 sm:w-auto">Khám phá giải pháp</Button></Link>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </PublicShell>
   );
