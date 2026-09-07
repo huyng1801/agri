@@ -265,10 +265,15 @@ function faqItems(value: unknown, defaults: PublicSiteProfile, siteKey: PublicSi
       const question = normalizeBrandCopy(stringValue((item as PublicSiteFaq).question), siteKey);
       const answer = normalizeBrandCopy(stringValue((item as PublicSiteFaq).answer), siteKey);
       if (!question || !answer) return null;
+      if (containsInternalCommerceCopy(`${question} ${answer}`)) return null;
       return { question, answer };
     })
     .filter((item): item is PublicSiteFaq => Boolean(item));
   return items.length ? items : defaults.faqs;
+}
+
+function containsInternalCommerceCopy(value: string) {
+  return /HTXONLINE|Giỏ hàng|Thanh toán COD|Đặt hàng COD|Tra cứu đơn hàng|\bCOD\b/i.test(value);
 }
 
 function pageContentItems(
@@ -280,24 +285,29 @@ function pageContentItems(
   const object = value && typeof value === 'object' && !Array.isArray(value) ? (value as Partial<PublicPageContent>) : {};
   if (!allowOverrides) return defaults.pageContent;
   return {
-    homeBadge: normalizeBrandCopy(stringValue(object.homeBadge), siteKey) || defaults.pageContent.homeBadge,
-    homeTitle: normalizeBrandCopy(stringValue(object.homeTitle), siteKey) || defaults.pageContent.homeTitle,
-    homeDescription: normalizeBrandCopy(stringValue(object.homeDescription), siteKey) || defaults.pageContent.homeDescription,
+    homeBadge: safePublicOverride(object.homeBadge, defaults.pageContent.homeBadge, siteKey),
+    homeTitle: safePublicOverride(object.homeTitle, defaults.pageContent.homeTitle, siteKey),
+    homeDescription: safePublicOverride(object.homeDescription, defaults.pageContent.homeDescription, siteKey),
     homeImageUrl: approvedPublicImageUrl(object.homeImageUrl, defaults.pageContent.homeImageUrl),
     homeImageAlt: normalizeBrandCopy(stringValue(object.homeImageAlt), siteKey) || defaults.pageContent.homeImageAlt,
-    introTitle: normalizeBrandCopy(stringValue(object.introTitle), siteKey) || defaults.pageContent.introTitle,
-    introDescription: normalizeBrandCopy(stringValue(object.introDescription), siteKey) || defaults.pageContent.introDescription,
+    introTitle: safePublicOverride(object.introTitle, defaults.pageContent.introTitle, siteKey),
+    introDescription: safePublicOverride(object.introDescription, defaults.pageContent.introDescription, siteKey),
     introImageUrl: approvedPublicImageUrl(object.introImageUrl, defaults.pageContent.introImageUrl),
     introImageAlt: normalizeBrandCopy(stringValue(object.introImageAlt), siteKey) || defaults.pageContent.introImageAlt,
-    aboutTitle: normalizeBrandCopy(stringValue(object.aboutTitle), siteKey) || defaults.pageContent.aboutTitle,
-    aboutDescription: normalizeBrandCopy(stringValue(object.aboutDescription), siteKey) || defaults.pageContent.aboutDescription,
+    aboutTitle: safePublicOverride(object.aboutTitle, defaults.pageContent.aboutTitle, siteKey),
+    aboutDescription: safePublicOverride(object.aboutDescription, defaults.pageContent.aboutDescription, siteKey),
     aboutImageUrl: approvedPublicImageUrl(object.aboutImageUrl, defaults.pageContent.aboutImageUrl),
     aboutImageAlt: normalizeBrandCopy(stringValue(object.aboutImageAlt), siteKey) || defaults.pageContent.aboutImageAlt,
-    contactTitle: normalizeBrandCopy(stringValue(object.contactTitle), siteKey) || defaults.pageContent.contactTitle,
-    contactDescription: normalizeBrandCopy(stringValue(object.contactDescription), siteKey) || defaults.pageContent.contactDescription,
+    contactTitle: safePublicOverride(object.contactTitle, defaults.pageContent.contactTitle, siteKey),
+    contactDescription: safePublicOverride(object.contactDescription, defaults.pageContent.contactDescription, siteKey),
     contactImageUrl: approvedPublicImageUrl(object.contactImageUrl, defaults.pageContent.contactImageUrl),
     contactImageAlt: normalizeBrandCopy(stringValue(object.contactImageAlt), siteKey) || defaults.pageContent.contactImageAlt
   };
+}
+
+function safePublicOverride(value: unknown, fallback: string, siteKey: PublicSiteKey) {
+  const normalized = normalizeBrandCopy(stringValue(value), siteKey);
+  return normalized && !containsInternalCommerceCopy(normalized) ? normalized : fallback;
 }
 
 function stringValue(value: unknown) {

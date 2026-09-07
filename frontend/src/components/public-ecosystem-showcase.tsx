@@ -21,7 +21,7 @@ export const ecosystemCards: EcosystemCard[] = [
     description: 'Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.',
     href: htxonlineUrl('/'),
     icon: Store,
-    gradientClassName: 'ecosystem-htxonline-bg',
+    gradientClassName: 'ecosystem-cooperative-bg',
     signal: 'Quản trị nội bộ'
   },
   {
@@ -64,7 +64,7 @@ const publicEcosystemCards: EcosystemCard[] = [
     description: 'Xem hồ sơ HTX, khu vực hoạt động và những sản phẩm đang được giới thiệu công khai.',
     href: '/htx',
     icon: Store,
-    gradientClassName: 'ecosystem-htxonline-bg',
+    gradientClassName: 'ecosystem-cooperative-bg',
     signal: 'Hồ sơ HTX'
   },
   {
