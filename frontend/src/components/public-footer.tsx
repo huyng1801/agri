@@ -113,14 +113,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           <div className="py-9 sm:py-12">
             <div className="grid gap-8 border-b border-[#b9d5d3] pb-8 sm:grid-cols-2 lg:grid-cols-[1.18fr_0.95fr_0.88fr_1fr]">
               <div className="sm:col-span-2 lg:col-span-1">
-                <div className="flex items-center gap-3">
-                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white shadow-[0_12px_28px_rgba(18,63,88,0.1)] ring-1 ring-[#cfe4de]">
-                    <PublicLogo size={38} variant="agri" />
-                  </span>
-                  <div>
-                    <p className="text-[1.1rem] font-extrabold tracking-[-0.03em] text-[#123a66]">AGRIPASSPORT</p>
-                    <p className="mt-1 text-[0.68rem] font-bold uppercase tracking-[0.17em] text-[#397d63]">Nền tảng số hóa nông sản</p>
-                  </div>
+                <div className="flex min-w-0 flex-col items-start gap-2">
+                  <PublicLogo size={36} variant="agri-wordmark" className="h-9 w-auto max-w-full" />
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-[#397d63]">Nền tảng số hóa nông sản</p>
                 </div>
                 <p className="mt-4 max-w-sm text-sm leading-7 text-[#496277]">
                   Agripassport giúp hợp tác xã, nông hộ và doanh nghiệp số hóa thông tin sản phẩm, minh bạch nguồn gốc và kết nối thị trường trên một hệ sinh thái nông nghiệp số.

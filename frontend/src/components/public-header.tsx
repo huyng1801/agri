@@ -341,13 +341,19 @@ export function PublicHeader({
             className="flex min-w-0 flex-1 items-center gap-2 px-1 py-1"
             aria-label={`${appName} - Trang chủ`}
           >
-            <span className={cn('grid h-10 w-10 shrink-0 place-items-center rounded-full shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]', isAgri ? 'bg-white' : isMarketplace ? 'bg-[#111827]' : 'bg-[#0f7d63]')}>
-              <PublicLogo size={27} className="h-7 w-7" variant={isAgri ? 'agri' : 'default'} />
-            </span>
-            <span className="min-w-0">
-              <span className="hidden truncate text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:block">{brandBadge}</span>
-              <span className="block truncate text-[0.8rem] font-extrabold text-[#1f2233] sm:mt-0.5 sm:text-sm">{appName}</span>
-            </span>
+            {isAgri ? (
+              <PublicLogo size={27} variant="agri-wordmark" className="h-[27px] w-auto max-w-[8.5rem]" />
+            ) : (
+              <>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#111827] shadow-[0_8px_18px_rgba(15,125,99,0.18)] ring-1 ring-[#d7ddd2]">
+                  <PublicLogo size={27} className="h-7 w-7" variant="default" />
+                </span>
+                <span className="min-w-0">
+                  <span className="hidden truncate text-[0.62rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:block">{brandBadge}</span>
+                  <span className="block truncate text-[0.8rem] font-extrabold text-[#1f2233] sm:mt-0.5 sm:text-sm">{appName}</span>
+                </span>
+              </>
+            )}
           </Link>
 
           <form action={searchTarget} className="hidden flex-1 items-center md:flex">
