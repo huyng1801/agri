@@ -70,7 +70,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <PublicBreadcrumb href="/san-pham" label="Quay lại danh sách sản phẩm" />
 
         <div className="grid gap-4 lg:grid-cols-[1.02fr_0.98fr] lg:gap-5">
-          <section className={`${publicCardClass} order-2 lg:order-1`}>
+          <section className={`${publicCardClass} order-1 lg:order-1`}>
             <div className="p-2.5 sm:p-3">
               <PublicImage
                 src={product.thumbnail?.publicUrl}
@@ -93,7 +93,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
           </section>
 
-          <section className="order-1 rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
+          <section className="order-2 rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
             <div>
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/66">{product.category?.name ?? 'Nông sản'}</p>
               <h1 className="mt-2 text-[1.72rem] font-extrabold leading-[1.03] tracking-[-0.03em] text-white sm:text-[2.65rem]">{product.name}</h1>

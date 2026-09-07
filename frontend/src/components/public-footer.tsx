@@ -144,9 +144,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
               <div className="rounded-[1.65rem] border border-[#cfe3dc] bg-white/75 p-4 shadow-[0_14px_32px_rgba(18,63,88,0.07)]">
                 <p className="text-[0.7rem] font-bold uppercase tracking-[0.17em] text-[#397d63]">Hỗ trợ khách hàng</p>
-                <a href={telHref(profile.hotline)} className="mt-3 flex min-h-10 items-center gap-2 text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Phone size={17} aria-hidden="true" />{profile.hotlineDisplay}</a>
-                <a href={`mailto:${profile.supportEmail}`} className="flex min-h-10 items-center gap-2 break-all text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Mail size={17} aria-hidden="true" />{profile.supportEmail}</a>
-                <a href={mapSearchUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-10 items-center gap-2 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white transition hover:bg-[#185b3a]"><MapPin size={16} aria-hidden="true" />Mở bản đồ</a>
+                <a href={telHref(profile.hotline)} className="mt-3 flex min-h-11 items-center gap-2 text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Phone size={17} aria-hidden="true" />{profile.hotlineDisplay}</a>
+                <a href={`mailto:${profile.supportEmail}`} className="flex min-h-11 items-center gap-2 break-all text-sm font-semibold text-[#193e5d] transition hover:text-[#1f9b4b]"><Mail size={17} aria-hidden="true" />{profile.supportEmail}</a>
+                <a href={mapSearchUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white transition hover:bg-[#185b3a]"><MapPin size={16} aria-hidden="true" />Mở bản đồ</a>
               </div>
             </div>
 
@@ -316,7 +316,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                     href={mapSearchUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#dce7d9] bg-white px-4 text-xs font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+                    className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#dce7d9] bg-white px-4 text-xs font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
                   >
                     Google Maps
                   </a>
@@ -504,7 +504,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   href={mapSearchUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[#dce7d9] bg-white px-4 text-xs font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#dce7d9] bg-white px-4 text-xs font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
                 >
                   Google Maps
                 </a>

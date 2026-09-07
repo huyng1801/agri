@@ -271,7 +271,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               description="Khám phá các sản phẩm được số hóa trên Agripassport từ nông sản, sản phẩm OCOP đến các sản phẩm của hợp tác xã và doanh nghiệp. Tìm hiểu thông tin sản phẩm, đơn vị sản xuất và dữ liệu truy xuất nguồn gốc được công khai trên hệ thống."
             />
 
-            <section className="rounded-[2rem] border border-[#e8e4d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-5 lg:p-6">
+            <section className="hidden rounded-[2rem] border border-[#e8e4d8] bg-white p-4 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:block sm:p-5 lg:p-6">
               <div className="grid gap-3 lg:grid-cols-[0.88fr_1.12fr] lg:items-start xl:grid-cols-[0.8fr_1.2fr]">
                 <div>
                   <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm sm:tracking-[0.24em]">Danh mục sản phẩm</p>
