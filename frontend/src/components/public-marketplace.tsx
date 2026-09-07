@@ -141,7 +141,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           {product.name}
         </Link>
         {product.cooperative ? (
-          <Link href={`/htx/${product.cooperative.code}`} className="mt-2 inline-flex min-h-8 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542]">
+          <Link href={`/htx/${product.cooperative.code}`} className="mt-2 inline-flex min-h-11 items-center gap-2 text-xs font-semibold text-[#466352] transition hover:text-[#1c8542]">
             <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName="h-6 w-6 shrink-0 rounded-full" className="h-full w-full rounded-full object-cover" />
             <span className="truncate">{product.cooperative.name}</span>
           </Link>
@@ -153,7 +153,7 @@ export function ProductCard({ product, priority = false }: { product: PublicProd
           </div>
           <Link
             href={`/san-pham/${product.slug}`}
-            className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-[#1f7048] px-4 text-sm font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint"
           >
             Xem thông tin
             <ArrowRight size={15} aria-hidden="true" />

@@ -73,7 +73,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <Link
                 href="/tin-tuc"
                 className={cn(
-                  'snap-start whitespace-nowrap rounded-[1rem] border px-3 py-2 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm',
+                  'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
                   !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
                 )}
               >
@@ -84,7 +84,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   key={category.id}
                   href={`/tin-tuc?category=${category.slug}`}
                   className={cn(
-                    'snap-start whitespace-nowrap rounded-[1rem] border px-3 py-2 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm',
+                  'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
                     filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
                   )}
                 >
@@ -117,7 +117,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   {featured.title}
                 </Link>
                 <p className="mt-3 max-w-2xl line-clamp-2 text-[0.96rem] leading-7 text-slate-600 sm:text-base">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-4 inline-flex min-h-10 items-center gap-2 text-sm font-bold text-leaf transition hover:gap-3">
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-leaf transition hover:gap-3">
                   Đọc bài viết <ArrowRight size={16} />
                 </Link>
               </div>

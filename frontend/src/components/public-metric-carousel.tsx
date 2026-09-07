@@ -118,12 +118,11 @@ export function PublicMetricCarousel({
               type="button"
               aria-label={`Chọn mục ${itemIndex + 1}`}
               aria-pressed={itemIndex === activeIndex}
-              className={cn(
-                'h-2.5 rounded-full transition',
-                itemIndex === activeIndex ? 'w-8 bg-[#1f9b4b]' : 'w-2.5 bg-[#d8e2d7] hover:bg-[#b8cdb9]'
-              )}
+              className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-[#f1f7ef]"
               onClick={() => setIndex(itemIndex)}
-            />
+            >
+              <span className={cn('block h-2.5 rounded-full transition', itemIndex === activeIndex ? 'w-8 bg-[#1f9b4b]' : 'w-2.5 bg-[#d8e2d7]')} />
+            </button>
           ))}
         </div>
       </div>

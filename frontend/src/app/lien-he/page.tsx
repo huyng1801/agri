@@ -93,7 +93,7 @@ export default async function ContactPage() {
                 <div className="mt-5 flex flex-wrap gap-2.5">
                   <a
                     href={telHref(siteProfile.hotline)}
-                    className="inline-flex min-h-10 items-center gap-2 rounded-full bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#256b43]"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#256b43]"
                   >
                     Gọi hotline
                   </a>
@@ -101,7 +101,7 @@ export default async function ContactPage() {
                     href={mapSearchUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#b9d8bd] bg-white/70 px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5 hover:bg-white"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#b9d8bd] bg-white/70 px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5 hover:bg-white"
                   >
                     Mở bản đồ
                   </a>
