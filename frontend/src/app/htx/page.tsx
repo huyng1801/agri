@@ -69,7 +69,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
     `${totalProducts} sản phẩm đang đi cùng hồ sơ HTX`,
     siteKey === 'passport' ? 'Có thể nối tiếp sang trang truy xuất QR' : 'Mở chi tiết HTX và sản phẩm ngay trên cùng hệ sinh thái'
   ];
-  const displayedCooperatives = cooperatives.slice(0, 6);
+  const displayedCooperatives = cooperatives;
 
   return (
     <PublicShell>

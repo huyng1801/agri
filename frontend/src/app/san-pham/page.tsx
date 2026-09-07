@@ -42,7 +42,7 @@ type ProductsPageProps = {
 };
 
 async function getProducts(filters: ProductFilters) {
-  const params = new URLSearchParams({ limit: '24' });
+  const params = new URLSearchParams({ limit: '100' });
   for (const key of ['search', 'category', 'cooperative', 'province', 'minPrice', 'maxPrice', 'hasQr', 'sort'] as const) {
     if (filters[key]) params.set(key, filters[key]);
   }
@@ -75,7 +75,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         .map((category) => [category.slug, category])
     ).values()
   ).slice(0, 6);
-  const displayedProducts = isInternal ? products : products.slice(0, 5);
+  const displayedProducts = products;
   const featuredProduct = products[0];
   const featuredProductSlug = featuredProduct?.slug ? `/san-pham/${featuredProduct.slug}` : '/san-pham';
   const featuredProductQr = featuredProduct?.passports?.[0];
