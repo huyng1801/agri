@@ -60,11 +60,15 @@ const GLOBAL_CATEGORIES = [
 const PHOTOS = {
   // These are first-party editorial assets generated for Agripassport.
   farm: 'https://agripassport.com/news/cooperative-data.webp',
+  cooperativeData: 'https://agripassport.com/news/cooperative-data.webp',
   rice: 'https://agripassport.com/news/field-qr.webp',
+  fieldQr: 'https://agripassport.com/news/field-qr.webp',
   riceField: 'https://agripassport.com/news/field-qr.webp',
   veg: 'https://agripassport.com/news/produce-label.webp',
+  produceLabel: 'https://agripassport.com/news/produce-label.webp',
   vegBasket: 'https://agripassport.com/news/produce-label.webp',
   fruit: 'https://agripassport.com/news/market-data.webp',
+  marketData: 'https://agripassport.com/news/market-data.webp',
   mango: 'https://agripassport.com/news/market-data.webp',
   coffee: 'https://agripassport.com/news/field-qr.webp',
   honey: 'https://agripassport.com/news/cooperative-data.webp',
