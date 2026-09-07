@@ -2,8 +2,10 @@ import { ArrowRight, Boxes, QrCode, Store, type LucideIcon } from 'lucide-react'
 import { cn } from './ui';
 import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 
+type EcosystemCardKey = Exclude<PublicSiteKey, 'local'> | 'cooperatives';
+
 type EcosystemCard = {
-  key: Exclude<PublicSiteKey, 'local'>;
+  key: EcosystemCardKey;
   name: string;
   label: string;
   description: string;
@@ -58,7 +60,7 @@ const publicEcosystemCards: EcosystemCard[] = [
     signal: 'Danh mục sản phẩm'
   },
   {
-    key: 'htxonline',
+    key: 'cooperatives',
     name: 'HỢP TÁC XÃ',
     label: 'Tìm đơn vị sản xuất',
     description: 'Xem hồ sơ HTX, khu vực hoạt động và những sản phẩm đang được giới thiệu công khai.',
@@ -141,7 +143,7 @@ export function PublicEcosystemShowcase({
           const Icon = card.icon;
           const isCurrent = siteKey === card.key || (siteKey === 'local' && card.key === 'agripassport');
           if (demeterLike) {
-            const demeterStyle = demeterCardStyles[card.key];
+            const demeterStyle = demeterCardStyles[card.key as keyof typeof demeterCardStyles];
             return (
               <a
                 key={card.key}
