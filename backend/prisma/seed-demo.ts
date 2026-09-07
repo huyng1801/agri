@@ -10,18 +10,11 @@ import {
 import * as bcrypt from 'bcryptjs';
 import { customAlphabet } from 'nanoid';
 import { EDITORIAL_NEWS_ARTICLES } from './editorial-news';
+import { EDITORIAL_NEWS_EXPANSION } from './editorial-news-expansion';
 
 const prisma = new PrismaClient();
 const passportCode = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 10);
 const DEMO_ADMIN_PASSWORD = process.env.SEED_DEMO_ADMIN_PASSWORD || 'Demo@2026';
-
-function demoPhoto(seed: string, width = 900, height = 600) {
-  return `https://picsum.photos/seed/htxonline-${seed}/${width}/${height}`;
-}
-
-function img(photoId: string, width = 900) {
-  return `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&w=${width}&q=80`;
-}
 
 async function assertImageUrls(urls: string[]) {
   const unique = [...new Set(urls)];
@@ -65,27 +58,28 @@ const GLOBAL_CATEGORIES = [
 ] as const;
 
 const PHOTOS = {
-  farm: img('1464226184884-fa280b87c399', 1200),
-  rice: img('1536304993881-ff6e9eefa2a6', 1200),
-  riceField: demoPhoto('rice-field', 1200, 700),
-  veg: demoPhoto('vegetables', 900, 600),
-  vegBasket: demoPhoto('veg-basket', 900, 600),
-  fruit: demoPhoto('fruit', 900, 600),
-  mango: demoPhoto('mango', 900, 600),
-  coffee: demoPhoto('coffee', 1200, 700),
-  honey: demoPhoto('honey', 900, 600),
-  fish: demoPhoto('fish', 900, 600),
-  chicken: demoPhoto('chicken', 900, 600),
-  tea: img('1544787219-7f47ccb76574', 1200),
-  mushroom: demoPhoto('mushroom', 900, 600),
-  orchard: demoPhoto('orchard', 1200, 700),
-  market: img('1542838132-92c53300491e', 1200),
-  harvest: img('1500937386664-56d1dfef3854', 1200),
-  coopTeam: demoPhoto('coop-team', 900, 600),
-  dragonfruit: demoPhoto('dragonfruit', 900, 600),
-  pepper: img('1596040033229-a9821ebd058d'),
-  shrimp: img('1559339352-11d035aa65de'),
-  durian: demoPhoto('durian', 900, 600)
+  // These are first-party editorial assets generated for Agripassport.
+  farm: 'https://agripassport.com/news/cooperative-data.webp',
+  rice: 'https://agripassport.com/news/field-qr.webp',
+  riceField: 'https://agripassport.com/news/field-qr.webp',
+  veg: 'https://agripassport.com/news/produce-label.webp',
+  vegBasket: 'https://agripassport.com/news/produce-label.webp',
+  fruit: 'https://agripassport.com/news/market-data.webp',
+  mango: 'https://agripassport.com/news/market-data.webp',
+  coffee: 'https://agripassport.com/news/field-qr.webp',
+  honey: 'https://agripassport.com/news/cooperative-data.webp',
+  fish: 'https://agripassport.com/news/produce-label.webp',
+  chicken: 'https://agripassport.com/news/cooperative-data.webp',
+  tea: 'https://agripassport.com/news/market-data.webp',
+  mushroom: 'https://agripassport.com/news/produce-label.webp',
+  orchard: 'https://agripassport.com/news/cooperative-data.webp',
+  market: 'https://agripassport.com/news/market-data.webp',
+  harvest: 'https://agripassport.com/news/field-qr.webp',
+  coopTeam: 'https://agripassport.com/news/cooperative-data.webp',
+  dragonfruit: 'https://agripassport.com/news/produce-label.webp',
+  pepper: 'https://agripassport.com/news/market-data.webp',
+  shrimp: 'https://agripassport.com/news/produce-label.webp',
+  durian: 'https://agripassport.com/news/market-data.webp'
 };
 
 type DemoProduct = {
@@ -794,10 +788,31 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
   return cooperative;
 }
 
+const PUBLIC_ARTICLE_GUIDES: Record<string, string> = {
+  'chuyen-doi-so': '<h2>Gợi ý triển khai trong 30 ngày</h2><p>Để bắt đầu mà không tạo áp lực cho đội ngũ, hợp tác xã có thể chia việc thành bốn tuần: tuần đầu kiểm kê và chọn sản phẩm thử nghiệm; tuần thứ hai chuẩn hóa tên, quy cách và người phụ trách; tuần thứ ba nhập dữ liệu sản xuất và kiểm tra trên điện thoại; tuần thứ tư đánh giá điểm vướng rồi thống nhất cách cập nhật. Mỗi tuần nên có một đầu ra cụ thể để mọi người dễ phối hợp.</p><ul><li>Chọn một người chịu trách nhiệm dữ liệu và một người kiểm tra.</li><li>Ghi rõ trường nào bắt buộc trước khi mở hồ sơ công khai.</li><li>Đặt lịch rà soát dữ liệu theo mùa vụ, không chờ đến khi có vấn đề.</li></ul>',
+  'truy-xuat-nguon-goc': '<h2>Gợi ý thực hành cho người mua</h2><p>Khi quét một mã QR, hãy đọc theo thứ tự từ dễ kiểm tra đến thông tin chuyên sâu: tên sản phẩm, đơn vị sản xuất, vùng sản xuất, mã lô hoặc thời gian, sau đó là nhật ký và tài liệu liên quan nếu có. Nếu thông tin chưa khớp với bao bì, hãy tạm dừng và liên hệ với đơn vị sản xuất thay vì tự suy đoán.</p><p>Truy xuất tốt giúp người mua có thêm cơ sở lựa chọn, nhưng vẫn cần được kết hợp với nhãn hàng hóa, bảo quản đúng cách và các yêu cầu chất lượng phù hợp với từng sản phẩm.</p>',
+  'kien-thuc-nong-nghiep': '<h2>Checklist trước khi số hóa</h2><ol><li>Xác định câu hỏi mà dữ liệu cần trả lời.</li><li>Chọn dữ liệu tối thiểu có thể ghi nhận ổn định.</li><li>Phân biệt dữ liệu nội bộ với dữ liệu được phép công khai.</li><li>Thử quy trình với người trực tiếp sản xuất.</li><li>Đặt lịch cập nhật và kiểm tra sau mỗi mùa vụ.</li></ol><p>Cách làm từng bước giúp công nghệ bám vào hoạt động thật. Khi dữ liệu được dùng trong báo cáo, hồ sơ sản phẩm và truy xuất, công sức nhập liệu mới tạo ra giá trị rõ ràng.</p>',
+  'tin-thi-truong': '<h2>Điều cần chuẩn bị trước khi mở rộng</h2><p>Trước khi giới thiệu sản phẩm tới một kênh mới, hãy kiểm tra lại tên sản phẩm, quy cách, khả năng cung ứng, hình ảnh, thông tin đơn vị và hồ sơ truy xuất. Một bộ thông tin thống nhất giúp đối tác đánh giá nhanh hơn và giúp hợp tác xã tránh trả lời khác nhau trên từng kênh.</p><ul><li>Chỉ dùng số liệu đã có người chịu trách nhiệm xác nhận.</li><li>Nêu rõ điều kiện mùa vụ và khả năng cung ứng thực tế.</li><li>Cập nhật hồ sơ khi lô, quy cách hoặc tài liệu thay đổi.</li></ul>',
+  'cau-chuyen-san-pham': '<h2>Khung kể chuyện có thể kiểm chứng</h2><p>Một câu chuyện sản phẩm thuyết phục nên đi từ nơi sản xuất, chủ thể đứng sau, cách sản phẩm được tạo ra, điểm kiểm tra và cách người mua tiếp cận hồ sơ. Hãy ưu tiên chi tiết có thể đối chiếu như vùng, mùa vụ, quy cách, mốc thời gian và tài liệu phù hợp; tránh dùng lời khẳng định rộng hơn dữ liệu thực tế.</p><p>Khi câu chuyện được xây dựng từ dữ liệu thật, nội dung trên bao bì, website và mã QR sẽ nhất quán hơn.</p>',
+  'tin-htx': '<h2>Gợi ý phối hợp trong hợp tác xã</h2><p>Hợp tác xã nên thống nhất một quy trình ngắn: người sản xuất ghi nhận, người phụ trách kiểm tra, người quản lý duyệt phần công khai và đội ngũ cập nhật khi có thay đổi. Phân công rõ giúp dữ liệu không phụ thuộc vào một cá nhân và dễ duy trì qua nhiều mùa vụ.</p>'
+};
+
+function preparePublicNewsBody(bodyHtml: string, category: string) {
+  const bodyWithGuide = `${bodyHtml}${PUBLIC_ARTICLE_GUIDES[category] || ''}`;
+  return bodyWithGuide
+    .replace(/\bHTXONLINE\b/gi, 'lớp quản trị nội bộ')
+    .replace(/\bCOD\b/gi, 'quy trình giao nhận')
+    .replace(/\bGiỏ hàng\b/gi, 'danh mục sản phẩm')
+    .replace(/Thanh toán COD/gi, 'quy trình giao nhận');
+}
+
 async function seedNews(superAdminId: string) {
   const categories = await prisma.newsCategory.findMany();
   const categoryBySlug = new Map(categories.map((item) => [item.slug, item.id]));
-  const editorialArticles = EDITORIAL_NEWS_ARTICLES.map((article) => ({ ...article, cover: PHOTOS[article.coverKey as keyof typeof PHOTOS] }));
+  const editorialArticles = [...EDITORIAL_NEWS_ARTICLES, ...EDITORIAL_NEWS_EXPANSION].map((article) => ({
+    ...article,
+    cover: PHOTOS[article.coverKey as keyof typeof PHOTOS]
+  }));
   const allArticles = [...DOCUMENT_NEWS_ARTICLES, ...editorialArticles];
 
   for (const [index, article] of allArticles.entries()) {
@@ -805,7 +820,8 @@ async function seedNews(superAdminId: string) {
     const existingByTitle = await prisma.newsArticle.findFirst({ where: { title: article.title }, select: { slug: true } });
     const publishedAt = new Date();
     publishedAt.setDate(publishedAt.getDate() - index * 3);
-    const bodyHtml = article.bodyHtml;
+    const bodyHtml = preparePublicNewsBody(article.bodyHtml, article.category);
+    const coverImageAlt = `Ảnh minh họa: ${article.title}`;
     const focusKeyword = article.focusKeyword;
     const seoDescription = article.seoDescription;
     await prisma.newsArticle.upsert({
@@ -818,7 +834,7 @@ async function seedNews(superAdminId: string) {
         excerpt: article.excerpt,
         bodyHtml,
         coverImageUrl: article.cover,
-        coverImageAlt: article.title,
+        coverImageAlt,
         status: NewsStatus.PUBLISHED,
         publicVerified: true,
         isFeatured: index < 4,
@@ -843,7 +859,7 @@ async function seedNews(superAdminId: string) {
         slug,
         excerpt: article.excerpt,
         coverImageUrl: article.cover,
-        coverImageAlt: article.title,
+        coverImageAlt,
         status: NewsStatus.PUBLISHED,
         publicVerified: true,
         isFeatured: index < 4,
@@ -976,7 +992,7 @@ async function main() {
 
   if (superAdmin) {
     await seedNews(superAdmin.id);
-    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length} bài tin tức biên tập`);
+    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length + EDITORIAL_NEWS_EXPANSION.length} bài tin tức biên tập`);
   }
 
   await seedSampleOrders();
