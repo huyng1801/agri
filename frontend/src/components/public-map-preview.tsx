@@ -1,4 +1,7 @@
-import { MapPin, Navigation } from 'lucide-react';
+'use client';
+
+import { useState } from 'react';
+import { ExternalLink, MapPin, Navigation } from 'lucide-react';
 import { cn } from '@/components/ui';
 import { type PublicMapLocation } from '@/lib/public-site';
 
@@ -30,6 +33,30 @@ function MapLink({ href, compact = false }: { href: string; compact?: boolean })
   );
 }
 
+function StaticMapSurface({ address, location, mapSearchUrl, compact }: { address: string; location: PublicMapLocation; mapSearchUrl: string; compact: boolean }) {
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-[linear-gradient(135deg,#edf7f1_0%,#d6ebdf_48%,#9dc5ae_100%)]">
+      <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(255,255,255,0.34)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.34)_1px,transparent_1px)] [background-size:32px_32px]" />
+      <svg aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full opacity-75">
+        <path d="M4 73C17 60 27 57 39 61C51 65 57 76 69 73C80 70 84 58 97 53" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="2.8" strokeLinecap="round" />
+        <path d="M10 27C25 30 33 38 40 46C49 55 59 57 70 53C80 49 86 35 94 24" fill="none" stroke="rgba(35,111,74,0.24)" strokeWidth="3.5" strokeLinecap="round" />
+        <path d="M16 60C29 49 41 45 55 48C65 51 72 57 83 54" fill="none" stroke="rgba(35,111,74,0.24)" strokeWidth="1.4" strokeDasharray="4 4" strokeLinecap="round" />
+      </svg>
+      <div className="absolute left-[11%] top-[21%] hidden max-w-[min(74%,22rem)] rounded-[var(--public-radius-control)] border border-white/75 bg-white/90 px-3 py-2 text-left shadow-sm backdrop-blur-sm sm:block">
+        <p className="text-[0.64rem] font-bold uppercase tracking-[0.16em] text-[var(--brand-primary)]">Văn phòng hỗ trợ</p>
+        <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[var(--text-primary)]">{address}</p>
+      </div>
+      <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_7px_rgba(220,38,38,0.16)]" aria-hidden="true" />
+      <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-3 sm:bottom-4 sm:left-4 sm:right-4">
+        <div className="rounded-full border border-white/75 bg-white/88 px-3 py-1.5 text-[0.68rem] font-semibold text-[var(--brand-primary)] shadow-sm backdrop-blur-sm">
+          {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+        </div>
+        {compact ? <MapLink href={mapSearchUrl} compact /> : null}
+      </div>
+    </div>
+  );
+}
+
 export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl, className, frameClassName, aspectClassName, compact = false }: PublicMapPreviewProps) {
   const regionLabel = address
     .split(',')
@@ -37,7 +64,16 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
     .filter(Boolean)
     .slice(-1)[0] || 'Việt Nam';
   const mapTitle = `Bản đồ văn phòng hỗ trợ tại ${regionLabel}`;
-  const hasEmbed = Boolean(mapEmbedUrl);
+  const [showEmbed, setShowEmbed] = useState(false);
+  const [embedFailed, setEmbedFailed] = useState(false);
+  const hasEmbed = Boolean(mapEmbedUrl) && showEmbed && !embedFailed;
+
+  function openEmbed() {
+    if (mapEmbedUrl) {
+      setEmbedFailed(false);
+      setShowEmbed(true);
+    }
+  }
 
   if (compact) {
     return (
@@ -49,18 +85,18 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
             className="absolute inset-0 h-full w-full border-0"
+            onError={() => setEmbedFailed(true)}
           />
         ) : (
-          <div className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,var(--brand-primary-subtle),var(--surface-muted))] p-5 text-center">
-            <div>
-              <MapPin className="mx-auto text-[var(--brand-primary)]" size={24} aria-hidden="true" />
-              <p className="mt-2 text-sm font-semibold text-[var(--text-primary)]">Chưa tải được bản đồ nhúng</p>
-              <p className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">Bạn vẫn có thể mở vị trí trên Google Maps.</p>
-            </div>
-          </div>
+          <StaticMapSurface address={address} location={location} mapSearchUrl={mapSearchUrl} compact />
         )}
         {hasEmbed ? <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_35%,rgba(15,23,42,0.24)_100%)]" /> : null}
-        {hasEmbed ? <span className="pointer-events-none absolute left-1/2 top-[42%] h-4 w-4 -translate-x-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.16)]" aria-hidden="true" /> : null}
+        {!hasEmbed && mapEmbedUrl ? (
+          <button type="button" onClick={openEmbed} className="absolute left-3 top-3 z-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/90 px-3 text-xs font-bold text-[var(--brand-primary)] shadow-sm backdrop-blur-sm transition hover:bg-white">
+            <MapPin size={15} aria-hidden="true" />
+            {embedFailed ? 'Thử tải lại bản đồ' : 'Xem bản đồ tương tác'}
+          </button>
+        ) : null}
         <div className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between gap-3 rounded-[var(--public-radius-control)] border border-white/70 bg-white/92 px-3 py-2.5 shadow-sm backdrop-blur-sm sm:inset-x-4 sm:bottom-4">
           <div className="min-w-0">
             <p className="text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[var(--brand-primary)]">Điểm hỗ trợ</p>
@@ -83,20 +119,20 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="absolute inset-0 z-0 h-full w-full border-0"
+              onError={() => setEmbedFailed(true)}
             />
           ) : (
-            <div className="absolute inset-0 grid place-items-center bg-[linear-gradient(135deg,var(--brand-primary-subtle),var(--surface-muted))] p-6 text-center">
-              <div>
-                <MapPin className="mx-auto text-[var(--brand-primary)]" size={32} aria-hidden="true" />
-                <p className="mt-3 font-semibold text-[var(--text-primary)]">Bản đồ đang được cập nhật</p>
-                <p className="mt-1 max-w-sm text-sm leading-6 text-[var(--text-secondary)]">Địa chỉ hỗ trợ vẫn có thể được mở trực tiếp trên Google Maps.</p>
-              </div>
-            </div>
+            <StaticMapSurface address={address} location={location} mapSearchUrl={mapSearchUrl} compact={false} />
           )}
           {hasEmbed ? <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.03)_30%,rgba(15,23,42,0.2)_100%)]" /> : null}
         </div>
 
-        {hasEmbed ? <span className="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_6px_rgba(220,38,38,0.18)]" aria-hidden="true" /> : null}
+        {!hasEmbed && mapEmbedUrl ? (
+          <button type="button" onClick={openEmbed} className="absolute bottom-3 left-3 z-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/75 bg-white/90 px-4 text-sm font-bold text-[var(--brand-primary)] shadow-sm backdrop-blur-sm transition hover:bg-white sm:bottom-4 sm:left-4">
+            <ExternalLink size={16} aria-hidden="true" />
+            {embedFailed ? 'Thử tải lại bản đồ' : 'Xem bản đồ tương tác'}
+          </button>
+        ) : null}
         <div className="absolute inset-x-3 top-3 z-10 flex items-start justify-between gap-3 sm:inset-x-4 sm:top-4">
           <div className="min-w-0 max-w-[min(100%,34rem)] rounded-[var(--public-radius-control)] border border-white/70 bg-white/92 px-3 py-2.5 text-left shadow-sm backdrop-blur-sm sm:px-4">
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-[var(--brand-primary)]">Văn phòng hỗ trợ</p>
