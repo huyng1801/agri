@@ -49,7 +49,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
         <PublicDetailMain className="max-w-3xl">
           <Panel className="text-center">
             <h1 className="text-2xl font-bold">Không tìm thấy sản phẩm</h1>
-            <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/san-pham">
+            <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/san-pham">
               Quay lại danh sách sản phẩm
             </Link>
           </Panel>
@@ -127,7 +127,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
           </section>
 
-          <section className="order-2 rounded-[1.9rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_40%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
+          <section className="brand-gradient-bg order-2 rounded-[1.75rem] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6 lg:order-2">
             <div>
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/66">{product.category?.name ?? 'Nông sản'}</p>
               <h1 className="mt-2 text-[1.72rem] font-extrabold leading-[1.03] tracking-[-0.03em] text-white sm:text-[2.65rem]">{product.name}</h1>
@@ -147,6 +147,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 )}
                 {product.cooperative?.name ?? 'HTX đang cập nhật'}
               </Link>
+              {(product.zone?.name || product.cooperative?.province) && (
+                <div className="mt-3 inline-flex max-w-full items-center gap-2 text-sm text-white/78">
+                  <MapPin size={16} className="shrink-0" aria-hidden="true" />
+                  <span className="truncate">{[product.zone?.name, product.cooperative?.province].filter(Boolean).join(' · ')}</span>
+                </div>
+              )}
             </div>
 
             <div className="mt-5 rounded-[1.45rem] border border-white/10 bg-white/10 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:p-5">

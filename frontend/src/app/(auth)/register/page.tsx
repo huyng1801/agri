@@ -38,9 +38,9 @@ export default function RegisterPage() {
       <Panel className="w-full max-w-md">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-2 text-center">
-            <PublicLogo size={56} className="mx-auto ring-1 ring-slate-200 lg:hidden" />
+            <PublicLogo size={56} variant="agri" className="mx-auto ring-1 ring-slate-200 lg:hidden" />
             <h1 className="text-2xl font-bold">Tạo tài khoản</h1>
-            <p className="text-sm text-slate-600">Tham gia HTXONLINE để mua sản phẩm HTX minh bạch</p>
+            <p className="text-sm text-slate-600">Tạo tài khoản để theo dõi đơn hàng và kết nối sản phẩm minh bạch</p>
           </div>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Họ tên</span>

@@ -13,10 +13,10 @@ export function FooterContactInfo() {
   return (
     <div className="grid gap-2 text-sm font-medium text-slate-700">
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Liên hệ</p>
-      <a href={telHref(profile.hotline)} className="inline-flex min-h-11 items-center font-medium text-ink hover:text-leaf">
+      <a href={telHref(profile.hotline)} className="inline-flex min-h-11 items-center font-medium text-ink hover:text-[var(--brand-primary)]">
         Hotline: {profile.hotlineDisplay}
       </a>
-      <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-11 items-center hover:text-leaf">
+      <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-11 items-center hover:text-[var(--brand-primary)]">
         {profile.supportEmail}
       </a>
       <p className="leading-6 text-slate-600">{profile.address}</p>
@@ -86,7 +86,7 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
       {showHotline && (
         <a
           href={telHref(siteProfile.hotline)}
-          className="grid h-11 w-11 place-items-center rounded-full bg-white text-leaf shadow-soft ring-1 ring-slate-200/80"
+          className="grid h-11 w-11 place-items-center rounded-full bg-white text-[var(--brand-primary)] shadow-soft ring-1 ring-slate-200/80"
           aria-label="Gọi hotline"
         >
           <Phone size={16} aria-hidden="true" />

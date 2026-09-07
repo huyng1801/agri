@@ -59,7 +59,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           title="Tin tức"
           description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
           action={
-            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-[1.15rem] border border-[#e8e4d8] bg-white p-1.5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:flex-row sm:rounded-[1.3rem] sm:p-2 lg:w-[420px]">
+            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-[1.15rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-1.5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:flex-row sm:rounded-[1.3rem] sm:p-2 lg:w-[420px]">
               <div className="relative flex-1">
                 <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
                 <input
@@ -67,7 +67,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   defaultValue={filters.search ?? ''}
                   placeholder="Tìm bài viết"
                   aria-label="Tìm bài viết"
-                  className="min-h-11 w-full rounded-[0.95rem] border-0 bg-[#f7faf4] pl-10 pr-3 text-[0.95rem] outline-none focus:ring-4 focus:ring-mint sm:rounded-[1.05rem] sm:text-base"
+                  className="min-h-11 w-full rounded-[0.95rem] border-0 bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none focus:ring-4 focus:ring-[var(--brand-primary-subtle)] sm:rounded-[1.05rem] sm:text-base"
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
@@ -77,7 +77,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
         />
 
         {publicTopics.length > 0 && (
-          <section className="mb-5 overflow-hidden rounded-[1.4rem] border border-[#e8e4d8] bg-white p-3 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:mb-6 sm:rounded-[1.7rem] sm:p-4">
+          <section className="mb-5 overflow-hidden rounded-[1.4rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-3 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:mb-6 sm:rounded-[1.7rem] sm:p-4">
             <div className="mb-2.5 flex items-center gap-2 text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-leaf/80 sm:mb-3 sm:text-sm">
               <Sparkles size={16} aria-hidden="true" />
               Chủ đề nổi bật
@@ -87,7 +87,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                 href="/tin-tuc"
                 className={cn(
                   'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
-                  !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
+                  !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-[var(--border)] bg-[var(--surface-elevated)] text-slate-700'
                 )}
               >
                 Tất cả
@@ -98,7 +98,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   href={`/tin-tuc?category=${category.slug}`}
                   className={cn(
                   'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
-                    filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-slate-200 bg-white text-slate-700'
+                    filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-[var(--border)] bg-[var(--surface-elevated)] text-slate-700'
                   )}
                 >
                   {category.name}
@@ -110,14 +110,14 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
         {featured && !filters.search && (
           <section className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.75fr)] lg:gap-6" aria-label="Bài viết nổi bật">
-            <article className={cn(publicCardClass, 'group overflow-hidden rounded-[2rem] border-[#dfe9dc] bg-[#fbfdf9]')}>
+            <article className={cn(publicCardClass, 'group overflow-hidden rounded-[1.75rem] bg-[var(--surface-elevated)]')}>
               <Link href={`/tin-tuc/${featured.slug}`} className="block overflow-hidden p-2.5 sm:p-3">
                 <PublicImage
                   src={featured.coverImageUrl}
                   alt={featured.coverImageAlt || featured.title}
                   fallback={DEFAULT_NEWS_IMAGE}
                   priority
-                  wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[#dce9d7] bg-[#eef7eb]"
+                  wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)]"
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
                 />
               </Link>
@@ -136,12 +136,12 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               </div>
             </article>
 
-            {sideArticles.length > 0 && <aside className="rounded-[2rem] border border-[#e8e4d8] bg-[#f7faf4] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:p-5">
-              <div className="flex items-center justify-between border-b border-[#dce8d8] pb-3">
+            {sideArticles.length > 0 && <aside className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-muted)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:p-5">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
                 <div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-xl font-extrabold tracking-[-0.03em] text-ink">Mới nhất</h2></div>
                 <Clock3 size={18} className="text-leaf" aria-hidden="true" />
               </div>
-              <div className="divide-y divide-[#dce8d8]">
+              <div className="divide-y divide-[var(--border)]">
                 {sideArticles.map((article) => <Link key={article.id} href={`/tin-tuc/${article.slug}`} className="group block py-4 first:pt-3 last:pb-1">
                   <p className="text-[0.68rem] font-semibold uppercase tracking-[0.13em] text-[#2b8a3e]">{publicNewsCategoryLabel(article.category) ?? 'Tin mới'}</p>
                   <h3 className="mt-1.5 line-clamp-3 text-[1.02rem] font-extrabold leading-[1.3] text-ink transition group-hover:text-leaf">{article.title}</h3>
@@ -156,8 +156,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           <section>
             <div className="mb-4 flex items-end justify-between gap-3 sm:mb-5">
               <div>
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#2b8a3e]">Khám phá & cập nhật</p>
-                <h2 className="mt-1 text-[1.5rem] font-extrabold tracking-[-0.03em] text-[#1f2233] sm:text-[2rem]">Bài viết mới nhất</h2>
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)]">Khám phá & cập nhật</p>
+                <h2 className="type-h2 mt-1 text-[1.5rem] sm:text-[2rem]">Bài viết mới nhất</h2>
               </div>
               <p className="hidden text-sm text-slate-500 sm:block">Kiến thức, thị trường và dữ liệu nông nghiệp.</p>
             </div>

@@ -124,10 +124,6 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
         answer: 'Không. QR truy xuất và thông tin công khai có thể được mở trực tiếp cho khách truy cập.'
       },
       {
-        question: 'Người mua có cần đăng nhập để xem sản phẩm và QR không?',
-        answer: 'Không. Bạn có thể mở thông tin sản phẩm, hồ sơ HTX và QR truy xuất trực tiếp từ trang công khai.'
-      },
-      {
         question: 'Nếu tra cứu QR chưa ra kết quả thì liên hệ ai?',
         answer: 'Gọi hotline 0907 001 200 hoặc email Agripassport@gmail.com để chúng tôi hỗ trợ kiểm tra nhanh.'
       }

@@ -3,8 +3,10 @@ import { PublicImage } from './public-image';
 import { PublicPageHeader, PublicPageMain } from './public-layout';
 import { PublicShell } from './public-shell';
 import { Panel } from './ui';
+import { brandizeSiteText } from '@/lib/page-metadata';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
-export function PublicStaticPage({
+export async function PublicStaticPage({
   title,
   description,
   heroImageUrl,
@@ -17,6 +19,9 @@ export function PublicStaticPage({
   heroImageAlt?: string;
   children?: ReactNode;
 }) {
+  const siteKey = await getRequestPublicSiteKey();
+  const displayTitle = brandizeSiteText(title, siteKey);
+  const displayDescription = brandizeSiteText(description, siteKey);
   return (
     <PublicShell>
       <PublicPageMain className="pt-4 sm:pt-8 lg:pt-10">
@@ -29,13 +34,13 @@ export function PublicStaticPage({
             }}
           >
             <div className="rounded-[2rem] border border-[#e7e3d7] bg-[rgba(255,255,255,0.9)] p-5 shadow-[0_16px_34px_rgba(15,23,42,0.05)] backdrop-blur sm:p-6">
-              <PublicPageHeader title={title} description={description} />
+              <PublicPageHeader title={displayTitle} description={displayDescription} />
             </div>
             {heroImageUrl ? (
               <div className="overflow-hidden rounded-[2rem] border border-[#e7e3d7] bg-white p-2 shadow-[0_16px_34px_rgba(15,23,42,0.05)] backdrop-blur">
                 <PublicImage
                   src={heroImageUrl}
-                  alt={heroImageAlt || title}
+                  alt={brandizeSiteText(heroImageAlt || displayTitle, siteKey)}
                   wrapperClassName="aspect-[16/10] rounded-[1.5rem]"
                   className="h-full w-full object-cover"
                   priority
@@ -46,7 +51,7 @@ export function PublicStaticPage({
         </div>
         {children ?? (
           <Panel>
-            <p className="leading-7 text-slate-700">Nội dung đang được đội vận hành HTXONLINE cập nhật.</p>
+            <p className="leading-7 text-slate-700">{brandizeSiteText('Nội dung đang được đội vận hành HTXONLINE cập nhật.', siteKey)}</p>
           </Panel>
         )}
       </PublicPageMain>

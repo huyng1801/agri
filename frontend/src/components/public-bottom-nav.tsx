@@ -10,7 +10,7 @@ import type { PublicSiteKey } from '@/lib/domain';
 const marketplaceItems = [
   { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
   { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
-  { href: '/htx', label: 'Đối tác', icon: Store, match: (path: string) => path.startsWith('/htx') },
+  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
   { href: '/san-pham?hasQr=true', label: 'Tra cứu', icon: Search, match: (path: string) => path.startsWith('/passport') || path.startsWith('/qr') },
   { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
 ] as const;
@@ -102,9 +102,10 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   return (
     <nav
       data-testid="public-bottom-nav"
-      aria-hidden={hidden}
+      aria-hidden={hidden || undefined}
+      inert={hidden ? true : undefined}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.55rem] border border-[#eadfce] bg-[rgba(255,251,244,0.92)] px-1.5 py-1.5 shadow-[0_16px_34px_rgba(26,22,16,0.12)] backdrop-blur-xl transition duration-200 lg:hidden',
+        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.55rem] border border-[var(--border-strong)] bg-[rgba(255,255,255,0.94)] px-1.5 py-1.5 shadow-[0_16px_34px_rgba(26,22,16,0.12)] backdrop-blur-xl transition duration-200 lg:hidden',
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
@@ -120,7 +121,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               className={cn(
                 'relative flex min-h-[46px] flex-col items-center justify-center gap-1 rounded-[1rem] px-1 text-[9px] font-semibold transition-colors',
                 active
-                  ? 'bg-[#132031] text-white shadow-[0_14px_24px_rgba(19,32,49,0.18)]'
+                  ? 'bg-[var(--brand-primary)] text-white shadow-[0_14px_24px_rgba(19,32,49,0.18)]'
                   : 'text-slate-500/90'
               )}
             >

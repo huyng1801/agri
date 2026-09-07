@@ -78,11 +78,11 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
   if (!passport) {
     return (
-      <main className="grid min-h-screen place-items-center px-4">
+      <main data-public-site="passport" className="grid min-h-screen place-items-center bg-[var(--surface-1)] px-4">
         <Panel className="max-w-md text-center">
           <QrCode className="mx-auto text-rose-600" size={44} aria-hidden="true" />
           <h1 className="mt-3 text-2xl font-bold">Không tìm thấy Passport</h1>
-          <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/">
+          <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/">
             Về trang chủ
           </Link>
         </Panel>
@@ -127,7 +127,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
   );
 
   return (
-    <main className="mx-auto min-h-screen max-w-[90rem] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
+    <main data-public-site="passport" className="mx-auto min-h-screen max-w-[90rem] bg-[var(--surface-1)] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
       <header className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 lg:px-6 lg:py-4">
         <Link href="/" className="inline-flex min-w-0 items-center text-sm font-bold text-leaf">
           <PublicLogo size={30} variant="agri-wordmark" className="h-[30px] w-auto max-w-full" />

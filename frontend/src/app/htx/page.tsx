@@ -79,13 +79,13 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
           title={pageTitle}
           description={pageDescription}
           action={
-            <div className="rounded-[1.6rem] border border-[#dfe8d8] bg-[#fffdf8] p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)] sm:min-w-[18rem]">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Đi nhanh hơn</p>
-              <p className="mt-2 text-sm leading-6 text-slate-600">Mở thẳng danh sách sản phẩm công khai hoặc chọn HTX nổi bật để xem chi tiết.</p>
+            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)] sm:min-w-[18rem]">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Đi nhanh hơn</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">Mở thẳng danh sách sản phẩm công khai hoặc chọn HTX nổi bật để xem chi tiết.</p>
               <div className="mt-4 flex flex-wrap gap-2.5">
                 <Link
                   href="/san-pham"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#1f9b4b] px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#187a3b]"
+                  className="brand-gradient-bg inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                 >
                   Xem sản phẩm
                   <ArrowRight size={15} aria-hidden="true" />
@@ -93,7 +93,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                 {featuredCooperative ? (
                   <Link
                     href={`/htx/${featuredCooperative.code}`}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#d7e4d4] bg-white px-4 text-sm font-semibold text-[#1f2233] transition hover:-translate-y-0.5 hover:border-[#1f9b4b] hover:text-[#1f9b4b]"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
                   >
                     Xem HTX nổi bật
                     <ArrowRight size={15} aria-hidden="true" />
@@ -105,7 +105,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         />
 
         <section className="grid min-w-0 gap-4 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-          <article className="relative min-w-0 overflow-hidden rounded-[2.2rem] bg-[linear-gradient(135deg,#102437_0%,#16354a_52%,#1f8a54_100%)] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
+          <article className="brand-gradient-bg relative min-w-0 overflow-hidden rounded-[1.9rem] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(160,255,202,0.18),transparent_32%)]" aria-hidden="true" />
             <div className="relative z-10">
               <div className="inline-flex min-h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90">
@@ -147,10 +147,10 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                     />
                     <div className="min-w-0">
                       <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">
-                        {featuredCooperative?.province || 'Hệ sinh thái HTXONLINE'}
+                        {featuredCooperative?.province || `Hệ sinh thái ${siteProfile.appName}`}
                       </p>
                       <p className="mt-1 truncate text-[1.2rem] font-extrabold leading-tight text-white">
-                        {featuredCooperative?.code ?? 'HTXONLINE'}
+                        {featuredCooperative?.code ?? siteProfile.appName}
                       </p>
                       <p className="mt-2 text-sm leading-6 text-white/80">
                         {featuredCooperative ? `${featuredCooperative.productCount} sản phẩm công khai đang gắn với HTX này.` : 'Chọn một HTX để đi sâu vào lớp sản phẩm và hồ sơ công khai.'}
@@ -173,7 +173,7 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
                     {featuredCooperative ? (
                       <Link
                         href={`/htx/${featuredCooperative.code}`}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[#16354a] transition hover:-translate-y-0.5"
+                        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[var(--brand-primary-hover)] transition hover:-translate-y-0.5"
                       >
                         Mở hồ sơ HTX
                         <ArrowRight size={15} aria-hidden="true" />
@@ -201,23 +201,23 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
             ].map((item) => (
               <article
                 key={item.title}
-                className="rounded-[1.8rem] border border-[#e5e8db] bg-[linear-gradient(180deg,#fffef9_0%,#ffffff_100%)] p-4 shadow-[0_18px_38px_rgba(15,23,42,0.05)] sm:p-5"
+                className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_18px_38px_rgba(15,23,42,0.05)] sm:p-5"
               >
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#eef7ef] text-[#1f9b4b]">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
                   <item.icon size={22} aria-hidden="true" />
                 </span>
-                <p className="mt-3 text-[0.75rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">{item.title}</p>
-                <p className="mt-1 text-[1.7rem] font-extrabold leading-none text-[#1f2233]">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{item.note}</p>
+                <p className="mt-3 text-[0.75rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">{item.title}</p>
+                <p className="mt-1 text-[1.7rem] font-extrabold leading-none text-[var(--text-primary)]">{item.value}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.note}</p>
               </article>
             ))}
 
-            <article className="rounded-[1.8rem] border border-[#e5e8db] bg-[#fffaf2] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Lối dẫn dữ liệu</p>
-              <h3 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[#1f2233]">Chọn HTX, xem sản phẩm rồi mở tiếp hồ sơ phù hợp.</h3>
+            <article className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Lối dẫn dữ liệu</p>
+              <h3 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[var(--text-primary)]">Chọn HTX, xem sản phẩm rồi mở tiếp hồ sơ phù hợp.</h3>
               <div className="mt-4 space-y-2.5">
                 {quickNotes.map((note) => (
-                  <div key={note} className="rounded-[1.1rem] border border-[#e8e2d4] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+                  <div key={note} className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
                     {note}
                   </div>
                 ))}
@@ -227,15 +227,15 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         </section>
 
         <section className="mt-5">
-          <div className="rounded-[2rem] border border-[#e8e4d8] bg-white p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
             <PublicSearch placeholder="Tìm HTX theo tên hoặc tỉnh thành" action="/htx" />
             <div className="mt-3 flex flex-wrap gap-2 px-1">
               {[
                 { icon: Sparkles, text: 'Hồ sơ HTX nối thẳng sang sản phẩm công khai' },
                 { icon: ShieldCheck, text: 'Mỗi thẻ giữ lối đọc gọn, dễ quét trên điện thoại' }
               ].map((item) => (
-                <div key={item.text} className="inline-flex items-center gap-2 rounded-full bg-[#f0f8f0] px-3 py-2 text-sm font-medium text-slate-700">
-                  <item.icon size={15} aria-hidden="true" className="text-leaf" />
+                <div key={item.text} className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary-subtle)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)]">
+                  <item.icon size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />
                   {item.text}
                 </div>
               ))}

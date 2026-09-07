@@ -92,7 +92,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
               <h2 className="text-lg font-bold text-ink">Tiếp tục khám phá nội dung công khai</h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">Bạn có thể quay về danh sách tin tức hoặc xem thêm sản phẩm đang hiển thị trên sàn.</p>
               <div className="mt-4 grid gap-2 sm:grid-cols-2">
-                <Link href="/tin-tuc" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white">
+          <Link href="/tin-tuc" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white">
                   Xem tin tức mới
                 </Link>
                 <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink">
@@ -142,10 +142,10 @@ export default async function NewsDetailPage({ params }: PageProps) {
       <PublicDetailMain className="max-w-6xl">
         <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
 
-        <article className="overflow-hidden rounded-[2rem] border border-[#e1eadc] bg-[#fbfdf9] shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
+        <article className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
           <header className="mx-auto max-w-4xl px-4 pb-5 pt-2 text-center sm:px-8 sm:pb-7">
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
-              {publicNewsCategoryLabel(article.category) && <Badge className="bg-[#e4f4e7] text-leaf">{publicNewsCategoryLabel(article.category)}</Badge>}
+              {publicNewsCategoryLabel(article.category) && <Badge className="bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">{publicNewsCategoryLabel(article.category)}</Badge>}
               <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={14} />{formatDate(article.publishedAt || article.createdAt)}</span>
               <span className="inline-flex items-center gap-1 tracking-normal"><Clock3 size={14} />{readingTime(article.bodyHtml)} phút đọc</span>
               <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
@@ -159,13 +159,13 @@ export default async function NewsDetailPage({ params }: PageProps) {
               src={article.coverImageUrl || image}
               alt={article.coverImageAlt || article.title}
               fallback={DEFAULT_NEWS_IMAGE}
-              wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[#dce9d7] bg-[#eef7eb] sm:aspect-[2.1/1]"
+              wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] sm:aspect-[2.1/1]"
               className="h-full w-full object-cover"
             />
           </div>
           <div className="mx-auto max-w-3xl px-4 py-7 sm:px-8 sm:py-10">
             <div className="news-body" dangerouslySetInnerHTML={{ __html: withoutContactBlock(article.bodyHtml) }} />
-            {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[#e1eadc] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[#eef7eb] text-leaf">#{tag}</Badge>)}</div> : null}
+            {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[var(--border)] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">#{tag}</Badge>)}</div> : null}
           </div>
         </article>
 
@@ -183,7 +183,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
         <Panel className="mt-6 text-center sm:mt-8">
           <h2 className="text-xl font-bold text-ink">{brandizeSiteText('Kết nối cùng HTXONLINE', siteKey)}</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">{brandizeSiteText('Cập nhật thêm sản phẩm, HTX và truy xuất nguồn gốc trên sàn nông sản số.', siteKey)}</p>
-          <Link href="/san-pham" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-leaf px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
+          <Link href="/san-pham" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">
             Xem sản phẩm công khai
           </Link>
         </Panel>

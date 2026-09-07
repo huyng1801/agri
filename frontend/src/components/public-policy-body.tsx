@@ -1,6 +1,8 @@
 import { Mail, MapPin, Phone } from 'lucide-react';
 import { PublicInfoTile, publicProseClass } from './public-layout';
 import { Panel, cn } from './ui';
+import { brandizeSiteText } from '@/lib/page-metadata';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 type PolicySection = {
   title: string;
@@ -9,14 +11,15 @@ type PolicySection = {
   kind?: 'default' | 'contact';
 };
 
-export function PublicPolicyBody({
+export async function PublicPolicyBody({
   sections
 }: {
   sections: PolicySection[];
 }) {
+  const siteKey = await getRequestPublicSiteKey();
   const quickLinks = sections.map((section) => ({
     id: sectionId(section.title),
-    title: section.title.replace(/^\d+\.\s*/, '')
+    title: brandizeSiteText(section.title.replace(/^\d+\.\s*/, ''), siteKey)
   }));
 
   return (
@@ -44,17 +47,17 @@ export function PublicPolicyBody({
       <Panel className="space-y-8">
         {sections.map((section) => (
           <section key={section.title} id={sectionId(section.title)} className="scroll-mt-24">
-            <h2 className="text-lg font-bold text-ink">{section.title}</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">{brandizeSiteText(section.title, siteKey)}</h2>
             <div className={cn('mt-3 space-y-3', publicProseClass)}>
               {(section.paragraphs ?? []).map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+                <p key={paragraph}>{brandizeSiteText(paragraph, siteKey)}</p>
               ))}
               {section.kind === 'contact' ? (
-                <PolicyContactCard bullets={section.bullets ?? []} />
+                <PolicyContactCard bullets={(section.bullets ?? []).map((bullet) => brandizeSiteText(bullet, siteKey))} />
               ) : section.bullets?.length ? (
                 <ul className="list-disc space-y-2 pl-5">
                   {section.bullets.map((bullet) => (
-                    <li key={bullet}>{bullet}</li>
+                    <li key={bullet}>{brandizeSiteText(bullet, siteKey)}</li>
                   ))}
                 </ul>
               ) : null}
@@ -66,11 +69,16 @@ export function PublicPolicyBody({
   );
 }
 
-export function PublicGuideSteps({ steps }: { steps: Array<{ title: string; description: string }> }) {
+export async function PublicGuideSteps({ steps }: { steps: Array<{ title: string; description: string }> }) {
+  const siteKey = await getRequestPublicSiteKey();
   return (
     <div className="grid gap-4">
       {steps.map((step, index) => (
-        <PublicInfoTile key={step.title} title={`Bước ${index + 1}. ${step.title}`} description={step.description} />
+        <PublicInfoTile
+          key={step.title}
+          title={brandizeSiteText(`Bước ${index + 1}. ${step.title}`, siteKey)}
+          description={brandizeSiteText(step.description, siteKey)}
+        />
       ))}
     </div>
   );

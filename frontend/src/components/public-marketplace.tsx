@@ -87,16 +87,16 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className={cn('flex flex-col gap-2 rounded-[1.4rem] border border-[#d9e8d5] bg-white p-1.5 shadow-[0_18px_40px_rgba(15,23,42,0.09)] ring-4 ring-[#eef7eb] sm:flex-row sm:gap-2 sm:rounded-[1.7rem] sm:p-2', className)}
+      className={cn('flex flex-col gap-2 rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-1.5 shadow-[0_16px_34px_rgba(15,23,42,0.08)] ring-4 ring-[var(--brand-primary-subtle)] sm:flex-row sm:gap-2 sm:rounded-[1.35rem] sm:p-2', className)}
       action={action}
     >
       <div className="relative flex-1">
-        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#2f7d4f]" size={18} aria-hidden="true" />
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--brand-primary)]" size={18} aria-hidden="true" />
         <input
           name="search"
           placeholder={placeholder}
           aria-label={placeholder}
-          className="min-h-11 w-full rounded-[1rem] border border-[#e1ebe0] bg-[#f8fbf6] pl-10 pr-3 text-[0.95rem] text-[#173327] outline-none transition placeholder:text-[#7b8d82] focus:border-[#2f7d4f] focus:bg-white focus:ring-4 focus:ring-[#dff0e0] sm:min-h-12 sm:rounded-[1.1rem] sm:text-base"
+          className="min-h-11 w-full rounded-[0.9rem] border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none transition placeholder:text-slate-400 focus:border-[var(--brand-primary)] focus:bg-[var(--surface-elevated)] focus:ring-4 focus:ring-[var(--brand-primary-subtle)] sm:min-h-12 sm:rounded-[1rem] sm:text-base"
         />
       </div>
       <Button className="min-h-11 w-full shrink-0 rounded-[1rem] px-6 sm:min-h-12 sm:w-auto sm:rounded-[1.1rem]">Tìm</Button>
@@ -109,19 +109,19 @@ export function ProductCard({ product, priority = false, compact = false }: { pr
 
   return (
     <article className={cn(
-      'group flex h-full flex-col border border-[#d6e6d2] bg-[#fbfdf9] shadow-[0_12px_28px_rgba(15,23,42,0.055)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)]',
+      'group flex h-full flex-col border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_12px_28px_rgba(15,23,42,0.055)] transition duration-300 hover:-translate-y-1 hover:border-[var(--brand-primary)] hover:shadow-[0_20px_42px_rgba(15,23,42,0.09)]',
       compact ? 'rounded-[1.15rem] p-2 sm:rounded-[1.65rem] sm:p-3.5' : 'rounded-[1.45rem] p-2.5 sm:rounded-[1.85rem] sm:p-3.5'
     )}>
       <div className={cn(
-        'relative overflow-hidden border border-[#dce9d7] bg-[#eef7eb] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
+        'relative overflow-hidden border border-[var(--border)] bg-[var(--brand-primary-subtle)] shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
         compact ? 'rounded-[0.95rem] sm:rounded-[1.35rem]' : 'rounded-[1.2rem] sm:rounded-[1.5rem]'
       )}>
         <div className="absolute inset-x-2.5 top-2.5 z-[2] flex items-center justify-between gap-2 sm:inset-x-3 sm:top-3">
-          <span className="inline-flex min-h-7 max-w-[72%] items-center truncate rounded-full bg-[#1f9b4b] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
+          <span className="inline-flex min-h-7 max-w-[72%] items-center truncate rounded-full bg-[var(--brand-primary)] px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.1em] text-white shadow-sm">
             {product.category?.name ?? 'Nông sản'}
           </span>
           {hasQr ? (
-            <span className="inline-flex min-h-7 items-center gap-1 rounded-full bg-white/92 px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-[#28513a] shadow-sm backdrop-blur">
+            <span className="inline-flex min-h-7 items-center gap-1 rounded-full border border-[var(--brand-primary-subtle)] bg-white/92 px-2.5 text-[0.58rem] font-bold uppercase tracking-[0.08em] text-[var(--brand-primary-strong)] shadow-sm backdrop-blur">
               <QrCode size={12} aria-hidden="true" />
               Có QR
             </span>
@@ -136,7 +136,7 @@ export function ProductCard({ product, priority = false, compact = false }: { pr
             testId="product-card-image"
             priority={priority}
             wrapperClassName={cn(
-              'w-full bg-[linear-gradient(145deg,#f8fcf4_0%,#e7f3e2_100%)]',
+              'w-full bg-[linear-gradient(145deg,var(--surface-muted)_0%,var(--brand-primary-subtle)_100%)]',
               compact ? 'aspect-[5/3]' : 'aspect-[5/3] sm:aspect-[4/3]'
             )}
             className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
@@ -145,16 +145,16 @@ export function ProductCard({ product, priority = false, compact = false }: { pr
       </div>
 
       <div className={cn('flex flex-1 flex-col', compact ? 'mt-2 px-0.5 pb-0' : 'mt-2.5 px-0.5 pb-0.5 sm:mt-3 sm:px-1')}>
-        <p className={cn('font-semibold text-[#5d7b67]', compact ? 'text-[0.62rem]' : 'text-[0.7rem]')}>{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
+        <p className={cn('font-semibold text-[var(--text-tertiary)]', compact ? 'text-[0.62rem]' : 'text-[0.7rem]')}>{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
         <Link href={`/san-pham/${product.slug}`} className={cn(
-          'mt-1 block line-clamp-2 font-extrabold text-[#1b251f] transition hover:text-[#1c8542]',
+          'mt-1 block line-clamp-2 font-extrabold text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]',
           compact ? 'text-[0.9rem] leading-[1.18] sm:min-h-11 sm:text-[1.2rem] sm:leading-6' : 'text-[1.04rem] leading-[1.2] sm:min-h-11 sm:text-[1.2rem] sm:leading-6'
         )}>
           {product.name}
         </Link>
         {product.cooperative ? (
           <Link href={`/htx/${product.cooperative.code}`} className={cn(
-            'inline-flex items-center gap-2 font-semibold text-[#466352] transition hover:text-[#1c8542]',
+            'inline-flex items-center gap-2 font-semibold text-[var(--text-secondary)] transition hover:text-[var(--brand-primary)]',
             compact ? 'mt-1 min-h-8 text-[0.65rem] sm:mt-2 sm:min-h-11 sm:text-xs' : 'mt-1.5 min-h-10 text-xs sm:mt-2 sm:min-h-11'
           )}>
             <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName={cn('shrink-0 rounded-full', compact ? 'h-5 w-5 sm:h-6 sm:w-6' : 'h-6 w-6')} className="h-full w-full rounded-full object-cover" />
@@ -162,18 +162,18 @@ export function ProductCard({ product, priority = false, compact = false }: { pr
           </Link>
         ) : null}
         <div className={cn(
-          'mt-auto flex items-end justify-between border-t border-[#e8eee4]',
+          'mt-auto flex items-end justify-between border-t border-[var(--border)]',
           compact ? 'mt-2 gap-1 pt-2 sm:mt-3 sm:gap-3 sm:pt-3' : 'mt-2.5 gap-2 pt-2.5 sm:mt-3 sm:gap-3 sm:pt-3'
         )}>
           <div>
-            <p className={cn('font-extrabold leading-none text-[#17211b]', compact ? 'text-[0.92rem] sm:text-[1.4rem]' : 'text-[1.12rem] sm:text-[1.4rem]')}>{formatPrice(product.price)}</p>
+            <p className={cn('font-extrabold leading-none text-[var(--text-primary)]', compact ? 'text-[0.92rem] sm:text-[1.4rem]' : 'text-[1.12rem] sm:text-[1.4rem]')}>{formatPrice(product.price)}</p>
             <p className={cn('mt-1 text-slate-500', compact ? 'text-[0.62rem] sm:text-xs' : 'text-xs')}>/{product.unit}</p>
           </div>
           <Link
             href={`/san-pham/${product.slug}`}
             aria-label={`Xem thông tin ${product.name}`}
             className={cn(
-              'inline-flex shrink-0 items-center gap-1 rounded-full bg-[#1f7048] font-bold text-white shadow-[0_8px_18px_rgba(31,112,72,0.16)] transition hover:-translate-y-0.5 hover:bg-[#185b3a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-mint',
+              'inline-flex shrink-0 items-center gap-1 rounded-full bg-[var(--brand-primary)] font-bold text-white shadow-[0_8px_18px_rgba(15,81,91,0.16)] transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-hover)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--brand-primary-subtle)]',
               compact ? 'min-h-9 px-2 text-[0.66rem] sm:min-h-11 sm:gap-1.5 sm:px-4 sm:text-sm' : 'min-h-11 px-3 text-[0.78rem] sm:gap-1.5 sm:px-4 sm:text-sm'
             )}
           >
@@ -195,10 +195,10 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
     <article
       className={cn(
         publicCardClass,
-        'group flex h-full flex-col overflow-hidden rounded-[2rem] border-[#d7e6d3] bg-[linear-gradient(180deg,#fbfcf8_0%,#ffffff_100%)] p-2.5 transition duration-300 hover:-translate-y-1 hover:border-[#bcd9b9] hover:shadow-soft sm:p-3'
+        'group flex h-full flex-col overflow-hidden rounded-[1.5rem] border-[var(--border)] bg-[var(--surface-elevated)] p-2.5 transition duration-300 hover:-translate-y-1 hover:border-[var(--brand-primary)] hover:shadow-soft sm:p-3'
       )}
     >
-      <div className="rounded-[1.7rem] border border-[#dbe7d7] bg-[linear-gradient(135deg,#11314a_0%,#175073_58%,#1f9b4b_100%)] p-3.5 text-white sm:p-4">
+      <div className="brand-gradient-bg rounded-[1.25rem] border border-white/15 p-3.5 text-white sm:p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-white/72">{cooperative.province || 'Việt Nam'}</p>
@@ -231,15 +231,15 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
         </div>
       </div>
 
-      <div className="mt-2.5 flex flex-1 flex-col rounded-[1.45rem] border border-[#e6ebdf] bg-white p-3.5 sm:mt-3 sm:p-4">
+      <div className="mt-2.5 flex flex-1 flex-col rounded-[1.35rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-3.5 sm:mt-3 sm:p-4">
         <div className="grid grid-cols-2 gap-2">
-          <div className="min-w-0 rounded-[1rem] bg-[#f7faf4] px-3 py-2.5">
-            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:text-[0.7rem] sm:tracking-[0.16em]">Mã HTX</p>
-            <p className="mt-1 truncate text-xs font-semibold text-[#1f2233] sm:text-sm">{cooperative.code}</p>
+          <div className="min-w-0 rounded-[0.85rem] bg-[var(--surface-muted)] px-3 py-2.5">
+            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.1em] text-[var(--brand-primary-strong)] sm:text-[0.7rem] sm:tracking-[0.16em]">Mã HTX</p>
+            <p className="mt-1 truncate text-xs font-semibold text-[var(--text-primary)] sm:text-sm">{cooperative.code}</p>
           </div>
-          <div className="rounded-[1rem] bg-[#fff9ef] px-3 py-2.5">
-            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.1em] text-[#2b8a3e] sm:text-[0.7rem] sm:tracking-[0.16em]">Trạng thái</p>
-            <p className="mt-1 truncate text-xs font-semibold text-[#1f2233] sm:text-sm">Đang công khai</p>
+          <div className="rounded-[0.85rem] bg-[var(--surface)] px-3 py-2.5">
+            <p className="text-[0.64rem] font-semibold uppercase tracking-[0.1em] text-[var(--brand-primary-strong)] sm:text-[0.7rem] sm:tracking-[0.16em]">Trạng thái</p>
+            <p className="mt-1 truncate text-xs font-semibold text-[var(--text-primary)] sm:text-sm">Đang công khai</p>
           </div>
         </div>
 
@@ -253,7 +253,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           {cooperative.phone && (
             <a
               href={`tel:${cooperative.phone}`}
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#e8e4d8] bg-white text-leaf transition hover:-translate-y-0.5 hover:border-leaf"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] text-[var(--brand-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)]"
               aria-label="Gọi HTX"
             >
               <Phone size={17} aria-hidden="true" />
@@ -267,21 +267,21 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
 
 export function NewsCard({ article, priority = false }: { article: NewsArticle; priority?: boolean }) {
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col border-[#dce8d8] bg-[#fbfdf9] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)]')}>
+    <article className={cn(publicCardClass, 'group flex h-full flex-col bg-[var(--surface-elevated)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_46px_rgba(15,23,42,0.1)]')}>
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden rounded-t-[1.9rem] p-2.5 pb-0 sm:p-3 sm:pb-0">
         <PublicImage
           src={article.coverImageUrl}
           alt={article.title}
           fallback={DEFAULT_NEWS_IMAGE}
           priority={priority}
-          wrapperClassName="aspect-[16/10] w-full rounded-[1.35rem] border border-[#dce9d7] bg-[#eef7eb]"
+          wrapperClassName="aspect-[16/10] w-full rounded-[1.35rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)]"
           className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
         />
       </Link>
 
       <div className="flex flex-1 flex-col p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-slate-500">
-          {publicNewsCategoryLabel(article.category) && <span className="text-[#2b8a3e]">{publicNewsCategoryLabel(article.category)}</span>}
+          {publicNewsCategoryLabel(article.category) && <span className="text-[var(--brand-primary-strong)]">{publicNewsCategoryLabel(article.category)}</span>}
           {article.publishedAt && (
             <span className="inline-flex items-center gap-1 text-slate-500">
               <Calendar size={13} aria-hidden="true" />

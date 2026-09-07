@@ -21,7 +21,7 @@ export const ecosystemCards: EcosystemCard[] = [
     description: 'Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.',
     href: htxonlineUrl('/'),
     icon: Store,
-    gradientClassName: 'bg-[linear-gradient(135deg,#090d1d_0%,#131935_46%,#1b2450_100%)]',
+    gradientClassName: 'ecosystem-htxonline-bg',
     signal: 'Quản trị nội bộ'
   },
   {
@@ -31,7 +31,7 @@ export const ecosystemCards: EcosystemCard[] = [
     description: 'Nền tảng trung tâm để chuẩn hóa tên HTX, sản phẩm nông nghiệp, mở kênh công khai, bán hàng và đồng bộ dữ liệu sang các lớp hiển thị khác.',
     href: marketplaceUrl('/'),
     icon: Boxes,
-    gradientClassName: 'bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]',
+    gradientClassName: 'ecosystem-agripassport-bg',
     signal: 'Sản phẩm công khai'
   },
   {
@@ -41,7 +41,7 @@ export const ecosystemCards: EcosystemCard[] = [
     description: 'Tạo hồ sơ số và QR cho từng sản phẩm hoặc lô sản phẩm, giúp người mua truy xuất nguồn gốc, nhật ký canh tác và thông tin công khai rõ ràng.',
     href: passportUrl('/'),
     icon: QrCode,
-    gradientClassName: 'bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]',
+    gradientClassName: 'ecosystem-passport-bg',
     signal: 'QR truy xuất'
   }
 ];
@@ -54,7 +54,7 @@ const publicEcosystemCards: EcosystemCard[] = [
     description: 'Tìm sản phẩm, giá bán, đơn vị sản xuất và vùng trồng trong một danh mục công khai, dễ đọc.',
     href: '/san-pham',
     icon: Boxes,
-    gradientClassName: 'bg-[linear-gradient(135deg,#0a5668_0%,#106f8a_48%,#1d96b7_100%)]',
+    gradientClassName: 'ecosystem-agripassport-bg',
     signal: 'Danh mục sản phẩm'
   },
   {
@@ -64,7 +64,7 @@ const publicEcosystemCards: EcosystemCard[] = [
     description: 'Xem hồ sơ HTX, khu vực hoạt động và những sản phẩm đang được giới thiệu công khai.',
     href: '/htx',
     icon: Store,
-    gradientClassName: 'bg-[linear-gradient(135deg,#123d49_0%,#176d70_48%,#2b9d83_100%)]',
+    gradientClassName: 'ecosystem-htxonline-bg',
     signal: 'Hồ sơ HTX'
   },
   {
@@ -74,7 +74,7 @@ const publicEcosystemCards: EcosystemCard[] = [
     description: 'Quét QR để xem vùng trồng, nhật ký, chứng nhận và thông tin nguồn gốc theo phạm vi công khai.',
     href: passportUrl('/'),
     icon: QrCode,
-    gradientClassName: 'bg-[linear-gradient(135deg,#0d5c24_0%,#0d7a28_48%,#10a536_100%)]',
+    gradientClassName: 'ecosystem-passport-bg',
     signal: 'QR truy xuất'
   }
 ];
@@ -83,21 +83,21 @@ const demeterCardStyles = {
   htxonline: {
     surface:
       'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92)_0%,rgba(238,248,241,0.96)_44%,rgba(208,230,214,0.98)_100%)]',
-    badge: 'bg-[#8ed2df] text-white',
+    badge: 'bg-[var(--ecosystem-htxonline-badge)] text-white',
     icon: 'text-[#23344d]',
     ring: 'border-[#dce9df]'
   },
   agripassport: {
     surface:
       'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92)_0%,rgba(232,247,250,0.96)_44%,rgba(198,229,238,0.98)_100%)]',
-    badge: 'bg-[#78c8d8] text-white',
+    badge: 'bg-[var(--ecosystem-agripassport-badge)] text-white',
     icon: 'text-[#0d6f80]',
     ring: 'border-[#d5eaf0]'
   },
   passport: {
     surface:
       'bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.92)_0%,rgba(236,248,236,0.96)_44%,rgba(207,234,209,0.98)_100%)]',
-    badge: 'bg-[#78c86a] text-white',
+    badge: 'bg-[var(--ecosystem-passport-badge)] text-white',
     icon: 'text-[#23703a]',
     ring: 'border-[#d9ead9]'
   }
@@ -121,8 +121,8 @@ export function PublicEcosystemShowcase({
     <section className={className}>
       {showHeading ? (
         <div className={cn('mb-4 sm:mb-5', compact && 'mb-3')}>
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#2b8a3e] sm:text-sm">Hệ sinh thái Agri</p>
-          <h2 className={cn('mt-2 text-[1.82rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#24283a] sm:text-[2.7rem]', compact && 'text-[1.35rem] sm:text-[1.8rem]')}>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)] sm:text-sm">Hệ sinh thái Agri</p>
+          <h2 className={cn('type-h2 mt-2 text-[#24283a]', compact && 'text-[1.35rem] sm:text-[1.8rem]')}>
             Ba nền tảng đi cùng một luồng dữ liệu, nhưng mỗi nền tảng giữ một vai trò rất rõ.
           </h2>
           <p className={cn('mt-2 max-w-3xl text-[0.95rem] leading-7 text-slate-600 sm:text-base', compact && 'max-w-2xl text-sm leading-6')}>
@@ -147,7 +147,7 @@ export function PublicEcosystemShowcase({
                 key={card.key}
                 href={card.href}
                 className={cn(
-                  'group relative overflow-hidden rounded-[2rem] shadow-[0_28px_60px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1',
+                  'group relative overflow-hidden rounded-[1.25rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)] transition duration-300 hover:-translate-y-1',
                   compact && 'rounded-[1.6rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)]'
                 )}
               >
@@ -233,7 +233,7 @@ export function PublicEcosystemShowcase({
               key={card.key}
               href={card.href}
               className={cn(
-                'group relative overflow-hidden rounded-[2rem] shadow-[0_28px_60px_rgba(15,23,42,0.12)] transition duration-300 hover:-translate-y-1',
+                'group relative overflow-hidden rounded-[1.25rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)] transition duration-300 hover:-translate-y-1',
                 compact && 'rounded-[1.6rem] shadow-[0_18px_38px_rgba(15,23,42,0.1)]'
               )}
             >

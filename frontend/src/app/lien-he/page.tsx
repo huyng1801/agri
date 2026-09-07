@@ -44,16 +44,16 @@ export default async function ContactPage() {
 
         <section className="grid gap-6 lg:grid-cols-[0.86fr_1.14fr] lg:items-start lg:gap-8">
           <div className="space-y-4">
-            <article className="relative overflow-hidden rounded-[2rem] border border-[#dce9d7] bg-[linear-gradient(145deg,#f8fcf5_0%,#edf7ed_58%,#e3f3e8_100%)] p-5 text-ink shadow-[0_22px_52px_rgba(15,23,42,0.08)] sm:p-6">
-              <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#c9ebd2]/70 blur-2xl" aria-hidden="true" />
+            <article className="relative overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(145deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] p-5 text-[var(--text-primary)] shadow-[0_22px_52px_rgba(15,23,42,0.08)] sm:p-6">
+              <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[var(--brand-primary-subtle)] blur-2xl" aria-hidden="true" />
               <div className="relative z-10">
-                <p className="inline-flex min-h-8 items-center rounded-full border border-[#cfe4d0] bg-white/70 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-leaf">
+                <p className="inline-flex min-h-8 items-center rounded-full border border-[var(--border-strong)] bg-white/70 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--brand-primary)]">
                   Liên hệ {siteProfile.appName}
                 </p>
-                <h1 className="mt-4 max-w-[18ch] text-[2rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-ink sm:max-w-[14ch] sm:text-[2.75rem]">
+                <h1 className="type-h1 mt-4 max-w-[18ch] text-[2rem] sm:max-w-[14ch] sm:text-[2.75rem]">
                   {siteProfile.pageContent.contactTitle}
                 </h1>
-                <p className="mt-3 max-w-[42rem] text-[0.95rem] leading-7 text-slate-600 sm:text-[1rem]">
+                <p className="mt-3 max-w-[42rem] text-[0.95rem] leading-7 text-[var(--text-secondary)] sm:text-[1rem]">
                   {contactDescription}
                 </p>
 
@@ -83,13 +83,13 @@ export default async function ContactPage() {
                       href={item.href}
                       target={item.label === 'Địa chỉ' ? '_blank' : undefined}
                       rel={item.label === 'Địa chỉ' ? 'noreferrer' : undefined}
-                      className={cn('flex items-start gap-3 rounded-[1.2rem] border border-[#cfe4d0] bg-white/72 px-3.5 py-3 transition hover:-translate-y-0.5 hover:border-leaf hover:bg-white', item.label === 'Địa chỉ' && 'sm:col-span-2')}
+                      className={cn('flex items-start gap-3 rounded-[1.2rem] border border-[var(--border-strong)] bg-white/72 px-3.5 py-3 transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:bg-white', item.label === 'Địa chỉ' && 'sm:col-span-2')}
                     >
-                      <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[#dff3e4] text-leaf">
+                      <span className="mt-0.5 grid h-10 w-10 shrink-0 place-items-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
                         <item.icon size={20} aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-leaf/80">{item.label}</span>
+                      <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--brand-primary)]">{item.label}</span>
                         <span className="mt-1 block break-words text-sm font-semibold leading-5 text-ink sm:text-[0.95rem]">{item.value}</span>
                       </span>
                     </a>
@@ -99,7 +99,7 @@ export default async function ContactPage() {
                 <div className="mt-5 flex flex-wrap gap-2.5">
                   <a
                     href={telHref(siteProfile.hotline)}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full bg-leaf px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#256b43]"
+                    className="brand-gradient-bg inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
                   >
                     Gọi hotline
                   </a>
@@ -107,7 +107,7 @@ export default async function ContactPage() {
                     href={mapSearchUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#b9d8bd] bg-white/70 px-4 text-sm font-semibold text-leaf transition hover:-translate-y-0.5 hover:bg-white"
+                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-white/70 px-4 text-sm font-semibold text-[var(--brand-primary)] transition hover:-translate-y-0.5 hover:bg-white"
                   >
                     Mở bản đồ
                   </a>
@@ -117,32 +117,32 @@ export default async function ContactPage() {
 
             <div className="grid gap-4 lg:grid-cols-[1.06fr_0.94fr]">
               {showMapPreview ? (
-                <div className="overflow-hidden rounded-[1.9rem] border border-[#dfe6da] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
+                <div className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
                   <PublicMapPreview
                     address={siteProfile.address}
                     location={mapLocation}
                     mapSearchUrl={mapSearchUrl}
                     compact
-                    className="rounded-none border-0 bg-[#dbece1]"
+                    className="rounded-none border-0 bg-[var(--brand-primary-subtle)]"
                     frameClassName="rounded-none"
                   />
                 </div>
               ) : null}
 
-              <article className="rounded-[1.9rem] border border-[#e6eadf] bg-[#fffaf2] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#2b8a3e]">Nhịp phản hồi</p>
-                <h2 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[#1f2233]">
+              <article className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
+                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Nhịp phản hồi</p>
+                <h2 className="type-h2 mt-2 text-[1.35rem]">
                   {isAgripassport ? 'Chúng tôi sẽ giúp bạn tìm đúng thông tin.' : 'Hỗ trợ rõ luồng nội bộ, công khai và QR.'}
                 </h2>
                 <div className="mt-4 space-y-3">
-                  <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3">
+                  <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3">
                     <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
                     <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-[#1f2233]">
                       <Clock3 size={15} aria-hidden="true" />
                       08:00 - 17:30, thứ Hai đến thứ Bảy
                     </p>
                   </div>
-                  <div className="rounded-[1.1rem] border border-[#e7dfcf] bg-white px-4 py-3 text-sm leading-6 text-slate-700">
+                  <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
                     {isAgripassport
                       ? 'Gửi câu hỏi về sản phẩm, QR, nguồn gốc hoặc HTX; đội ngũ sẽ phản hồi theo đúng nội dung bạn cần.'
                       : 'Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'}

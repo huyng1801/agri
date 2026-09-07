@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { cn } from './ui';
 
-export const publicContainerClass = 'mx-auto max-w-[1220px] px-4 sm:px-5 lg:px-6';
+export const publicContainerClass = 'mx-auto w-full max-w-[1220px] px-4 sm:px-5 lg:px-6';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
@@ -28,7 +28,7 @@ export function PublicDetailMain({ children, className }: { children: React.Reac
 
 export function PublicBreadcrumb({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-leaf">
+    <Link href={href} className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:text-[var(--brand-primary-hover)]">
       <ArrowLeft size={16} aria-hidden="true" />
       {label}
     </Link>
@@ -39,9 +39,9 @@ export function PublicBreadcrumbTrail({ current }: { current: string }) {
   return (
     <nav
       aria-label="Đường dẫn"
-      className="mb-4 inline-flex min-h-11 flex-wrap items-center gap-2 rounded-full border border-[#dbe6d9] bg-[#f7faf4] px-3 text-sm text-[#1f2233]"
+      className="mb-4 inline-flex min-h-11 flex-wrap items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 text-sm text-[var(--text-primary)]"
     >
-      <Link href="/" className="inline-flex min-h-11 items-center font-semibold transition hover:text-[#1f9b4b]">
+      <Link href="/" className="inline-flex min-h-11 items-center font-semibold transition hover:text-[var(--brand-primary)]">
         Trang chủ
       </Link>
       <span aria-hidden="true">/</span>
@@ -64,11 +64,11 @@ export function PublicPageHeader({
   return (
     <div className="mb-5 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="max-w-3xl">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#2b8a3e] sm:text-sm">{eyebrow}</p>
-        <h1 className="mt-2 max-w-[18ch] text-[1.7rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1f2233] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]">
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)] sm:text-sm">{eyebrow}</p>
+        <h1 className="type-h1 mt-2 max-w-[18ch] text-[1.7rem] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]">
           {title}
         </h1>
-        <p className="mt-2.5 max-w-2xl text-[0.95rem] leading-[1.72] text-slate-600 sm:mt-3 sm:text-base sm:leading-[1.85]">{description}</p>
+        <p className="mt-2.5 max-w-2xl text-[0.95rem] leading-[1.72] text-[var(--text-secondary)] sm:mt-3 sm:text-base sm:leading-[1.8]">{description}</p>
       </div>
       {action}
     </div>
@@ -102,13 +102,13 @@ export function PublicSectionHeader({
   return (
     <div className="flex flex-col gap-2.5 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-[1.82rem] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#24283a] sm:text-[2.65rem]">{title}</h2>
-        <p className="mt-2 max-w-3xl text-[0.95rem] leading-[1.72] text-slate-600 sm:text-base sm:leading-[1.85]">{description}</p>
+        <h2 className="type-h2 text-[#24283a]">{title}</h2>
+        <p className="mt-2 max-w-3xl text-[0.95rem] leading-[1.72] text-[var(--text-secondary)] sm:text-base sm:leading-[1.8]">{description}</p>
       </div>
       {href && linkLabel ? (
         <Link
           href={href}
-          className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-[#d8e7d8] bg-white px-5 font-semibold text-[#1f9b4b] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1f9b4b]"
+          className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)]"
         >
           {linkLabel}
           <ArrowRight size={16} aria-hidden="true" />
@@ -118,15 +118,15 @@ export function PublicSectionHeader({
   );
 }
 
-export const publicCardClass = 'overflow-hidden rounded-[1.9rem] border border-[#e8e4d8] bg-white shadow-[0_18px_42px_rgba(15,23,42,0.06)]';
+export const publicCardClass = 'overflow-hidden rounded-[1.25rem] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_14px_32px_rgba(15,23,42,0.05)]';
 
-export const publicProseClass = 'text-sm leading-7 text-slate-700';
+export const publicProseClass = 'text-base leading-7 text-[var(--text-secondary)]';
 
 export function PublicInfoTile({ title, description }: { title: string; description: string }) {
   return (
-    <div className="rounded-[1.4rem] border border-[#e8e4d8] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,42,0.05)]">
-      <p className="font-semibold text-[#1f2233]">{title}</p>
-      <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
+      <p className="font-semibold text-[var(--text-primary)]">{title}</p>
+      <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</p>
     </div>
   );
 }

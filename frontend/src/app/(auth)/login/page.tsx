@@ -44,9 +44,9 @@ export default function LoginPage() {
       <Panel className="w-full max-w-md">
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-2 text-center">
-            <PublicLogo size={56} className="mx-auto ring-1 ring-slate-200 lg:hidden" />
+            <PublicLogo size={56} variant="agri" className="mx-auto ring-1 ring-slate-200 lg:hidden" />
             <h1 className="text-2xl font-bold">Đăng nhập</h1>
-            <p className="text-sm text-slate-600">HTXONLINE — Sàn nông sản số cho hợp tác xã</p>
+            <p className="text-sm text-slate-600">AGRIPASSPORT — Nền tảng dữ liệu sản phẩm nông nghiệp</p>
           </div>
           <label className="block space-y-1 text-sm font-semibold">
             <span>Email</span>
