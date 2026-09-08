@@ -274,7 +274,7 @@ export function PublicEcosystemShowcase({
                       p.buttonClass
                     )}
                   >
-                    <span>{isCurrent && p.key === 'agripassport' ? 'Truy cập Agripassport' : isCurrent ? 'Khám phá ngay' : `Xem ${p.name}`}</span>
+                    <span>{isCurrent && p.key === 'agripassport' ? 'Truy cập AGRIPASSPORT' : isCurrent ? 'Khám phá ngay' : `Xem ${p.name}`}</span>
                     <ArrowRight size={15} aria-hidden="true" />
                   </Link>
                 )}
