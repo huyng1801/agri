@@ -5,79 +5,117 @@
 :root {
   color-scheme: light;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  /* Core tokens shared by the public layers and the authenticated app. */
-  --text-primary: #17211b;
-  --text-secondary: #52667a;
-  --text-tertiary: #64748b;
-  --surface: #fffdf8;
-  --surface-muted: #f7faf4;
-  --surface-elevated: #ffffff;
-  --border: #e4eadf;
-  --border-strong: #cfe3dc;
-  --success: #23703a;
-  --warning: #a16207;
-  --danger: #b42318;
-  --brand-primary: #2f7d4f;
-  --brand-primary-hover: #256b43;
-  --brand-primary-strong: #2b8a3e;
-  --brand-primary-subtle: #e7f6ee;
-  --brand-primary-ring: rgba(47, 125, 79, 0.2);
-  --brand-on-primary: #ffffff;
-  --brand-gradient: linear-gradient(135deg, #183225 0%, #224a35 52%, #2f7d4f 100%);
+
+  /* Exact Ecosystem Source of Truth (Code is Source of Truth) */
+  --ecosystem-htxonline: #131935;
+  --ecosystem-htxonline-hover: #090d1d;
+  --ecosystem-htxonline-subtle: #eef0fa;
   --ecosystem-htxonline-gradient: linear-gradient(135deg, #090d1d 0%, #131935 46%, #1b2450 100%);
-  --ecosystem-agripassport-gradient: linear-gradient(135deg, #0a5668 0%, #106f8a 48%, #1d96b7 100%);
-  --ecosystem-passport-gradient: linear-gradient(135deg, #0d5c24 0%, #0d7a28 48%, #10a536 100%);
   --ecosystem-htxonline-badge: #8ed2df;
+
+  --ecosystem-agripassport: #106f8a;
+  --ecosystem-agripassport-hover: #0a5668;
+  --ecosystem-agripassport-subtle: #e8f7fa;
+  --ecosystem-agripassport-gradient: linear-gradient(135deg, #0a5668 0%, #106f8a 48%, #1d96b7 100%);
   --ecosystem-agripassport-badge: #78c8d8;
+
+  --ecosystem-passport: #0d7a28;
+  --ecosystem-passport-hover: #0d5c24;
+  --ecosystem-passport-subtle: #ecf8ec;
+  --ecosystem-passport-gradient: linear-gradient(135deg, #0d5c24 0%, #0d7a28 48%, #10a536 100%);
   --ecosystem-passport-badge: #78c86a;
-  --surface-0: #f5efe3;
-  --surface-1: #fffdf8;
-  --surface-2: #f2eadc;
-  --surface-3: #ece3d1;
-  --line-soft: rgba(42, 38, 28, 0.1);
-  --shadow-soft: 0 22px 58px rgba(30, 24, 15, 0.08);
-  --shadow-card: 0 18px 44px rgba(30, 24, 15, 0.08);
-  --public-container-max: 1220px;
+
+  /* Semantic surface and structural tokens */
+  --background: #f8faf9;
+  --surface: #ffffff;
+  --surface-muted: #f1f5f3;
+  --surface-elevated: #ffffff;
+  --foreground: #0f1715;
+  --foreground-muted: #4e615c;
+  --border: #e2e8e5;
+  --border-strong: #cad5cf;
+
+  /* Primary action: AGRIPASSPORT teal/cyan by default */
+  --primary: #106f8a;
+  --primary-hover: #0a5668;
+  --primary-subtle: #e8f7fa;
+
+  --success: #0d7a28;
+  --warning: #b45309;
+  --danger: #b91c1c;
+
+  /* Legacy aliases mapped to semantic tokens */
+  --text-primary: var(--foreground);
+  --text-secondary: var(--foreground-muted);
+  --text-tertiary: #64748b;
+  --brand-primary: var(--primary);
+  --brand-primary-hover: var(--primary-hover);
+  --brand-primary-strong: #0d6f80;
+  --brand-primary-subtle: var(--primary-subtle);
+  --brand-primary-ring: rgba(16, 111, 138, 0.22);
+  --brand-on-primary: #ffffff;
+  --brand-gradient: var(--ecosystem-agripassport-gradient);
+
+  --surface-0: #f5f7f6;
+  --surface-1: #ffffff;
+  --surface-2: #edf1ef;
+  --surface-3: #e5ece9;
+  --line-soft: rgba(15, 23, 21, 0.08);
+  --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.06);
+  --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.04);
+
+  /* Clean, industrial geometry tokens */
+  --public-container-max: 1280px;
+  --public-container-wide: 1440px;
   --public-reading-max: 760px;
-  --public-radius-control: 0.75rem;
-  --public-radius-card: 1.25rem;
-  --public-radius-surface: 1.75rem;
-  --public-shadow-card: 0 14px 32px rgba(15, 23, 42, 0.05);
-  --public-shadow-hover: 0 22px 44px rgba(15, 23, 42, 0.09);
-  --public-motion-fast: 180ms;
+  --public-radius-control: 0.5rem; /* 8px */
+  --public-radius-card: 0.875rem; /* 14px */
+  --public-radius-surface: 1.125rem; /* 18px */
+  --public-shadow-card: 0 4px 16px rgba(15, 23, 42, 0.04);
+  --public-shadow-hover: 0 10px 24px rgba(15, 23, 42, 0.08);
+  --public-motion-fast: 160ms;
   --public-motion-standard: 220ms;
 }
 
-/* Brand values are sourced from the existing ecosystem card gradients. */
+/* Platform-specific scoped themes */
 [data-public-site="htxonline"] {
-  --brand-primary: #131935;
-  --brand-primary-hover: #090d1d;
+  --primary: var(--ecosystem-htxonline);
+  --primary-hover: var(--ecosystem-htxonline-hover);
+  --primary-subtle: var(--ecosystem-htxonline-subtle);
+  --brand-primary: var(--ecosystem-htxonline);
+  --brand-primary-hover: var(--ecosystem-htxonline-hover);
   --brand-primary-strong: #1b2450;
-  --brand-primary-subtle: #eef0fa;
-  --brand-primary-ring: rgba(27, 36, 80, 0.2);
+  --brand-primary-subtle: var(--ecosystem-htxonline-subtle);
+  --brand-primary-ring: rgba(27, 36, 80, 0.22);
   --brand-gradient: var(--ecosystem-htxonline-gradient);
 }
 
 [data-public-site="agripassport"],
 [data-public-site="local"] {
-  --brand-primary: #106f8a;
-  --brand-primary-hover: #0a5668;
+  --primary: var(--ecosystem-agripassport);
+  --primary-hover: var(--ecosystem-agripassport-hover);
+  --primary-subtle: var(--ecosystem-agripassport-subtle);
+  --brand-primary: var(--ecosystem-agripassport);
+  --brand-primary-hover: var(--ecosystem-agripassport-hover);
   --brand-primary-strong: #0d6f80;
-  --brand-primary-subtle: #e8f7fa;
-  --brand-primary-ring: rgba(29, 150, 183, 0.2);
+  --brand-primary-subtle: var(--ecosystem-agripassport-subtle);
+  --brand-primary-ring: rgba(16, 111, 138, 0.22);
   --brand-gradient: var(--ecosystem-agripassport-gradient);
 }
 
 [data-public-site="passport"] {
-  --brand-primary: #0d7a28;
-  --brand-primary-hover: #0d5c24;
+  --primary: var(--ecosystem-passport);
+  --primary-hover: var(--ecosystem-passport-hover);
+  --primary-subtle: var(--ecosystem-passport-subtle);
+  --brand-primary: var(--ecosystem-passport);
+  --brand-primary-hover: var(--ecosystem-passport-hover);
   --brand-primary-strong: #23703a;
-  --brand-primary-subtle: #ecf8ec;
-  --brand-primary-ring: rgba(16, 165, 54, 0.2);
+  --brand-primary-subtle: var(--ecosystem-passport-subtle);
+  --brand-primary-ring: rgba(13, 122, 40, 0.22);
   --brand-gradient: var(--ecosystem-passport-gradient);
 }
 
-/* Keep legacy public utility classes aligned with the active platform theme. */
+/* Legacy public utility class alignment */
 [data-public-site] .text-leaf,
 [data-public-site] .text-leaf\/80 {
   color: var(--brand-primary) !important;
@@ -108,12 +146,9 @@ body {
   min-height: 100vh;
   margin: 0;
   overflow-x: clip;
-  background:
-    radial-gradient(circle at top left, rgba(244, 183, 64, 0.12), transparent 24%),
-    radial-gradient(circle at top right, rgba(47, 125, 79, 0.08), transparent 26%),
-    linear-gradient(180deg, #fcf7ef 0%, #f6efdf 26%, #fffdf8 64%, #faf6ef 100%);
-  color: #17211b;
-  font-family: var(--font-body), sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-optical-sizing: auto;
   letter-spacing: -0.012em;
   text-rendering: optimizeLegibility;

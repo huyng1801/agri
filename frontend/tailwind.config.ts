@@ -5,15 +5,41 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        ink: '#17211b',
+        ink: 'var(--foreground)',
         leaf: '#2f7d4f',
-        mint: '#e7f6ee',
+        mint: 'var(--brand-primary-subtle)',
         soil: '#7a5c3f',
         sun: '#f4b740',
-        sky: '#d9edf7'
+        sky: '#d9edf7',
+        primary: {
+          DEFAULT: 'var(--primary)',
+          hover: 'var(--primary-hover)',
+          subtle: 'var(--primary-subtle)'
+        },
+        surface: {
+          DEFAULT: 'var(--surface)',
+          muted: 'var(--surface-muted)',
+          elevated: 'var(--surface-elevated)'
+        },
+        border: {
+          DEFAULT: 'var(--border)',
+          strong: 'var(--border-strong)'
+        },
+        ecosystem: {
+          htxonline: 'var(--ecosystem-htxonline)',
+          agripassport: 'var(--ecosystem-agripassport)',
+          passport: 'var(--ecosystem-passport)'
+        }
+      },
+      borderRadius: {
+        control: 'var(--public-radius-control)',
+        card: 'var(--public-radius-card)',
+        surface: 'var(--public-radius-surface)'
       },
       boxShadow: {
-        soft: '0 16px 40px rgba(23, 33, 27, 0.10)'
+        soft: 'var(--shadow-soft)',
+        card: 'var(--public-shadow-card)',
+        'card-hover': 'var(--public-shadow-hover)'
       }
     }
   },

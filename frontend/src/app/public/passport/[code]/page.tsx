@@ -1,11 +1,25 @@
+import React from 'react';
 import Link from 'next/link';
-import { Calendar, CheckCircle2, Eye, MapPin, QrCode } from 'lucide-react';
+import {
+  Award,
+  Calendar,
+  CheckCircle2,
+  ExternalLink,
+  Eye,
+  FileCheck,
+  MapPin,
+  Phone,
+  QrCode,
+  ShieldCheck,
+  Store,
+  User
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { DEFAULT_PRODUCT_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicLogo } from '@/components/public-logo';
 import { formatDate } from '@/lib/format';
-import { Badge, cn, Panel } from '@/components/ui';
+import { cn } from '@/components/ui';
 
 type Passport = {
   passportCode: string;
@@ -72,245 +86,6 @@ type PublicPassportPageProps = {
   params: Promise<{ code: string }>;
 };
 
-export default async function PublicPassportPage({ params }: PublicPassportPageProps) {
-  const { code } = await params;
-  const passport = await getPassport(code);
-
-  if (!passport) {
-    return (
-      <main data-public-site="passport" className="grid min-h-screen place-items-center bg-[var(--surface-1)] px-4">
-        <Panel className="max-w-md text-center">
-          <QrCode className="mx-auto text-rose-600" size={44} aria-hidden="true" />
-          <h1 className="mt-3 text-2xl font-bold">Không tìm thấy Passport</h1>
-          <Link className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5" href="/">
-            Về trang chủ
-          </Link>
-        </Panel>
-      </main>
-    );
-  }
-
-  const certifications = passport.product.certifications;
-  const publicLogs = passport.product.farmingLogs;
-  const visibleLogs = publicLogs.slice(0, 3);
-  const remainingLogs = publicLogs.slice(3);
-  const visibleCertifications = certifications.slice(0, 3);
-  const remainingCertifications = certifications.slice(3);
-
-  const renderLog = (log: (typeof publicLogs)[number], index: number) => (
-    <div key={log.id} className="grid grid-cols-[28px_1fr] gap-2.5 sm:grid-cols-[32px_1fr] sm:gap-3">
-      <span className="grid h-7 w-7 place-items-center rounded-full bg-leaf text-xs font-bold text-white sm:h-8 sm:w-8 sm:text-sm">{index + 1}</span>
-      <div className="rounded-md bg-slate-50 p-3">
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          <Badge className="bg-mint text-leaf">{log.activityType}</Badge>
-          <span className="inline-flex items-center gap-1 text-slate-500"><Calendar size={14} aria-hidden="true" />{formatDate(log.logDate)}</span>
-        </div>
-        <p className="mt-2 text-[0.98rem] leading-6 text-slate-700">{log.description}</p>
-        {(log.zone?.name || log.actor?.fullName) && <p className="mt-2 text-xs font-semibold text-slate-500">{[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}</p>}
-        {logImages(log.imagesJson).length > 0 && (
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            {logImages(log.imagesJson).slice(0, 6).map((image, imageIndex) => (
-              <PublicImage key={`${log.id}-${imageIndex}`} src={image.url} alt={`Ảnh nhật ký ${index + 1}`} fallback={DEFAULT_PRODUCT_IMAGE} decorative wrapperClassName="aspect-square w-full rounded-md" className="h-full w-full object-cover" />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-
-  const renderCertification = (cert: (typeof certifications)[number]) => (
-    <div key={cert.id} className="rounded-md bg-slate-50 p-3 text-sm">
-      <strong>{cert.name}</strong>
-      <span className="block text-slate-600">{cert.issuer || 'Đơn vị cấp'} · Hết hạn {formatDate(cert.expiresAt)}</span>
-      {cert.file?.publicUrl && <a href={cert.file.publicUrl} target="_blank" rel="noreferrer" className="mt-2 inline-flex min-h-11 items-center justify-center rounded-xl bg-white px-3.5 text-sm font-semibold text-leaf shadow-sm ring-1 ring-slate-200 transition hover:-translate-y-0.5 hover:bg-mint">Xem tài liệu chứng nhận</a>}
-    </div>
-  );
-
-  return (
-    <main data-public-site="passport" className="mx-auto min-h-screen max-w-[90rem] bg-[var(--surface-1)] px-3 py-4 sm:px-4 sm:py-5 lg:px-6">
-      <header className="mb-3 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-3 shadow-sm sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-4 lg:px-6 lg:py-4">
-        <Link href="/" className="inline-flex min-w-0 items-center text-sm font-bold text-leaf">
-          <PublicLogo size={30} variant="agri-wordmark" className="h-[30px] w-auto max-w-full" />
-        </Link>
-        <div className="grid w-full grid-cols-2 gap-2 text-sm font-semibold sm:flex sm:w-auto sm:flex-wrap sm:justify-end sm:gap-3">
-          <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-600 transition hover:border-leaf hover:text-leaf sm:min-h-0 sm:border-0 sm:bg-transparent sm:px-0">
-            Xem sản phẩm
-          </Link>
-          <Link href="/" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 text-slate-600 transition hover:border-leaf hover:text-leaf sm:min-h-0 sm:border-0 sm:bg-transparent sm:px-0">
-            Trang chủ
-          </Link>
-        </div>
-      </header>
-
-      <section className="overflow-hidden rounded-md border border-slate-200 bg-white shadow-soft">
-        <div className="xl:grid xl:grid-cols-[minmax(0,1.02fr)_minmax(26rem,0.98fr)]">
-          <div className="bg-leaf p-4 text-white sm:p-5 lg:p-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between xl:flex-col xl:justify-between">
-              <div className="min-w-0">
-                <Badge className="bg-white text-leaf">
-                  <CheckCircle2 className="mr-1 inline" size={14} aria-hidden="true" />
-                  Đã xác thực
-                </Badge>
-                <h1 className="mt-3 max-w-[11ch] text-[2rem] font-bold leading-[1.05] sm:mt-4 sm:max-w-none sm:text-3xl lg:max-w-[12ch] lg:text-[3.6rem] lg:leading-[0.96]">
-                  {passport.product.name}
-                </h1>
-                <p className="mt-2 max-w-2xl text-white/85 lg:text-xl">{passport.cooperative.name}</p>
-              </div>
-
-              {passport.qrDataUrl && (
-                <div className="rounded-2xl border border-white/20 bg-white/10 p-3 backdrop-blur">
-                  <img
-                    src={passport.qrDataUrl}
-                    width={132}
-                    height={132}
-                    alt={`QR ${passport.passportCode}`}
-                    className="h-20 w-20 rounded-md bg-white p-1 sm:h-24 sm:w-24 lg:h-32 lg:w-32"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="mt-5 grid gap-2 sm:grid-cols-3 xl:mt-8">
-              <Info icon={QrCode} label="Mã" value={passport.passportCode} valueClassName="font-mono tracking-[0.04em] lg:whitespace-nowrap" />
-              <Info icon={MapPin} label="Vùng trồng" value={passport.product.zone?.name ?? 'Đang cập nhật'} />
-              <Info icon={Eye} label="Lượt xem" value={String(passport.viewCount + 1)} />
-            </div>
-          </div>
-
-          <PublicImage
-            src={passport.product.thumbnail?.publicUrl}
-            alt={passport.product.name}
-            fallback={DEFAULT_PRODUCT_IMAGE}
-            priority
-            wrapperClassName="aspect-[16/9] w-full xl:h-full xl:min-h-[28rem] xl:aspect-auto"
-            className="h-full w-full object-cover"
-          />
-        </div>
-      </section>
-
-      <div className="mt-3 grid gap-3 sm:mt-4 sm:gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(23rem,0.92fr)]">
-        <div className="grid gap-3 sm:gap-4">
-          <Panel>
-            <h2 className="text-lg font-bold">Thông tin sản phẩm</h2>
-            <p className="mt-2 max-w-4xl leading-7 text-slate-700">
-              {passport.product.description || 'Thông tin sản phẩm đang được HTX cập nhật.'}
-            </p>
-            {passport.product.zone && (
-              <div className="mt-3 rounded-md bg-mint p-3 text-sm">
-                <strong>{passport.product.zone.name}</strong>
-                <span className="block text-slate-700">{passport.product.zone.address}</span>
-              </div>
-            )}
-          </Panel>
-
-          <Panel>
-            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <h2 className="text-lg font-bold">Timeline truy xuất</h2>
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  Theo dõi các mốc canh tác công khai mà HTX đăng kèm cho QR Passport này.
-                </p>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-                <p className="font-semibold text-slate-500">Mốc công khai</p>
-                <p className="mt-1 text-2xl font-bold text-ink">{publicLogs.length}</p>
-              </div>
-            </div>
-
-            <div className="mt-3 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-              {visibleLogs.map(renderLog)}
-              {remainingLogs.length ? (
-                <details className="xl:col-span-2 2xl:col-span-3 rounded-md border border-slate-200 bg-slate-50 p-3">
-                  <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingLogs.length} mốc truy xuất</summary>
-                  <div className="mt-3 grid gap-3 xl:grid-cols-2 2xl:grid-cols-3">{remainingLogs.map((log, index) => renderLog(log, index + visibleLogs.length))}</div>
-                </details>
-              ) : null}
-              {publicLogs.length === 0 && <p className="text-slate-600">Chưa có nhật ký công khai.</p>}
-            </div>
-          </Panel>
-        </div>
-
-        <div className="grid gap-3 self-start sm:gap-4 xl:sticky xl:top-6">
-          <Panel>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-leaf/80">Tóm tắt kiểm chứng</p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mã QR</p>
-                <p className="mt-2 break-all font-mono text-sm font-bold text-ink">{passport.passportCode}</p>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Chứng nhận công khai</p>
-                <p className="mt-2 text-base font-bold text-ink">{certifications.length}</p>
-              </div>
-              <div className="rounded-xl bg-slate-50 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Lượt xem</p>
-                <p className="mt-2 text-base font-bold text-ink">{passport.viewCount + 1}</p>
-              </div>
-            </div>
-          </Panel>
-
-          <Panel>
-            <h2 className="text-lg font-bold">Chứng nhận</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              Các chứng nhận công khai liên quan tới sản phẩm được gom tóm tắt ở cột này để kiểm tra nhanh.
-            </p>
-            <div className="mt-4 flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-              <div>
-                <p className="font-semibold text-slate-500">Tổng chứng nhận</p>
-                <p className="mt-1 text-lg font-bold text-ink">{certifications.length}</p>
-              </div>
-              <p className="max-w-[11rem] text-right text-xs leading-5 text-slate-500">
-                Danh sách đầy đủ vẫn hiển thị ngay bên dưới cho người mua.
-              </p>
-            </div>
-            <div className="mt-3 grid gap-2">
-              {visibleCertifications.map(renderCertification)}
-              {remainingCertifications.length ? (
-                <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
-                  <summary className="cursor-pointer list-none text-sm font-bold text-leaf">Xem thêm {remainingCertifications.length} chứng nhận công khai</summary>
-                  <div className="mt-3 grid gap-2">{remainingCertifications.map(renderCertification)}</div>
-                </details>
-              ) : null}
-              {certifications.length === 0 && <p className="text-slate-600">Chưa có chứng nhận công khai.</p>}
-            </div>
-          </Panel>
-
-          <Panel>
-            <h2 className="text-lg font-bold">HTX sản xuất</h2>
-            <p className="mt-2 font-semibold">{passport.cooperative.name}</p>
-            <p className="text-slate-600">{passport.cooperative.address}</p>
-            <p className="text-slate-600">{passport.cooperative.phone}</p>
-          </Panel>
-        </div>
-      </div>
-    </main>
-  );
-}
-
-function Info({
-  icon: Icon,
-  label,
-  value,
-  valueClassName
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-  valueClassName?: string;
-}) {
-  return (
-    <div className="rounded-md bg-slate-50 p-3">
-      <div className="flex items-start gap-2">
-        <Icon className="mt-0.5 shrink-0 text-leaf" size={18} aria-hidden="true" />
-        <div className="min-w-0">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">{label}</p>
-          <p className={cn('mt-1 break-words text-[0.98rem] font-bold leading-6 text-ink sm:text-base', valueClassName)}>{value}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function logImages(value: unknown) {
   if (!Array.isArray(value)) return [];
   return value
@@ -322,4 +97,336 @@ function logImages(value: unknown) {
       return null;
     })
     .filter((item): item is { url: string } => Boolean(item?.url));
+}
+
+export default async function PublicPassportPage({ params }: PublicPassportPageProps) {
+  const { code } = await params;
+  const passport = await getPassport(code);
+
+  if (!passport) {
+    return (
+      <main data-public-site="passport" className="grid min-h-screen place-items-center bg-[var(--surface-1)] px-4">
+        <div className="max-w-md text-center rounded-2xl border border-[var(--border)] bg-white p-8 shadow-sm">
+          <div className="flex h-14 w-14 mx-auto items-center justify-center rounded-full bg-rose-50 text-rose-600 mb-4">
+            <QrCode size={32} aria-hidden="true" />
+          </div>
+          <h1 className="text-xl font-bold text-[var(--text-primary)]">Không tìm thấy Hộ Chiếu Nông Nghiệp</h1>
+          <p className="mt-2 text-xs text-[var(--text-secondary)]">
+            Mã định danh truy xuất không tồn tại hoặc chưa được mở phạm vi công khai trên hệ thống.
+          </p>
+          <Link
+            className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-[#0d7a28] px-5 text-xs font-bold text-white shadow-sm transition hover:bg-[#0a6120]"
+            href="/"
+          >
+            Về trang chủ hệ thống
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const certifications = passport.product.certifications;
+  const publicLogs = passport.product.farmingLogs;
+
+  return (
+    <main data-public-site="passport" className="min-h-screen bg-[var(--surface-subtle)] pb-12">
+      {/* Top Header */}
+      <header className="border-b border-[var(--border)] bg-white sticky top-0 z-30 shadow-xs">
+        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="inline-flex items-center gap-2">
+              <PublicLogo size={28} variant="agri-wordmark" className="h-7 w-auto" />
+            </Link>
+            <span className="hidden sm:inline-block h-4 w-px bg-[var(--border)]" />
+            <span className="hidden sm:inline-block text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
+              Hộ Chiếu Nông Nghiệp Điện Tử
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3 text-xs font-semibold">
+            <Link
+              href="/san-pham"
+              className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 text-[var(--text-secondary)] hover:text-[#0d7a28] hover:border-[#0d7a28] transition"
+            >
+              Danh mục sản phẩm
+            </Link>
+            <Link
+              href="/"
+              className="rounded-lg bg-[#0d7a28] px-3 py-1.5 text-white hover:bg-[#0a6120] transition"
+            >
+              Trang chủ
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <div className="mx-auto max-w-6xl px-4 pt-6 sm:pt-8">
+        {/* =========================================================================
+            PASSPORT CERTIFICATE BANNER (High Trust Header)
+           ========================================================================= */}
+        <section className="overflow-hidden rounded-2xl border border-[var(--border)] bg-white shadow-sm">
+          {/* Top Verification Ribbon */}
+          <div className="bg-[#0d7a28] px-5 py-3 text-white flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider">
+              <ShieldCheck size={16} />
+              <span>Hồ sơ truy xuất điện tử</span>
+            </div>
+            <span className="font-mono text-xs font-semibold bg-white/15 px-2.5 py-0.5 rounded">
+              PASSPORT-ID: {passport.passportCode}
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12">
+            {/* Left Info & QR (7 cols) */}
+            <div className="p-6 sm:p-8 lg:col-span-7 flex flex-col justify-between">
+              <div>
+                <div className="inline-flex items-center gap-1 rounded-md bg-[#0d7a28]/10 px-2.5 py-0.5 text-xs font-bold text-[#0d7a28]">
+                  <CheckCircle2 size={13} />
+                  <span>Thông tin từ hồ sơ công khai</span>
+                </div>
+
+                <h1 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
+                  {passport.product.name}
+                </h1>
+
+                <div className="mt-2 flex items-center gap-2 text-sm text-[var(--text-secondary)]">
+                  <Store size={15} className="text-[var(--text-tertiary)] shrink-0" />
+                  <span className="font-semibold text-[var(--text-primary)]">{passport.cooperative.name}</span>
+                </div>
+
+                {passport.product.zone?.name && (
+                  <div className="mt-1 flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                    <MapPin size={14} className="text-[var(--text-tertiary)] shrink-0" />
+                    <span>{passport.product.zone.name}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* QR and Trust stats */}
+              <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-5 pt-6 border-t border-[var(--border)]">
+                {passport.qrDataUrl && (
+                  <div className="shrink-0 rounded-xl border-2 border-[#0d7a28]/30 bg-white p-2 shadow-xs">
+                    <img
+                      src={passport.qrDataUrl}
+                      width={100}
+                      height={100}
+                      alt={`Mã QR ${passport.passportCode}`}
+                      className="h-24 w-24 object-contain"
+                    />
+                  </div>
+                )}
+
+                <div className="grid grid-cols-2 gap-4 flex-1">
+                  <div className="rounded-lg bg-[var(--surface-subtle)] p-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] block">
+                      Mã định danh
+                    </span>
+                    <span className="font-mono text-xs font-bold text-[var(--text-primary)] truncate block mt-0.5">
+                      {passport.passportCode}
+                    </span>
+                  </div>
+
+                  <div className="rounded-lg bg-[var(--surface-subtle)] p-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--text-tertiary)] block">
+                      Lượt quét tra cứu
+                    </span>
+                    <span className="text-xs font-bold text-[#0d7a28] flex items-center gap-1 mt-0.5">
+                      <Eye size={13} />
+                      {passport.viewCount} lượt
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Product Image (5 cols) */}
+            <div className="lg:col-span-5 relative bg-[var(--surface-subtle)] border-t lg:border-t-0 lg:border-l border-[var(--border)]">
+              <PublicImage
+                src={passport.product.thumbnail?.publicUrl}
+                alt={passport.product.name}
+                fallback={DEFAULT_PRODUCT_IMAGE}
+                priority
+                wrapperClassName="h-64 sm:h-80 lg:h-full w-full"
+                className="h-full w-full object-cover"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* =========================================================================
+            DETAILED TRACEABILITY & VERIFICATION CONTENT
+           ========================================================================= */}
+        <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          {/* Left Column: Traceability Timeline & Description (8 cols) */}
+          <div className="lg:col-span-8 space-y-6">
+            {/* Farming Logs Timeline */}
+            <section className="rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-7 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[var(--border)] pb-4 mb-6">
+                <div>
+                  <h2 className="text-base font-bold text-[var(--text-primary)] flex items-center gap-2">
+                    <Calendar size={18} className="text-[#0d7a28]" />
+                    <span>Nhật ký Canh tác & Dữ liệu Thực địa</span>
+                  </h2>
+                  <p className="text-xs text-[var(--text-tertiary)] mt-0.5">
+                    Các mốc sự kiện được đồng bộ trực tiếp từ hệ thống quản trị sản xuất
+                  </p>
+                </div>
+                <span className="rounded-full bg-[#0d7a28]/10 px-2.5 py-0.5 text-xs font-bold text-[#0d7a28]">
+                  {publicLogs.length} sự kiện
+                </span>
+              </div>
+
+              {publicLogs.length ? (
+                <div className="space-y-4">
+                  {publicLogs.map((log, index) => (
+                    <div key={log.id} className="flex items-start gap-4">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0d7a28] text-white text-xs font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] p-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <span className="rounded-md bg-[#0d7a28]/10 px-2.5 py-0.5 text-xs font-bold text-[#0d7a28]">
+                            {log.activityType}
+                          </span>
+                          <span className="text-xs font-medium text-[var(--text-tertiary)] flex items-center gap-1">
+                            <Calendar size={12} />
+                            {formatDate(log.logDate)}
+                          </span>
+                        </div>
+
+                        <p className="mt-2 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                          {log.description}
+                        </p>
+
+                        {(log.zone?.name || log.actor?.fullName) && (
+                          <div className="mt-2 text-[11px] text-[var(--text-tertiary)] flex items-center gap-1.5">
+                            <User size={12} />
+                            <span>{[log.zone?.name, log.actor?.fullName].filter(Boolean).join(' · ')}</span>
+                          </div>
+                        )}
+
+                        {logImages(log.imagesJson).length > 0 && (
+                          <div className="mt-3 grid grid-cols-3 gap-2">
+                            {logImages(log.imagesJson).slice(0, 6).map((image, i) => (
+                              <PublicImage
+                                key={`${log.id}-${i}`}
+                                src={image.url}
+                                alt={`Ảnh nhật ký ${index + 1}`}
+                                fallback={DEFAULT_PRODUCT_IMAGE}
+                                decorative
+                                wrapperClassName="aspect-square w-full rounded-lg overflow-hidden border border-[var(--border)]"
+                                className="h-full w-full object-cover"
+                              />
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-[var(--text-tertiary)] italic">
+                  Chưa có sự kiện nhật ký canh tác công khai nào được ghi nhận cho mã QR này.
+                </p>
+              )}
+            </section>
+
+            {/* Product Details Panel */}
+            <section className="rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-7 shadow-sm">
+              <h2 className="text-base font-bold text-[var(--text-primary)] border-b border-[var(--border)] pb-3 mb-4">
+                Thông tin sản phẩm & Vùng canh tác
+              </h2>
+              <p className="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-line">
+                {passport.product.description || 'Hợp tác xã đang cập nhật mô tả chi tiết cho sản phẩm.'}
+              </p>
+
+              {passport.product.zone && (
+                <div className="mt-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-subtle)] p-4">
+                  <p className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-1.5">
+                    <MapPin size={14} className="text-[#0d7a28]" />
+                    <span>{passport.product.zone.name}</span>
+                  </p>
+                  {passport.product.zone.address && (
+                    <p className="text-xs text-[var(--text-secondary)] mt-1">{passport.product.zone.address}</p>
+                  )}
+                  {passport.product.zone.areaM2 && (
+                    <p className="text-[11px] text-[var(--text-tertiary)] mt-1">
+                      Diện tích quy hoạch: {passport.product.zone.areaM2} m²
+                    </p>
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
+
+          {/* Right Column: Certifications & Cooperative Contacts (4 cols) */}
+          <aside className="lg:col-span-4 space-y-6">
+            {/* Certifications Card */}
+            <div className="rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2 border-b border-[var(--border)] pb-3 mb-4">
+                <Award size={18} className="text-amber-500" />
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">
+                  Chứng nhận Chất lượng ({certifications.length})
+                </h3>
+              </div>
+
+              {certifications.length ? (
+                <div className="space-y-3">
+                  {certifications.map((cert) => (
+                    <div key={cert.id} className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-subtle)] p-3">
+                      <p className="text-xs font-bold text-[var(--text-primary)]">{cert.name}</p>
+                      <p className="text-[11px] text-[var(--text-secondary)] mt-0.5">
+                        Cơ quan cấp: {cert.issuer || 'Đang cập nhật'}
+                      </p>
+                      {cert.expiresAt && (
+                        <p className="text-[11px] text-[var(--text-tertiary)] mt-0.5">
+                          Hạn dùng: {formatDate(cert.expiresAt)}
+                        </p>
+                      )}
+                      {cert.file?.publicUrl && (
+                        <a
+                          href={cert.file.publicUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-2 inline-flex items-center gap-1 text-[11px] font-bold text-[#0d7a28] hover:underline"
+                        >
+                          <FileCheck size={12} />
+                          <span>Xem chứng chỉ đính kèm</span>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-[var(--text-tertiary)] italic">
+                  Chưa có chứng chỉ nào được tải lên cho mã QR này.
+                </p>
+              )}
+            </div>
+
+            {/* Cooperative Info Card */}
+            <div className="rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm">
+              <div className="flex items-center gap-2 border-b border-[var(--border)] pb-3 mb-3">
+                <Store size={18} className="text-[#131935]" />
+                <h3 className="text-sm font-bold text-[var(--text-primary)]">Đơn vị Sản xuất (HTX)</h3>
+              </div>
+              <p className="text-sm font-bold text-[var(--text-primary)]">{passport.cooperative.name}</p>
+              {passport.cooperative.address && (
+                <p className="text-xs text-[var(--text-secondary)] mt-1">{passport.cooperative.address}</p>
+              )}
+              {passport.cooperative.phone && (
+                <a
+                  href={`tel:${passport.cooperative.phone}`}
+                  className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#131935] px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#1f284f]"
+                >
+                  <Phone size={14} />
+                  <span>Gọi HTX ({passport.cooperative.phone})</span>
+                </a>
+              )}
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  );
 }

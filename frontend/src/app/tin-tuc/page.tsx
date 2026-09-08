@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Calendar, Clock3, Search, Sparkles } from 'lucide-react';
+import { ArrowRight, Calendar, Clock3, FileText, Search, Sparkles } from 'lucide-react';
 import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
 import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
 import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/public-layout';
@@ -86,8 +86,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <Link
                 href="/tin-tuc"
                 className={cn(
-                  'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
-                  !filters.category ? 'border-leaf bg-mint text-leaf' : 'border-[var(--border)] bg-[var(--surface-elevated)] text-slate-700'
+                  'snap-start inline-flex min-h-10 items-center whitespace-nowrap rounded-lg border px-3 text-xs font-bold shadow-xs sm:px-3.5',
+                  !filters.category ? 'border-[#106f8a] bg-[#106f8a] text-white' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#106f8a] hover:text-[#106f8a]'
                 )}
               >
                 Tất cả
@@ -97,8 +97,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   key={category.id}
                   href={`/tin-tuc?category=${category.slug}`}
                   className={cn(
-                  'snap-start inline-flex min-h-11 items-center whitespace-nowrap rounded-[1rem] border px-3 text-[0.9rem] font-semibold shadow-sm sm:rounded-2xl sm:px-4 sm:text-sm',
-                    filters.category === category.slug ? 'border-leaf bg-mint text-leaf' : 'border-[var(--border)] bg-[var(--surface-elevated)] text-slate-700'
+                    'snap-start inline-flex min-h-10 items-center whitespace-nowrap rounded-lg border px-3 text-xs font-bold shadow-xs sm:px-3.5',
+                    filters.category === category.slug ? 'border-[#106f8a] bg-[#106f8a] text-white' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#106f8a] hover:text-[#106f8a]'
                   )}
                 >
                   {category.name}
@@ -126,20 +126,20 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   <span className="text-[var(--brand-primary-strong)]">{publicNewsCategoryLabel(featured.category) ?? 'Tin nền tảng'}</span>
                   {featured.publishedAt && <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={13} />{new Date(featured.publishedAt).toLocaleDateString('vi-VN')}</span>}
                 </div>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-2 block max-w-3xl text-[1.55rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-ink hover:text-leaf sm:text-[2.35rem]">
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-2 block max-w-3xl text-[1.55rem] font-extrabold leading-[1.08] tracking-[-0.035em] text-[var(--text-primary)] hover:text-[#106f8a] sm:text-[2.35rem]">
                   {featured.title}
                 </Link>
-                <p className="mt-3 max-w-2xl line-clamp-2 text-[0.96rem] leading-7 text-slate-600 sm:text-base">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
-                <Link href={`/tin-tuc/${featured.slug}`} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-leaf transition hover:gap-3">
+                <p className="mt-3 max-w-2xl line-clamp-2 text-[0.96rem] leading-7 text-[var(--text-secondary)] sm:text-base">{featured.excerpt || featured.seoDescription || 'Tin tức nền tảng'}</p>
+                <Link href={`/tin-tuc/${featured.slug}`} className="mt-4 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#106f8a] transition hover:gap-3">
                   Đọc bài viết <ArrowRight size={16} />
                 </Link>
               </div>
             </article>
 
-            {sideArticles.length > 0 && <aside className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-muted)] p-4 shadow-[0_18px_42px_rgba(15,23,42,0.05)] sm:p-5">
+            {sideArticles.length > 0 && <aside className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm sm:p-5">
               <div className="flex items-center justify-between border-b border-[var(--border)] pb-3">
-                <div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-xl font-extrabold tracking-[-0.03em] text-ink">Mới nhất</h2></div>
-                <Clock3 size={18} className="text-leaf" aria-hidden="true" />
+                <div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#106f8a]">Đọc tiếp</p><h2 className="mt-1 text-xl font-extrabold tracking-[-0.03em] text-[var(--text-primary)]">Mới nhất</h2></div>
+                <Clock3 size={18} className="text-[#106f8a]" aria-hidden="true" />
               </div>
               <div className="divide-y divide-[var(--border)]">
                 {sideArticles.map((article) => <Link key={article.id} href={`/tin-tuc/${article.slug}`} className="group block py-4 first:pt-3 last:pb-1">
@@ -168,7 +168,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           </div>
           </section>
         ) : (
-          <EmptyPublicState title="Chưa có tin tức công khai" description="Tin tức mới sẽ hiển thị tại đây khi được đăng tải." />
+          <EmptyPublicState icon={FileText} title="Chưa có tin tức công khai" description="Tin tức mới sẽ hiển thị tại đây khi được đăng tải." />
         )}
       </PublicPageMain>
     </PublicShell>

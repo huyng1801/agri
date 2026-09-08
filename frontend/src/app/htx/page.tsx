@@ -1,13 +1,9 @@
+import React from 'react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { ArrowRight, Building2, MapPin, ShieldCheck, Sparkles } from 'lucide-react';
-import {
-  CooperativeCard,
-  EmptyPublicState,
-  PublicSearch
-} from '@/components/public-marketplace';
-import { DEFAULT_COOPERATIVE_IMAGE, PublicImage } from '@/components/public-image';
-import { PublicPageHeader, PublicPageMain } from '@/components/public-layout';
+import { ArrowRight, Building2, MapPin, Search, ShieldCheck, Sparkles, Store, X } from 'lucide-react';
+import { CooperativeCard, EmptyPublicState, PublicSearch } from '@/components/public-marketplace';
+import { PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { fetchPublicCatalog } from '@/lib/public-catalog';
@@ -16,245 +12,183 @@ import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
-    title: 'Danh sách HTX',
-    description: 'Khám phá hợp tác xã đang công khai dữ liệu sản phẩm, QR hoặc hồ sơ truy xuất trên nền tảng.',
-    path: '/htx'
+    title: 'Danh bạ Hợp tác xã Nông nghiệp',
+    description: 'Khám phá các hợp tác xã nông nghiệp đang công khai thông tin sản phẩm, vùng hoạt động và dữ liệu liên quan trên hệ thống.',
+    path: '/htx',
+    openGraphTitle: 'Danh bạ Hợp tác xã - AGRIPASSPORT',
+    openGraphDescription: 'Danh bạ các hợp tác xã đang công khai thông tin sản xuất và dữ liệu liên quan.'
   });
 }
 
 type CooperativesPageProps = {
-  searchParams?: Promise<{ search?: string }>;
+  searchParams?: Promise<{ search?: string; province?: string }>;
 };
 
 export default async function CooperativesPublicPage({ searchParams }: CooperativesPageProps) {
   const filters = (await searchParams) ?? {};
   const siteKey = await getRequestPublicSiteKey();
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
-  const search = filters.search?.trim().toLowerCase();
-  const cooperatives = search
-    ? catalog.cooperatives.filter((cooperative) =>
-        [cooperative.name, cooperative.code, cooperative.province ?? ''].some((value) => value.toLowerCase().includes(search))
-      )
-    : catalog.cooperatives;
 
-  const provinceCount = new Set(cooperatives.map((item) => item.province).filter(Boolean)).size;
-  const featuredCooperative = [...cooperatives].sort((a, b) => b.productCount - a.productCount || a.name.localeCompare(b.name, 'vi'))[0];
-  const totalProducts = cooperatives.reduce((sum, cooperative) => sum + cooperative.productCount, 0);
-  const pageTitle =
-    siteKey === 'passport'
-      ? 'HTX có hồ sơ truy xuất'
-      : siteKey === 'htxonline'
-        ? 'HTX đang kết nối dữ liệu'
-        : `HTX trong hệ sinh thái ${siteProfile.appName}`;
-  const pageDescription =
-    siteKey === 'passport'
-      ? 'Những hợp tác xã đang có sản phẩm, QR hoặc hồ sơ truy xuất công khai để người mua tra cứu nhanh hơn.'
-      : siteKey === 'htxonline'
-        ? 'Danh sách HTX đã đồng bộ dữ liệu sản phẩm từ hệ quản trị nội bộ ra lớp công khai.'
-        : `${catalog.cooperatives.length} hợp tác xã đang công khai dữ liệu sản phẩm, vùng hoạt động và lối dẫn rõ ràng sang trang chi tiết.`;
-  const flowSignals =
-    siteKey === 'htxonline'
-      ? [
-          'Quản trị nội bộ gọn trong một luồng dữ liệu.',
-          'Mở nhanh danh sách HTX và sản phẩm công khai.',
-          'Sẵn sàng đi tiếp sang QR truy xuất khi cần.'
-        ]
-      : [
-          'Xem rõ HTX, tỉnh thành và số sản phẩm đang công khai.',
-          'Đi từ danh sách sang chi tiết ít thao tác hơn.',
-          'Giữ lối dẫn mạch lạc tới sản phẩm và hồ sơ số.'
-        ];
-  const quickNotes = [
-    `Tổng ${cooperatives.length} HTX đang hiển thị công khai`,
-    `${totalProducts} sản phẩm đang đi cùng hồ sơ HTX`,
-    siteKey === 'passport' ? 'Có thể nối tiếp sang trang truy xuất QR' : 'Mở chi tiết HTX và sản phẩm ngay trên cùng hệ sinh thái'
-  ];
-  const displayedCooperatives = cooperatives;
+  const search = filters.search?.trim().toLowerCase();
+  const provinceFilter = filters.province?.trim().toLowerCase();
+
+  const filteredCooperatives = catalog.cooperatives.filter((coop) => {
+    const matchesSearch = search
+      ? [coop.name, coop.code, coop.province ?? ''].some((val) => val.toLowerCase().includes(search))
+      : true;
+    const matchesProvince = provinceFilter
+      ? (coop.province ?? '').toLowerCase().includes(provinceFilter)
+      : true;
+    return matchesSearch && matchesProvince;
+  });
+
+  // Extract unique provinces for filter bar
+  const uniqueProvinces = Array.from(
+    new Set(
+      catalog.cooperatives
+        .map((c) => c.province)
+        .filter((p): p is string => Boolean(p && p.trim()))
+    )
+  ).sort((a, b) => a.localeCompare(b, 'vi'));
+
+  const provinceCount = uniqueProvinces.length;
+  const totalProducts = catalog.cooperatives.reduce((sum, c) => sum + c.productCount, 0);
+
+  const hasActiveFilter = Boolean(search || provinceFilter);
 
   return (
     <PublicShell>
-      <PublicPageMain>
-        <PublicPageHeader
-          eyebrow={`Nền tảng ${siteProfile.appName}`}
-          title={pageTitle}
-          description={pageDescription}
-          action={
-            <div className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_14px_30px_rgba(15,23,42,0.05)] sm:min-w-[18rem]">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Đi nhanh hơn</p>
-              <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">Mở thẳng danh sách sản phẩm công khai hoặc chọn HTX nổi bật để xem chi tiết.</p>
-              <div className="mt-4 flex flex-wrap gap-2.5">
-                <Link
-                  href="/san-pham"
-                  className="brand-gradient-bg inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-                >
-                  Xem sản phẩm
-                  <ArrowRight size={15} aria-hidden="true" />
-                </Link>
-                {featuredCooperative ? (
-                  <Link
-                    href={`/htx/${featuredCooperative.code}`}
-                    className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-[var(--surface-elevated)] px-4 text-sm font-semibold text-[var(--text-primary)] transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
-                  >
-                    Xem HTX nổi bật
-                    <ArrowRight size={15} aria-hidden="true" />
-                  </Link>
-                ) : null}
+      <PublicPageMain className="py-8 sm:py-12">
+        {/* Page Header */}
+        <div className="border-b border-[var(--border)] pb-6 mb-8">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#131935]">
+                <Store size={14} />
+                <span>Danh bạ hợp tác xã</span>
               </div>
+              <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
+                Danh bạ Đơn vị Sản xuất & Hợp tác xã
+              </h1>
+              <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+                Khám phá các hồ sơ hợp tác xã đang công khai sản phẩm, vùng hoạt động và thông tin liên quan trên Agripassport.
+              </p>
             </div>
-          }
-        />
 
-        <section className="grid min-w-0 gap-4 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-          <article className="brand-gradient-bg relative min-w-0 overflow-hidden rounded-[1.9rem] p-5 text-white shadow-[0_26px_60px_rgba(15,23,42,0.18)] sm:p-6">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.22),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(160,255,202,0.18),transparent_32%)]" aria-hidden="true" />
-            <div className="relative z-10">
-              <div className="inline-flex min-h-9 items-center rounded-full border border-white/20 bg-white/10 px-3 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-white/90">
-                HTX tiêu biểu
-              </div>
-              <div className="mt-4">
-                <h2 className="max-w-[13ch] text-[1.95rem] font-extrabold leading-[0.98] tracking-[-0.04em] text-white sm:max-w-[15ch] sm:text-[2.8rem]">
-                  Các HTX đã sẵn sàng đưa sản phẩm ra thị trường.
-                </h2>
-                <p className="mt-3 max-w-3xl text-sm leading-7 text-white/82 sm:text-[0.98rem]">
-                  {featuredCooperative
-                    ? `${featuredCooperative.name} đang là một trong những hồ sơ có nhịp công khai rõ nhất, giúp người xem mở HTX, xem sản phẩm và đi tiếp sang các lớp dữ liệu liên quan.`
-                    : 'Danh sách này ưu tiên các HTX đã có dữ liệu gọn, có sản phẩm công khai và lối dẫn rõ ràng sang thị trường số.'}
-                </p>
-                {featuredCooperative ? (
-                  <div className="mt-4 inline-flex min-h-10 items-center rounded-full border border-white/18 bg-white/10 px-4 text-sm font-semibold text-white/92">
-                    Hồ sơ nổi bật: {featuredCooperative.name}
-                  </div>
-                ) : null}
-
-                <div className="mt-5 grid min-w-0 gap-4 xl:grid-cols-[0.82fr_1.18fr] xl:items-start">
-                  <div className="flex min-w-0 flex-wrap gap-2.5">
-                    {flowSignals.map((signal) => (
-                      <span key={signal} className="w-full min-w-0 break-words rounded-[1rem] border border-white/18 bg-white/10 px-3.5 py-2 text-sm font-medium leading-6 text-white/92 backdrop-blur sm:w-auto sm:rounded-full">
-                        {signal}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="min-w-0 rounded-[1.9rem] border border-white/18 bg-white/10 p-4 backdrop-blur-xl">
-                  <div className="flex items-center gap-4">
-                    <PublicImage
-                      src={featuredCooperative?.avatarUrl}
-                      alt={featuredCooperative?.name ?? 'HTX nổi bật'}
-                      fallback={DEFAULT_COOPERATIVE_IMAGE}
-                      priority
-                      wrapperClassName="h-20 w-20 shrink-0 overflow-hidden rounded-[1.4rem] ring-1 ring-white/20"
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="min-w-0">
-                      <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-white/70">
-                        {featuredCooperative?.province || `Hệ sinh thái ${siteProfile.appName}`}
-                      </p>
-                      <p className="mt-1 truncate text-[1.2rem] font-extrabold leading-tight text-white">
-                        {featuredCooperative?.code ?? siteProfile.appName}
-                      </p>
-                      <p className="mt-2 text-sm leading-6 text-white/80">
-                        {featuredCooperative ? `${featuredCooperative.productCount} sản phẩm công khai đang gắn với HTX này.` : 'Chọn một HTX để đi sâu vào lớp sản phẩm và hồ sơ công khai.'}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                    <div className="rounded-[1.2rem] border border-white/14 bg-[#ffffff14] px-4 py-3">
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/68">Tỉnh thành</p>
-                      <p className="mt-1 text-lg font-extrabold text-white">{provinceCount}</p>
-                    </div>
-                    <div className="rounded-[1.2rem] border border-white/14 bg-[#ffffff14] px-4 py-3">
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-white/68">Sản phẩm</p>
-                      <p className="mt-1 text-lg font-extrabold text-white">{totalProducts}</p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2.5">
-                    {featuredCooperative ? (
-                      <Link
-                        href={`/htx/${featuredCooperative.code}`}
-                        className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[var(--brand-primary-hover)] transition hover:-translate-y-0.5"
-                      >
-                        Mở hồ sơ HTX
-                        <ArrowRight size={15} aria-hidden="true" />
-                      </Link>
-                    ) : null}
-                    <Link
-                      href="/san-pham"
-                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/18 bg-white/8 px-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/14"
-                    >
-                      Xem sản phẩm công khai
-                      <ArrowRight size={15} aria-hidden="true" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-              </div>
+            {/* Trust Metrics Pill Strip */}
+            <div className="flex flex-wrap items-center gap-2 text-xs">
+              <span className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 font-semibold text-[var(--text-primary)] shadow-sm">
+                <strong className="text-[#131935] font-bold">{catalog.cooperatives.length}</strong> Hợp tác xã
+              </span>
+              <span className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 font-semibold text-[var(--text-primary)] shadow-sm">
+                <strong className="text-[#106f8a] font-bold">{provinceCount}</strong> Tỉnh thành
+              </span>
+              <span className="rounded-lg border border-[#0d7a28]/30 bg-[#0d7a28]/10 px-3 py-1.5 font-semibold text-[#0d7a28]">
+                <strong className="font-bold">{totalProducts}</strong> Sản phẩm công khai
+              </span>
             </div>
-          </article>
+          </div>
 
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
-            {[
-              { icon: Building2, title: 'HTX hiển thị', value: String(cooperatives.length), note: 'Danh sách đã có mặt trên lớp công khai' },
-              { icon: MapPin, title: 'Tỉnh thành', value: String(provinceCount), note: 'Mỗi hồ sơ giữ lối dẫn địa phương rõ ràng' },
-              { icon: ShieldCheck, title: 'Luồng đi tiếp', value: 'Mạch lạc', note: 'Từ HTX sang sản phẩm và thông tin liên hệ nhanh hơn' }
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 shadow-[0_18px_38px_rgba(15,23,42,0.05)] sm:p-5"
-              >
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
-                  <item.icon size={22} aria-hidden="true" />
+          {/* Quick Province Filter Chips */}
+          {uniqueProvinces.length > 0 && (
+            <div className="mt-6 -mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-max items-center gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] mr-1">
+                  Địa phương:
                 </span>
-                <p className="mt-3 text-[0.75rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">{item.title}</p>
-                <p className="mt-1 text-[1.7rem] font-extrabold leading-none text-[var(--text-primary)]">{item.value}</p>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{item.note}</p>
-              </article>
-            ))}
-
-            <article className="rounded-[1.5rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Lối dẫn dữ liệu</p>
-              <h3 className="mt-2 text-[1.35rem] font-extrabold leading-[1.1] text-[var(--text-primary)]">Chọn HTX, xem sản phẩm rồi mở tiếp hồ sơ phù hợp.</h3>
-              <div className="mt-4 space-y-2.5">
-                {quickNotes.map((note) => (
-                  <div key={note} className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
-                    {note}
-                  </div>
-                ))}
+                <Link
+                  href="/htx"
+                  className={`inline-flex h-8 items-center rounded-lg px-3.5 text-xs font-bold transition ${
+                    !provinceFilter
+                      ? 'bg-[#131935] text-white shadow-sm'
+                      : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#131935] hover:text-[#131935]'
+                  }`}
+                >
+                  Tất cả tỉnh thành
+                </Link>
+                {uniqueProvinces.map((prov) => {
+                  const isActive = provinceFilter === prov.toLowerCase();
+                  return (
+                    <Link
+                      key={prov}
+                      href={`/htx?province=${encodeURIComponent(prov)}`}
+                      className={`inline-flex h-8 items-center rounded-lg px-3.5 text-xs font-bold transition ${
+                        isActive
+                          ? 'bg-[#131935] text-white shadow-sm'
+                          : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#131935] hover:text-[#131935]'
+                      }`}
+                    >
+                      {prov}
+                    </Link>
+                  );
+                })}
               </div>
-            </article>
-          </div>
-        </section>
-
-        <section className="mt-5">
-          <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-2.5 shadow-[0_18px_42px_rgba(15,23,42,0.06)]">
-            <PublicSearch placeholder="Tìm HTX theo tên hoặc tỉnh thành" action="/htx" />
-            <div className="mt-3 flex flex-wrap gap-2 px-1">
-              {[
-                { icon: Sparkles, text: 'Hồ sơ HTX nối thẳng sang sản phẩm công khai' },
-                { icon: ShieldCheck, text: 'Mỗi thẻ giữ lối đọc gọn, dễ quét trên điện thoại' }
-              ].map((item) => (
-                <div key={item.text} className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary-subtle)] px-3 py-2 text-sm font-medium text-[var(--text-secondary)]">
-                  <item.icon size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />
-                  {item.text}
-                </div>
-              ))}
             </div>
-          </div>
-        </section>
+          )}
+        </div>
 
-        {displayedCooperatives.length ? (
-          <div className="mt-6 grid gap-4 md:auto-rows-fr md:grid-cols-2 lg:grid-cols-3">
-            {displayedCooperatives.map((cooperative, index) => (
-              <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 3} />
+        {/* Directory Search Bar */}
+        <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm mb-8">
+          <form action="/htx" method="GET" className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="relative flex-1 w-full">
+              <Search
+                size={18}
+                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"
+                aria-hidden="true"
+              />
+              <input
+                name="search"
+                defaultValue={filters.search ?? ''}
+                placeholder="Tìm HTX theo tên gọi, mã định danh hoặc địa phương..."
+                aria-label="Tìm kiếm hợp tác xã"
+                className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] pl-10 pr-4 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[#131935] focus:bg-white focus:ring-2 focus:ring-[#131935]/20"
+              />
+            </div>
+            {filters.province && <input type="hidden" name="province" value={filters.province} />}
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="submit"
+                className="inline-flex h-11 w-full sm:w-auto items-center justify-center rounded-lg bg-[#131935] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#1f284f]"
+              >
+                Tìm kiếm HTX
+              </button>
+              {hasActiveFilter && (
+                <Link
+                  href="/htx"
+                  className="inline-flex h-11 items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-slate-100 shrink-0"
+                >
+                  <X size={15} />
+                  <span>Xóa lọc</span>
+                </Link>
+              )}
+            </div>
+          </form>
+        </div>
+
+        {/* 3-Column Cooperative Grid */}
+        {filteredCooperatives.length ? (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredCooperatives.map((cooperative, index) => (
+              <CooperativeCard key={cooperative.id} cooperative={cooperative} priority={index < 6} />
             ))}
           </div>
         ) : (
-          <div className="mt-6">
-            <EmptyPublicState
-              title={search ? 'Không tìm thấy HTX phù hợp' : 'Chưa có HTX công khai'}
-              description={search ? 'Thử từ khóa khác hoặc xem toàn bộ danh sách HTX.' : 'HTX sẽ xuất hiện khi có sản phẩm được đăng công khai trên nền tảng.'}
-            />
+          <div className="rounded-xl border border-[var(--border)] bg-white p-8 sm:p-12 text-center shadow-xs">
+            <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] text-[#131935]" aria-hidden="true">
+              <Store size={22} />
+            </span>
+            <h2 className="mt-3 text-base sm:text-lg font-bold text-[var(--text-primary)]">Không tìm thấy hợp tác xã phù hợp</h2>
+            <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)] max-w-md mx-auto">
+              Thử thay đổi từ khóa tìm kiếm hoặc bỏ chọn bộ lọc tỉnh thành để xem toàn bộ danh bạ.
+            </p>
+            <div className="mt-5">
+              <Link
+                href="/htx"
+                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#131935] px-5 text-xs font-bold text-white shadow-sm transition hover:bg-[#1f284f]"
+              >
+                Xem toàn bộ danh bạ HTX
+              </Link>
+            </div>
           </div>
         )}
       </PublicPageMain>
