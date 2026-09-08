@@ -33,7 +33,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
     ? `© ${new Date().getFullYear()} HTXONLINE. Nền tảng Quản trị Hợp tác xã Số.`
     : isPassport
       ? `© ${new Date().getFullYear()} HỘ CHIẾU NÔNG NGHIỆP. Nền tảng Truy xuất Nguồn gốc Số.`
-      : `© ${new Date().getFullYear()} AGRIPASSPORT.`;
+      : `© ${new Date().getFullYear()} AGRIPASSPORT`;
 
   const dataLinks = isInternal
     ? [

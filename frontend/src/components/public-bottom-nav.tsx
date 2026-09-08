@@ -10,8 +10,8 @@ import type { PublicSiteKey } from '@/lib/domain';
 const marketplaceItems = [
   { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
   { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
-  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
-  { href: '/san-pham?hasQr=true', label: 'Tra cứu', icon: Search, match: (path: string) => path.startsWith('/passport') || path.startsWith('/qr') },
+  { href: '/htx', label: 'Hợp tác xã', icon: Store, match: (path: string) => path.startsWith('/htx') },
+  { href: '/san-pham?hasQr=true', label: 'Truy xuất QR', icon: Search, match: (path: string) => path.startsWith('/passport') || path.startsWith('/qr') },
   { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
 ] as const;
 
