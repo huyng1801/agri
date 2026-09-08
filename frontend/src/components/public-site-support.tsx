@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
 import type { PublicSiteKey } from '@/lib/domain';
-import { defaultPublicSiteProfileForSite, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
+import { defaultPublicSiteProfileForSite, getPublicZaloUrl, normalizePublicSiteProfile, telHref, type PublicSiteProfile } from '@/lib/public-site';
+import { ZaloIcon } from './zalo-icon';
 
 export function FooterContactInfo() {
   const profile = usePublicSiteProfile();
@@ -31,6 +32,8 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
   const [showFloating, setShowFloating] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
   const [mobileViewport, setMobileViewport] = useState(false);
+  const isAgri = siteKey === 'agripassport' || siteKey === 'local';
+  const zaloUrl = getPublicZaloUrl(siteProfile, isAgri);
   useEffect(() => {
     const onScroll = () => {
       const isMobile = window.innerWidth < 1024;
@@ -65,6 +68,7 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
 
   const showContactActions = showFloating && (!footerVisible || !mobileViewport);
   const showHotline = showContactActions && Boolean(siteProfile.hotline) && !mobileViewport;
+  const showZalo = showContactActions && Boolean(zaloUrl) && !mobileViewport;
   const mobileTopButtonAllowed =
     pathname.startsWith('/tin-tuc/') ||
     pathname === '/ve-chung-toi' ||
@@ -76,7 +80,7 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
     pathname === '/dieu-khoan-su-dung';
   const showTopButton = showTop && (!footerVisible || !mobileViewport) && (!mobileViewport || mobileTopButtonAllowed);
 
-  if (!showHotline && !showTopButton && !(showContactActions && siteProfile.messengerUrl)) {
+  if (!showHotline && !showZalo && !showTopButton && !(showContactActions && siteProfile.messengerUrl)) {
     return null;
   }
 
@@ -89,6 +93,17 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
           aria-label="Gọi hotline"
         >
           <Phone size={16} aria-hidden="true" />
+        </a>
+      )}
+      {showZalo && (
+        <a
+          href={zaloUrl}
+          className="grid h-11 w-11 place-items-center rounded-full bg-white shadow-soft ring-1 ring-slate-200/80"
+          aria-label="Zalo"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <ZaloIcon size={24} />
         </a>
       )}
       {showContactActions && siteProfile.messengerUrl && (
