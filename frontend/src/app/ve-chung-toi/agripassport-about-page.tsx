@@ -41,7 +41,7 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
           <div className={cn(publicContainerClass, 'grid gap-8 py-10 sm:py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-14 lg:py-20')}>
             <div className="max-w-2xl">
               <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Agripassport</p>
-              <h1 className="type-h1 mt-4 text-[2.55rem] sm:text-6xl">Số hóa nông sản, minh bạch nguồn gốc.</h1>
+              <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl lg:leading-[1.12]">Số hóa nông sản, minh bạch nguồn gốc</h1>
               <div className="mt-6 space-y-4 text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.1rem]">
                 <p>Agripassport là nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và truy xuất nguồn gốc bằng QR.</p>
                 <p>Từ vùng sản xuất đến sản phẩm, Agripassport kết nối thông tin trên một nền tảng thống nhất, giúp dữ liệu rõ ràng hơn, sản phẩm minh bạch hơn và tạo nền tảng để nông sản tiếp cận thị trường hiệu quả hơn.</p>
