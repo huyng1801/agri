@@ -84,8 +84,8 @@ export function PublicEcosystemShowcase({
       name: isAgri ? 'HỆ THỐNG HỢP TÁC XÃ' : 'HTXONLINE',
       role: 'Quản trị nội bộ hợp tác xã',
       desc: 'Hệ sinh thái số hóa nghiệp vụ hợp tác xã, quản lý thành viên, xã viên, sổ sách kế toán, quỹ xã, theo dõi xuất nhập kho và lập kế hoạch sản xuất theo mùa vụ.',
-      href: isAgri ? '/htx' : htxonlineUrl('/'),
-      isExternal: !isAgri,
+      href: htxonlineUrl('/'),
+      isExternal: true,
       accentColor: '#131935',
       headerBg: 'bg-[#131935]',
       badgeClass: 'bg-[#131935]/10 text-[#131935] border-[#131935]/20',
@@ -146,7 +146,7 @@ export function PublicEcosystemShowcase({
             <span className="tracking-wide uppercase text-[11px] font-bold">Kiến trúc hệ thống</span>
           </div>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:whitespace-nowrap sm:text-3xl lg:text-4xl">
-            Ba nền tảng chuyên biệt · một chuỗi giá trị khép kín
+            Ba nền tảng chuyên biệt một chuỗi giá trị khép kín
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
             Mỗi hệ thống đảm nhiệm một khâu then chốt trong chu trình số hóa nông nghiệp, đảm bảo tính phân quyền, minh bạch và tính toàn vẹn dữ liệu từ cánh đồng đến tay đối tác.
@@ -204,7 +204,7 @@ export function PublicEcosystemShowcase({
                 </div>
 
                 {/* Platform Identity */}
-                <div className="flex items-start gap-3.5 mb-3">
+                <div className="flex items-center gap-3.5 mb-3">
                   <div
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg text-white shadow-sm"
                     style={{ backgroundColor: p.accentColor }}
