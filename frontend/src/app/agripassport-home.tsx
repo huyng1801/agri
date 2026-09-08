@@ -288,11 +288,11 @@ export async function AgripassportHome() {
           <div className={cn(publicContainerClass, 'py-6 sm:py-8')}>
             <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:divide-x lg:divide-[var(--border)]">
               {/* Stat 1: Total Products */}
-              <div className="flex items-center gap-4 lg:px-6 first:pl-0">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4 lg:px-6 first:pl-0">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#106f8a]/10 text-[#106f8a]">
                   <Boxes size={24} aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {catalog.totalProducts.toLocaleString('vi-VN')}
                   </p>
@@ -303,11 +303,11 @@ export async function AgripassportHome() {
               </div>
 
               {/* Stat 2: Cooperatives */}
-              <div className="flex items-center gap-4 lg:px-6">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4 lg:px-6">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#131935]/10 text-[#131935]">
                   <Store size={24} aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {catalog.cooperatives.length}
                   </p>
@@ -318,26 +318,26 @@ export async function AgripassportHome() {
               </div>
 
               {/* Stat 3: QR Passports */}
-              <div className="flex items-center gap-4 lg:px-6">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4 lg:px-6">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#0d7a28]/10 text-[#0d7a28]">
                   <QrCode size={24} aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {qrProductCount}
                   </p>
-                  <p className="whitespace-nowrap text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--text-secondary)] sm:text-xs">
+                  <p className="text-[0.68rem] font-semibold uppercase leading-5 tracking-wide text-[var(--text-secondary)] sm:text-xs">
                     Sản phẩm có QR Passport
                   </p>
                 </div>
               </div>
 
               {/* Stat 4: Provinces */}
-              <div className="flex items-center gap-4 lg:px-6 last:pr-0">
+              <div className="flex min-w-0 items-center gap-3 sm:gap-4 lg:px-6 last:pr-0">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-600">
                   <MapPin size={24} aria-hidden="true" />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {provinceCountDisplay}
                   </p>
