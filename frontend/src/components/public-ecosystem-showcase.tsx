@@ -145,8 +145,8 @@ export function PublicEcosystemShowcase({
             <span className="h-2 w-2 rounded-full bg-[#106f8a] animate-pulse" />
             <span className="tracking-wide uppercase text-[11px] font-bold">Kiến trúc hệ thống</span>
           </div>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-4xl">
-            Ba nền tảng chuyên biệt một chuỗi giá trị khép kín
+          <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:whitespace-nowrap sm:text-3xl lg:text-4xl">
+            Ba nền tảng chuyên biệt · một chuỗi giá trị khép kín
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
             Mỗi hệ thống đảm nhiệm một khâu then chốt trong chu trình số hóa nông nghiệp, đảm bảo tính phân quyền, minh bạch và tính toàn vẹn dữ liệu từ cánh đồng đến tay đối tác.

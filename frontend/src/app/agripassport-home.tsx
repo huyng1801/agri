@@ -141,7 +141,7 @@ export async function AgripassportHome() {
 
                 {/* Subtitle */}
                 <p className="mt-4 text-sm font-bold uppercase tracking-[0.04em] leading-relaxed text-[var(--brand-primary-strong)] sm:text-base">
-                  AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR
+                  Agripassport giải pháp số hoá nông sản hợp tác xã, truy xuất minh bạch nguồn gốc bằng QR
                 </p>
 
                 {/* Integrated High-Contrast Search Bar */}
@@ -182,7 +182,7 @@ export async function AgripassportHome() {
                       </div>
                       <div>
                         <h2 className="text-sm font-bold text-[var(--text-primary)]">
-                          Chứng nhận Số & Truy xuất
+                          Chứng nhận số & Truy xuất
                         </h2>
                         <p className="text-xs text-[var(--text-tertiary)]">
                           Luồng dữ liệu chuỗi cung ứng minh bạch
@@ -519,7 +519,7 @@ export async function AgripassportHome() {
                   <span>Bản tin Chuyển đổi số</span>
                 </div>
                 <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-                  Tin tức & Kiến thức vận hành nông nghiệp
+                  Tin tức vận hành nông nghiệp
                 </h2>
                 <p className="mt-1 text-sm text-[var(--text-secondary)]">
                   Cập nhật các mô hình hợp tác xã tiêu biểu, tiêu chuẩn thị trường và hướng dẫn ứng dụng công nghệ thực tế.
@@ -562,7 +562,8 @@ export async function AgripassportHome() {
               </span>
 
               <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-                Đưa hợp tác xã & nông sản của bạn lên bản đồ nông nghiệp số
+                <span className="block">Đưa hợp tác xã & nông sản của</span>
+                <span className="block">bạn lên bản đồ nông nghiệp số</span>
               </h2>
 
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-white/80 max-w-2xl mx-auto">
