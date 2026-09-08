@@ -49,7 +49,7 @@ export async function AgripassportHome() {
   const pipelineSteps = [
     {
       num: '01',
-      title: 'Thu thập & Khai báo tại Nguồn',
+      title: 'Thu thập & Khai báo tại nguồn',
       platform: 'HỢP TÁC XÃ',
       platformColor: '#131935',
       desc: 'Hợp tác xã số hóa hồ sơ xã viên, diện tích vùng trồng, mùa vụ và nhật ký canh tác thực tế ngay trên đồng ruộng.'
