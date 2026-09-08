@@ -136,12 +136,12 @@ export async function AgripassportHome() {
 
                 {/* H1 Heading */}
                 <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl lg:leading-[1.12]">
-                  Agripassport giải pháp số hoá nông sản hợp tác xã, truy xuất minh bạch nguồn gốc bằng QR
+                  Agripassport số hóa nông sản, minh bạch hành trình bằng QR
                 </h1>
 
                 {/* Subtitle */}
                 <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--brand-primary-strong)] sm:text-base sm:leading-8">
-                  Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống.
+                  Kết nối dữ liệu từ sản xuất đến sản phẩm, giúp hợp tác xã quản lý hiệu quả và người tiêu dùng dễ dàng kiểm chứng thông tin.
                 </p>
 
                 {/* Unified Single-Surface Search Bar */}

@@ -18,7 +18,7 @@ export type EcosystemCard = {
 export const ecosystemCards: EcosystemCard[] = [
   {
     key: 'htxonline',
-    name: 'HỢP TÁC XÃ',
+    name: 'HỢP TÁC XÃ ONLINE',
     label: 'Cho hợp tác xã',
     description: 'Hệ thống quản trị chuyển đổi số nội bộ, phục vụ quản lý thành viên, mức độ sử dụng dịch vụ, thu chi, xuất nhập và toàn bộ vận hành của hợp tác xã.',
     href: htxonlineUrl('/'),
