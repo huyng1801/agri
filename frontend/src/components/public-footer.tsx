@@ -144,13 +144,13 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </p>
               <p className="flex items-center gap-2">
                 <Phone size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-semibold text-[var(--text-secondary)] hover:underline">
+                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline sm:font-semibold">
                   {profile.hotlineDisplay}
                 </a>
               </p>
               <p className="flex items-center gap-2">
                 <Mail size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-semibold text-[var(--text-secondary)] hover:underline">
+                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline sm:font-semibold">
                   {profile.supportEmail}
                 </a>
               </p>

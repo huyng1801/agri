@@ -182,7 +182,7 @@ export async function AgripassportHome() {
                       </div>
                       <div>
                         <h2 className="text-sm font-bold text-[var(--text-primary)]">
-                          Chứng nhận số & Truy xuất
+                          Hồ sơ số & Truy xuất
                         </h2>
                         <p className="text-xs text-[var(--text-tertiary)]">
                           Luồng dữ liệu
@@ -191,7 +191,7 @@ export async function AgripassportHome() {
                     </div>
                     <span className="inline-flex items-center gap-1 rounded-full bg-[#0d7a28]/10 px-2.5 py-0.5 text-[11px] font-bold text-[#0d7a28] border border-[#0d7a28]/20">
                       <span className="h-1.5 w-1.5 rounded-full bg-[#0d7a28]" />
-                      Dữ liệu công khai
+                      Thông tin công khai
                     </span>
                   </div>
 
@@ -272,7 +272,7 @@ export async function AgripassportHome() {
                     <span className="text-[var(--text-tertiary)]">Cơ chế bảo mật</span>
                     <span className="font-semibold text-[var(--text-primary)] inline-flex items-center gap-1">
                       <CheckCircle2 size={13} className="text-[#0d7a28]" />
-                      Hiển thị theo dữ liệu hồ sơ
+                      Hiển thị theo hồ sơ công khai
                     </span>
                   </div>
                 </div>
@@ -512,7 +512,7 @@ export async function AgripassportHome() {
            ========================================================================= */}
         <section className="border-t border-[var(--border)] bg-white py-12 sm:py-16 lg:py-20">
           <div className={publicContainerClass}>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-[var(--border)] pb-6 mb-8">
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left border-b border-[var(--border)] pb-6 mb-8">
               <div>
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#106f8a]">
                   <TrendingUp size={14} />
