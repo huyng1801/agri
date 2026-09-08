@@ -145,17 +145,6 @@ export function PublicHeader({
         </nav>
 
         <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
-          <form action={searchTarget} className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
-            <input
-              type="search"
-              name="search"
-              placeholder={searchPlaceholder}
-              aria-label={searchPlaceholder}
-              className="h-10 w-44 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-60 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-56"
-            />
-          </form>
-
           <Link
             href={navCta.href}
             className="inline-flex h-10 max-w-[9.5rem] items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
