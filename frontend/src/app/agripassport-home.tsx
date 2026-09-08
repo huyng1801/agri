@@ -46,14 +46,6 @@ export async function AgripassportHome() {
   );
   const provinceCountDisplay = uniqueProvinces.length > 0 ? uniqueProvinces.length.toLocaleString('vi-VN') : '—';
 
-  const quickSearchTags = [
-    { label: 'Xoài Cát Chu', query: 'Xoài' },
-    { label: 'Gạo ST25', query: 'Gạo' },
-    { label: 'Sầu riêng', query: 'Sầu riêng' },
-    { label: 'Đồng Tháp', query: 'Đồng Tháp' },
-    { label: 'Có QR Passport', href: '/san-pham?hasQr=true' }
-  ];
-
   const pipelineSteps = [
     {
       num: '01',
@@ -158,30 +150,6 @@ export async function AgripassportHome() {
                     placeholder="Nhập tên nông sản, hợp tác xã, mã vùng trồng hoặc mã QR..."
                     className="w-full"
                   />
-                  {/* Quick Search Chips */}
-                  <div className="mt-3 flex flex-wrap items-center gap-1.5 text-xs text-[var(--text-tertiary)] pt-2 border-t border-[var(--border-subtle)]">
-                    <span className="font-semibold text-[var(--text-secondary)]">Tìm nhanh:</span>
-                    {quickSearchTags.map((tag) =>
-                      tag.href ? (
-                        <Link
-                          key={tag.label}
-                          href={tag.href}
-                          className="inline-flex items-center gap-1 rounded-md border border-[var(--brand-primary)]/30 bg-[var(--brand-primary-subtle)] px-2 py-0.5 font-medium text-[var(--brand-primary)] transition hover:bg-[var(--brand-primary)] hover:text-white"
-                        >
-                          <QrCode size={11} aria-hidden="true" />
-                          {tag.label}
-                        </Link>
-                      ) : (
-                        <Link
-                          key={tag.label}
-                          href={`/san-pham?search=${encodeURIComponent(tag.query || tag.label)}`}
-                          className="rounded-md border border-[var(--border)] bg-[var(--surface-subtle)] px-2 py-0.5 font-medium text-[var(--text-secondary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
-                        >
-                          {tag.label}
-                        </Link>
-                      )
-                    )}
-                  </div>
                 </div>
 
                 {/* Primary Action Row */}
