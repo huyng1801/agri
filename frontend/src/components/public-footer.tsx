@@ -27,8 +27,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const ecosystemLinks = [
     {
       num: '01',
-      name: isAgri ? 'HỆ THỐNG HTX' : 'HTXONLINE',
-      label: 'Quản trị nội bộ HTX',
+      name: isAgri ? 'HỆ THỐNG HỢP TÁC XÃ' : 'HTXONLINE',
+      label: 'Quản trị nội bộ hợp tác xã',
       href: isAgri ? '/htx' : htxonlineUrl('/'),
       isExternal: !isAgri,
       color: '#131935'
@@ -78,7 +78,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         <div className={cn(publicContainerClass, 'flex flex-col sm:flex-row items-center justify-between gap-4')}>
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)]">
             <span className="h-2 w-2 rounded-full bg-[#106f8a]" />
-            <span>Hệ sinh thái dữ liệu nông nghiệp:</span>
+            <span>Hệ sinh thái dữ liệu nông nghiệp</span>
           </div>
 
           <div className="flex flex-wrap items-center gap-3 text-xs">

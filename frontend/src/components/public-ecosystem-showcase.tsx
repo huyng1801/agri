@@ -53,7 +53,6 @@ type PlatformItem = {
   key: PublicSiteKey;
   name: string;
   role: string;
-  englishName: string;
   desc: string;
   href: string;
   isExternal: boolean;
@@ -82,10 +81,9 @@ export function PublicEcosystemShowcase({
     {
       num: '01',
       key: 'htxonline',
-      name: isAgri ? 'HỆ THỐNG HTX' : 'HTXONLINE',
-      role: 'Quản trị nội bộ Hợp tác xã',
-      englishName: 'Cooperative ERP & Internal Operations',
-      desc: 'Hệ sinh thái số hóa nghiệp vụ hợp tác xã: quản lý thành viên, xã viên, sổ sách kế toán, quỹ xã, theo dõi xuất nhập kho và lập kế hoạch sản xuất theo mùa vụ.',
+      name: isAgri ? 'HỆ THỐNG HỢP TÁC XÃ' : 'HTXONLINE',
+      role: 'Quản trị nội bộ hợp tác xã',
+      desc: 'Hệ sinh thái số hóa nghiệp vụ hợp tác xã, quản lý thành viên, xã viên, sổ sách kế toán, quỹ xã, theo dõi xuất nhập kho và lập kế hoạch sản xuất theo mùa vụ.',
       href: isAgri ? '/htx' : htxonlineUrl('/'),
       isExternal: !isAgri,
       accentColor: '#131935',
@@ -104,8 +102,7 @@ export function PublicEcosystemShowcase({
       key: 'agripassport',
       name: 'AGRIPASSPORT',
       role: 'Dữ liệu công khai & Thị trường',
-      englishName: 'Public Agriculture Data & Market Discovery',
-      desc: 'Nền tảng chuẩn hóa dữ liệu nông sản: số hóa danh mục hàng hóa, tổ chức thông tin hợp tác xã và mở kênh kết nối minh bạch.',
+      desc: 'Nền tảng chuẩn hóa dữ liệu nông sản, số hóa danh mục hàng hóa, tổ chức thông tin hợp tác xã và mở kênh kết nối minh bạch.',
       href: isAgri ? '/san-pham' : marketplaceUrl('/'),
       isExternal: !isAgri,
       accentColor: '#106f8a',
@@ -124,8 +121,7 @@ export function PublicEcosystemShowcase({
       key: 'passport',
       name: 'HỘ CHIẾU NÔNG NGHIỆP',
       role: 'Truy xuất nguồn gốc & Nhật ký số',
-      englishName: 'QR Traceability & Field Verification',
-      desc: 'Cấp phát chứng thư điện tử và mã QR truy xuất cho từng sản phẩm hoặc lô nông sản: liên kết trực tiếp với vùng canh tác, quy trình phân bón và chứng nhận an toàn.',
+      desc: 'Cấp phát chứng thư điện tử và mã QR truy xuất cho từng sản phẩm hoặc lô nông sản, liên kết trực tiếp với vùng canh tác, quy trình phân bón và chứng nhận an toàn.',
       href: passportUrl('/'),
       isExternal: true,
       accentColor: '#0d7a28',
@@ -150,7 +146,7 @@ export function PublicEcosystemShowcase({
             <span className="tracking-wide uppercase text-[11px] font-bold">Kiến trúc hệ thống</span>
           </div>
           <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-4xl">
-            Ba nền tảng chuyên biệt · Một chuỗi giá trị khép kín
+            Ba nền tảng chuyên biệt một chuỗi giá trị khép kín
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
             Mỗi hệ thống đảm nhiệm một khâu then chốt trong chu trình số hóa nông nghiệp, đảm bảo tính phân quyền, minh bạch và tính toàn vẹn dữ liệu từ cánh đồng đến tay đối tác.
@@ -220,7 +216,6 @@ export function PublicEcosystemShowcase({
                       {p.name}
                     </h3>
                     <p className="text-xs font-medium text-[var(--text-muted)]">
-                      {p.englishName}
                     </p>
                   </div>
                 </div>

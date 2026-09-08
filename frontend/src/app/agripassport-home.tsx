@@ -56,24 +56,24 @@ export async function AgripassportHome() {
     },
     {
       num: '02',
-      title: 'Chuẩn hóa Dữ liệu',
+      title: 'Chuẩn hóa dữ liệu',
       platform: 'AGRIPASSPORT',
       platformColor: '#106f8a',
       desc: 'Hệ thống chuẩn hóa thông số sản phẩm, quy cách đóng gói và thông tin chứng nhận khi có trong hồ sơ.'
     },
     {
       num: '03',
-      title: 'Cấp mã Định danh QR Passport',
+      title: 'Cấp mã định danh QR Passport',
       platform: 'HỘ CHIẾU NÔNG NGHIỆP',
       platformColor: '#0d7a28',
       desc: 'Mỗi sản phẩm hoặc lô hàng có thể gắn mã QR để người dùng mở thông tin truy xuất được công khai theo hồ sơ.'
     },
     {
       num: '04',
-      title: 'Minh bạch & Kết nối Thị trường',
+      title: 'Minh bạch & Kết nối thị trường',
       platform: 'HỆ SINH THÁI MỞ',
       platformColor: '#106f8a',
-      desc: 'Người tiêu dùng, doanh nghiệp bán lẻ và đối tác xuất khẩu tra cứu trực tiếp thông tin minh bạch chỉ với 1 thao tác quét.'
+      desc: 'Người tiêu dùng, doanh nghiệp bán lẻ và đối tác xuất khẩu tra cứu trực tiếp thông tin minh bạch chỉ với một thao tác quét.'
     }
   ];
 
@@ -519,10 +519,10 @@ export async function AgripassportHome() {
                   <span>Bản tin Chuyển đổi số</span>
                 </div>
                 <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-                  Tin tức & Kiến thức Vận hành Nông nghiệp
+                  Tin tức & Kiến thức vận hành nông nghiệp
                 </h2>
                 <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                  Cập nhật các mô hình HTX tiêu biểu, tiêu chuẩn thị trường và hướng dẫn ứng dụng công nghệ thực tế.
+                  Cập nhật các mô hình hợp tác xã tiêu biểu, tiêu chuẩn thị trường và hướng dẫn ứng dụng công nghệ thực tế.
                 </p>
               </div>
 
@@ -562,11 +562,11 @@ export async function AgripassportHome() {
               </span>
 
               <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-                Đưa Hợp tác xã & Nông sản của bạn lên Bản đồ Nông nghiệp Số
+                Đưa hợp tác xã & nông sản của bạn lên bản đồ nông nghiệp số
               </h2>
 
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-white/80 max-w-2xl mx-auto">
-                Không cần thay đổi toàn bộ quy trình cùng lúc. Đội ngũ chuyên gia Agripassport sẽ đồng hành cùng HTX
+                Không cần thay đổi toàn bộ quy trình cùng lúc. Đội ngũ chuyên gia Agripassport sẽ đồng hành cùng hợp tác xã
                 khảo sát thực địa, số hóa hồ sơ xã viên và cấp mã QR Passport đạt chuẩn theo từng giai đoạn.
               </p>
 
@@ -583,7 +583,7 @@ export async function AgripassportHome() {
                 </div>
                 <div className="rounded-lg border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
                   <span className="font-mono text-xs font-bold text-white/60">BƯỚC 03</span>
-                  <p className="font-bold text-sm text-white mt-1">Mở kênh Kết nối</p>
+                  <p className="font-bold text-sm text-white mt-1">Mở kênh kết nối</p>
                   <p className="text-xs text-white/70 mt-1">Tiếp cận chuỗi bán lẻ, siêu thị và đối tác xuất khẩu.</p>
                 </div>
               </div>
@@ -593,14 +593,14 @@ export async function AgripassportHome() {
                   href="/lien-he"
                   className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-bold text-[#106f8a] shadow-sm transition hover:bg-slate-100"
                 >
-                  <span>Liên hệ Đội ngũ Triển khai</span>
+                  <span>Liên hệ đội ngũ triển khai</span>
                   <ArrowRight size={16} aria-hidden="true" />
                 </Link>
                 <Link
                   href="/ve-chung-toi"
                   className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/20"
                 >
-                  <span>Tìm hiểu Tiêu chuẩn Dữ liệu</span>
+                  <span>Tìm hiểu tiêu chuẩn dữ liệu</span>
                 </Link>
               </div>
             </div>
