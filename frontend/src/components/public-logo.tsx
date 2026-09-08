@@ -6,8 +6,8 @@ export const AGRIPASSPORT_WORDMARK_SRC = '/agripassport-wordmark.png';
 export const PASSPORT_WORDMARK_SRC = '/passport-wordmark.png';
 export const HTXONLINE_WORDMARK_SRC = '/htxonline-wordmark.png';
 const PUBLIC_LOGO_WIDTH_RATIO = 603 / 669;
-const AGRIPASSPORT_WORDMARK_WIDTH_RATIO = 1748 / 436;
-const WORDMARK_WIDTH_RATIO = 1983 / 793;
+const AGRIPASSPORT_WORDMARK_WIDTH_RATIO = 1850 / 450;
+const WORDMARK_WIDTH_RATIO = 1850 / 450;
 
 type PublicLogoProps = {
   size?: number;

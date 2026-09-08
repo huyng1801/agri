@@ -100,11 +100,11 @@ export function PublicHeader({
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.04)] transition-all">
-      <div className="mx-auto flex h-[68px] max-w-[var(--public-container-wide)] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-4 xl:gap-5">
+      <div className="mx-auto flex h-[74px] max-w-[var(--public-container-wide)] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+        <div className="flex min-w-0 items-center gap-3 xl:gap-4">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label={`${appName} - Trang chủ`}>
             {isAgri || isPassport || isInternal ? (
-              <PublicLogo size={34} variant={logoVariant} className="h-[34px] w-auto max-w-[10rem] sm:max-w-[12rem]" />
+              <PublicLogo size={38} variant={logoVariant} className="h-[38px] w-auto max-w-[10rem] sm:max-w-[12rem]" />
             ) : (
               <div className="flex items-center gap-2.5">
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--brand-primary)] text-white shadow-sm">
@@ -115,13 +115,13 @@ export function PublicHeader({
             )}
           </Link>
 
-          <span className="hidden xl:inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]">
+          <span className="hidden 2xl:inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
             {platformBadge}
           </span>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1" aria-label="Menu chính">
+        <nav className="hidden lg:flex min-w-0 items-center gap-0.5" aria-label="Menu chính">
           {navItems.map((item) => {
             const active = isNavActive(pathname, hasQrQuery, item.href);
             return (
@@ -129,7 +129,7 @@ export function PublicHeader({
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'px-3.5 py-2 rounded-lg text-sm font-semibold transition duration-150',
+                  'whitespace-nowrap rounded-lg px-2.5 py-2 text-[0.8rem] font-semibold transition duration-150 xl:px-3 xl:text-sm',
                   active
                     ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]'
                     : 'text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]'
@@ -142,7 +142,7 @@ export function PublicHeader({
           })}
         </nav>
 
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
           <form action={searchTarget} className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
             <input
@@ -150,13 +150,13 @@ export function PublicHeader({
               name="search"
               placeholder={searchPlaceholder}
               aria-label={searchPlaceholder}
-              className="h-10 w-44 lg:w-48 xl:w-60 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-64 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)]"
+              className="h-10 w-40 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-56 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-52"
             />
           </form>
 
           <Link
             href={navCta.href}
-            className="inline-flex h-10 items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3.5 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
+            className="inline-flex h-10 max-w-[9rem] items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
           >
             <CtaIcon size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />
             <span>{navCta.label}</span>
