@@ -33,7 +33,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
     ? `© ${new Date().getFullYear()} HTXONLINE. Nền tảng Quản trị Hợp tác xã Số.`
     : isPassport
       ? `© ${new Date().getFullYear()} HỘ CHIẾU NÔNG NGHIỆP. Nền tảng Truy xuất Nguồn gốc Số.`
-      : `© ${new Date().getFullYear()} AGRIPASSPORT. Nền tảng Nông nghiệp Số Việt Nam.`;
+      : `© ${new Date().getFullYear()} AGRIPASSPORT.`;
 
   const dataLinks = isInternal
     ? [
@@ -66,7 +66,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   ];
 
   return (
-    <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)] pb-[calc(5rem+var(--safe-bottom))] lg:pb-0">
+    <footer className="mt-16 border-t border-[var(--border)] bg-white pb-[calc(1rem+var(--safe-bottom))] text-[var(--text-primary)] lg:pb-0">
       {/* Main four-column grid */}
       <div className={cn(publicContainerClass, 'py-12 sm:py-16')}>
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -137,7 +137,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               Thông tin liên hệ
             </h3>
             <div className="space-y-3 text-xs leading-relaxed text-[var(--text-secondary)]">
-              <p className="font-bold text-[var(--text-primary)]">{brandOrg}</p>
+              <p className="text-[var(--text-secondary)]">{brandOrg}</p>
               <p className="flex items-start gap-2">
                 <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
                 <span>{profile.address || 'Đồng Tháp, Việt Nam'}</span>
@@ -178,7 +178,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               Thông tin pháp lý
             </h3>
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
-              ĐKKD: 1402233422 do Phòng Kinh tế Đồng Tháp cấp ngày 13/07/2026.
+              ĐKKD: 1402233422 do Phòng Kinh tế cấp ngày 13/07/2026.
             </p>
           </div>
         </div>

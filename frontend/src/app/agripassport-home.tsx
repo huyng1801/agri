@@ -136,12 +136,12 @@ export async function AgripassportHome() {
 
                 {/* H1 Heading */}
                 <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl lg:leading-[1.12]">
-                  Chuẩn hóa Nông sản Hợp tác xã · Minh bạch Nguồn gốc bằng QR Passport
+                  Agripassport giải pháp số hoá nông sản hợp tác xã, truy xuất minh bạch nguồn gốc bằng QR
                 </h1>
 
                 {/* Subtitle */}
-                <p className="mt-4 text-sm font-bold uppercase tracking-[0.04em] leading-relaxed text-[var(--brand-primary-strong)] sm:text-base">
-                  AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR
+                <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--brand-primary-strong)] sm:text-base sm:leading-8">
+                  Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống.
                 </p>
 
                 {/* Unified Single-Surface Search Bar */}
@@ -153,17 +153,17 @@ export async function AgripassportHome() {
                 </div>
 
                 {/* Primary Action Row */}
-                <div className="mt-6 flex flex-wrap items-center gap-3">
+                <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
                   <Link
                     href="/san-pham"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#106f8a] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d596e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#106f8a] focus-visible:ring-offset-2"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#106f8a] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d596e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#106f8a] focus-visible:ring-offset-2 sm:w-auto"
                   >
                     <span>Khám phá danh mục nông sản</span>
                     <ArrowRight size={16} aria-hidden="true" />
                   </Link>
                   <Link
                     href="/htx"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-[var(--border-strong)] bg-white px-5 text-sm font-bold text-[var(--text-primary)] shadow-sm transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-[var(--border-strong)] bg-white px-5 text-sm font-bold text-[var(--text-primary)] shadow-sm transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] sm:w-auto"
                   >
                     <Store size={16} aria-hidden="true" />
                     <span>Hợp tác xã công khai</span>
@@ -286,7 +286,7 @@ export async function AgripassportHome() {
            ========================================================================= */}
         <section aria-label="Số liệu hoạt động thực tế" className="border-b border-[var(--border)] bg-white">
           <div className={cn(publicContainerClass, 'py-6 sm:py-8')}>
-            <div className="grid grid-cols-2 gap-6 lg:grid-cols-4 lg:divide-x lg:divide-[var(--border)]">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:divide-x lg:divide-[var(--border)]">
               {/* Stat 1: Total Products */}
               <div className="flex items-center gap-4 lg:px-6 first:pl-0">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#106f8a]/10 text-[#106f8a]">
@@ -590,6 +590,13 @@ export async function AgripassportHome() {
               </div>
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <Link
+                  href="/lien-he"
+                  className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-bold text-[#106f8a] shadow-sm transition hover:bg-slate-100"
+                >
+                  <span>Liên hệ đội ngũ triển khai</span>
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
                 <Link
                   href="/ve-chung-toi"
                   className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/20"
