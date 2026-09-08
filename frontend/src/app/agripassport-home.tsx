@@ -562,8 +562,8 @@ export async function AgripassportHome() {
               </span>
 
               <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-                <span className="block">Đưa hợp tác xã & nông sản của</span>
-                <span className="block">bạn lên bản đồ nông nghiệp số</span>
+                <span className="block">Đưa hợp tác xã & nông sản của bạn lên bản đồ</span>
+                <span className="block">nông nghiệp số</span>
               </h2>
 
               <p className="mt-3 text-sm sm:text-base leading-relaxed text-white/80 max-w-2xl mx-auto">
