@@ -35,11 +35,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  themeColor: '#2f7d4f'
-};
+export async function generateViewport(): Promise<Viewport> {
+  const siteKey = await getRequestPublicSiteKey();
+  const themeColor =
+    siteKey === 'htxonline'
+      ? '#131935'
+      : siteKey === 'passport'
+        ? '#0d7a28'
+        : '#1e7e34';
+  return {
+    width: 'device-width',
+    initialScale: 1,
+    themeColor
+  };
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

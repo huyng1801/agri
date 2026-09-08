@@ -144,8 +144,8 @@ export async function AgripassportHome() {
                   AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR
                 </p>
 
-                {/* Integrated High-Contrast Search Bar */}
-                <div className="mt-6 rounded-xl border border-[var(--border)] bg-white p-2.5 shadow-sm sm:p-3">
+                {/* Unified Single-Surface Search Bar */}
+                <div className="mt-6 max-w-2xl">
                   <PublicSearch
                     placeholder="Nhập tên nông sản, hợp tác xã, mã vùng trồng hoặc mã QR..."
                     className="w-full"

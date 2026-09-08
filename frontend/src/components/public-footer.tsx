@@ -13,15 +13,48 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const profile = await getPublicSiteProfile(siteKey);
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
+  const isInternal = siteKey === 'htxonline';
+  const isPassport = siteKey === 'passport';
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
   const zaloUrl = getPublicZaloUrl(profile, isAgri);
-  const logoVariant = isAgri ? 'agri-wordmark' : siteKey === 'passport' ? 'passport-wordmark' : 'htx-wordmark';
+  const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
-  const dataLinks = [
-    { href: '/san-pham', label: 'Sản phẩm' },
-    { href: '/htx', label: 'Hợp tác xã' },
-    { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' }
-  ];
+  const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'HỘ CHIẾU NÔNG NGHIỆP' : 'AGRIPASSPORT';
+  const brandDescription = isInternal
+    ? 'Hệ thống quản trị nội bộ cho hợp tác xã: chuẩn hóa dữ liệu thành viên, quản lý sản xuất, tài chính và đồng bộ công khai.'
+    : isPassport
+      ? 'Nền tảng hồ sơ số và truy xuất nguồn gốc nông sản bằng mã QR: minh bạch dữ liệu thực địa từ vùng trồng đến người mua.'
+      : 'Nền tảng số hóa nông sản, chuẩn hóa dữ liệu vùng canh tác, quy trình sản xuất và QR Passport kết nối thị trường tiêu thụ.';
+
+  const brandOrg = isInternal
+    ? 'Hệ thống Quản trị Hợp tác xã HTXONLINE'
+    : isPassport
+      ? 'Hệ thống Truy xuất Hộ Chiếu Nông Nghiệp'
+      : 'Tổ hợp tác công nghệ nông nghiệp Agripassport';
+
+  const copyrightText = isInternal
+    ? `© ${new Date().getFullYear()} HTXONLINE. Nền tảng Quản trị Hợp tác xã Số.`
+    : isPassport
+      ? `© ${new Date().getFullYear()} HỘ CHIẾU NÔNG NGHIỆP. Nền tảng Truy xuất Nguồn gốc Số.`
+      : `© ${new Date().getFullYear()} AGRIPASSPORT. Nền tảng Nông nghiệp Số Việt Nam.`;
+
+  const dataLinks = isInternal
+    ? [
+        { href: '/san-pham', label: 'Sản phẩm công khai' },
+        { href: '/htx', label: 'Hợp tác xã đối tác' },
+        { href: '/gioi-thieu', label: 'Dịch vụ vận hành' }
+      ]
+    : isPassport
+      ? [
+          { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
+          { href: '/htx', label: 'Vùng trồng & HTX' },
+          { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
+        ]
+      : [
+          { href: '/san-pham', label: 'Sản phẩm' },
+          { href: '/htx', label: 'Hợp tác xã' },
+          { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' }
+        ];
 
   const aboutLinks = [
     { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
@@ -42,12 +75,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Column 1: Organization & Identity */}
           <div>
-            <Link href="/" className="inline-block">
+            <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
               <PublicLogo size={36} variant={logoVariant} className="h-9 w-auto" />
             </Link>
 
             <p className="mt-3 text-xs leading-relaxed text-[var(--text-secondary)]">
-              Agripassport hỗ trợ các hợp tác xã chuẩn hóa dữ liệu vùng canh tác, quy trình sản xuất và QR Passport kết nối nông sản trực tiếp với chuỗi tiêu thụ.
+              {brandDescription}
             </p>
           </div>
 
@@ -56,10 +89,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
               Khám phá dữ liệu
             </h3>
-            <ul className="space-y-2.5 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
               {dataLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="transition hover:text-[#106f8a]">
+                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -70,12 +103,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           {/* Column 3: About */}
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
-              Về Agripassport
+              Về {brandName}
             </h3>
-            <ul className="space-y-2.5 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
               {aboutLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="transition hover:text-[#106f8a]">
+                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -88,10 +121,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
               Hỗ trợ khách hàng
             </h3>
-            <ul className="space-y-2.5 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
               {legalLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="transition hover:text-[#106f8a]">
+                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -107,20 +140,20 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               Thông tin liên hệ
             </h3>
             <div className="space-y-3 text-xs leading-relaxed text-[var(--text-secondary)]">
-              <p className="font-bold text-[var(--text-primary)]">Tổ hợp tác công nghệ nông nghiệp Agripassport</p>
+              <p className="font-bold text-[var(--text-primary)]">{brandOrg}</p>
               <p className="flex items-start gap-2">
-                <MapPin size={15} className="mt-0.5 shrink-0 text-[#106f8a]" aria-hidden="true" />
+                <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
                 <span>{profile.address || 'Đồng Tháp, Việt Nam'}</span>
               </p>
               <p className="flex items-center gap-2">
-                <Phone size={15} className="shrink-0 text-[#106f8a]" aria-hidden="true" />
-                <a href={telHref(profile.hotline)} className="font-semibold text-[var(--text-primary)] hover:underline">
+                <Phone size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
+                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-semibold text-[var(--text-primary)] hover:underline">
                   {profile.hotlineDisplay}
                 </a>
               </p>
               <p className="flex items-center gap-2">
-                <Mail size={15} className="shrink-0 text-[#106f8a]" aria-hidden="true" />
-                <a href={`mailto:${profile.supportEmail}`} className="font-semibold text-[var(--text-primary)] hover:underline">
+                <Mail size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
+                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-semibold text-[var(--text-primary)] hover:underline">
                   {profile.supportEmail}
                 </a>
               </p>
@@ -129,7 +162,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   href={zaloUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-[#c9e6ed] bg-[#f2fbfd] px-3.5 py-2 text-xs font-bold text-[#106f8a] transition hover:-translate-y-0.5 hover:border-[#106f8a] hover:bg-white"
+                  className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-3.5 py-2 text-xs font-bold text-[var(--brand-primary)] transition hover:border-[var(--brand-primary)] hover:bg-white"
                 >
                   <ZaloIcon size={18} />
                   <span>Chat qua Zalo</span>
@@ -166,9 +199,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       </div>
 
       {/* Sub-footer Copyright Bar */}
-      <div className="border-t border-[var(--border)] bg-[var(--surface-subtle)] py-4">
+      <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] py-4">
         <div className={cn(publicContainerClass, 'flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]')}>
-          <p>© {new Date().getFullYear()} AGRIPASSPORT. Nền tảng Nông nghiệp Số Việt Nam.</p>
+          <p>{copyrightText}</p>
           <div className="flex items-center gap-2">
             <ShieldCheck size={14} className="text-[#0d7a28]" />
             <span>Dữ liệu được chuẩn hóa và đối chiếu thực địa trước khi công khai</span>

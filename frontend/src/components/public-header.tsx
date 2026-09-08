@@ -145,22 +145,20 @@ export function PublicHeader({
         </nav>
 
         <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
-          {!isAgri && (
-            <form action={searchTarget} className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
-              <input
-                type="search"
-                name="search"
-                placeholder={searchPlaceholder}
-                aria-label={searchPlaceholder}
-                className="h-10 w-40 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-56 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-52"
-              />
-            </form>
-          )}
+          <form action={searchTarget} className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
+            <input
+              type="search"
+              name="search"
+              placeholder={searchPlaceholder}
+              aria-label={searchPlaceholder}
+              className="h-10 w-44 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-60 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-56"
+            />
+          </form>
 
           <Link
             href={navCta.href}
-            className="inline-flex h-10 max-w-[9rem] items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
+            className="inline-flex h-10 max-w-[9.5rem] items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
           >
             <CtaIcon size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />
             <span>{navCta.label}</span>
@@ -168,15 +166,13 @@ export function PublicHeader({
         </div>
 
         <div className="flex sm:hidden items-center gap-2">
-          {!isAgri && (
-            <Link
-              href={searchTarget}
-              aria-label="Tìm kiếm"
-              className="grid h-11 w-11 place-items-center rounded-lg border border-[var(--border)] bg-white text-[var(--text-primary)] shadow-sm active:bg-slate-50"
-            >
-              <Search size={18} aria-hidden="true" />
-            </Link>
-          )}
+          <Link
+            href={searchTarget}
+            aria-label="Tìm kiếm nông sản, HTX"
+            className="grid h-11 w-11 place-items-center rounded-lg border border-[var(--border)] bg-white text-[var(--text-primary)] shadow-sm active:bg-slate-50"
+          >
+            <Search size={18} aria-hidden="true" />
+          </Link>
 
           <button
             type="button"
@@ -193,18 +189,16 @@ export function PublicHeader({
       {menuOpen && (
         <div className="fixed inset-0 top-[68px] z-50 flex flex-col bg-black/40 backdrop-blur-sm md:hidden">
           <div className="flex-1 overflow-y-auto bg-white p-5 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-            {!isAgri && (
-              <form action={searchTarget} className="relative mb-5" onSubmit={closeMenu}>
-                <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-                <input
-                  type="search"
-                  name="search"
-                  placeholder={searchPlaceholder}
-                  aria-label={searchPlaceholder}
-                  className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary-ring)]"
-                />
-              </form>
-            )}
+            <form action={searchTarget} className="relative mb-5" onSubmit={closeMenu}>
+              <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+              <input
+                type="search"
+                name="search"
+                placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
+                className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary-ring)]"
+              />
+            </form>
 
             {/* Mobile Nav Links */}
             <nav className="grid gap-1.5" aria-label="Menu di động">

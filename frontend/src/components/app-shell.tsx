@@ -10,11 +10,9 @@ import {
   FileText,
   History,
   Home,
-  Leaf,
   LogOut,
   Map,
   MessageSquareText,
-  MoreHorizontal,
   Newspaper,
   Package,
   QrCode,
@@ -28,6 +26,7 @@ import { currentUser, logout } from '@/lib/api';
 import { dashboardAreaForRoles, isDashboardRouteAllowed } from '@/lib/dashboard-access';
 import { isRoleAllowedInArea, loginUrlForArea, siteAreaFromHost } from '@/lib/domain';
 import type { SiteArea } from '@/lib/domain';
+import { PublicLogo } from './public-logo';
 import { cn } from './ui';
 
 type NavRole = 'SUPER_ADMIN' | 'ADMIN_HTX' | 'MEMBER_HTX' | 'FARMER' | 'BUYER';
@@ -98,7 +97,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   if (!user) {
-    return <AccessState title="Cần đăng nhập" message="Vui lòng đăng nhập đúng khu vực quản trị." actionHref={loginUrlForArea(area)} actionLabel="Đăng nhập" />;
+    return <AccessState title="Cần đăng nhập" message="Vui lòng đăng nhập đúng khu vực quản trị HTXONLINE." actionHref={loginUrlForArea(area)} actionLabel="Đăng nhập" />;
   }
 
   if (!allowed) {
@@ -117,7 +116,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return (
       <AccessState
         title="403 - Không có quyền truy cập"
-        message="Route này không thuộc khu vực hoặc vai trò hiện tại."
+        message="Route này không thuộc khu vực hoặc vai trò hiện tại của tài khoản."
         actionHref="/dashboard"
         actionLabel="Về tổng quan"
       />
@@ -125,18 +124,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen lg:flex">
-      <aside data-testid="sidebar" className="hidden w-72 shrink-0 border-r border-slate-200 bg-white/90 p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
-        <Link href="/dashboard" className="mb-6 flex items-center gap-3 rounded-md px-2 py-2">
-          <span className="grid h-11 w-11 place-items-center rounded-md bg-leaf text-white">
-            <Leaf size={24} aria-hidden="true" />
-          </span>
-          <span>
-            <span className="block text-lg font-bold">Agri Passport</span>
-            <span className="block text-xs text-slate-500">{user.fullName}</span>
-          </span>
+    <div className="min-h-screen lg:flex bg-[#f8fafc]">
+      <aside data-testid="sidebar" className="hidden w-72 shrink-0 border-r border-slate-200 bg-white p-4 lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col shadow-xs">
+        <Link href="/dashboard" className="mb-6 flex items-center gap-3 rounded-xl px-2 py-2 transition hover:bg-slate-50">
+          <div className="grid h-11 w-11 place-items-center rounded-xl bg-[#131935] p-1.5 shadow-sm">
+            <PublicLogo size={28} variant="htx" className="h-full w-full object-contain" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <span className="block text-base font-extrabold tracking-tight text-[#131935]">HTXONLINE</span>
+            <span className="block truncate text-xs font-semibold text-slate-500">{user.fullName}</span>
+          </div>
         </Link>
-        <nav className="flex-1 space-y-1 overflow-y-auto">
+        <nav className="flex-1 space-y-1 overflow-y-auto" aria-label="Điều hướng quản trị">
           {visibleNav.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href;
@@ -146,40 +145,44 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 data-testid={item.testId}
                 className={cn(
-                  'flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold text-slate-700 hover:bg-mint',
-                  active && 'bg-leaf text-white hover:bg-leaf'
+                  'flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-semibold transition',
+                  active
+                    ? 'bg-[#131935] text-white shadow-xs'
+                    : 'text-slate-700 hover:bg-[#eef0fa] hover:text-[#131935]'
                 )}
+                aria-current={active ? 'page' : undefined}
               >
                 <Icon size={19} aria-hidden="true" />
-                {item.label}
+                <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
-        <button data-testid="logout-button" onClick={signOut} className="mt-4 flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold text-rose-700 hover:bg-rose-50">
+        <button data-testid="logout-button" onClick={signOut} className="mt-4 flex min-h-11 items-center gap-3 rounded-lg px-3 text-sm font-semibold text-rose-700 transition hover:bg-rose-50">
           <LogOut size={19} aria-hidden="true" />
-          Đăng xuất
+          <span>Đăng xuất</span>
         </button>
       </aside>
 
       <main className="min-w-0 flex-1 pb-20 lg:pb-0">
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/90 px-4 py-3 backdrop-blur lg:hidden">
+        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur lg:hidden shadow-xs">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-2 font-bold">
-              <span className="grid h-10 w-10 place-items-center rounded-md bg-leaf text-white">
-                <Leaf size={22} aria-hidden="true" />
-              </span>
-              Agri Passport
+            <Link href="/dashboard" className="flex items-center gap-2.5 font-bold">
+              <div className="grid h-9 w-9 place-items-center rounded-lg bg-[#131935] p-1 shadow-sm">
+                <PublicLogo size={22} variant="htx" className="h-full w-full object-contain" />
+              </div>
+              <span className="text-base font-extrabold text-[#131935]">HTXONLINE</span>
             </Link>
-            <button aria-label="Đăng xuất" onClick={signOut} className="touch-target rounded-md border border-slate-200 bg-white text-rose-700">
-              <LogOut className="mx-auto" size={20} aria-hidden="true" />
+            <button aria-label="Đăng xuất" onClick={signOut} className="grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-rose-700 shadow-sm active:bg-slate-50">
+              <LogOut size={18} aria-hidden="true" />
             </button>
           </div>
         </header>
         <div className="mx-auto max-w-7xl px-4 py-5 lg:px-8 lg:py-8">{children}</div>
       </main>
 
-      <nav data-testid="mobile-bottom-nav" className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 px-2 pb-[calc(var(--safe-bottom)+6px)] pt-1.5 shadow-soft backdrop-blur lg:hidden">
+      {/* Mobile Bottom Navigation for HTX Operations */}
+      <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur px-2 py-1 lg:hidden shadow-lg" aria-label="Thao tác nhanh di động">
         <div className="grid grid-cols-5 gap-1">
           {mobileNav.map((item) => {
             const Icon = item.icon;
@@ -188,67 +191,73 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                data-testid={item.testId}
                 className={cn(
-                  'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
-                  active && 'bg-mint text-leaf'
+                  'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-lg text-[10px] font-bold transition',
+                  active
+                    ? 'text-[#131935]'
+                    : 'text-slate-500 hover:text-[#131935]'
                 )}
-                onClick={() => setMobileMenuOpen(false)}
+                aria-current={active ? 'page' : undefined}
               >
                 <Icon size={18} aria-hidden="true" />
-                <span className="max-w-full truncate">{item.label}</span>
+                <span className="truncate max-w-full px-1">{item.label}</span>
               </Link>
             );
           })}
           <button
             type="button"
-            data-testid="mobile-more-button"
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-more-menu"
-            onClick={() => setMobileMenuOpen((open) => !open)}
-            className={cn(
-              'flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-md px-1 text-[10px] font-semibold text-slate-500',
-              mobileMenuOpen && 'bg-mint text-leaf'
-            )}
+            onClick={() => setMobileMenuOpen(true)}
+            className="flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-lg text-[10px] font-bold text-slate-500 hover:text-[#131935]"
+            aria-label="Xem thêm chức năng"
           >
-            <MoreHorizontal size={18} aria-hidden="true" />
-            <span>Tất cả</span>
+            <Boxes size={18} aria-hidden="true" />
+            <span>Thêm</span>
           </button>
         </div>
       </nav>
 
+      {/* Full Mobile Menu Sheet */}
       {mobileMenuOpen && (
-        <div
-          id="mobile-more-menu"
-          data-testid="mobile-more-menu"
-          className="fixed inset-x-3 bottom-[calc(4.8rem+var(--safe-bottom))] z-30 max-h-[min(70vh,32rem)] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_60px_rgba(15,23,42,0.18)] lg:hidden"
-        >
-          <div className="mb-2 flex items-center justify-between px-1">
-            <p className="text-sm font-bold text-ink">Tất cả khu vực</p>
-            <button type="button" onClick={() => setMobileMenuOpen(false)} className="touch-target rounded-md px-2 text-xs font-semibold text-slate-500">
-              Đóng
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {visibleNav.map((item) => {
-              const Icon = item.icon;
-              const active = pathname === item.href;
-              return (
-                <Link
-                  key={`mobile-more-${item.testId}`}
-                  href={item.href}
-                  data-testid={item.testId}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    'flex min-h-12 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-semibold text-slate-700',
-                    active && 'border-leaf bg-mint text-leaf'
-                  )}
-                >
-                  <Icon size={17} aria-hidden="true" />
-                  <span className="min-w-0 truncate">{item.label}</span>
-                </Link>
-              );
-            })}
+        <div className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-xs lg:hidden">
+          <div className="flex-1 overflow-y-auto bg-white p-5 mt-16 rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div className="flex items-center gap-2">
+                <div className="grid h-8 w-8 place-items-center rounded-lg bg-[#131935] p-1">
+                  <PublicLogo size={20} variant="htx" />
+                </div>
+                <span className="font-extrabold text-[#131935]">Chức năng HTXONLINE</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(false)}
+                className="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-600 font-bold"
+                aria-label="Đóng"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {visibleNav.map((item) => {
+                const Icon = item.icon;
+                const active = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      'flex items-center gap-2 rounded-xl p-3 text-xs font-bold transition border',
+                      active
+                        ? 'border-[#131935] bg-[#131935] text-white'
+                        : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-white'
+                    )}
+                  >
+                    <Icon size={16} aria-hidden="true" />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -258,12 +267,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
 function LoadingState() {
   return (
-    <main data-testid="loading-skeleton" className="grid min-h-screen place-items-center px-4">
-      <section className="w-full max-w-md rounded-md border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="h-10 w-10 rounded-md bg-slate-100" />
-        <div className="mt-4 h-6 w-2/3 rounded bg-slate-100" />
-        <div className="mt-3 h-4 w-full rounded bg-slate-100" />
-        <div className="mt-2 h-4 w-4/5 rounded bg-slate-100" />
+    <main data-testid="loading-skeleton" className="grid min-h-screen place-items-center px-4 bg-[#f8fafc]">
+      <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="h-10 w-10 rounded-xl bg-slate-100 animate-pulse" />
+        <div className="mt-4 h-6 w-2/3 rounded-lg bg-slate-100 animate-pulse" />
+        <div className="mt-3 h-4 w-full rounded-md bg-slate-100 animate-pulse" />
+        <div className="mt-2 h-4 w-4/5 rounded-md bg-slate-100 animate-pulse" />
       </section>
     </main>
   );
@@ -271,12 +280,14 @@ function LoadingState() {
 
 function AccessState({ title, message, actionHref, actionLabel }: { title: string; message: string; actionHref: string; actionLabel: string }) {
   return (
-    <main data-testid="error-state" className="grid min-h-screen place-items-center px-4">
-      <section className="max-w-md rounded-md border border-slate-200 bg-white p-6 text-center shadow-sm">
-        <Leaf className="mx-auto text-leaf" size={40} aria-hidden="true" />
-        <h1 className="mt-4 text-2xl font-bold text-ink">{title}</h1>
-        <p className="mt-2 text-sm leading-6 text-slate-600">{message}</p>
-        <Link href={actionHref} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-md bg-leaf px-4 py-2 text-sm font-semibold text-white shadow-soft">
+    <main data-testid="error-state" className="grid min-h-screen place-items-center px-4 bg-[#f8fafc]">
+      <section className="max-w-md rounded-2xl border border-slate-200 bg-white p-7 text-center shadow-sm">
+        <div className="grid h-12 w-12 mx-auto place-items-center rounded-xl bg-[#131935] text-white shadow-sm mb-4">
+          <ShieldCheck size={26} aria-hidden="true" />
+        </div>
+        <h1 className="text-xl font-extrabold text-[#131935]">{title}</h1>
+        <p className="mt-2 text-xs leading-relaxed text-slate-600">{message}</p>
+        <Link href={actionHref} className="mt-6 inline-flex min-h-11 items-center justify-center rounded-xl bg-[#131935] px-6 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#090d1d]">
           {actionLabel}
         </Link>
       </section>

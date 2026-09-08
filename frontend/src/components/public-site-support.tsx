@@ -104,7 +104,7 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
           target="_blank"
           rel="noreferrer"
         >
-          <ZaloIcon size={19} />
+          <ZaloIcon size={24} />
         </a>
       )}
       {showContactActions && siteProfile.messengerUrl && (

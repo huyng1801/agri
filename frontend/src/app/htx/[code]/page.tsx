@@ -121,11 +121,10 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
         dangerouslySetInnerHTML={{ __html: JSON.stringify(cooperativeJsonLd).replace(/</g, '\\u003c') }}
       />
       <PublicDetailMain className="py-6 sm:py-10">
-        {/* Institutional Breadcrumbs */}
         <nav aria-label="Điều hướng liên kết" className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[var(--text-tertiary)]">
-          <Link href="/" className="transition hover:text-[var(--brand-primary)]">Trang chủ</Link>
+          <Link href="/" className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">Trang chủ</Link>
           <ChevronRight size={13} aria-hidden="true" />
-          <Link href="/htx" className="transition hover:text-[var(--brand-primary)]">Danh bạ Hợp tác xã</Link>
+          <Link href="/htx" className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">Danh bạ Hợp tác xã</Link>
           <ChevronRight size={13} aria-hidden="true" />
           <span className="font-semibold text-[var(--text-primary)] truncate max-w-[260px]">{cooperative.name}</span>
         </nav>

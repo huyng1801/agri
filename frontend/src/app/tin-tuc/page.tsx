@@ -59,19 +59,25 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           title="Tin tức"
           description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
           action={
-            <form action="/tin-tuc" className="flex min-w-0 flex-col gap-2 rounded-[1.15rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-1.5 shadow-[0_14px_32px_rgba(15,23,42,0.05)] sm:flex-row sm:rounded-[1.3rem] sm:p-2 lg:w-[420px]">
-              <div className="relative flex-1">
-                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+            <form action="/tin-tuc" method="GET" className="group flex items-center rounded-xl border border-[var(--border)] bg-white p-1.5 shadow-sm transition hover:border-[#106f8a]/40 focus-within:border-[#106f8a] focus-within:ring-2 focus-within:ring-[#106f8a]/15 w-full sm:w-[380px] lg:w-[420px]">
+              <div className="flex flex-1 items-center min-w-0 pl-2.5">
+                <Search className="h-4 w-4 shrink-0 text-slate-400 group-focus-within:text-[#106f8a] transition-colors" aria-hidden="true" />
                 <input
+                  type="search"
                   name="search"
                   defaultValue={filters.search ?? ''}
-                  placeholder="Tìm bài viết"
+                  placeholder="Tìm bài viết..."
                   aria-label="Tìm bài viết"
-                  className="min-h-11 w-full rounded-[0.95rem] border-0 bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none focus:ring-4 focus:ring-[var(--brand-primary-subtle)] sm:rounded-[1.05rem] sm:text-base"
+                  className="h-10 w-full min-w-0 bg-transparent px-2.5 text-sm text-[var(--text-primary)] placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0"
                 />
               </div>
               {filters.category && <input type="hidden" name="category" value={filters.category} />}
-              <Button className="min-h-11 w-full sm:w-auto">Tìm</Button>
+              <button
+                type="submit"
+                className="inline-flex h-9 items-center justify-center rounded-lg bg-[#106f8a] px-4 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-[#0d596e] active:scale-[0.98] shrink-0"
+              >
+                <span>Tìm</span>
+              </button>
             </form>
           }
         />

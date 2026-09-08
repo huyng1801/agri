@@ -4,7 +4,9 @@ export const PUBLIC_LOGO_SRC = '/logo.png';
 export const AGRIPASSPORT_MARK_SRC = '/agripassport-mark.png';
 export const AGRIPASSPORT_WORDMARK_SRC = '/agripassport-wordmark.png';
 export const PASSPORT_WORDMARK_SRC = '/passport-wordmark.png';
+export const PASSPORT_MARK_SRC = '/passport-mark.png';
 export const HTXONLINE_WORDMARK_SRC = '/htxonline-wordmark.png';
+export const HTXONLINE_MARK_SRC = '/htxonline-mark.png';
 const PUBLIC_LOGO_WIDTH_RATIO = 603 / 669;
 const AGRIPASSPORT_WORDMARK_WIDTH_RATIO = 2050 / 451;
 const WORDMARK_WIDTH_RATIO = 1850 / 450;
@@ -12,7 +14,7 @@ const WORDMARK_WIDTH_RATIO = 1850 / 450;
 type PublicLogoProps = {
   size?: number;
   className?: string;
-  variant?: 'default' | 'agri' | 'agri-wordmark' | 'passport-wordmark' | 'htx-wordmark';
+  variant?: 'default' | 'agri' | 'agri-wordmark' | 'passport' | 'passport-wordmark' | 'htx' | 'htx-wordmark';
 };
 
 export function PublicLogo({ size = 40, className, variant = 'default' }: PublicLogoProps) {
@@ -46,6 +48,14 @@ export function PublicLogo({ size = 40, className, variant = 'default' }: Public
 
   if (variant === 'agri') {
     return <img src={AGRIPASSPORT_MARK_SRC} alt="AGRIPASSPORT" width={size} height={size} className={cn('shrink-0 object-contain', className)} style={{ width: size, height: size }} />;
+  }
+
+  if (variant === 'htx') {
+    return <img src={HTXONLINE_MARK_SRC} alt="HTXONLINE" width={size} height={size} className={cn('shrink-0 object-contain', className)} style={{ width: size, height: size }} />;
+  }
+
+  if (variant === 'passport') {
+    return <img src={PASSPORT_MARK_SRC} alt="Hộ chiếu nông nghiệp" width={size} height={size} className={cn('shrink-0 object-contain', className)} style={{ width: size, height: size }} />;
   }
 
   const width = Math.round(size * PUBLIC_LOGO_WIDTH_RATIO);

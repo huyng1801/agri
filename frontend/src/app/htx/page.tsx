@@ -128,37 +128,42 @@ export default async function CooperativesPublicPage({ searchParams }: Cooperati
         </div>
 
         {/* Directory Search Bar */}
-        <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm mb-8">
-          <form action="/htx" method="GET" className="flex flex-col sm:flex-row items-center gap-3">
-            <div className="relative flex-1 w-full">
+        <div className="mb-8">
+          <form
+            action="/htx"
+            method="GET"
+            className="group flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2.5 rounded-xl sm:rounded-2xl border border-[var(--border)] bg-white p-1.5 sm:p-2 shadow-sm transition hover:border-[#131935]/40 focus-within:border-[#131935] focus-within:shadow-md focus-within:ring-2 focus-within:ring-[#131935]/15"
+          >
+            <div className="flex flex-1 items-center min-w-0 pl-2.5 sm:pl-3">
               <Search
                 size={18}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"
+                className="shrink-0 text-slate-400 group-focus-within:text-[#131935] transition-colors"
                 aria-hidden="true"
               />
               <input
+                type="search"
                 name="search"
                 defaultValue={filters.search ?? ''}
                 placeholder="Tìm HTX theo tên gọi, mã định danh hoặc địa phương..."
                 aria-label="Tìm kiếm hợp tác xã"
-                className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] pl-10 pr-4 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[#131935] focus:bg-white focus:ring-2 focus:ring-[#131935]/20"
+                className="h-10 sm:h-11 w-full min-w-0 bg-transparent px-2.5 text-sm text-[var(--text-primary)] placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 sm:text-base"
               />
             </div>
             {filters.province && <input type="hidden" name="province" value={filters.province} />}
-            <div className="flex items-center gap-2 w-full sm:w-auto">
+            <div className="flex items-center gap-2 shrink-0">
               <button
                 type="submit"
-                className="inline-flex h-11 w-full sm:w-auto items-center justify-center rounded-lg bg-[#131935] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#1f284f]"
+                className="inline-flex h-9 sm:h-10 w-full sm:w-auto items-center justify-center rounded-lg bg-[#131935] px-5 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-[#1f284f] active:scale-[0.98]"
               >
                 Tìm kiếm HTX
               </button>
               {hasActiveFilter && (
                 <Link
                   href="/htx"
-                  className="inline-flex h-11 items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-slate-100 shrink-0"
+                  className="inline-flex h-9 sm:h-10 items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3.5 text-xs sm:text-sm font-semibold text-[var(--text-secondary)] transition hover:bg-slate-100 shrink-0"
                 >
                   <X size={15} />
-                  <span>Xóa lọc</span>
+                  <span>Xóa</span>
                 </Link>
               )}
             </div>

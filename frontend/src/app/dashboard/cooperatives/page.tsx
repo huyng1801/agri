@@ -546,7 +546,7 @@ export default function CooperativesPage() {
       {cooperatives.isError && <Panel data-testid="error-state" className="text-rose-700">{errorMessage(cooperatives.error)}</Panel>}
       {!cooperatives.isLoading && !cooperatives.isError && cooperativeItems.length === 0 && <Panel data-testid="empty-state" className="text-slate-600">Chưa có HTX</Panel>}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {cooperativeItems.map((cooperative) => (
           <CooperativeCard
             key={cooperative.id}
@@ -596,7 +596,7 @@ function CooperativeCard({
   const statsData = statsQuery.data?.data;
 
   return (
-    <article className="rounded-md border border-slate-200 bg-white p-4 shadow-sm">
+    <article className="min-w-0 overflow-hidden rounded-md border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
           {cooperative.avatarUrl ? (
@@ -620,8 +620,8 @@ function CooperativeCard({
             key={item}
             type="button"
             className={cn(
-              'rounded-full px-3 py-1 text-xs font-semibold',
-              tab === item ? 'bg-leaf text-white' : 'bg-slate-100 text-slate-600'
+              'inline-flex min-h-[32px] items-center justify-center rounded-full px-3.5 py-1.5 text-xs font-semibold transition',
+              tab === item ? 'bg-[#131935] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             )}
             onClick={() => onTabChange(item)}
           >
@@ -632,7 +632,7 @@ function CooperativeCard({
 
       {tab === 'info' && (
         <>
-          <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <Info label="Điện thoại" value={cooperative.phone || '—'} />
             <Info label="Email" value={cooperative.email || '—'} />
             <Info label="Đại diện" value={cooperative.representative || '—'} />
@@ -642,7 +642,7 @@ function CooperativeCard({
       )}
 
       {tab === 'stats' && (
-        <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
           {statsQuery.isLoading && <p className="col-span-2 text-slate-500">Đang tải thống kê...</p>}
           {statsData && (
             <>

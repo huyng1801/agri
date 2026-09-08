@@ -87,19 +87,33 @@ export function PublicSearch({
 }) {
   return (
     <form
-      className={cn('flex flex-col gap-2 rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-1.5 shadow-[var(--public-shadow-card)] ring-4 ring-[var(--brand-primary-subtle)] focus-within:border-[var(--brand-primary)] focus-within:ring-4 focus-within:ring-[var(--brand-primary-subtle)] sm:flex-row sm:gap-2 sm:p-2', className)}
+      className={cn(
+        'group relative flex items-center rounded-xl sm:rounded-2xl border border-[var(--border)] bg-white p-1.5 shadow-sm transition-all duration-200 hover:border-[var(--brand-primary)]/40 focus-within:border-[var(--brand-primary)] focus-within:shadow-md focus-within:ring-2 focus-within:ring-[var(--brand-primary)]/15',
+        className
+      )}
       action={action}
+      method="GET"
     >
-      <div className="relative flex-1">
-        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--brand-primary)]" size={18} aria-hidden="true" />
+      <div className="flex flex-1 items-center min-w-0 pl-2.5 sm:pl-3">
+        <Search
+          className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-slate-400 transition-colors group-focus-within:text-[var(--brand-primary)]"
+          size={18}
+          aria-hidden="true"
+        />
         <input
+          type="search"
           name="search"
           placeholder={placeholder}
           aria-label={placeholder}
-          className="min-h-11 w-full rounded-[var(--public-radius-control)] border-0 bg-[var(--surface-muted)] pl-10 pr-3 text-[0.95rem] text-[var(--text-primary)] outline-none transition placeholder:text-slate-400 focus:bg-[var(--surface-elevated)] focus:ring-0 sm:min-h-12 sm:text-base"
+          className="h-10 sm:h-11 w-full min-w-0 bg-transparent px-2.5 text-sm text-[var(--text-primary)] placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0 sm:text-base"
         />
       </div>
-      <Button className="min-h-11 w-full shrink-0 rounded-[var(--public-radius-control)] px-6 sm:min-h-12 sm:w-auto">Tìm</Button>
+      <button
+        type="submit"
+        className="inline-flex h-9 sm:h-10 items-center justify-center gap-1.5 rounded-lg sm:rounded-xl bg-[var(--brand-primary)] px-4 sm:px-6 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:opacity-95 active:scale-[0.98] shrink-0"
+      >
+        <span>Tìm</span>
+      </button>
     </form>
   );
 }
@@ -181,7 +195,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           </div>
           <Link
             href={`/htx/${cooperative.code}`}
-            className="mt-1 block line-clamp-2 text-base font-bold leading-snug text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]"
+            className="mt-1 inline-flex min-h-[36px] items-center line-clamp-2 text-base font-bold leading-snug text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]"
           >
             {cooperative.name}
           </Link>
