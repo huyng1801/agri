@@ -363,7 +363,7 @@ export async function AgripassportHome() {
                   <span>Danh mục Dữ liệu Công khai</span>
                 </div>
                 <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-                  Nông sản Hợp tác xã Tiêu biểu
+                  Nông sản hợp tác xã tiêu biểu
                 </h2>
                 <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-2xl">
                   Mỗi sản phẩm hiển thị những thông tin được đơn vị công khai, cùng lối dẫn tới hồ sơ liên quan khi có.
