@@ -148,9 +148,8 @@ export async function AgripassportHome() {
                 </h1>
 
                 {/* Subtitle */}
-                <p className="mt-4 text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
-                  Nền tảng dữ liệu kết nối trực tiếp hợp tác xã nông nghiệp với đối tác thương mại.
-                  Số hóa quy trình canh tác, chứng nhận chất lượng và mở cổng tra cứu công khai cho từng lô sản phẩm.
+                <p className="mt-4 text-sm font-bold uppercase tracking-[0.04em] leading-relaxed text-[var(--brand-primary-strong)] sm:text-base">
+                  AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR
                 </p>
 
                 {/* Integrated High-Contrast Search Bar */}

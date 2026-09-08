@@ -350,7 +350,7 @@ export default async function HomePage() {
     ? "Luồng dữ liệu rõ ràng cho hợp tác xã"
     : isPassport
       ? "HỘ CHIẾU NÔNG NGHIỆP giúp tra cứu QR rõ ràng hơn trên điện thoại"
-      : "AGRIPASSPORT SỐ HÓA NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR";
+      : "AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR";
   const heroLeadDescription = isInternal
     ? "Giữ lớp quản trị nội bộ cho xã viên, dịch vụ và vận hành, nhưng vẫn mở được một giao diện public sáng, thoáng và dễ hiểu khi cần kết nối thị trường."
     : isPassport
