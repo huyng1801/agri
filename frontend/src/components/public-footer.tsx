@@ -133,7 +133,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
                 Bản đồ địa điểm
               </h3>
-              <span className="text-[11px] text-[var(--text-tertiary)]">Điểm hỗ trợ Agripassport</span>
             </div>
             <PublicMapPreview
               address={profile.address || 'Đồng Tháp, Việt Nam'}
