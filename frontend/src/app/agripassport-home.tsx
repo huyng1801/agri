@@ -462,7 +462,7 @@ export async function AgripassportHome() {
                 <span className="uppercase tracking-wider text-[11px] font-bold">Chu trình Khép kín</span>
               </div>
               <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-                Quy trình Chuẩn hóa & Bảo toàn Dữ liệu
+                Quy trình chuẩn hóa & Bảo toàn dữ liệu
               </h2>
               <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
                 Dữ liệu không tự sinh ra mà được đối chiếu từ canh tác thực tế của từng xã viên đến chứng thư điện tử.
