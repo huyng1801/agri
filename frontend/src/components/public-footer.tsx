@@ -43,9 +43,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <Link href="/" className="inline-block">
               <PublicLogo size={36} variant={logoVariant} className="h-9 w-auto" />
             </Link>
-            <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[#106f8a]">
-              Hạ tầng dữ liệu nông sản & minh bạch nguồn gốc
-            </p>
 
             <p className="mt-3 text-xs leading-relaxed text-[var(--text-secondary)]">
               Agripassport hỗ trợ các hợp tác xã chuẩn hóa dữ liệu vùng canh tác, quy trình sản xuất và QR Passport kết nối nông sản trực tiếp với chuỗi tiêu thụ.
