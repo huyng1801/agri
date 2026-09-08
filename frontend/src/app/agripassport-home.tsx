@@ -185,7 +185,7 @@ export async function AgripassportHome() {
                           Chứng nhận số & Truy xuất
                         </h2>
                         <p className="text-xs text-[var(--text-tertiary)]">
-                          Luồng dữ liệu chuỗi cung ứng minh bạch
+                          Luồng dữ liệu
                         </p>
                       </div>
                     </div>
@@ -251,7 +251,7 @@ export async function AgripassportHome() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-semibold uppercase tracking-wider text-[#0d7a28]">
-                            Mã QR Hộ Chiếu Nông Nghiệp
+                            QR Passport
                           </span>
                           <span className="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-[#0d7a28]">
                             <QrCode size={12} /> HỒ SƠ TRUY XUẤT

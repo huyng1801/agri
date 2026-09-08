@@ -66,7 +66,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   ];
 
   return (
-    <footer className="mt-16 border-t border-[var(--border)] bg-white pb-[calc(1rem+var(--safe-bottom))] text-[var(--text-primary)] lg:pb-0">
+    <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)]">
       {/* Main four-column grid */}
       <div className={cn(publicContainerClass, 'py-12 sm:py-16')}>
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -185,7 +185,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       </div>
 
       {/* Sub-footer Copyright Bar */}
-      <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] py-4">
+      <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] py-4 pb-[calc(1rem+var(--safe-bottom))] lg:pb-4">
         <div className={cn(publicContainerClass, 'flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]')}>
           <p>{copyrightText}</p>
           <div className="flex items-center gap-2">
