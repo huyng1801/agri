@@ -234,7 +234,7 @@ export function PublicHeader({
                 >
                   <span className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#131935]" />
-                    <span>01 {siteKey === 'agripassport' || siteKey === 'local' ? 'HỆ THỐNG HỢP TÁC XÃ' : 'HTXONLINE'} — Quản trị nội bộ</span>
+                    <span>01 {siteKey === 'agripassport' || siteKey === 'local' ? 'HỢP TÁC XÃ ONLINE' : 'HTXONLINE'} — Quản trị nội bộ</span>
                   </span>
                   <ExternalLink size={14} className="text-slate-400" />
                 </a>

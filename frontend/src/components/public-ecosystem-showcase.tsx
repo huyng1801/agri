@@ -81,7 +81,7 @@ export function PublicEcosystemShowcase({
     {
       num: '01',
       key: 'htxonline',
-      name: isAgri ? 'HỆ THỐNG HỢP TÁC XÃ' : 'HTXONLINE',
+      name: isAgri ? 'HỢP TÁC XÃ ONLINE' : 'HTXONLINE',
       role: 'Quản trị nội bộ hợp tác xã',
       desc: 'Hệ sinh thái số hóa nghiệp vụ hợp tác xã, quản lý thành viên, xã viên, sổ sách kế toán, quỹ xã, theo dõi xuất nhập kho và lập kế hoạch sản xuất theo mùa vụ.',
       href: htxonlineUrl('/'),

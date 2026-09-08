@@ -591,13 +591,6 @@ export async function AgripassportHome() {
 
               <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <Link
-                  href="/lien-he"
-                  className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg bg-white px-6 text-sm font-bold text-[#106f8a] shadow-sm transition hover:bg-slate-100"
-                >
-                  <span>Liên hệ đội ngũ triển khai</span>
-                  <ArrowRight size={16} aria-hidden="true" />
-                </Link>
-                <Link
                   href="/ve-chung-toi"
                   className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/20"
                 >

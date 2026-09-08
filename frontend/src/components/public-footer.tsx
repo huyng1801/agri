@@ -1,12 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
 import { type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
-import { ZaloIcon } from './zalo-icon';
 import { cn } from './ui';
 
 export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
@@ -15,8 +14,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const mapLocation = getPublicMapLocation(profile);
   const isInternal = siteKey === 'htxonline';
   const isPassport = siteKey === 'passport';
-  const isAgri = siteKey === 'agripassport' || siteKey === 'local';
-  const zaloUrl = getPublicZaloUrl(profile, isAgri);
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
   const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'HỘ CHIẾU NÔNG NGHIỆP' : 'AGRIPASSPORT';
@@ -157,17 +154,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   {profile.supportEmail}
                 </a>
               </p>
-              {zaloUrl ? (
-                <a
-                  href={zaloUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] px-3.5 py-2 text-xs font-bold text-[var(--brand-primary)] transition hover:border-[var(--brand-primary)] hover:bg-white"
-                >
-                  <ZaloIcon size={18} />
-                  <span>Chat qua Zalo</span>
-                </a>
-              ) : null}
             </div>
           </div>
 

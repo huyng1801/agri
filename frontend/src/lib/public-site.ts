@@ -234,15 +234,6 @@ export function telHref(value: string) {
   return `tel:${value.replace(/\s+/g, '')}`;
 }
 
-export function getPublicZaloUrl(profile: Pick<PublicSiteProfile, 'zaloUrl' | 'hotline'>, useHotlineFallback = false) {
-  const configuredUrl = profile.zaloUrl.trim();
-  if (configuredUrl) return configuredUrl;
-  if (!useHotlineFallback) return '';
-
-  const phoneNumber = profile.hotline.replace(/\D/g, '');
-  return phoneNumber ? `https://zalo.me/${phoneNumber}` : '';
-}
-
 export function getPublicMapLocation(profile?: Pick<PublicSiteProfile, 'mapEmbedUrl'> | null): PublicMapLocation {
   const source = stringValue(profile?.mapEmbedUrl);
   if (!source) return defaultPublicMapLocation;
