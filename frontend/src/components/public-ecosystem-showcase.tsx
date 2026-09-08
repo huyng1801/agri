@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, QrCode, Store, Boxes, type LucideIcon, ExternalLink } from 'lucide-react';
+import { ArrowRight, CheckCircle2, QrCode, Store, Boxes, type LucideIcon } from 'lucide-react';
 import { cn } from './ui';
 import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 
@@ -264,7 +264,7 @@ export function PublicEcosystemShowcase({
                     )}
                   >
                     <span>Truy cập {p.name}</span>
-                    <ExternalLink size={15} aria-hidden="true" />
+                    <ArrowRight size={15} aria-hidden="true" />
                   </a>
                 ) : (
                   <Link
