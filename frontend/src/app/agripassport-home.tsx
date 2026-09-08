@@ -326,7 +326,7 @@ export async function AgripassportHome() {
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {qrProductCount}
                   </p>
-                  <p className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wide">
+                  <p className="whitespace-nowrap text-[0.68rem] font-semibold uppercase tracking-wide text-[var(--text-secondary)] sm:text-xs">
                     Sản phẩm có QR Passport
                   </p>
                 </div>
