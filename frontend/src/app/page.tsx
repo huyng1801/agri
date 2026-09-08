@@ -55,7 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
         : "AGRIPASSPORT — Số hóa nông sản, truy xuất nguồn gốc bằng QR";
   const pageDescription =
     siteKey === "agripassport" || siteKey === "local"
-      ? "Nền tảng số giúp hợp tác xã, nông hộ và doanh nghiệp chuẩn hóa dữ liệu sản xuất, quản lý sản phẩm và minh bạch nguồn gốc nông sản trên một hệ thống."
+      ? "Kết nối dữ liệu từ sản xuất đến sản phẩm, giúp hợp tác xã quản lý hiệu quả và người tiêu dùng dễ dàng kiểm chứng thông tin."
       : profile.pageContent.homeDescription;
 
   return {
