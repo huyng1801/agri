@@ -10,11 +10,11 @@ import { htxonlineUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 
 const marketplaceNavItems = [
   { href: '/', label: 'Trang chủ' },
+  { href: '/ve-chung-toi', label: 'Về Agripassport' },
   { href: '/san-pham', label: 'Sản phẩm' },
   { href: '/htx', label: 'Hợp tác xã' },
   { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' },
   { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/ve-chung-toi', label: 'Về chúng tôi' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
 
@@ -72,14 +72,14 @@ export function PublicHeader({
       ? { href: '/login', label: 'Quản trị HTX' }
       : isPassport
         ? { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
-        : { href: '/login', label: 'Cổng đối tác HTX' };
+        : { href: '/login', label: 'Cổng đối tác' };
 
   const platformBadge =
     isInternal
       ? 'Quản trị HTX'
       : isPassport
         ? 'Truy xuất nguồn gốc'
-        : 'Dữ liệu Nông sản & Thị trường';
+        : '';
 
   const CtaIcon = isInternal ? Briefcase : isPassport ? QrCode : LogIn;
 
@@ -115,10 +115,12 @@ export function PublicHeader({
             )}
           </Link>
 
-          <span className="hidden 2xl:inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
-            {platformBadge}
-          </span>
+          {!isAgri && (
+            <span className="hidden 2xl:inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
+              {platformBadge}
+            </span>
+          )}
         </div>
 
         <nav className="hidden lg:flex min-w-0 items-center gap-0.5" aria-label="Menu chính">
@@ -143,16 +145,18 @@ export function PublicHeader({
         </nav>
 
         <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
-          <form action={searchTarget} className="relative">
-            <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
-            <input
-              type="search"
-              name="search"
-              placeholder={searchPlaceholder}
-              aria-label={searchPlaceholder}
-              className="h-10 w-40 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-56 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-52"
-            />
-          </form>
+          {!isAgri && (
+            <form action={searchTarget} className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={15} aria-hidden="true" />
+              <input
+                type="search"
+                name="search"
+                placeholder={searchPlaceholder}
+                aria-label={searchPlaceholder}
+                className="h-10 w-40 rounded-lg border border-[var(--border)] bg-[var(--surface-muted)] pl-9 pr-3 text-xs text-[var(--text-primary)] outline-none transition focus:w-56 focus:border-[var(--brand-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-primary-ring)] xl:w-52"
+              />
+            </form>
+          )}
 
           <Link
             href={navCta.href}
@@ -164,13 +168,15 @@ export function PublicHeader({
         </div>
 
         <div className="flex sm:hidden items-center gap-2">
-          <Link
-            href={searchTarget}
-            aria-label="Tìm kiếm"
-            className="grid h-11 w-11 place-items-center rounded-lg border border-[var(--border)] bg-white text-[var(--text-primary)] shadow-sm active:bg-slate-50"
-          >
-            <Search size={18} aria-hidden="true" />
-          </Link>
+          {!isAgri && (
+            <Link
+              href={searchTarget}
+              aria-label="Tìm kiếm"
+              className="grid h-11 w-11 place-items-center rounded-lg border border-[var(--border)] bg-white text-[var(--text-primary)] shadow-sm active:bg-slate-50"
+            >
+              <Search size={18} aria-hidden="true" />
+            </Link>
+          )}
 
           <button
             type="button"
@@ -187,16 +193,18 @@ export function PublicHeader({
       {menuOpen && (
         <div className="fixed inset-0 top-[68px] z-50 flex flex-col bg-black/40 backdrop-blur-sm md:hidden">
           <div className="flex-1 overflow-y-auto bg-white p-5 shadow-2xl animate-in slide-in-from-top-2 duration-200">
-            <form action={searchTarget} className="relative mb-5" onSubmit={closeMenu}>
-              <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
-              <input
-                type="search"
-                name="search"
-                placeholder={searchPlaceholder}
-                aria-label={searchPlaceholder}
-                className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary-ring)]"
-              />
-            </form>
+            {!isAgri && (
+              <form action={searchTarget} className="relative mb-5" onSubmit={closeMenu}>
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" size={18} aria-hidden="true" />
+                <input
+                  type="search"
+                  name="search"
+                  placeholder={searchPlaceholder}
+                  aria-label={searchPlaceholder}
+                  className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] pl-10 pr-4 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--brand-primary)] focus:ring-2 focus:ring-[var(--brand-primary-ring)]"
+                />
+              </form>
+            )}
 
             {/* Mobile Nav Links */}
             <nav className="grid gap-1.5" aria-label="Menu di động">
