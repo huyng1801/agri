@@ -50,7 +50,7 @@ export async function AgripassportHome() {
     {
       num: '01',
       title: 'Thu thập & Khai báo tại nguồn',
-      platform: 'HỢP TÁC XÃ',
+      platform: 'HỢP TÁC XÃ ONLINE',
       platformColor: '#131935',
       desc: 'Hợp tác xã số hóa hồ sơ xã viên, diện tích vùng trồng, mùa vụ và nhật ký canh tác thực tế ngay trên đồng ruộng.'
     },
@@ -286,7 +286,7 @@ export async function AgripassportHome() {
            ========================================================================= */}
         <section aria-label="Số liệu hoạt động thực tế" className="border-b border-[var(--border)] bg-white">
           <div className={cn(publicContainerClass, 'py-6 sm:py-8')}>
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4 lg:divide-x lg:divide-[var(--border)]">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-2 xl:grid-cols-4 lg:divide-x lg:divide-[var(--border)]">
               {/* Stat 1: Total Products */}
               <div className="flex min-w-0 items-center gap-3 sm:gap-4 lg:px-6 first:pl-0">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#106f8a]/10 text-[#106f8a]">
@@ -326,7 +326,7 @@ export async function AgripassportHome() {
                   <p className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">
                     {qrProductCount}
                   </p>
-                  <p className="text-[0.68rem] font-semibold uppercase leading-5 tracking-wide text-[var(--text-secondary)] sm:text-xs">
+                  <p className="text-[0.68rem] font-semibold uppercase leading-5 tracking-wide text-[var(--text-secondary)] sm:text-xs xl:whitespace-nowrap xl:text-[0.68rem] xl:tracking-normal">
                     Sản phẩm có QR Passport
                   </p>
                 </div>
