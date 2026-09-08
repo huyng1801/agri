@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
 import { type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
+import { ZaloIcon } from './zalo-icon';
 import { cn } from './ui';
 
 export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
@@ -13,6 +14,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
+  const zaloUrl = getPublicZaloUrl(profile, isAgri);
   const logoVariant = isAgri ? 'agri-wordmark' : siteKey === 'passport' ? 'passport-wordmark' : 'htx-wordmark';
 
   const dataLinks = [
@@ -102,7 +104,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         <div className="mt-10 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
-              Liên hệ
+              Thông tin liên hệ
             </h3>
             <div className="space-y-3 text-xs leading-relaxed text-[var(--text-secondary)]">
               <p className="font-bold text-[var(--text-primary)]">Tổ hợp tác công nghệ nông nghiệp Agripassport</p>
@@ -122,6 +124,17 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   {profile.supportEmail}
                 </a>
               </p>
+              {zaloUrl ? (
+                <a
+                  href={zaloUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex min-h-11 w-fit items-center gap-2 rounded-lg border border-[#c9e6ed] bg-[#f2fbfd] px-3.5 py-2 text-xs font-bold text-[#106f8a] transition hover:-translate-y-0.5 hover:border-[#106f8a] hover:bg-white"
+                >
+                  <ZaloIcon size={18} />
+                  <span>Chat qua Zalo</span>
+                </a>
+              ) : null}
             </div>
           </div>
 

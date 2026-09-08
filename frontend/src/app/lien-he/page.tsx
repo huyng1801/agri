@@ -7,8 +7,9 @@ import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
 import { buildPublicMetadata } from '@/lib/page-metadata';
-import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
 import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
+import { ZaloIcon } from '@/components/zalo-icon';
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
@@ -33,6 +34,7 @@ export default async function ContactPage() {
   const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
   const mapLocation = getPublicMapLocation(siteProfile);
+  const zaloUrl = getPublicZaloUrl(siteProfile, isAgripassport);
   const showMapPreview = Boolean(siteProfile.address.trim());
   const contactDescription = isAgripassport
     ? 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.'
@@ -115,6 +117,17 @@ export default async function ContactPage() {
                   >
                     Mở bản đồ
                   </a>
+                  {zaloUrl ? (
+                    <a
+                      href={zaloUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--border-strong)] bg-white/70 px-4 text-sm font-semibold text-[var(--brand-primary)] transition hover:-translate-y-0.5 hover:bg-white"
+                    >
+                      <ZaloIcon size={17} />
+                      Chat qua Zalo
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </article>
