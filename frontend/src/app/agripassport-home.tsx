@@ -141,7 +141,7 @@ export async function AgripassportHome() {
 
                 {/* Subtitle */}
                 <p className="mt-4 text-sm font-bold uppercase tracking-[0.04em] leading-relaxed text-[var(--brand-primary-strong)] sm:text-base">
-                  Agripassport giải pháp số hoá nông sản hợp tác xã, truy xuất minh bạch nguồn gốc bằng QR
+                  AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR
                 </p>
 
                 {/* Integrated High-Contrast Search Bar */}
