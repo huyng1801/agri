@@ -205,10 +205,10 @@ export async function AgripassportHome() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--text-tertiary)]">
-                            Đơn vị sản xuất (HTX)
+                            Đơn vị sản xuất
                           </span>
                           <span className="font-mono text-[11px] text-[#131935] font-semibold">
-                            Hồ sơ HTX
+                            HỒ SƠ HỢP TÁC XÃ
                           </span>
                         </div>
                         <p className="text-xs font-bold text-[var(--text-primary)] mt-0.5 truncate">
@@ -418,7 +418,7 @@ export async function AgripassportHome() {
                   <span>Danh bạ Đơn vị Sản xuất</span>
                 </div>
                 <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
-                  Danh bạ Hợp tác xã
+                  Danh bạ hợp tác xã
                 </h2>
                 <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-2xl">
                   Khám phá các hồ sơ hợp tác xã đang công khai thông tin sản phẩm, vùng hoạt động và dữ liệu liên quan.

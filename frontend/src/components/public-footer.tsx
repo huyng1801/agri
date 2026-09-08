@@ -54,7 +54,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const dataLinks = [
     { href: '/san-pham', label: 'Tất cả nông sản' },
     { href: '/san-pham?hasQr=true', label: 'Nông sản có QR Passport' },
-    { href: '/htx', label: 'Danh bạ Hợp tác xã' },
+    { href: '/htx', label: 'Danh bạ hợp tác xã' },
     { href: '/lien-he', label: 'Đăng ký kết nối HTX' }
   ];
 

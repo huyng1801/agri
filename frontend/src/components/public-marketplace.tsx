@@ -204,7 +204,7 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
           href={`/htx/${cooperative.code}`}
           className="inline-flex h-9 flex-1 items-center justify-center gap-1.5 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-slate-50"
         >
-          <span>Hồ sơ HTX</span>
+          <span>HỒ SƠ HỢP TÁC XÃ</span>
           <ArrowRight size={13} aria-hidden="true" />
         </Link>
         {cooperative.phone && (
