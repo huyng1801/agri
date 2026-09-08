@@ -15,7 +15,11 @@ const nunitoSans = Nunito_Sans({
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
   const profile = defaultPublicSiteProfileForSite(siteKey);
-  const favicon = siteKey === 'agripassport' || siteKey === 'local' ? '/agripassport-mark.png' : '/logo.png';
+  const favicon = siteKey === 'agripassport' || siteKey === 'local'
+    ? '/agripassport-mark.png'
+    : siteKey === 'passport'
+      ? '/passport-mark.png'
+      : '/htxonline-mark.png';
   return {
     metadataBase: new URL(await getRequestPublicOrigin()),
     title: {

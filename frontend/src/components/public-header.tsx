@@ -57,6 +57,7 @@ export function PublicHeader({
   const isPassport = siteKey === 'passport';
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
   const navItems = isInternal ? internalNavItems : isPassport ? passportNavItems : marketplaceNavItems;
+  const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
   const searchTarget = '/san-pham';
   const searchPlaceholder =
@@ -102,8 +103,8 @@ export function PublicHeader({
       <div className="mx-auto flex h-[68px] max-w-[var(--public-container-wide)] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 xl:gap-5">
           <Link href="/" className="flex items-center gap-2.5 shrink-0" aria-label={`${appName} - Trang chủ`}>
-            {isAgri ? (
-              <PublicLogo size={34} variant="agri-wordmark" className="h-[34px] w-auto max-w-[10rem] sm:max-w-[12rem]" />
+            {isAgri || isPassport || isInternal ? (
+              <PublicLogo size={34} variant={logoVariant} className="h-[34px] w-auto max-w-[10rem] sm:max-w-[12rem]" />
             ) : (
               <div className="flex items-center gap-2.5">
                 <span className="grid h-10 w-10 place-items-center rounded-lg bg-[var(--brand-primary)] text-white shadow-sm">

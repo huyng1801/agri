@@ -22,6 +22,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
+  const logoVariant = isAgri ? 'agri-wordmark' : siteKey === 'passport' ? 'passport-wordmark' : 'htx-wordmark';
 
   const ecosystemLinks = [
     {
@@ -104,7 +105,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           {/* Column 1: Organization & Identity (4 cols) */}
           <div className="lg:col-span-4">
             <Link href="/" className="inline-block">
-              <PublicLogo size={36} variant="agri-wordmark" className="h-9 w-auto" />
+              <PublicLogo size={36} variant={logoVariant} className="h-9 w-auto" />
             </Link>
             <p className="mt-1 text-xs font-bold uppercase tracking-wider text-[#106f8a]">
               Hạ tầng Dữ liệu Nông sản & Minh bạch Nguồn gốc
