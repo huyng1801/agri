@@ -112,7 +112,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
-      <div className={cn('mx-auto grid', isMarketplace ? 'grid-cols-7 gap-0.5' : 'grid-cols-5 gap-1')}>
+      <div className={cn('mx-auto grid', isMarketplace ? 'grid-cols-7 gap-0' : 'grid-cols-5 gap-1')}>
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -122,7 +122,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[46px] min-w-0 flex-col items-center justify-center gap-1 rounded-[1rem] px-0.5 text-[8px] font-semibold transition-colors sm:text-[9px]',
+                'relative flex min-h-[46px] min-w-0 flex-col items-center justify-center gap-1 rounded-[1rem] px-0 text-[8px] font-semibold transition-colors sm:text-[9px]',
                 active
                   ? 'bg-[var(--brand-primary)] text-white shadow-[0_14px_24px_rgba(19,32,49,0.18)]'
                   : 'text-slate-500/90'
