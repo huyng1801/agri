@@ -125,7 +125,7 @@ export async function AgripassportHome() {
           <div className={cn(publicContainerClass, 'relative')}>
             <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-12">
               {/* Left Column (60%): Institutional Copy, Search & Primary Actions */}
-              <div className="lg:col-span-7">
+              <div className="text-center lg:col-span-7 lg:text-left">
                 {/* Institutional Badge */}
                 <div className="inline-flex items-center gap-2 rounded-full border border-[var(--brand-primary)]/25 bg-[var(--brand-primary-subtle)] px-3.5 py-1 text-xs font-semibold text-[var(--brand-primary)]">
                   <span className="h-2 w-2 rounded-full bg-[var(--brand-primary)] animate-pulse" />
@@ -356,8 +356,8 @@ export async function AgripassportHome() {
         <section className="py-12 sm:py-16 lg:py-20">
           <div className={publicContainerClass}>
             {/* Section Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-[var(--border)] pb-6 mb-8">
-              <div>
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left border-b border-[var(--border)] pb-6 mb-8">
+              <div className="w-full sm:w-auto">
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#106f8a]">
                   <Boxes size={14} />
                   <span>Danh mục Dữ liệu Công khai</span>
@@ -411,8 +411,8 @@ export async function AgripassportHome() {
         <section className="border-t border-[var(--border)] bg-[var(--surface-subtle)] py-12 sm:py-16 lg:py-20">
           <div className={publicContainerClass}>
             {/* Section Header */}
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between border-b border-[var(--border)] pb-6 mb-8">
-              <div>
+            <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:items-end sm:justify-between sm:text-left border-b border-[var(--border)] pb-6 mb-8">
+              <div className="w-full sm:w-auto">
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#131935]">
                   <Store size={14} />
                   <span>Danh bạ Đơn vị Sản xuất</span>
