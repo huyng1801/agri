@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, Home, LogIn, Newspaper, QrCode, Search, ShoppingBag, Store } from 'lucide-react';
+import { Briefcase, Home, Info, LogIn, Newspaper, Phone, QrCode, Search, ShoppingBag, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
@@ -12,7 +12,9 @@ const marketplaceItems = [
   { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
   { href: '/htx', label: 'Hợp tác xã', icon: Store, match: (path: string) => path.startsWith('/htx') },
   { href: '/san-pham?hasQr=true', label: 'Truy xuất QR', icon: Search, match: (path: string) => path.startsWith('/passport') || path.startsWith('/qr') },
-  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
+  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') },
+  { href: '/ve-chung-toi', label: 'Về chúng tôi', icon: Info, match: (path: string) => path.startsWith('/ve-chung-toi') },
+  { href: '/lien-he', label: 'Liên hệ', icon: Phone, match: (path: string) => path.startsWith('/lien-he') }
 ] as const;
 
 const internalItems = [
@@ -36,6 +38,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   const [footerVisible, setFooterVisible] = useState(false);
   const [scrollHidden, setScrollHidden] = useState(false);
   const items = siteKey === 'htxonline' ? internalItems : siteKey === 'passport' ? passportItems : marketplaceItems;
+  const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
   const enableBottomNav = siteKey !== 'htxonline';
   const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
 
@@ -109,7 +112,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
         hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
       )}
     >
-      <div className="mx-auto grid grid-cols-5 gap-1">
+      <div className={cn('mx-auto grid', isMarketplace ? 'grid-cols-7 gap-0.5' : 'grid-cols-5 gap-1')}>
         {items.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
@@ -119,7 +122,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[46px] flex-col items-center justify-center gap-1 rounded-[1rem] px-1 text-[9px] font-semibold transition-colors',
+                'relative flex min-h-[46px] min-w-0 flex-col items-center justify-center gap-1 rounded-[1rem] px-0.5 text-[8px] font-semibold transition-colors sm:text-[9px]',
                 active
                   ? 'bg-[var(--brand-primary)] text-white shadow-[0_14px_24px_rgba(19,32,49,0.18)]'
                   : 'text-slate-500/90'
@@ -128,7 +131,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               <span className="relative">
                 <Icon size={15} aria-hidden="true" />
               </span>
-              <span className="max-w-full truncate leading-none">{item.label}</span>
+              <span className="min-w-0 max-w-full truncate leading-none">{item.label}</span>
             </Link>
           );
         })}
