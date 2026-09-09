@@ -131,7 +131,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         </div>
 
         {/* Contact, map and registration row */}
-        <div className="mt-8 grid grid-cols-1 gap-6 border-t border-[var(--border)] pt-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-7">
+        <div className="mx-auto mt-8 grid w-full grid-cols-1 gap-6 border-t border-[var(--border)] pt-6 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-8">
           <div>
             <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin liên hệ
