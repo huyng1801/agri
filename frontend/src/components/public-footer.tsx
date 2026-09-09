@@ -48,15 +48,15 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
         ]
       : [
-          { href: '/san-pham', label: 'Sản phẩm' },
+          { href: '/san-pham', label: 'Trang sản phẩm' },
           { href: '/htx', label: 'Hợp tác xã' },
           { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' }
         ];
 
   const aboutLinks = [
+    { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
     { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
-    { href: '/tin-tuc', label: 'Bản tin nông nghiệp' },
-    { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' }
+    { href: '/tin-tuc', label: 'Bản tin nông nghiệp' }
   ];
 
   const legalLinks = [
