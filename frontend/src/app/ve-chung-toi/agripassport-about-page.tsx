@@ -40,6 +40,8 @@ const ecosystemMembers = [
   { label: 'Nhà phân phối', icon: Truck }
 ] as const;
 
+const agripassportAppShowcaseUrl = '/hero/agripassport-app-showcase.png';
+
 export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProps) {
   return (
     <PublicShell>
@@ -69,14 +71,25 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
               </div>
             </div>
 
-            <figure className="h-full overflow-hidden rounded-[1.75rem] border border-white/80 bg-[var(--brand-primary-subtle)] shadow-[0_28px_70px_rgba(25,73,39,0.16)]">
-              <PublicImage
-                src={siteProfile.pageContent.aboutImageUrl}
-                alt={siteProfile.pageContent.aboutImageAlt || 'Người nông dân sử dụng công nghệ trong sản xuất'}
-                wrapperClassName="h-full aspect-[4/3] lg:aspect-auto"
-                className="h-full w-full object-cover"
-                priority
-              />
+            <figure className="grid h-full grid-cols-2 gap-3 overflow-hidden rounded-[1.75rem] border border-white/80 bg-[var(--brand-primary-subtle)] p-3 shadow-[0_28px_70px_rgba(25,73,39,0.16)] sm:gap-4 sm:p-4">
+              <div className="min-h-[18rem] overflow-hidden rounded-[1.35rem] bg-[#f8eee3] sm:min-h-[24rem] lg:min-h-[31rem]">
+                <PublicImage
+                  src={siteProfile.pageContent.aboutImageUrl}
+                  alt={siteProfile.pageContent.aboutImageAlt || 'Người nông dân sử dụng công nghệ trong sản xuất'}
+                  wrapperClassName="h-full w-full"
+                  className="h-full w-full object-cover"
+                  priority
+                />
+              </div>
+              <div className="flex min-h-[18rem] items-center overflow-hidden rounded-[1.35rem] bg-[#dff4f5] sm:min-h-[24rem] lg:min-h-[31rem]">
+                <PublicImage
+                  src={agripassportAppShowcaseUrl}
+                  alt="Ứng dụng Agripassport quản lý sản xuất và truy xuất QR"
+                  wrapperClassName="h-full w-full"
+                  className="h-full w-full object-contain"
+                  priority
+                />
+              </div>
             </figure>
           </div>
         </section>
