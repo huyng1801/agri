@@ -85,7 +85,7 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Chúng tôi bắt đầu từ dữ liệu</p>
             <h2 className="type-h2 mt-3 text-3xl sm:text-5xl lg:whitespace-nowrap">Để giá trị của nông sản được nhìn thấy rõ hơn</h2>
-            <p className="mt-4 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem]">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm. Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
+            <p className="mt-4 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem] lg:max-w-5xl">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm.<br className="hidden lg:block" /> Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {startingPoints.map((item, index) => (
