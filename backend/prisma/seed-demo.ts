@@ -827,7 +827,9 @@ async function seedNews(superAdminId: string) {
     const slug = article.slug;
     const existingByTitle = await prisma.newsArticle.findFirst({ where: { title: article.title }, select: { slug: true } });
     const publishedAt = new Date();
-    publishedAt.setDate(publishedAt.getDate() - index * 3);
+    if (article.slug !== SEASON_MANAGEMENT_NEWS.slug) {
+      publishedAt.setDate(publishedAt.getDate() - index * 3);
+    }
     const bodyHtml = preparePublicNewsBody(article.bodyHtml, article.category);
     const coverImageAlt = `Ảnh minh họa: ${article.title}`;
     const focusKeyword = article.focusKeyword;
