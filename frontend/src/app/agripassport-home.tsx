@@ -147,7 +147,7 @@ export async function AgripassportHome() {
                 {/* Unified Single-Surface Search Bar */}
                 <div className="mt-6 max-w-2xl">
                   <PublicSearch
-                    placeholder="Nhập tên nông sản, hợp tác xã, mã vùng trồng hoặc mã QR..."
+                    placeholder="Tìm nông sản, HTX hoặc mã QR..."
                     className="w-full"
                   />
                 </div>
