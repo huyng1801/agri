@@ -140,7 +140,7 @@ export async function AgripassportHome() {
                 </h1>
 
                 {/* Subtitle */}
-                <p className="mt-4 max-w-3xl text-sm font-semibold leading-7 text-[var(--text-secondary)] sm:text-base sm:leading-8">
+                <p className="mt-4 max-w-3xl text-sm font-bold leading-7 text-[var(--text-secondary)] sm:text-base sm:leading-8">
                   Kết nối dữ liệu từ sản xuất đến sản phẩm, giúp hợp tác xã quản lý hiệu quả và người tiêu dùng dễ dàng kiểm chứng thông tin.
                 </p>
 
