@@ -73,7 +73,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           {/* Column 1: Organization & Identity */}
           <div>
             <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
-              <PublicLogo size={36} variant={logoVariant} className="h-9 w-auto" />
+              <PublicLogo size={38} variant={logoVariant} className="h-[38px] w-auto" />
             </Link>
 
             <p className="mt-3 text-xs leading-relaxed text-[var(--text-secondary)]">
