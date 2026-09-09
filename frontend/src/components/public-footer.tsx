@@ -83,10 +83,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 2: Data */}
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Khám phá dữ liệu
             </h3>
-            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {dataLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
@@ -99,10 +99,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 3: About */}
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Về {brandName}
             </h3>
-            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {aboutLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
@@ -115,10 +115,10 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 4: Customer support */}
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Hỗ trợ khách hàng
             </h3>
-            <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
+            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {legalLinks.map((link) => (
                 <li key={link.label}>
                   <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
@@ -133,7 +133,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         {/* Contact, map and registration row */}
         <div className="mx-auto mt-8 grid w-full grid-cols-1 gap-6 border-t border-[var(--border)] pt-6 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-8">
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin liên hệ
             </h3>
             <div className="space-y-2 text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -192,6 +192,18 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <ShieldCheck size={14} className="text-[#0d7a28]" />
             <span>Dữ liệu được chuẩn hóa và đối chiếu thực địa trước khi công khai</span>
           </div>
+        </div>
+      </div>
+
+      <div className="border-t border-[var(--border)] bg-white py-5 sm:py-6">
+        <div className={cn(publicContainerClass, 'flex justify-center')}>
+          <img
+            src="/legal/online-gov-banner.png"
+            alt="Đã thông báo Bộ Công Thương"
+            width={600}
+            height={223}
+            className="h-auto w-[min(100%,22rem)] object-contain"
+          />
         </div>
       </div>
     </footer>

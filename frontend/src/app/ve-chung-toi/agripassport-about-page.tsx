@@ -48,7 +48,7 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
       <main id="main-content" className="overflow-hidden bg-[var(--surface-1)]">
         <section className="relative border-b border-[var(--border)] bg-[radial-gradient(circle_at_88%_10%,color-mix(in_srgb,var(--brand-primary)_18%,transparent),transparent_28%),linear-gradient(135deg,var(--surface-1)_0%,var(--brand-primary-subtle)_100%)]">
           <div className={cn(publicContainerClass, 'grid gap-8 py-10 sm:py-14 lg:grid-cols-[0.95fr_1.05fr] lg:items-stretch lg:gap-14 lg:py-20')}>
-            <div className="max-w-2xl">
+            <div className="order-2 max-w-2xl lg:order-1">
               <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Agripassport</p>
               <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-4xl lg:text-5xl lg:leading-[1.12]">Số hóa nông sản, minh bạch nguồn gốc</h1>
               <div className="mt-6 space-y-4 text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.1rem]">
@@ -71,25 +71,14 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
               </div>
             </div>
 
-            <figure className="grid h-full grid-cols-2 gap-3 overflow-hidden rounded-[1.75rem] border border-white/80 bg-[var(--brand-primary-subtle)] p-3 shadow-[0_28px_70px_rgba(25,73,39,0.16)] sm:gap-4 sm:p-4">
-              <div className="min-h-[18rem] overflow-hidden rounded-[1.35rem] bg-[#f8eee3] sm:min-h-[24rem] lg:min-h-[31rem]">
-                <PublicImage
-                  src={siteProfile.pageContent.aboutImageUrl}
-                  alt={siteProfile.pageContent.aboutImageAlt || 'Người nông dân sử dụng công nghệ trong sản xuất'}
-                  wrapperClassName="h-full w-full"
-                  className="h-full w-full object-cover"
-                  priority
-                />
-              </div>
-              <div className="flex min-h-[18rem] items-center overflow-hidden rounded-[1.35rem] bg-[#dff4f5] sm:min-h-[24rem] lg:min-h-[31rem]">
-                <PublicImage
-                  src={agripassportAppShowcaseUrl}
-                  alt="Ứng dụng Agripassport quản lý sản xuất và truy xuất QR"
-                  wrapperClassName="h-full w-full"
-                  className="h-full w-full object-contain"
-                  priority
-                />
-              </div>
+            <figure className="order-1 h-full overflow-hidden rounded-[1.75rem] border border-white/80 bg-[#dff4f5] shadow-[0_28px_70px_rgba(25,73,39,0.16)] lg:order-2">
+              <PublicImage
+                src={agripassportAppShowcaseUrl}
+                alt="Ứng dụng Agripassport quản lý sản xuất và truy xuất QR"
+                wrapperClassName="aspect-square h-full w-full lg:aspect-auto"
+                className="h-full w-full object-cover"
+                priority
+              />
             </figure>
           </div>
         </section>
@@ -98,7 +87,7 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Chúng tôi bắt đầu từ dữ liệu</p>
             <h2 className="type-h2 mt-3 text-3xl sm:text-5xl lg:whitespace-nowrap">Để giá trị của nông sản được nhìn thấy rõ hơn</h2>
-            <p className="mt-4 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem] lg:max-w-5xl">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm.<br className="hidden lg:block" /> Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
+            <p className="mt-4 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem] lg:max-w-5xl">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm. Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {startingPoints.map((item, index) => (
