@@ -11,6 +11,7 @@ import * as bcrypt from 'bcryptjs';
 import { customAlphabet } from 'nanoid';
 import { EDITORIAL_NEWS_ARTICLES } from './editorial-news';
 import { EDITORIAL_NEWS_EXPANSION } from './editorial-news-expansion';
+import { SEASON_MANAGEMENT_NEWS } from './editorial-news-season';
 
 const prisma = new PrismaClient();
 const passportCode = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 10);
@@ -817,7 +818,10 @@ async function seedNews(superAdminId: string) {
     ...article,
     cover: PHOTOS[article.coverKey as keyof typeof PHOTOS]
   }));
-  const allArticles = [...DOCUMENT_NEWS_ARTICLES, ...editorialArticles];
+  const allArticles = [...DOCUMENT_NEWS_ARTICLES, ...editorialArticles, {
+    ...SEASON_MANAGEMENT_NEWS,
+    cover: PHOTOS[SEASON_MANAGEMENT_NEWS.coverKey]
+  }];
 
   for (const [index, article] of allArticles.entries()) {
     const slug = article.slug;
@@ -1024,7 +1028,7 @@ async function main() {
 
   if (superAdmin) {
     await seedNews(superAdmin.id);
-    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length + EDITORIAL_NEWS_EXPANSION.length} bài tin tức biên tập`);
+    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length + EDITORIAL_NEWS_EXPANSION.length + 1} bài tin tức biên tập`);
   }
 
   await seedSampleOrders();
