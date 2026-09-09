@@ -125,7 +125,7 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
         </section>
 
         <section className={cn(publicContainerClass, 'py-12 sm:py-16 lg:py-20')}>
-          <div className="text-center"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Giá trị của nền tảng</p><h2 className="type-h2 mx-auto mt-3 max-w-3xl text-3xl sm:text-5xl lg:max-w-none lg:whitespace-nowrap">Kết nối dữ liệu từ sản xuất đến thị trường</h2></div>
+          <div className="text-left sm:text-center"><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Giá trị của nền tảng</p><h2 className="type-h2 mx-auto mt-3 max-w-3xl text-3xl sm:text-5xl lg:max-w-none lg:whitespace-nowrap">Kết nối dữ liệu từ sản xuất đến thị trường</h2></div>
           <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {platformValues.map((item) => <article key={item.title} className="rounded-[1.45rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5"><div className="flex items-center gap-3"><span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]"><item.icon size={22} aria-hidden="true" /></span><h3 className="text-lg font-extrabold leading-6 text-[var(--text-primary)]">{item.title}</h3></div><p className="mt-4 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p></article>)}
           </div>
@@ -139,10 +139,10 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
         </section>
 
         <section className={cn(publicContainerClass, 'py-12 sm:py-16 lg:py-20')}>
-          <div className="rounded-[1.75rem] bg-[linear-gradient(130deg,var(--brand-primary-subtle)_0%,var(--surface-elevated)_52%,color-mix(in_srgb,var(--brand-primary)_16%,white)_100%)] px-5 py-8 text-center shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:px-10 sm:py-12">
+          <div className="rounded-[1.75rem] bg-[linear-gradient(130deg,var(--brand-primary-subtle)_0%,var(--surface-elevated)_52%,color-mix(in_srgb,var(--brand-primary)_16%,white)_100%)] px-5 py-8 text-left shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:px-10 sm:py-12 sm:text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Bắt đầu cùng Agripassport</p><h2 className="type-h2 mx-auto mt-3 max-w-3xl text-3xl sm:text-5xl">Số hóa sản phẩm bắt đầu từ dữ liệu</h2><p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)]">Không cần thay đổi mọi thứ cùng lúc. Agripassport giúp các đơn vị từng bước chuẩn hóa dữ liệu <br />và xây dựng nền tảng truy xuất phù hợp với nhu cầu thực tế.</p>
             <div className="mx-auto mt-6 grid max-w-2xl gap-3 text-left">{['Xác định thông tin về đơn vị, vùng sản xuất và sản phẩm.', 'Tổ chức dữ liệu sản phẩm theo cấu trúc rõ ràng và thống nhất.', 'Kết nối sản phẩm với thông tin truy xuất để người tiêu dùng dễ dàng tra cứu.'].map((item) => <p key={item} className="flex gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm font-semibold leading-6 text-[var(--text-secondary)]"><CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-primary)]" size={18} aria-hidden="true" />{item}</p>)}</div>
-            <p className="mt-8 text-xl font-extrabold text-[var(--text-primary)]">Bạn đã sẵn sàng số hóa sản phẩm?</p><p className="mt-2 text-[var(--text-secondary)]">Chúng tôi sẵn sàng đồng hành cùng bạn trong từng bước triển khai.</p><div className="mt-6 flex justify-center"><Link href="/lien-he"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Nhận tư vấn giải pháp <ArrowRight size={18} aria-hidden="true" /></Button></Link></div>
+            <p className="mt-8 text-xl font-extrabold text-[var(--text-primary)]">Bạn đã sẵn sàng số hóa sản phẩm?</p><p className="mt-2 text-[var(--text-secondary)]">Chúng tôi sẵn sàng đồng hành cùng bạn trong từng bước triển khai.</p><div className="mt-6 flex justify-start sm:justify-center"><Link href="/lien-he"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Nhận tư vấn giải pháp <ArrowRight size={18} aria-hidden="true" /></Button></Link></div>
           </div>
         </section>
       </main>
