@@ -147,7 +147,7 @@ export async function AgripassportHome() {
                 {/* Unified Single-Surface Search Bar */}
                 <div className="mt-6 max-w-2xl">
                   <PublicSearch
-                    placeholder="Tìm nông sản, HTX hoặc mã QR..."
+                    placeholder="Tìm nông sản, hợp tác xã..."
                     className="w-full"
                   />
                 </div>
@@ -362,10 +362,10 @@ export async function AgripassportHome() {
                   <Boxes size={14} />
                   <span>Danh mục Dữ liệu Công khai</span>
                 </div>
-                <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+                <h2 className="mt-2 text-3xl leading-tight sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
                   Nông sản hợp tác xã tiêu biểu
                 </h2>
-                <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-2xl">
+                <p className="mt-2 max-w-2xl text-base leading-7 text-[var(--text-secondary)]">
                   Mỗi sản phẩm hiển thị những thông tin được đơn vị công khai, cùng lối dẫn tới hồ sơ liên quan khi có.
                 </p>
               </div>
@@ -417,10 +417,10 @@ export async function AgripassportHome() {
                   <Store size={14} />
                   <span>Danh bạ Đơn vị Sản xuất</span>
                 </div>
-                <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+                <h2 className="mt-2 text-3xl leading-tight sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
                   Danh bạ hợp tác xã
                 </h2>
-                <p className="mt-1 text-sm text-[var(--text-secondary)] max-w-2xl">
+                <p className="mt-2 max-w-2xl text-base leading-7 text-[var(--text-secondary)]">
                   Khám phá các hồ sơ hợp tác xã đang công khai thông tin sản phẩm, vùng hoạt động và dữ liệu liên quan.
                 </p>
               </div>
@@ -461,10 +461,10 @@ export async function AgripassportHome() {
                 <CheckCircle2 size={13} className="text-[#106f8a]" />
                 <span className="uppercase tracking-wider text-[11px] font-bold">Chu trình Khép kín</span>
               </div>
-              <h2 className="mt-3 text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+              <h2 className="mt-3 text-3xl leading-tight sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
                 Quy trình chuẩn hóa & Bảo toàn dữ liệu
               </h2>
-              <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
+              <p className="mt-3 text-base leading-7 text-[var(--text-secondary)]">
                 Dữ liệu không tự sinh ra mà được đối chiếu từ canh tác thực tế của từng xã viên đến chứng thư điện tử.
               </p>
             </div>
@@ -486,10 +486,10 @@ export async function AgripassportHome() {
                       {step.platform}
                     </span>
                   </div>
-                  <h3 className="text-base font-bold text-[var(--text-primary)] mb-2">
+                  <h3 className="mb-2 text-lg font-bold leading-6 text-[var(--text-primary)]">
                     {step.title}
                   </h3>
-                  <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
+                  <p className="text-sm leading-6 text-[var(--text-secondary)]">
                     {step.desc}
                   </p>
                 </div>
@@ -518,10 +518,10 @@ export async function AgripassportHome() {
                   <TrendingUp size={14} />
                   <span>Bản tin Chuyển đổi số</span>
                 </div>
-                <h2 className="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-[var(--text-primary)]">
+                <h2 className="mt-2 text-3xl leading-tight sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
                   Tin tức vận hành nông nghiệp
                 </h2>
-                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                <p className="mt-2 text-base leading-7 text-[var(--text-secondary)]">
                   Cập nhật các mô hình hợp tác xã tiêu biểu, tiêu chuẩn thị trường và hướng dẫn ứng dụng công nghệ thực tế.
                 </p>
               </div>
