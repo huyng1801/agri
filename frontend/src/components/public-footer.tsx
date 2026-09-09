@@ -69,7 +69,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
     <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)]">
       {/* Main four-column grid */}
       <div className={cn(publicContainerClass, 'py-12 sm:py-16')}>
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-8">
           {/* Column 1: Organization & Identity */}
           <div>
             <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
@@ -83,7 +83,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 2: Data */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Khám phá dữ liệu
             </h3>
             <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
@@ -99,7 +99,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 3: About */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Về {brandName}
             </h3>
             <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
@@ -115,7 +115,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           {/* Column 4: Customer support */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Hỗ trợ khách hàng
             </h3>
             <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
@@ -131,12 +131,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         </div>
 
         {/* Contact, map and registration row */}
-        <div className="mt-10 grid grid-cols-1 gap-8 border-t border-[var(--border)] pt-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid grid-cols-1 gap-6 border-t border-[var(--border)] pt-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-7">
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin liên hệ
             </h3>
-            <div className="space-y-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+            <div className="space-y-2 text-xs leading-relaxed text-[var(--text-secondary)]">
               <p className="text-[var(--text-secondary)]">{brandOrg}</p>
               <p className="flex items-start gap-2">
                 <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
@@ -144,13 +144,13 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </p>
               <p className="flex items-center gap-2">
                 <Phone size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline sm:font-semibold">
+                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
                   {profile.hotlineDisplay}
                 </a>
               </p>
               <p className="flex items-center gap-2">
                 <Mail size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline sm:font-semibold">
+                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
                   {profile.supportEmail}
                 </a>
               </p>
@@ -159,7 +159,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           <div className="sm:col-span-2">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
                 Bản đồ địa điểm
               </h3>
             </div>
@@ -174,7 +174,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           </div>
 
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] mb-4">
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin pháp lý
             </h3>
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
