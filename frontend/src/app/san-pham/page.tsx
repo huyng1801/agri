@@ -170,7 +170,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <input
                 name="search"
                 defaultValue={filters.search ?? ''}
-                placeholder="Nhập tên sản phẩm, hợp tác xã hoặc từ khóa..."
+                placeholder="Tìm sản phẩm, hợp tác xã..."
                 aria-label="Tìm kiếm sản phẩm"
                 className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] pl-10 pr-4 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
               />

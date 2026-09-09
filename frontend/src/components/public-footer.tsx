@@ -68,8 +68,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   return (
     <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)]">
       {/* Main four-column grid */}
-      <div className={cn(publicContainerClass, 'py-12 sm:py-16')}>
-        <div className="mx-auto grid grid-cols-1 gap-8 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-8">
+      <div className={cn(publicContainerClass, 'py-8 sm:py-10')}>
+        <div className="mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-6">
           {/* Column 1: Organization & Identity */}
           <div>
             <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
@@ -89,7 +89,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {dataLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
+                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -105,7 +105,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {aboutLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
+                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -121,7 +121,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
               {legalLinks.map((link) => (
                 <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[36px] items-center py-1 transition hover:text-[var(--brand-primary)]">
+                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
                     {link.label}
                   </Link>
                 </li>
@@ -131,7 +131,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         </div>
 
         {/* Contact, map and registration row */}
-        <div className="mx-auto mt-8 grid w-full grid-cols-1 gap-6 border-t border-[var(--border)] pt-6 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-8">
+        <div className="mx-auto mt-6 grid w-full grid-cols-1 gap-5 border-t border-[var(--border)] pt-5 sm:grid-cols-2 lg:max-w-6xl lg:grid-cols-4 lg:gap-6">
           <div>
             <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin liên hệ
@@ -169,12 +169,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               mapSearchUrl={mapSearchUrl}
               mapEmbedUrl={profile.mapEmbedUrl}
               compact
-              className="min-h-[12rem]"
+              className="min-h-[10rem]"
             />
           </div>
 
           <div>
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin pháp lý
             </h3>
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -185,7 +185,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               alt="Đã thông báo Bộ Công Thương"
               width={600}
               height={223}
-              className="mt-4 h-auto w-40 object-contain"
+              className="mt-3 h-auto w-40 object-contain"
             />
           </div>
         </div>
