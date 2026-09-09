@@ -71,11 +71,11 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
               </div>
             </div>
 
-            <figure className="order-1 h-full overflow-hidden rounded-[1.75rem] border border-white/80 bg-[#dff4f5] shadow-[0_28px_70px_rgba(25,73,39,0.16)] lg:order-2">
+            <figure className="order-1 h-full self-stretch overflow-hidden rounded-[1.75rem] border border-white/80 bg-[#dff4f5] shadow-[0_28px_70px_rgba(25,73,39,0.16)] lg:order-2">
               <PublicImage
                 src={agripassportAppShowcaseUrl}
                 alt="Ứng dụng Agripassport quản lý sản xuất và truy xuất QR"
-                wrapperClassName="aspect-square h-full w-full lg:aspect-auto"
+                wrapperClassName="aspect-[1.1/1] w-full lg:aspect-auto lg:h-full"
                 className="h-full w-full object-cover"
                 priority
               />
