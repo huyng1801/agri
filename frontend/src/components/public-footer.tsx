@@ -180,6 +180,13 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
               ĐKKD: 1402233422 do Phòng Kinh tế cấp ngày 13/07/2026.
             </p>
+            <img
+              src="/legal/online-gov-banner.png"
+              alt="Đã thông báo Bộ Công Thương"
+              width={600}
+              height={223}
+              className="mt-4 h-auto w-40 object-contain"
+            />
           </div>
         </div>
       </div>
@@ -195,17 +202,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         </div>
       </div>
 
-      <div className="border-t border-[var(--border)] bg-white py-5 sm:py-6">
-        <div className={cn(publicContainerClass, 'flex justify-center')}>
-          <img
-            src="/legal/online-gov-banner.png"
-            alt="Đã thông báo Bộ Công Thương"
-            width={600}
-            height={223}
-            className="h-auto w-[min(100%,22rem)] object-contain"
-          />
-        </div>
-      </div>
     </footer>
   );
 }
