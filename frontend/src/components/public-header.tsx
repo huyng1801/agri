@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LogIn, QrCode } from 'lucide-react';
+import { Briefcase, LogIn, QrCode, UserRound } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PublicLogo } from './public-logo';
 import { cn } from './ui';
@@ -132,6 +132,15 @@ export function PublicHeader({
             <span>{navCta.label}</span>
           </Link>
         </div>
+
+        <Link
+          href={navCta.href}
+          aria-label={navCta.label}
+          title={navCta.label}
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-[var(--border-strong)] bg-white text-[var(--brand-primary)] shadow-sm transition hover:border-[var(--brand-primary)] hover:bg-[var(--surface-muted)] sm:hidden"
+        >
+          {isAgri ? <UserRound size={18} aria-hidden="true" /> : <CtaIcon size={18} aria-hidden="true" />}
+        </Link>
 
       </div>
     </header>

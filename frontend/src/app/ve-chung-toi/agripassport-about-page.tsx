@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Building2, CheckCircle2, Database, Leaf, QrCode, Store, Users } from 'lucide-react';
+import { ArrowRight, Building2, CheckCircle2, Database, Factory, Leaf, QrCode, Sprout, Store, Tractor, Truck, Users, Warehouse } from 'lucide-react';
 import { PublicImage } from '@/components/public-image';
 import { publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
@@ -11,10 +11,10 @@ type AgripassportAboutPageProps = {
 };
 
 const startingPoints = [
-  { title: 'Đưa nông sản lên môi trường số', description: 'Tập hợp câu chuyện, hình ảnh và thông tin nền tảng của từng sản phẩm.', icon: Leaf },
+  { title: 'Đưa nông sản lên', description: 'Tập hợp câu chuyện, hình ảnh và thông tin nền tảng của từng sản phẩm.', icon: Leaf },
   { title: 'Tổ chức dữ liệu', description: 'Đưa vùng sản xuất, đơn vị và sản phẩm về một cấu trúc dễ quản lý.', icon: Database },
   { title: 'Truy xuất nguồn gốc', description: 'Kết nối một lần quét với thông tin được công khai đúng ngữ cảnh.', icon: QrCode },
-  { title: 'Đưa sản phẩm đến gần thị trường', description: 'Giúp người mua và đối tác tiếp cận thông tin rõ ràng, đáng tin cậy.', icon: Store }
+  { title: 'Đến gần thị trường', description: 'Giúp người mua và đối tác tiếp cận thông tin rõ ràng, đáng tin cậy.', icon: Store }
 ] as const;
 
 const productData = [
@@ -31,7 +31,14 @@ const platformValues = [
   { title: 'Kết nối thị trường', description: 'Giúp sản phẩm có thông tin rõ ràng hơn khi tiếp cận thị trường.', icon: Users }
 ] as const;
 
-const ecosystemMembers = ['Hợp tác xã', 'Nông hộ', 'Trang trại', 'Doanh nghiệp', 'Đơn vị sản xuất', 'Nhà phân phối'] as const;
+const ecosystemMembers = [
+  { label: 'Hợp tác xã', icon: Building2 },
+  { label: 'Nông hộ', icon: Sprout },
+  { label: 'Trang trại', icon: Tractor },
+  { label: 'Doanh nghiệp', icon: Factory },
+  { label: 'Đơn vị sản xuất', icon: Warehouse },
+  { label: 'Nhà phân phối', icon: Truck }
+] as const;
 
 export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProps) {
   return (
@@ -75,17 +82,17 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
         </section>
 
         <section id="giai-phap" className={cn(publicContainerClass, 'py-12 sm:py-16 lg:py-20')}>
-          <div className="max-w-2xl">
+          <div>
             <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Chúng tôi bắt đầu từ dữ liệu</p>
-            <h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Để giá trị của nông sản được nhìn thấy rõ hơn</h2>
-            <p className="mt-4 text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem]">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm. Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
+            <h2 className="type-h2 mt-3 text-3xl sm:text-5xl lg:whitespace-nowrap">Để giá trị của nông sản được nhìn thấy rõ hơn</h2>
+            <p className="mt-4 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem]">Nông sản Việt có những giá trị riêng từ vùng đất, người sản xuất và quy trình tạo ra sản phẩm. Agripassport giúp những giá trị đó được số hóa, chuẩn hóa và kết nối thành dữ liệu để quản lý và dễ tiếp cận.</p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {startingPoints.map((item, index) => (
               <article key={item.title} className="group rounded-[1.45rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5 shadow-[0_12px_30px_rgba(15,23,42,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[var(--brand-primary)] hover:shadow-[0_20px_42px_rgba(15,23,42,0.12)]">
                 <div className="flex items-center gap-3">
                   <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]"><item.icon size={21} aria-hidden="true" /></span>
-                  <p className="text-xs font-bold text-[var(--brand-primary-strong)]">0{index + 1}</p>
+                  <p className="text-lg font-extrabold leading-none text-[var(--brand-primary-strong)]">0{index + 1}</p>
                 </div>
                 <h3 className="mt-5 text-xl font-extrabold leading-7 text-[var(--text-primary)]">{item.title}</h3>
                 <p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{item.description}</p>
@@ -100,11 +107,12 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
               <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Mỗi sản phẩm là một hồ sơ dữ liệu</p>
               <h2 className="type-h2 mt-3 text-3xl sm:text-5xl">Một sản phẩm - một hồ sơ - một hành trình</h2>
               <p className="mt-5 text-[1rem] leading-8 text-[var(--text-secondary)] sm:text-[1.08rem]">Agripassport số hóa thông tin xoay quanh từng sản phẩm, từ vùng nguyên liệu, quá trình sản xuất đến các tiêu chuẩn và thông tin công khai cho người tiêu dùng. Tất cả được kết nối trong một hồ sơ số thống nhất, giúp sản phẩm minh bạch hơn, dễ hiểu rõ ràng hơn và hành trình dễ dàng truy xuất hơn.</p>
+              <Link href="/lien-he" className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-[var(--brand-primary)] px-6 text-sm font-extrabold text-white transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-hover)] sm:w-auto">Nhận tư vấn giải pháp <ArrowRight size={18} aria-hidden="true" /></Link>
             </div>
             <div className="rounded-[1.7rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-5 shadow-[0_20px_52px_rgba(15,23,42,0.08)] sm:p-7">
               <div className="flex items-center gap-3">
                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--brand-primary)] text-white"><Database size={21} aria-hidden="true" /></span>
-                <div><p className="text-xs font-bold uppercase tracking-[0.08em] text-[var(--brand-primary-strong)]">Dữ liệu sản phẩm</p><p className="mt-1 font-extrabold text-[var(--text-primary)]">Xây dựng hồ sơ số cho từng sản phẩm</p></div>
+                <p className="font-extrabold text-[var(--text-primary)]">Xây dựng hồ sơ số cho từng sản phẩm</p>
               </div>
               <p className="mt-5 text-sm leading-7 text-[var(--text-secondary)]">Agripassport giúp tập trung những thông tin quan trọng của sản phẩm trên một nền tảng thống nhất, tạo cơ sở cho quản lý và truy xuất nguồn gốc.</p>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -124,13 +132,13 @@ export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProp
         <section id="he-sinh-thai" className="brand-gradient-bg text-white">
           <div className={cn(publicContainerClass, 'grid gap-8 py-12 sm:py-16 lg:grid-cols-[1fr_0.9fr] lg:items-center lg:gap-14 lg:py-20')}>
             <div><p className="text-xs font-extrabold uppercase tracking-[0.1em] text-white/80">Hệ sinh thái Agripassport</p><h2 className="mt-3 text-3xl font-extrabold leading-tight sm:text-5xl">Nối các chủ thể trong nông nghiệp số</h2><p className="mt-5 max-w-2xl text-[1rem] leading-8 text-white/76 sm:text-[1.08rem]">Agripassport hướng đến một hệ sinh thái nơi hợp tác xã, nông hộ, doanh nghiệp và các đối tác cùng tham gia xây dựng dữ liệu và nâng cao giá trị nông sản.</p><Link href="/gioi-thieu" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 text-sm font-extrabold text-[var(--brand-primary-hover)] transition hover:-translate-y-0.5">Xem hệ sinh thái <ArrowRight size={17} aria-hidden="true" /></Link></div>
-            <div className="grid grid-cols-2 gap-3">{ecosystemMembers.map((member, index) => <div key={member} className={cn('rounded-2xl border border-white/15 bg-white/8 p-4 backdrop-blur-sm', index === 0 && 'bg-white/18')}><Building2 size={20} className="text-white/80" aria-hidden="true" /><p className="mt-5 font-extrabold leading-6">{member}</p></div>)}</div>
+            <div className="grid grid-cols-2 gap-3">{ecosystemMembers.map((member, index) => { const Icon = member.icon; return <div key={member.label} className={cn('rounded-2xl border border-white/15 bg-white/8 p-4 backdrop-blur-sm', index === 0 && 'bg-white/18')}><Icon size={20} className="text-white/80" aria-hidden="true" /><p className="mt-5 font-extrabold leading-6">{member.label}</p></div>; })}</div>
           </div>
         </section>
 
         <section className={cn(publicContainerClass, 'py-12 sm:py-16 lg:py-20')}>
           <div className="rounded-[1.75rem] bg-[linear-gradient(130deg,var(--brand-primary-subtle)_0%,var(--surface-elevated)_52%,color-mix(in_srgb,var(--brand-primary)_16%,white)_100%)] px-5 py-8 text-center shadow-[0_18px_45px_rgba(15,23,42,0.08)] sm:px-10 sm:py-12">
-            <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Bắt đầu cùng Agripassport</p><h2 className="type-h2 mx-auto mt-3 max-w-3xl text-3xl sm:text-5xl">Số hóa sản phẩm bắt đầu từ dữ liệu.</h2><p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)]">Không cần thay đổi mọi thứ cùng lúc. Agripassport giúp các đơn vị từng bước chuẩn hóa dữ liệu <br />và xây dựng nền tảng truy xuất phù hợp với nhu cầu thực tế.</p>
+            <p className="text-xs font-extrabold uppercase tracking-[0.1em] text-[var(--brand-primary)]">Bắt đầu cùng Agripassport</p><h2 className="type-h2 mx-auto mt-3 max-w-3xl text-3xl sm:text-5xl">Số hóa sản phẩm bắt đầu từ dữ liệu</h2><p className="mx-auto mt-5 max-w-3xl text-[1rem] leading-8 text-[var(--text-secondary)]">Không cần thay đổi mọi thứ cùng lúc. Agripassport giúp các đơn vị từng bước chuẩn hóa dữ liệu <br />và xây dựng nền tảng truy xuất phù hợp với nhu cầu thực tế.</p>
             <div className="mx-auto mt-6 grid max-w-2xl gap-3 text-left">{['Xác định thông tin về đơn vị, vùng sản xuất và sản phẩm.', 'Tổ chức dữ liệu sản phẩm theo cấu trúc rõ ràng và thống nhất.', 'Kết nối sản phẩm với thông tin truy xuất để người tiêu dùng dễ dàng tra cứu.'].map((item) => <p key={item} className="flex gap-3 rounded-2xl bg-white/75 px-4 py-3 text-sm font-semibold leading-6 text-[var(--text-secondary)]"><CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-primary)]" size={18} aria-hidden="true" />{item}</p>)}</div>
             <p className="mt-8 text-xl font-extrabold text-[var(--text-primary)]">Bạn đã sẵn sàng số hóa sản phẩm?</p><p className="mt-2 text-[var(--text-secondary)]">Chúng tôi sẵn sàng đồng hành cùng bạn trong từng bước triển khai.</p><div className="mt-6 flex justify-center"><Link href="/lien-he"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Nhận tư vấn giải pháp <ArrowRight size={18} aria-hidden="true" /></Button></Link></div>
           </div>
