@@ -62,7 +62,7 @@ export function PublicHeader({
       ? { href: '/login', label: 'Quản trị HTX' }
       : isPassport
         ? { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
-        : { href: '/login', label: 'Cổng đối tác' };
+        : { href: '/login', label: 'Đăng nhập tài khoản' };
 
   const platformBadge =
     isInternal
@@ -126,7 +126,7 @@ export function PublicHeader({
         <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
           <Link
             href={navCta.href}
-            className="inline-flex h-10 max-w-[9.5rem] items-center gap-1.5 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-xs font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
+            className="inline-flex h-10 max-w-[11rem] items-center gap-1.5 whitespace-nowrap rounded-lg border border-[var(--border-strong)] bg-white px-3 text-[0.7rem] font-bold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] hover:bg-[var(--surface-muted)] shadow-sm"
           >
             <CtaIcon size={15} aria-hidden="true" className="text-[var(--brand-primary)]" />
             <span>{navCta.label}</span>
