@@ -52,4 +52,12 @@ describe('public host proxy rules', () => {
     expect(guideResponse.headers.get('location')).toBeNull();
     expect(guideResponse.headers.get('x-middleware-next')).toBe('1');
   });
+
+  it('removes Facebook click tracking without dropping functional query params', () => {
+    const response = proxy(
+      makeRequest('https://agripassport.com/san-pham?hasQr=true&fbclid=facebook-click-id', 'agripassport.com')
+    );
+
+    expect(response.headers.get('location')).toBe('https://agripassport.com/san-pham?hasQr=true');
+  });
 });

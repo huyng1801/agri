@@ -33,6 +33,13 @@ export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const search = request.nextUrl.search;
 
+  // Strip Facebook's click identifier from the visible URL while preserving functional query params.
+  if (request.nextUrl.searchParams.has('fbclid')) {
+    const cleanUrl = request.nextUrl.clone();
+    cleanUrl.searchParams.delete('fbclid');
+    return NextResponse.redirect(cleanUrl, 308);
+  }
+
   if (area === 'public' && isAliasPublicHost(hostname)) {
     return NextResponse.redirect(marketplaceRedirectUrl(pathname, search), 308);
   }
