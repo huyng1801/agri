@@ -4,14 +4,13 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import {
   ArrowRight,
+  Check,
   ChevronLeft,
   ChevronRight,
   QrCode,
   ShieldCheck,
-  Sparkles,
   Sprout,
-  Store,
-  ExternalLink
+  Store
 } from 'lucide-react';
 import { PublicImage } from './public-image';
 import { cn } from './ui';
@@ -81,7 +80,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
       href: '/ve-chung-toi',
       icon: ArrowRight
     },
-    image: '/hero/htx-farmer-hero-v1.png',
+    image: '/hero/htx-farmer-hero-v2.png',
     imageAlt: 'Hợp tác xã nông nghiệp ứng dụng quy trình số hóa canh tác',
     badgeTitle: 'Chuẩn hóa quy trình',
     badgeSubtitle: 'Hồ sơ số đồng bộ từ vùng trồng'
@@ -102,7 +101,7 @@ const DEFAULT_SLIDES: HeroSlide[] = [
     secondaryCta: {
       label: 'Liên hệ Hợp tác',
       href: '/lien-he',
-      icon: ExternalLink
+      icon: ArrowRight
     },
     image: '/news/produce-label.webp',
     imageAlt: 'Nông sản đóng gói đạt chuẩn xuất khẩu có tem Hộ Chiếu Nông Nghiệp',
@@ -163,9 +162,17 @@ export function HomeHeroSlider({
     touchEndX.current = null;
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft') {
+      prevSlide();
+    } else if (e.key === 'ArrowRight') {
+      nextSlide();
+    }
+  };
+
   return (
     <section
-      className="relative overflow-hidden bg-[radial-gradient(ellipse_at_top_right,rgba(13,122,40,0.08),transparent_50%),linear-gradient(180deg,#f3f9f2_0%,#ffffff_100%)] border-b border-[var(--border)]"
+      className="relative overflow-hidden bg-[radial-gradient(ellipse_60%_50%_at_80%_35%,rgba(13,122,40,0.06),transparent_70%),linear-gradient(180deg,#f5faf4_0%,#ffffff_100%)] border-b border-[var(--border)]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -173,105 +180,116 @@ export function HomeHeroSlider({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="region"
       aria-roledescription="carousel"
       aria-label="Khám phá Hộ Chiếu Nông Nghiệp"
     >
-      <div className="mx-auto w-full max-w-[var(--container-max,1280px)] px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-18">
-        <div className="relative min-h-[480px] sm:min-h-[440px] lg:min-h-[460px]">
+      <div className="mx-auto w-full max-w-[var(--container-max,1280px)] px-4 sm:px-6 lg:px-8 pt-8 pb-8 sm:pt-10 sm:pb-10 lg:pt-10 lg:pb-12 xl:pt-12 xl:pb-12">
+        {/* Main Content Grid Area */}
+        <div className="relative min-h-[430px] sm:min-h-[410px] lg:min-h-[420px]">
           {slides.map((slide, index) => {
             const isActive = index === currentIndex;
             const EyebrowIcon = slide.eyebrowIcon;
             const PrimaryIcon = slide.primaryCta.icon;
-            const SecondaryIcon = slide.secondaryCta.icon;
 
             return (
               <div
                 key={slide.id}
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`Slide ${index + 1} trên ${slides.length}: ${slide.title}`}
                 className={cn(
-                  'transition-all duration-700 ease-out',
+                  'transition-[opacity,transform,visibility] duration-500 ease-out',
                   isActive
-                    ? 'opacity-100 translate-x-0 relative z-10'
-                    : 'opacity-0 absolute inset-0 pointer-events-none -translate-x-4'
+                    ? 'opacity-100 translate-x-0 relative z-10 visible'
+                    : 'opacity-0 absolute inset-0 pointer-events-none -translate-x-3 invisible'
                 )}
                 aria-hidden={!isActive}
               >
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12 lg:items-center">
-                  {/* Left content: 7 cols */}
-                  <div className="lg:col-span-7 space-y-5 sm:space-y-6">
-                    {/* Eyebrow badge */}
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#0d7a28]/25 bg-[#0d7a28]/10 px-3.5 py-1.5 text-xs font-bold text-[#0d7a28]">
-                      <EyebrowIcon size={14} className="shrink-0" />
-                      <span>{slide.eyebrow}</span>
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10 xl:gap-12 lg:items-center">
+                  {/* Left Column: Content (7 cols) */}
+                  <div className="lg:col-span-7 flex flex-col justify-center space-y-4 sm:space-y-5 lg:space-y-5">
+                    {/* Eyebrow Label */}
+                    <div>
+                      <div className="inline-flex h-[34px] items-center gap-2 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/06 px-3.5 text-xs font-semibold text-[#0d7a28]">
+                        <EyebrowIcon size={14} className="shrink-0 text-[#0d7a28]" />
+                        <span>{slide.eyebrow}</span>
+                      </div>
                     </div>
 
-                    {/* Headline */}
-                    <h1 className="type-hero-h1 text-[var(--text-primary)]">
-                      {slide.title}{' '}
-                      <span className="block mt-1 bg-gradient-to-r from-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
+                    {/* Headline Hierarchy: Dominant Main H1 + Lighter Accent */}
+                    <h1 className="text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
+                      <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-[40px] xl:text-[46px] 2xl:text-[50px] font-extrabold leading-[1.14]">
+                        {slide.title}
+                      </span>
+                      <span className="block mt-1 sm:mt-1.5 text-xl sm:text-2xl md:text-3xl lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold leading-[1.2] bg-gradient-to-r from-[#0d7a28] via-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
                         {slide.titleHighlight}
                       </span>
                     </h1>
 
-                    {/* Description */}
-                    <p className="type-body-large max-w-2xl text-[var(--text-secondary)] leading-relaxed">
+                    {/* Description: High-density, 2-3 lines desktop */}
+                    <p className="text-[15px] sm:text-[16px] lg:text-[17px] xl:text-[18px] text-[var(--text-secondary)] leading-[1.65] max-w-[560px] xl:max-w-[620px]">
                       {slide.description}
                     </p>
 
-                    {/* Dual CTAs */}
-                    <div className="flex flex-wrap items-center gap-3.5 pt-2">
+                    {/* CTA Hierarchy: Solid Dominant Primary + Refined Secondary Text Action */}
+                    <div className="flex flex-wrap items-center gap-4 pt-1 sm:pt-2">
                       <Link
                         href={slide.primaryCta.href}
-                        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#0d7a28] px-6 text-sm font-bold text-white shadow-md transition hover:bg-[#0a6120] hover:shadow-lg active:scale-[0.99]"
+                        className="inline-flex h-[52px] items-center justify-center gap-2.5 rounded-xl bg-[#0d7a28] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a6120] hover:shadow-md active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28] focus-visible:ring-offset-2"
                       >
-                        {PrimaryIcon && <PrimaryIcon size={18} />}
+                        {PrimaryIcon && <PrimaryIcon size={17} />}
                         <span>{slide.primaryCta.label}</span>
                       </Link>
 
                       <Link
                         href={slide.secondaryCta.href}
-                        className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--border-strong)] bg-white px-5 text-sm font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28] active:scale-[0.99]"
+                        className="group inline-flex h-[52px] items-center justify-center gap-2 px-3 text-sm font-semibold text-[#131935] transition hover:text-[#0d7a28] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
                       >
                         <span>{slide.secondaryCta.label}</span>
-                        {SecondaryIcon && <SecondaryIcon size={16} />}
+                        <ArrowRight size={16} className="text-[#0d7a28] transition-transform group-hover:translate-x-1" />
                       </Link>
                     </div>
 
-                    {/* Quick Micro-Proofs */}
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-3 text-xs font-medium text-[var(--text-tertiary)]">
+                    {/* Unified Trust Microcopy */}
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs sm:text-[13px] font-medium text-slate-600">
                       <span className="inline-flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#0d7a28]" />
+                        <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
                         Không cần cài đặt ứng dụng
                       </span>
                       <span className="inline-flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#0d7a28]" />
+                        <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
                         Tra cứu miễn phí trên điện thoại
                       </span>
                       <span className="inline-flex items-center gap-1.5">
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#106f8a]" />
-                        Bảo mật dữ liệu HTX
+                        <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
+                        Dữ liệu xác thực từ HTX
                       </span>
                     </div>
                   </div>
 
-                  {/* Right media banner: 5 cols */}
+                  {/* Right Column: Hero Media (5 cols) */}
                   <div className="lg:col-span-5">
-                    <div className="relative mx-auto max-w-md lg:max-w-none">
-                      {/* Decorative backdrop */}
-                      <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-[#0d7a28]/20 to-[#106f8a]/20 blur-xl -z-10" />
+                    <div className="relative mx-auto w-full max-w-md lg:max-w-none">
+                      {/* Subtle Ambient Glow behind Image */}
+                      <div className="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-[#0d7a28]/10 via-[#106f8a]/08 to-transparent blur-2xl -z-10 pointer-events-none" />
 
-                      <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-2 shadow-xl">
-                        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-[var(--surface-muted)]">
+                      {/* Image Card Frame: 6px padding, 22px outer radius, diffuse shadow */}
+                      <div className="overflow-hidden rounded-[22px] border border-slate-200/80 bg-white p-[6px] shadow-[0_16px_40px_rgba(15,23,42,0.06)]">
+                        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px] bg-[var(--surface-muted)]">
                           <PublicImage
                             src={slide.image}
                             alt={slide.imageAlt}
                             fallback="/news/field-qr.webp"
                             priority={index === 0}
                             wrapperClassName="h-full w-full"
-                            className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
+                            className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.02]"
                           />
 
-                          {/* Floating Trust Badge on image */}
-                          <div className="absolute bottom-3 left-3 right-3 rounded-xl border border-white/30 bg-[#073b2a]/85 p-3 text-white backdrop-blur-md">
+                          {/* Floating Trust Badge on Image */}
+                          <div className="absolute bottom-3 left-3 right-3 rounded-xl border border-white/20 bg-[#073b2a]/85 p-3 text-white backdrop-blur-md shadow-xs">
                             <div className="flex items-center justify-between gap-2">
                               <div>
                                 <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#b8edc0]">
@@ -296,51 +314,75 @@ export function HomeHeroSlider({
           })}
         </div>
 
-        {/* Slider Controls: Arrows & Indicators */}
-        <div className="mt-8 flex items-center justify-between border-t border-[var(--border)] pt-4">
-          {/* Indicator Dots with Slide titles */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {slides.map((slide, index) => (
-              <button
-                key={slide.id}
-                onClick={() => goToSlide(index)}
-                className={cn(
-                  'group flex items-center gap-2 rounded-full py-1.5 px-2.5 transition-all text-xs font-semibold',
-                  index === currentIndex
-                    ? 'bg-[#0d7a28] text-white shadow-xs'
-                    : 'bg-white text-[var(--text-tertiary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)] border border-[var(--border)]'
-                )}
-                aria-label={`Chuyển tới slide ${index + 1}: ${slide.badgeTitle}`}
-              >
-                <span
-                  className={cn(
-                    'h-2 w-2 rounded-full transition-all',
-                    index === currentIndex ? 'w-5 bg-white' : 'bg-[var(--text-tertiary)] group-hover:bg-[#0d7a28]'
-                  )}
-                />
-                <span className="hidden sm:inline text-[11px]">
-                  0{index + 1}
-                </span>
-              </button>
-            ))}
-          </div>
+        {/* Unified Slider Controls Cluster: Positioned under image, aligned right */}
+        <div className="mt-3.5 grid grid-cols-1 lg:grid-cols-12 lg:gap-10 xl:gap-12">
+          {/* Empty spacer for left column on desktop */}
+          <div className="hidden lg:block lg:col-span-7" />
 
-          {/* Prev / Next Arrows */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={prevSlide}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--border)] bg-white text-[var(--text-secondary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28] active:scale-95"
-              aria-label="Slide trước đó"
+          {/* Unified Controls Cluster on right column */}
+          <div className="lg:col-span-5 flex items-center justify-end gap-3.5 w-full">
+            {/* Progress Bars (Accessible buttons without visible numbers) */}
+            <div
+              className="flex items-center gap-1.5"
+              role="tablist"
+              aria-label="Chọn slide giới thiệu"
             >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={nextSlide}
-              className="grid h-10 w-10 place-items-center rounded-xl border border-[var(--border)] bg-white text-[var(--text-secondary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28] active:scale-95"
-              aria-label="Slide tiếp theo"
-            >
-              <ChevronRight size={18} />
-            </button>
+              {slides.map((slide, index) => {
+                const isActive = index === currentIndex;
+                return (
+                  <button
+                    key={slide.id}
+                    role="tab"
+                    onClick={() => goToSlide(index)}
+                    aria-selected={isActive}
+                    aria-label={`Chuyển đến slide ${index + 1}`}
+                    className={cn(
+                      'group relative h-[18px] flex items-center justify-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28] rounded-full',
+                      isActive ? 'w-[44px]' : 'w-[26px]'
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'h-[3px] w-full rounded-full transition-all overflow-hidden block',
+                        isActive ? 'bg-[#0d7a28]/20' : 'bg-slate-300 group-hover:bg-slate-400'
+                      )}
+                    >
+                      {isActive && (
+                        <span
+                          key={currentIndex}
+                          className="block h-full w-full bg-[#0d7a28] rounded-full origin-left motion-reduce:transform-none motion-reduce:!animation-none"
+                          style={{
+                            animationName: 'heroProgress',
+                            animationDuration: `${autoplayInterval}ms`,
+                            animationTimingFunction: 'linear',
+                            animationFillMode: 'forwards',
+                            animationPlayState: isPaused ? 'paused' : 'running'
+                          }}
+                        />
+                      )}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Prev / Next Compact Arrow Buttons (42x42px, 12px radius) */}
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={prevSlide}
+                className="grid h-[42px] w-[42px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                aria-label="Slide trước đó"
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={nextSlide}
+                className="grid h-[42px] w-[42px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                aria-label="Slide tiếp theo"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
