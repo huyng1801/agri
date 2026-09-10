@@ -236,16 +236,26 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
   );
 }
 
-export function NewsCard({ article, priority = false }: { article: NewsArticle; priority?: boolean }) {
+export function NewsCard({
+  article,
+  priority = false,
+  fallback = DEFAULT_NEWS_IMAGE,
+  imageWrapperClassName = 'aspect-[16/10] w-full bg-[var(--surface-muted)]',
+}: {
+  article: NewsArticle;
+  priority?: boolean;
+  fallback?: string;
+  imageWrapperClassName?: string;
+}) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-[var(--public-radius-card)] border border-[var(--border)] bg-white shadow-[var(--public-shadow-card)] transition duration-200 hover:-translate-y-0.5 hover:border-[var(--brand-primary)] hover:shadow-[var(--public-shadow-hover)]">
       <Link href={`/tin-tuc/${article.slug}`} className="block overflow-hidden border-b border-[var(--border)]">
         <PublicImage
           src={article.coverImageUrl}
           alt={article.title}
-          fallback={DEFAULT_NEWS_IMAGE}
+          fallback={fallback}
           priority={priority}
-          wrapperClassName="aspect-[16/10] w-full bg-[var(--surface-muted)]"
+          wrapperClassName={imageWrapperClassName}
           className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
       </Link>

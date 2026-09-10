@@ -1661,6 +1661,8 @@ export default async function HomePage() {
                     key={article.id}
                     article={article}
                     priority={index === 0}
+                    fallback="/hero/passport-news-banner.png"
+                    imageWrapperClassName="aspect-[21/10] w-full bg-[var(--surface-muted)]"
                   />
                 ))}
               </div>
