@@ -26,7 +26,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const brandOrg = isInternal
     ? 'Hệ thống Quản trị Hợp tác xã HTXONLINE'
     : isPassport
-      ? 'Hệ thống Truy xuất Hộ Chiếu Nông Nghiệp'
+      ? 'Hệ thống truy xuất Hộ chiếu nông nghiệp'
       : 'Tổ hợp tác công nghệ nông nghiệp Agripassport';
 
   const copyrightText = isInternal
