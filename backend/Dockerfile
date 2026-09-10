@@ -3,7 +3,7 @@ WORKDIR /app
 RUN apk add --no-cache openssl
 COPY package.json package-lock.json ./
 COPY backend/package.json backend/package.json
-RUN npm ci --workspace backend
+RUN npm ci --workspace backend --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 
 FROM node:22-alpine AS builder
 WORKDIR /app/backend
@@ -19,7 +19,7 @@ ENV NODE_ENV=production
 RUN apk add --no-cache openssl postgresql-client gzip
 COPY package.json package-lock.json ./
 COPY backend/package.json backend/package.json
-RUN npm ci --omit=dev --workspace backend
+RUN npm ci --omit=dev --workspace backend --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 COPY --from=builder /app/backend/dist ./backend/dist
 COPY --from=builder /app/backend/assets ./backend/assets
 COPY --from=builder /app/backend/prisma ./backend/prisma

@@ -2,7 +2,7 @@ FROM node:22-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 COPY frontend/package.json frontend/package.json
-RUN npm ci --workspace frontend
+RUN npm ci --workspace frontend --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 
 FROM node:22-alpine AS builder
 WORKDIR /app/frontend
