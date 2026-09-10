@@ -110,6 +110,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
   const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const logoUrl = await getRequestAbsoluteUrl('/logo.png');
   const image = articleImage(article);
+  const preparedBody = prepareNewsBody(withoutContactBlock(article.bodyHtml));
   const authorName = article.author?.fullName && !/^super\s*admin$/i.test(article.author.fullName) ? article.author.fullName : siteProfile.appName;
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -164,7 +165,19 @@ export default async function NewsDetailPage({ params }: PageProps) {
             />
           </div>
           <div className="mx-auto max-w-3xl px-4 py-7 sm:px-8 sm:py-10">
-            <div className="news-body" dangerouslySetInnerHTML={{ __html: withoutContactBlock(article.bodyHtml) }} />
+            {preparedBody.headings.length > 1 && (
+              <nav className="news-toc mb-8 rounded-[1.25rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] p-4 sm:p-5" aria-label="Mục lục bài viết">
+                <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)]">Mục lục</p>
+                <ol className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {preparedBody.headings.map((heading) => (
+                    <li key={heading.id} className={heading.level === 'h3' ? 'pl-4' : undefined}>
+                      <a href={`#${heading.id}`} className="block text-sm font-semibold leading-6 text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]">{heading.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+            <div className="news-body" dangerouslySetInnerHTML={{ __html: preparedBody.html }} />
             {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[var(--border)] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">#{tag}</Badge>)}</div> : null}
           </div>
         </article>
@@ -210,4 +223,31 @@ function readingTime(html: string) {
 
 function withoutContactBlock(html: string) {
   return html.replace(/<section\b[^>]*data-agri-contact[^>]*>[\s\S]*?<\/section>/gi, '');
+}
+
+function prepareNewsBody(html: string) {
+  const headings: Array<{ id: string; level: 'h2' | 'h3'; text: string }> = [];
+  const usedIds = new Set<string>();
+  const preparedHtml = html.replace(/<(h2|h3)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi, (_match, level: string, attributes = '', innerHtml: string) => {
+    const text = innerHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const baseId = `muc-${slugify(text) || headings.length + 1}`;
+    let id = baseId;
+    let suffix = 2;
+    while (usedIds.has(id)) id = `${baseId}-${suffix++}`;
+    usedIds.add(id);
+    headings.push({ id, level: level.toLowerCase() as 'h2' | 'h3', text });
+    const withoutId = attributes.replace(/\s+id\s*=\s*("[^"]*"|'[^']*')/i, '');
+    return `<${level}${withoutId} id="${id}">${innerHtml}</${level}>`;
+  });
+  return { html: preparedHtml, headings };
+}
+
+function slugify(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 72);
 }

@@ -7,6 +7,43 @@ import { Button, Input, Select, Textarea, cn } from './ui';
 
 const phonePattern = /^(0|\+84)[0-9]{8,10}$/;
 
+const vietnameseProvinces = [
+  'An Giang',
+  'Bắc Ninh',
+  'Cà Mau',
+  'Cao Bằng',
+  'Cần Thơ',
+  'Đà Nẵng',
+  'Đắk Lắk',
+  'Điện Biên',
+  'Đồng Nai',
+  'Đồng Tháp',
+  'Gia Lai',
+  'Hà Nội',
+  'Hà Tĩnh',
+  'Hải Phòng',
+  'Hưng Yên',
+  'Huế',
+  'Khánh Hòa',
+  'Lai Châu',
+  'Lạng Sơn',
+  'Lào Cai',
+  'Lâm Đồng',
+  'Nghệ An',
+  'Ninh Bình',
+  'Phú Thọ',
+  'Quảng Ngãi',
+  'Quảng Ninh',
+  'Quảng Trị',
+  'Sơn La',
+  'Tây Ninh',
+  'Thái Nguyên',
+  'Thanh Hóa',
+  'Thành phố Hồ Chí Minh',
+  'Tuyên Quang',
+  'Vĩnh Long'
+] as const;
+
 export function PassportCollaboratorForm() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
@@ -84,34 +121,30 @@ export function PassportCollaboratorForm() {
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-          <span>Họ và tên *</span>
+          <span>Họ và tên <span className="text-red-600" aria-hidden="true">*</span></span>
           <Input data-testid="collaborator-name-input" name="fullName" required autoComplete="name" placeholder="Nguyễn Minh Anh" />
         </label>
         <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-          <span>Số điện thoại *</span>
+          <span>Số điện thoại <span className="text-red-600" aria-hidden="true">*</span></span>
           <Input data-testid="collaborator-phone-input" name="phone" required inputMode="tel" autoComplete="tel" placeholder="09xx xxx xxx" />
         </label>
       </div>
 
       <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-        <span>Email *</span>
+        <span>Email <span className="text-red-600" aria-hidden="true">*</span></span>
         <Input data-testid="collaborator-email-input" name="email" type="email" required autoComplete="email" placeholder="tenban@email.com" />
       </label>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-          <span>Tỉnh / Thành phố *</span>
+          <span>Tỉnh / Thành phố <span className="text-red-600" aria-hidden="true">*</span></span>
           <Select data-testid="collaborator-province-input" name="province" defaultValue="" required>
             <option value="" disabled>Chọn tỉnh / thành phố</option>
-            <option>Đồng Tháp</option>
-            <option>Đà Nẵng</option>
-            <option>Hà Nội</option>
-            <option>Thành phố Hồ Chí Minh</option>
-            <option>Tỉnh / thành phố khác</option>
+            {vietnameseProvinces.map((province) => <option key={province}>{province}</option>)}
           </Select>
         </label>
         <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-          <span>Thời gian có thể bắt đầu *</span>
+          <span>Thời gian có thể bắt đầu <span className="text-red-600" aria-hidden="true">*</span></span>
           <Select data-testid="collaborator-start-time-input" name="startTime" defaultValue="" required>
             <option value="" disabled>Chọn thời gian phù hợp</option>
             <option>Trong 3 ngày</option>
@@ -123,7 +156,7 @@ export function PassportCollaboratorForm() {
       </div>
 
       <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
-        <span>Công việc hiện tại *</span>
+        <span>Công việc hiện tại <span className="text-red-600" aria-hidden="true">*</span></span>
         <Input data-testid="collaborator-work-input" name="currentWork" required placeholder="Ví dụ: kinh doanh, kế toán, quản lý HTX..." />
       </label>
 
@@ -139,7 +172,7 @@ export function PassportCollaboratorForm() {
 
       <label className="flex cursor-pointer items-start gap-3 rounded-[1rem] bg-[var(--surface-muted)] px-3.5 py-3 text-sm leading-6 text-[var(--text-secondary)]">
         <input name="consent" type="checkbox" required className="mt-1 h-4 w-4 shrink-0 accent-[var(--brand-primary)]" />
-        <span>Tôi xác nhận thông tin là chính xác và đồng ý để Hộ chiếu nông nghiệp liên hệ về chương trình cộng tác.</span>
+        <span>Tôi xác nhận thông tin là chính xác và đồng ý để Hộ chiếu nông nghiệp liên hệ về chương trình cộng tác <span className="text-red-600" aria-hidden="true">*</span></span>
       </label>
 
       {success ? <div data-testid="collaborator-success" className="rounded-[1rem] bg-[var(--brand-primary-subtle)] p-3 text-sm font-semibold text-[var(--brand-primary-strong)]">{success}</div> : null}

@@ -13,6 +13,7 @@ import {
   type LucideIcon
 } from 'lucide-react';
 import { PassportCollaboratorForm } from '@/components/passport-collaborator-form';
+import { PublicImage } from '@/components/public-image';
 import { PublicFaqItem, PublicPageMain } from '@/components/public-layout';
 import { PublicLogo } from '@/components/public-logo';
 import { PublicShell } from '@/components/public-shell';
@@ -147,13 +148,16 @@ export default async function PassportCollaboratorPage() {
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Vì sao dễ bắt đầu?</p>
             <h2 className="mt-3 max-w-[14ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3.1rem]">Bạn không phải tự xây dựng mọi thứ từ đầu.</h2>
             <p className="mt-4 max-w-md text-[0.98rem] leading-7 text-[var(--text-secondary)]">Hộ chiếu nông nghiệp cung cấp một luồng làm việc ngắn gọn để bạn tập trung vào việc hỗ trợ đúng người, đúng sản phẩm và đúng thông tin.</p>
+            <a href="#dang-ky" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full bg-[var(--brand-primary)] px-5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-hover)]">Bắt đầu với hồ sơ đầu tiên <ArrowRight size={16} aria-hidden="true" /></a>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {reasons.map(({ icon: Icon, title, description }) => (
-              <article key={title} className="rounded-[1.5rem] border border-[var(--border)] bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] sm:p-5">
+              <article key={title} className="flex items-start gap-3 rounded-[1.5rem] border border-[var(--border)] bg-white p-4 shadow-[0_12px_28px_rgba(15,23,42,0.04)] sm:p-5">
                 <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]"><Icon size={20} aria-hidden="true" /></span>
-                <h3 className="mt-4 text-[1.08rem] font-extrabold text-[var(--text-primary)]">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{description}</p>
+                <div>
+                  <h3 className="text-[1.08rem] font-extrabold text-[var(--text-primary)]">{title}</h3>
+                  <p className="mt-1.5 text-sm leading-6 text-[var(--text-secondary)]">{description}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -163,7 +167,7 @@ export default async function PassportCollaboratorPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Công việc của bạn</p>
-              <h2 className="mt-3 max-w-[16ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem]">Bốn bước để hỗ trợ một hợp tác xã.</h2>
+              <h2 className="mt-3 max-w-[16ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem] lg:max-w-none lg:whitespace-nowrap">Bốn bước để hỗ trợ một hợp tác xã</h2>
             </div>
             <a href="#dang-ky" className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-[var(--brand-primary)] px-5 text-sm font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-hover)]">Tôi muốn bắt đầu <ArrowRight size={16} aria-hidden="true" /></a>
           </div>
@@ -202,7 +206,7 @@ export default async function PassportCollaboratorPage() {
         <section className="mt-8 grid gap-8 border-b border-[var(--border)] py-8 sm:py-12 lg:grid-cols-[1.12fr_0.88fr] lg:gap-16" id="phu-hop">
           <div>
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Ai phù hợp?</p>
-            <h2 className="mt-3 max-w-[17ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem]">Thường xuyên tiếp xúc hoặc hỗ trợ hợp tác xã? Đây là công việc phù hợp với bạn.</h2>
+            <h2 className="mt-3 max-w-[24ch] text-[1.85rem] font-extrabold leading-[1.05] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem]">Thường xuyên tiếp xúc hoặc hỗ trợ hợp tác xã? Đây là công việc phù hợp với bạn.</h2>
             <p className="mt-4 max-w-xl text-[0.98rem] leading-7 text-[var(--text-secondary)]">Bạn không cần có sẵn một mạng lưới lớn. Chỉ cần hiểu người mình đang hỗ trợ và sẵn sàng đi cùng họ qua một quy trình rõ ràng.</p>
           </div>
           <div className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] p-5 sm:p-6">
@@ -217,6 +221,7 @@ export default async function PassportCollaboratorPage() {
           <div>
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hiểu đúng trước khi bắt đầu</p>
             <h2 className="mt-3 max-w-[12ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem]">Những điều ứng viên thường quan tâm.</h2>
+            <a href="#dang-ky" className="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-[var(--brand-primary)] px-5 text-sm font-bold text-[var(--brand-primary)] transition hover:bg-[var(--brand-primary-subtle)]">Xem cách đăng ký <ArrowRight size={16} aria-hidden="true" /></a>
           </div>
           <div className="grid gap-3">
             {faqs.map((faq) => <PublicFaqItem key={faq.question} {...faq} />)}
@@ -225,10 +230,17 @@ export default async function PassportCollaboratorPage() {
 
         <section className="mt-8 grid gap-8 rounded-[2rem] bg-[var(--surface-muted)] p-5 sm:p-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-16 lg:p-10">
           <div>
+            <PublicImage
+              src="/hero/passport-about-hero.png"
+              alt="Nông hộ sử dụng điện thoại giữa vùng sản xuất"
+              priority
+              wrapperClassName="aspect-[4/3] w-full rounded-[1.5rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] shadow-sm"
+              className="h-full w-full object-cover"
+            />
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Đăng ký cộng tác</p>
             <h2 className="mt-3 max-w-[13ch] text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] text-[var(--text-primary)] sm:text-[3rem]">Bắt đầu bằng một hồ sơ đơn giản cho hợp tác xã đầu tiên.</h2>
             <p className="mt-4 max-w-md text-[0.98rem] leading-7 text-[var(--text-secondary)]">Chúng tôi muốn hiểu công việc hiện tại và thời gian bạn có thể bắt đầu, để hướng dẫn bước đầu tiên vừa sức và rõ ràng.</p>
-            <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-white p-4 text-sm leading-6 text-[var(--text-secondary)] shadow-sm"><strong className="block text-[var(--text-primary)]">Cần hỗ trợ đăng ký?</strong><span className="mt-1 block">{profile.hotlineDisplay} · {profile.supportEmail}</span></div>
+            <div className="mt-6 rounded-[1.5rem] border border-[var(--border)] bg-white p-4 text-sm leading-6 text-[var(--text-secondary)] shadow-sm"><strong className="block text-[var(--text-primary)]">Cần hỗ trợ đăng ký?</strong><span className="mt-1 block whitespace-nowrap">{profile.hotlineDisplay}</span><span className="block whitespace-nowrap">{profile.supportEmail}</span></div>
           </div>
           <PassportCollaboratorForm />
         </section>
@@ -238,7 +250,7 @@ export default async function PassportCollaboratorPage() {
           <div className="absolute -right-12 top-1/2 h-56 w-56 -translate-y-1/2 rounded-full border border-white/15" aria-hidden="true" />
           <div className="relative mx-auto max-w-2xl">
             <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-white/70">Một công việc linh hoạt hôm nay. Một năng lực hỗ trợ cho tương lai.</p>
-            <h2 className="mt-4 text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] sm:text-[3.2rem]">Sẵn sàng giúp hợp tác xã được tin tưởng hơn?</h2>
+            <h2 className="mt-4 text-[2rem] font-extrabold leading-[1] tracking-[-0.045em] sm:text-[3.2rem]">Sẵn sàng giúp hợp tác <span className="whitespace-nowrap">xã được</span><br className="hidden sm:block" /> tin tưởng hơn?</h2>
             <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-white/78 sm:text-base">Hãy bắt đầu với một hồ sơ, một quy trình rõ ràng và một sản phẩm có thể kiểm chứng.</p>
             <a href="#dang-ky" className="mt-7 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 text-sm font-bold text-[#0a6d35] shadow-[0_14px_28px_rgba(4,45,24,0.18)] transition hover:-translate-y-0.5">Đăng ký cộng tác <ArrowRight size={16} aria-hidden="true" /></a>
           </div>
