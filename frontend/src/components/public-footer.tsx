@@ -43,8 +43,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       ]
     : isPassport
       ? [
-          { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
-          { href: '/htx', label: 'Vùng trồng & HTX' },
+          { href: '/san-pham?hasQr=true', label: 'Sản phẩm' },
+          { href: '/htx', label: 'Đối tác' },
           { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
         ]
       : [
@@ -53,11 +53,17 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' }
         ];
 
-  const aboutLinks = [
-    { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
-    { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
-    { href: '/tin-tuc', label: 'Bản tin nông nghiệp' }
-  ];
+  const aboutLinks = isPassport
+    ? [
+        { href: '/gioi-thieu', label: 'Giới thiệu' },
+        { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
+        { href: '/tin-tuc', label: 'Tin tức' }
+      ]
+    : [
+        { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
+        { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
+        { href: '/tin-tuc', label: 'Bản tin nông nghiệp' }
+      ];
 
   const legalLinks = [
     { href: '/dieu-khoan-su-dung', label: 'Điều khoản dịch vụ' },

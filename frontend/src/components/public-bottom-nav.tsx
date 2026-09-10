@@ -27,8 +27,8 @@ const internalItems = [
 
 const passportItems = [
   { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
-  { href: '/san-pham?hasQr=true', label: 'Có QR', icon: QrCode, match: (path: string) => path.startsWith('/san-pham') },
-  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
+  { href: '/san-pham?hasQr=true', label: 'Sản phẩm', icon: QrCode, match: (path: string) => path.startsWith('/san-pham') },
+  { href: '/htx', label: 'Đối tác', icon: Store, match: (path: string) => path.startsWith('/htx') },
   { href: '/gioi-thieu', label: 'Giới thiệu', icon: Briefcase, match: (path: string) => path.startsWith('/gioi-thieu') || path.startsWith('/ve-chung-toi') },
   { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
 ] as const;

@@ -29,9 +29,10 @@ const internalNavItems = [
 
 const passportNavItems = [
   { href: '/', label: 'Trang chủ' },
-  { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
-  { href: '/htx', label: 'HTX' },
   { href: '/gioi-thieu', label: 'Giới thiệu' },
+  { href: '/san-pham?hasQr=true', label: 'Sản phẩm' },
+  { href: '/htx', label: 'Đối tác' },
+  { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
   { href: '/tin-tuc', label: 'Tin tức' },
   { href: '/lien-he', label: 'Liên hệ' }
 ] as const;
@@ -64,12 +65,7 @@ export function PublicHeader({
         ? { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
         : { href: '/login', label: 'Đăng nhập tài khoản' };
 
-  const platformBadge =
-    isInternal
-      ? 'Quản trị HTX'
-      : isPassport
-        ? 'Truy xuất nguồn gốc'
-        : '';
+  const platformBadge = isInternal ? 'Quản trị HTX' : '';
 
   const CtaIcon = isInternal ? Briefcase : isPassport ? QrCode : LogIn;
 
@@ -94,7 +90,7 @@ export function PublicHeader({
             )}
           </Link>
 
-          {!isAgri && (
+          {isInternal && (
             <span className="hidden 2xl:inline-flex items-center gap-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-muted)] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
               {platformBadge}

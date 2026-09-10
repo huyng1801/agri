@@ -273,7 +273,7 @@ export default async function HomePage() {
       ? [
           [
             "Bước 1",
-            "Chuẩn hóa dữ liệu gốc",
+            "Chuẩn hóa dữ liệu",
             "Sản phẩm được tạo và duyệt từ lớp dữ liệu trung tâm trước khi sinh hồ sơ công khai.",
           ],
           [
@@ -312,7 +312,7 @@ export default async function HomePage() {
   const heroNote = isInternal
     ? "HTXONLINE là lớp quản trị nội bộ. Khi cần công khai hoặc truy xuất, dữ liệu sẽ được đẩy sang AGRIPASSPORT và Hộ chiếu nông nghiệp theo đúng vai trò."
     : isPassport
-      ? "Hộ chiếu nông nghiệp ưu tiên trải nghiệm truy xuất cho người mua, còn dữ liệu gốc vẫn được chuẩn hóa từ AGRIPASSPORT."
+      ? "Hộ chiếu nông nghiệp ưu tiên trải nghiệm truy xuất cho người mua, còn dữ liệu gốc vẫn được chuẩn hóa từ Agripassport."
       : "AGRIPASSPORT là lớp trung tâm của hệ sinh thái, kết nối dữ liệu sản phẩm, công khai bán hàng và QR truy xuất.";
   const sectionIntro = isInternal
     ? "Giải pháp dịch vụ tiêu biểu"
@@ -329,9 +329,9 @@ export default async function HomePage() {
     : "Luồng triển khai từ dữ liệu gốc đến người mua";
   const journeyDescription = isInternal
     ? "HTXONLINE đứng ở lớp đầu vào, AGRIPASSPORT là lớp công khai trung tâm và Hộ chiếu nông nghiệp là lớp truy xuất minh bạch."
-    : "Ba nền tảng không chồng lấn vai trò; chúng nối tiếp nhau để tạo một hành trình dữ liệu rõ ràng hơn.";
+    : "Ba nền tảng không chồng lấn vai trò, chúng nối tiếp nhau để tạo một hành trình dữ liệu rõ ràng hơn.";
   const heroSearchPlaceholder = isPassport
-    ? "Tìm hồ sơ có QR, sản phẩm hoặc HTX"
+    ? "Tìm hồ sơ có QR, sản phẩm hoặc hợp tác xã"
     : "Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc";
   const closingPrimaryCta = isInternal
     ? { href: "/lien-he", label: "Nhận tư vấn triển khai", external: false }
@@ -364,7 +364,7 @@ export default async function HomePage() {
   const outcomeDescription = isInternal
     ? "Theo dõi xã viên, thu chi, nhập xuất và chuẩn bị dữ liệu đầu ra trên một luồng vận hành rõ ràng trước khi công khai ra thị trường."
     : isPassport
-      ? "Các chỉ số quan trọng được trình bày ngắn gọn để người mua, HTX và đối tác nắm nhanh thông tin trên điện thoại."
+      ? "Các chỉ số quan trọng được trình bày ngắn gọn để người mua, hợp tác xã và đối tác nắm nhanh thông tin trên điện thoại."
       : "Agripassport kết nối dữ liệu sản xuất, sản phẩm và thị trường trên một nền tảng số, giúp các chủ thể nông nghiệp từng bước chuẩn hóa thông tin và nâng cao giá trị sản phẩm.";
   const serviceTabs = isInternal
     ? ["Tất cả", "Quản trị HTX", "Sản phẩm công khai", "QR truy xuất"]
@@ -636,42 +636,42 @@ export default async function HomePage() {
           title: "QR công khai",
           value: "Mở nhanh",
           description:
-            "Điện thoại quét mã và vào thẳng hồ sơ số công khai đã được duyệt.",
+            "Quét mã, vào thẳng hồ sơ số đã duyệt.",
           icon: QrCode,
         },
         {
           title: "Hồ sơ số",
           value: `${featuredProducts.length} hồ sơ`,
           description:
-            "Tập trung vào sản phẩm đã có lớp truy xuất rõ ràng và dễ đọc.",
+            "Sản phẩm có truy xuất rõ ràng.",
           icon: ShoppingBag,
         },
         {
           title: "Nguồn gốc",
           value: "Xem theo phạm vi",
           description:
-            "Chỉ hiển thị vùng trồng, nhật ký và chứng nhận theo quyền công khai.",
+            "Chỉ hiển thị thông tin công khai.",
           icon: BadgeCheck,
         },
         {
           title: "Dữ liệu trung tâm",
           value: "Một nguồn dữ liệu",
           description:
-            "Hồ sơ số lấy dữ liệu từ AGRIPASSPORT để tránh lệch thông tin.",
+            "Dữ liệu từ Agripassport, đảm bảo đồng nhất.",
           icon: Store,
         },
         {
           title: "Trải nghiệm mobile",
           value: "Đọc nhanh hơn",
           description:
-            "Cấu trúc ưu tiên điện thoại thay vì dồn mọi thứ vào một trang dài.",
+            "Ưu tiên giao diện điện thoại, dễ thao tác.",
           icon: Users,
         },
         {
           title: "Niềm tin thị trường",
           value: "Hiểu đúng hơn",
           description:
-            "Thông tin quan trọng được sắp lại để người mua ra quyết định nhanh hơn.",
+            "Thông tin quan trọng, quyết định nhanh hơn.",
           icon: Leaf,
         },
       ]
@@ -1051,10 +1051,16 @@ export default async function HomePage() {
                     <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--brand-primary-strong)] shadow-[var(--public-shadow-card)]">
                       <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
                     </span>
-                    <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[var(--brand-primary)]">
+                    <p className={cn(
+                      "mt-4 text-[1.28rem] font-extrabold leading-tight",
+                      isPassport ? "text-[var(--text-primary)]" : "text-[var(--brand-primary)]",
+                    )}>
                       {tile.value}
                     </p>
-                    <p className="mt-2 text-sm font-bold uppercase tracking-[0.08em] text-[var(--text-primary)]">
+                    <p className={cn(
+                      "mt-2 text-sm font-bold uppercase tracking-[0.08em]",
+                      isPassport ? "text-[var(--brand-primary)]" : "text-[var(--text-primary)]",
+                    )}>
                       {tile.title}
                     </p>
                     <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -1303,7 +1309,7 @@ export default async function HomePage() {
               href="/htx"
               className="inline-flex min-h-11 w-fit shrink-0 self-start items-center gap-2 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-white px-5 font-semibold text-[var(--brand-primary)] shadow-sm transition hover:-translate-y-0.5 hover:border-[var(--brand-primary)] sm:self-auto"
             >
-              Xem HTX
+              {isPassport ? "Xem hợp tác xã" : "Xem HTX"}
               <ArrowRight size={16} aria-hidden="true" />
             </Link>
           </div>
