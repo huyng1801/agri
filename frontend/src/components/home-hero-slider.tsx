@@ -189,153 +189,6 @@ export function HomeHeroSlider({
     >
       <div className="mx-auto w-full max-w-[var(--container-max,1280px)] px-4 sm:px-6 lg:px-8 pt-5 pb-6 sm:pt-7 sm:pb-8 lg:pt-8 lg:pb-9">
         {/* =========================================================================
-            MOBILE LAYOUT (< lg): Media First -> Progress -> Content -> CTA
-           ========================================================================= */}
-        <div className="lg:hidden">
-          {/* 1. Media Stage */}
-          <div className="relative">
-            {slides.map((slide, index) => {
-              const isActive = index === currentIndex;
-              return (
-                <div
-                  key={`mob-media-${slide.id}`}
-                  className={cn(
-                    'transition-[opacity,transform,visibility] duration-500 ease-out',
-                    isActive
-                      ? 'opacity-100 relative z-10 visible'
-                      : 'opacity-0 absolute inset-0 pointer-events-none invisible'
-                  )}
-                  aria-hidden={!isActive}
-                >
-                  <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-1 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
-                    <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 max-h-[250px]">
-                      <PublicImage
-                        src={slide.image}
-                        alt={slide.imageAlt}
-                        fallback="/news/field-qr.webp"
-                        priority={index === 0}
-                        wrapperClassName="h-full w-full"
-                        className="h-full w-full object-cover object-[center_20%]"
-                      />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* 2. Carousel Progress Bars (rendered ONCE on mobile) */}
-          <div
-            className="flex items-center justify-center gap-1.5 py-3.5"
-            aria-label="Chọn slide giới thiệu"
-          >
-            {slides.map((_, dotIndex) => {
-              const isDotActive = dotIndex === currentIndex;
-              return (
-                <button
-                  key={`mob-dot-${dotIndex}`}
-                  type="button"
-                  onClick={() => goToSlide(dotIndex)}
-                  aria-label={`Chuyển đến slide ${dotIndex + 1}`}
-                  className={cn(
-                    'group relative h-[18px] flex items-center justify-center transition-all cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]',
-                    isDotActive ? 'w-[42px]' : 'w-[24px]'
-                  )}
-                >
-                  <span
-                    className={cn(
-                      'h-[3px] w-full rounded-full transition-all overflow-hidden block',
-                      isDotActive ? 'bg-[#0d7a28]/20' : 'bg-slate-300'
-                    )}
-                  >
-                    {isDotActive && (
-                      <span
-                        key={`mob-prog-${currentIndex}`}
-                        className="block h-full w-full bg-[#0d7a28] rounded-full origin-left motion-reduce:transform-none motion-reduce:!animation-none"
-                        style={{
-                          animationName: 'heroProgress',
-                          animationDuration: `${autoplayInterval}ms`,
-                          animationTimingFunction: 'linear',
-                          animationFillMode: 'forwards',
-                          animationPlayState: isPaused ? 'paused' : 'running'
-                        }}
-                      />
-                    )}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* 3. Text & Actions Stage */}
-          <div className="relative">
-            {slides.map((slide, index) => {
-              const isActive = index === currentIndex;
-              const EyebrowIcon = slide.eyebrowIcon;
-              const PrimaryIcon = slide.primaryCta.icon;
-
-              return (
-                <div
-                  key={`mob-content-${slide.id}`}
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`Slide ${index + 1} trên ${slides.length}: ${slide.title}`}
-                  className={cn(
-                    'transition-[opacity,transform,visibility] duration-500 ease-out',
-                    isActive
-                      ? 'opacity-100 relative z-10 visible'
-                      : 'opacity-0 absolute inset-0 pointer-events-none invisible'
-                  )}
-                  aria-hidden={!isActive}
-                >
-                  {/* Eyebrow Badge */}
-                  <div className="pt-0.5">
-                    <div className="inline-flex h-[30px] items-center gap-1.5 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/06 px-3 text-[12px] font-semibold text-[#0d7a28]">
-                      <EyebrowIcon size={13} className="shrink-0 text-[#0d7a28]" />
-                      <span>{slide.eyebrow}</span>
-                    </div>
-                  </div>
-
-                  {/* Headline Hierarchy (Balanced, no orphans) */}
-                  <h1 className="mt-2.5 text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
-                    <span className="block text-[27px] sm:text-[32px] font-extrabold leading-[1.12]">
-                      {slide.title}
-                    </span>
-                    <span className="block mt-1 text-[23px] sm:text-[27px] font-bold leading-[1.18] bg-gradient-to-r from-[#0d7a28] via-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
-                      {slide.titleHighlight}
-                    </span>
-                  </h1>
-
-                  {/* Short Description (max 3 lines) */}
-                  <p className="mt-2 text-[14.5px] sm:text-[15.5px] text-slate-600 leading-[1.58] line-clamp-3">
-                    {slide.description}
-                  </p>
-
-                  {/* Primary CTA (dominant, full-width) & Secondary action */}
-                  <div className="mt-4 space-y-2.5">
-                    <Link
-                      href={slide.primaryCta.href}
-                      className="flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#0d7a28] px-5 text-sm font-bold text-white shadow-sm transition active:scale-[0.98] hover:bg-[#0a6120]"
-                    >
-                      {PrimaryIcon && <PrimaryIcon size={17} />}
-                      <span>{slide.primaryCta.label}</span>
-                    </Link>
-
-                    <Link
-                      href={slide.secondaryCta.href}
-                      className="flex h-[42px] w-full items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition active:text-[#0d7a28]"
-                    >
-                      <span>{slide.secondaryCta.label}</span>
-                      <ArrowRight size={15} className="text-[#0d7a28]" />
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* =========================================================================
             DESKTOP LAYOUT (lg:block) — Pixel-perfect from Round 3
            ========================================================================= */}
         <div className="hidden lg:block">
@@ -500,6 +353,153 @@ export function HomeHeroSlider({
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* =========================================================================
+            MOBILE LAYOUT (< lg): Media First -> Progress -> Content -> CTA
+           ========================================================================= */}
+        <div className="lg:hidden">
+          {/* 1. Media Stage */}
+          <div className="relative">
+            {slides.map((slide, index) => {
+              const isActive = index === currentIndex;
+              return (
+                <div
+                  key={`mob-media-${slide.id}`}
+                  className={cn(
+                    'transition-[opacity,transform,visibility] duration-500 ease-out',
+                    isActive
+                      ? 'opacity-100 relative z-10 visible'
+                      : 'opacity-0 absolute inset-0 pointer-events-none invisible'
+                  )}
+                  aria-hidden={!isActive}
+                >
+                  <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-1 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+                    <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden rounded-xl bg-slate-100 max-h-[250px]">
+                      <PublicImage
+                        src={slide.image}
+                        alt={slide.imageAlt}
+                        fallback="/news/field-qr.webp"
+                        priority={index === 0}
+                        wrapperClassName="h-full w-full"
+                        className="h-full w-full object-cover object-[center_20%]"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 2. Carousel Progress Bars (rendered ONCE on mobile) */}
+          <div
+            className="flex items-center justify-center gap-1.5 py-3.5"
+            aria-label="Chọn slide giới thiệu"
+          >
+            {slides.map((_, dotIndex) => {
+              const isDotActive = dotIndex === currentIndex;
+              return (
+                <button
+                  key={`mob-dot-${dotIndex}`}
+                  type="button"
+                  onClick={() => goToSlide(dotIndex)}
+                  aria-label={`Chuyển đến slide ${dotIndex + 1}`}
+                  className={cn(
+                    'group relative h-[18px] flex items-center justify-center transition-all cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]',
+                    isDotActive ? 'w-[42px]' : 'w-[24px]'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'h-[3px] w-full rounded-full transition-all overflow-hidden block',
+                      isDotActive ? 'bg-[#0d7a28]/20' : 'bg-slate-300'
+                    )}
+                  >
+                    {isDotActive && (
+                      <span
+                        key={`mob-prog-${currentIndex}`}
+                        className="block h-full w-full bg-[#0d7a28] rounded-full origin-left motion-reduce:transform-none motion-reduce:!animation-none"
+                        style={{
+                          animationName: 'heroProgress',
+                          animationDuration: `${autoplayInterval}ms`,
+                          animationTimingFunction: 'linear',
+                          animationFillMode: 'forwards',
+                          animationPlayState: isPaused ? 'paused' : 'running'
+                        }}
+                      />
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 3. Text & Actions Stage */}
+          <div className="relative">
+            {slides.map((slide, index) => {
+              const isActive = index === currentIndex;
+              const EyebrowIcon = slide.eyebrowIcon;
+              const PrimaryIcon = slide.primaryCta.icon;
+
+              return (
+                <div
+                  key={`mob-content-${slide.id}`}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={`Slide ${index + 1} trên ${slides.length}: ${slide.title}`}
+                  className={cn(
+                    'transition-[opacity,transform,visibility] duration-500 ease-out',
+                    isActive
+                      ? 'opacity-100 relative z-10 visible'
+                      : 'opacity-0 absolute inset-0 pointer-events-none invisible'
+                  )}
+                  aria-hidden={!isActive}
+                >
+                  {/* Eyebrow Badge */}
+                  <div className="pt-0.5">
+                    <div className="inline-flex h-[30px] items-center gap-1.5 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/06 px-3 text-[12px] font-semibold text-[#0d7a28]">
+                      <EyebrowIcon size={13} className="shrink-0 text-[#0d7a28]" />
+                      <span>{slide.eyebrow}</span>
+                    </div>
+                  </div>
+
+                  {/* Headline Hierarchy (Balanced, no orphans) */}
+                  <h1 className="mt-2.5 text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
+                    <span className="block text-[27px] sm:text-[32px] font-extrabold leading-[1.12]">
+                      {slide.title}
+                    </span>
+                    <span className="block mt-1 text-[23px] sm:text-[27px] font-bold leading-[1.18] bg-gradient-to-r from-[#0d7a28] via-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
+                      {slide.titleHighlight}
+                    </span>
+                  </h1>
+
+                  {/* Short Description (max 3 lines) */}
+                  <p className="mt-2 text-[14.5px] sm:text-[15.5px] text-slate-600 leading-[1.58] line-clamp-3">
+                    {slide.description}
+                  </p>
+
+                  {/* Primary CTA (dominant, full-width) & Secondary action */}
+                  <div className="mt-4 space-y-2.5">
+                    <Link
+                      href={slide.primaryCta.href}
+                      className="flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#0d7a28] px-5 text-sm font-bold text-white shadow-sm transition active:scale-[0.98] hover:bg-[#0a6120]"
+                    >
+                      {PrimaryIcon && <PrimaryIcon size={17} />}
+                      <span>{slide.primaryCta.label}</span>
+                    </Link>
+
+                    <Link
+                      href={slide.secondaryCta.href}
+                      className="flex h-[42px] w-full items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition active:text-[#0d7a28]"
+                    >
+                      <span>{slide.secondaryCta.label}</span>
+                      <ArrowRight size={15} className="text-[#0d7a28]" />
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
