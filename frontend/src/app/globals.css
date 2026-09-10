@@ -4,7 +4,10 @@
 
 :root {
   color-scheme: light;
+  --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 
   /* Exact Ecosystem Source of Truth (Code is Source of Truth) */
   --ecosystem-htxonline: #131935;
@@ -547,3 +550,46 @@ button {
     transform: scaleX(1);
   }
 }
+
+/* Mobile-first Native UX Utilities */
+.pb-safe {
+  padding-bottom: max(1rem, var(--safe-bottom));
+}
+
+.pt-safe {
+  padding-top: max(0.5rem, var(--safe-top));
+}
+
+.min-h-screen-dvh {
+  min-height: 100dvh;
+}
+
+.h-screen-dvh {
+  height: 100dvh;
+}
+
+.touch-action-manipulation {
+  touch-action: manipulation;
+}
+
+.scroll-snap-x-mandatory {
+  scroll-snap-type: x mandatory;
+}
+
+.scroll-snap-align-start {
+  scroll-snap-align: start;
+}
+
+.scroll-snap-align-center {
+  scroll-snap-align: center;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+

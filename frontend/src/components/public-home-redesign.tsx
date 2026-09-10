@@ -148,24 +148,24 @@ export async function PublicHomeRedesign() {
         {/* =========================================================================
             2. TRUST STRIP / QUICK PROOF BAR (4 CORE METRICS)
            ========================================================================= */}
-        <section className="border-b border-[var(--border)] bg-white py-8 sm:py-10">
+        <section className="border-b border-[var(--border)] bg-white py-6 sm:py-9">
           <div className={publicContainerClass}>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-4 lg:gap-6">
               {trustMetrics.map((metric, idx) => {
                 const Icon = metric.icon;
                 return (
                   <div
                     key={idx}
-                    className="flex items-start gap-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-4 sm:p-5 transition hover:border-[#0d7a28]/30 hover:shadow-xs"
+                    className="flex flex-col sm:flex-row items-start gap-2.5 sm:gap-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--surface-muted)] p-3 sm:p-4 transition hover:border-[#0d7a28]/30 hover:shadow-xs"
                   >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0d7a28]/10 text-[#0d7a28]">
-                      <Icon size={22} />
+                    <div className="flex h-9 w-9 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-[#0d7a28]/10 text-[#0d7a28]">
+                      <Icon size={20} />
                     </div>
-                    <div>
-                      <h2 className="text-sm font-bold text-[var(--text-primary)]">
+                    <div className="min-w-0">
+                      <h2 className="text-xs sm:text-sm font-bold text-[var(--text-primary)] truncate sm:whitespace-normal">
                         {metric.title}
                       </h2>
-                      <p className="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">
+                      <p className="mt-0.5 sm:mt-1 text-[11px] sm:text-xs text-[var(--text-secondary)] leading-normal line-clamp-2 sm:line-clamp-none">
                         {metric.desc}
                       </p>
                     </div>
@@ -177,11 +177,11 @@ export async function PublicHomeRedesign() {
         </section>
 
         {/* =========================================================================
-            3. CÁCH HOẠT ĐỘNG (HOW IT WORKS - 3 VISUAL STEPS)
+            3. CÁCH HOẠT ĐỘNG (HOW IT WORKS - NATIVE VERTICAL TIMELINE ON MOBILE)
            ========================================================================= */}
-        <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-14 sm:py-18">
+        <section className="border-b border-[var(--border)] bg-[var(--surface-muted)] py-10 sm:py-16">
           <div className={publicContainerClass}>
-            <div className="mx-auto max-w-2xl text-center space-y-3">
+            <div className="mx-auto max-w-2xl text-center space-y-2 sm:space-y-3">
               <span className="inline-flex items-center gap-1.5 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
                 <Sprout size={13} />
                 <span>Quy trình vận hành</span>
@@ -189,16 +189,41 @@ export async function PublicHomeRedesign() {
               <h2 className="type-h2 text-[var(--text-primary)]">
                 Ba bước minh bạch hóa chuỗi giá trị nông sản
               </h2>
-              <p className="type-body text-[var(--text-secondary)]">
+              <p className="type-body text-xs sm:text-sm text-[var(--text-secondary)] max-w-xl mx-auto">
                 Hệ sinh thái Hộ Chiếu Nông Nghiệp kết nối liền mạch dữ liệu từ đồng ruộng của HTX đến người tiêu dùng và đối tác thương mại.
               </p>
             </div>
 
-            <div className="mt-10 sm:mt-14 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+            {/* Mobile Vertical Native Timeline (< md) */}
+            <div className="mt-8 md:hidden relative pl-6 ml-4 border-l-2 border-[#0d7a28]/30 space-y-6">
               {howItWorksSteps.map((item, idx) => (
+                <div key={item.step} className="relative">
+                  {/* Connected Step Marker Circle */}
+                  <span className="absolute -left-[35px] top-0 grid h-7 w-7 place-items-center rounded-full bg-[#0d7a28] font-mono text-xs font-black text-white shadow-xs">
+                    {item.step}
+                  </span>
+
+                  <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-xs">
+                    <span className="inline-block rounded-md bg-[#0d7a28]/10 px-2 py-0.5 text-[10px] font-bold text-[#0d7a28]">
+                      {item.tag}
+                    </span>
+                    <h3 className="mt-1.5 text-sm font-bold text-[var(--text-primary)]">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1 text-xs text-[var(--text-secondary)] leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop 3-Card Grid (md:grid) */}
+            <div className="hidden md:grid mt-10 lg:mt-12 grid-cols-3 gap-6 lg:gap-8">
+              {howItWorksSteps.map((item) => (
                 <div
-                  key={item.step}
-                  className="relative flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-white p-6 sm:p-8 shadow-xs transition duration-300 hover:-translate-y-1 hover:border-[#0d7a28]/40 hover:shadow-md"
+                  key={`desk-${item.step}`}
+                  className="relative flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-white p-6 lg:p-7 shadow-xs transition duration-300 hover:-translate-y-1 hover:border-[#0d7a28]/40 hover:shadow-md"
                 >
                   <div>
                     <div className="flex items-center justify-between">
@@ -210,17 +235,12 @@ export async function PublicHomeRedesign() {
                       </span>
                     </div>
 
-                    <h3 className="mt-5 text-base sm:text-lg font-bold text-[var(--text-primary)]">
+                    <h3 className="mt-4 text-base font-bold text-[var(--text-primary)]">
                       {item.title}
                     </h3>
-                    <p className="mt-2.5 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
+                    <p className="mt-2 text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed">
                       {item.desc}
                     </p>
-                  </div>
-
-                  <div className="mt-6 pt-4 border-t border-[var(--border-subtle)] flex items-center gap-2 text-xs font-semibold text-[#0d7a28]">
-                    <CheckCircle2 size={14} />
-                    <span>Được bảo chứng bằng công nghệ số</span>
                   </div>
                 </div>
               ))}
@@ -257,9 +277,14 @@ export async function PublicHomeRedesign() {
             </div>
 
             {featuredProducts.length > 0 ? (
-              <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              <div className="flex overflow-x-auto gap-3 pb-3 -mx-4 px-4 scroll-snap-x-mandatory no-scrollbar sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-6 sm:overflow-visible">
                 {featuredProducts.map((product, idx) => (
-                  <ProductCard key={product.id} product={product} priority={idx < 4} />
+                  <div
+                    key={product.id}
+                    className="w-[210px] xs:w-[230px] shrink-0 scroll-snap-align-start sm:w-auto"
+                  >
+                    <ProductCard product={product} priority={idx < 4} />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -463,9 +488,14 @@ export async function PublicHomeRedesign() {
             </div>
 
             {featuredCooperatives.length > 0 ? (
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-6">
+              <div className="flex overflow-x-auto gap-3.5 pb-3 -mx-4 px-4 scroll-snap-x-mandatory no-scrollbar sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 sm:overflow-visible">
                 {featuredCooperatives.map((coop, idx) => (
-                  <CooperativeCard key={coop.id} cooperative={coop} priority={idx < 3} />
+                  <div
+                    key={coop.id}
+                    className="w-[280px] xs:w-[310px] shrink-0 scroll-snap-align-start sm:w-auto"
+                  >
+                    <CooperativeCard cooperative={coop} priority={idx < 3} />
+                  </div>
                 ))}
               </div>
             ) : (
@@ -480,31 +510,31 @@ export async function PublicHomeRedesign() {
         {/* =========================================================================
             7. CTA BANNER: DÀNH CHO HỢP TÁC XÃ & DOANH NGHIỆP SẢN XUẤT
            ========================================================================= */}
-        <section className="bg-[var(--surface-muted)] py-12 sm:py-16">
+        <section className="bg-[var(--surface-muted)] py-8 sm:py-14">
           <div className={publicContainerClass}>
-            <div className="relative overflow-hidden rounded-3xl bg-[linear-gradient(135deg,#062c22_0%,#0d7a28_60%,#106f8a_100%)] p-8 sm:p-12 lg:p-16 text-white shadow-xl">
+            <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[linear-gradient(135deg,#062c22_0%,#0d7a28_60%,#106f8a_100%)] p-6 sm:p-10 lg:p-14 text-white shadow-xl">
               {/* Background decorative circles */}
               <div className="pointer-events-none absolute -right-20 -top-20 h-72 w-72 rounded-full border-[28px] border-white/10" />
               <div className="pointer-events-none absolute bottom-0 right-1/4 h-56 w-56 rounded-full bg-white/5 blur-2xl" />
 
-              <div className="relative z-10 max-w-2xl space-y-4">
-                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-[#d6f3c7]">
+              <div className="relative z-10 max-w-2xl space-y-3 sm:space-y-4">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#d6f3c7]">
                   <Sparkles size={14} />
                   <span>Dành cho Hợp tác xã & Đơn vị sản xuất</span>
                 </span>
 
-                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-tight">
                   Nâng tầm giá trị nông sản bằng Hộ Chiếu Nông Nghiệp Số
                 </h2>
 
-                <p className="text-sm sm:text-base leading-relaxed text-white/85">
+                <p className="text-xs sm:text-sm lg:text-base leading-relaxed text-white/85">
                   Đăng ký tham gia nền tảng để được hỗ trợ số hóa hồ sơ vùng canh tác, chuẩn hóa quy trình VietGAP/OCOP và cấp tem mã QR truy xuất nguồn gốc chính hãng.
                 </p>
 
-                <div className="flex flex-wrap items-center gap-3.5 pt-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 sm:gap-3.5 pt-3">
                   <Link
                     href="/lien-he"
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-[#062c22] shadow-md transition hover:bg-[#d6f3c7] active:scale-95"
+                    className="inline-flex min-h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-bold text-[#062c22] shadow-md transition hover:bg-[#d6f3c7] active:scale-95"
                   >
                     <span>Đăng ký Cấp Hộ Chiếu</span>
                     <ArrowRight size={16} />
@@ -512,7 +542,7 @@ export async function PublicHomeRedesign() {
 
                   <Link
                     href="/ve-chung-toi"
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/20 active:scale-95"
+                    className="inline-flex min-h-12 w-full sm:w-auto items-center justify-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 text-sm font-bold text-white backdrop-blur transition hover:bg-white/20 active:scale-95"
                   >
                     <span>Tìm hiểu thêm về nền tảng</span>
                   </Link>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
+import { ChevronDown, ExternalLink, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
 import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
 import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
@@ -125,8 +125,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   return (
     <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)]">
       {/* Main four-column grid */}
-      <div className={cn(publicContainerClass, 'py-10 sm:py-12 lg:py-14')}>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+      <div className={cn(publicContainerClass, 'py-8 sm:py-12 lg:py-14')}>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           {/* Column 1: Organization & Identity */}
           <div className="space-y-3">
             <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
@@ -138,8 +138,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             </p>
           </div>
 
+          {/* Desktop Section Columns (hidden on mobile) */}
           {footerSections.map((section) => (
-            <div key={section.title}>
+            <div key={section.title} className="hidden sm:block">
               <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">{section.title}</h3>
               <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                 {section.links.map((link) => (
@@ -154,16 +155,39 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </ul>
             </div>
           ))}
+
+          {/* Mobile Collapsible Accordions (hidden on sm+) */}
+          <div className="sm:hidden border-t border-[var(--border)] pt-2 space-y-1">
+            {footerSections.map((section) => (
+              <details key={section.title} className="group border-b border-[var(--border)] py-2">
+                <summary className="flex cursor-pointer list-none items-center justify-between py-1 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] [&::-webkit-details-marker]:hidden">
+                  <span>{section.title}</span>
+                  <ChevronDown size={15} className="text-[var(--text-secondary)] transition-transform duration-200 group-open:rotate-180" />
+                </summary>
+                <ul className="pt-2 pb-1 space-y-1 pl-1 text-xs text-[var(--text-secondary)]">
+                  {section.links.map((link) => (
+                    <li key={link.label}>
+                      {link.external ? (
+                        <a href={link.href} target="_blank" rel="noreferrer" className="inline-flex min-h-[36px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</a>
+                      ) : (
+                        <Link href={link.href} className="inline-flex min-h-[36px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
         </div>
 
         {/* Contact, map and registration row */}
-        <div className="mt-8 grid w-full grid-cols-1 gap-8 border-t border-[var(--border)] pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+        <div className="mt-8 grid w-full grid-cols-1 gap-6 border-t border-[var(--border)] pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <div>
-            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
               Thông tin liên hệ
             </h3>
             <div className="space-y-2 text-xs leading-relaxed text-[var(--text-secondary)]">
-              <p className="text-[var(--text-secondary)]">{brandOrg}</p>
+              <p className="font-medium text-[var(--text-primary)]">{brandOrg}</p>
               <p className="flex items-start gap-2">
                 <MapPin size={15} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
                 <span>{profile.address || 'Đồng Tháp, Việt Nam'}</span>
@@ -198,19 +222,41 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           </div>
 
           <div className="sm:col-span-2">
-            <div className="mb-4 flex items-center justify-between gap-3">
+            <div className="mb-2 sm:mb-4 flex items-center justify-between gap-3">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
                 Bản đồ địa điểm
               </h3>
             </div>
-            <PublicMapPreview
-              address={profile.address || 'Đồng Tháp, Việt Nam'}
-              location={mapLocation}
-              mapSearchUrl={mapSearchUrl}
-              mapEmbedUrl={profile.mapEmbedUrl}
-              compact
-              className="min-h-[10rem]"
-            />
+            {/* Desktop Map Preview */}
+            <div className="hidden sm:block">
+              <PublicMapPreview
+                address={profile.address || 'Đồng Tháp, Việt Nam'}
+                location={mapLocation}
+                mapSearchUrl={mapSearchUrl}
+                mapEmbedUrl={profile.mapEmbedUrl}
+                compact
+                className="min-h-[10rem]"
+              />
+            </div>
+            {/* Mobile Compact Location Card */}
+            <div className="sm:hidden rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-3.5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 space-y-1">
+                  <p className="text-xs font-medium text-[var(--text-primary)]">Vị trí trụ sở</p>
+                  <p className="text-xs text-[var(--text-secondary)] line-clamp-2">{profile.address || 'Đồng Tháp, Việt Nam'}</p>
+                </div>
+                <a
+                  href={mapSearchUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs font-semibold text-[var(--brand-primary)] shadow-2xs active:bg-slate-50 min-h-[40px]"
+                >
+                  <MapPin size={14} />
+                  <span>Google Maps</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+            </div>
           </div>
 
           <div>
@@ -232,7 +278,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       </div>
 
       {/* Sub-footer Copyright Bar */}
-      <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] py-4 pb-[calc(1rem+var(--safe-bottom))] lg:pb-4">
+      <div className="border-t border-[var(--border)] bg-[var(--surface-muted)] py-4 pb-[calc(4.75rem+var(--safe-bottom))] lg:pb-4">
         <div className={cn(publicContainerClass, 'flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[var(--text-tertiary)]')}>
           <p>{copyrightText}</p>
           <div className="flex items-center gap-2">
@@ -241,7 +287,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           </div>
         </div>
       </div>
-
     </footer>
   );
 }

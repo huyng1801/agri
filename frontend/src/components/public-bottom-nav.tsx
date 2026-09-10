@@ -2,135 +2,141 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, Home, Info, LogIn, Newspaper, Phone, QrCode, Search, ShoppingBag, Store } from 'lucide-react';
+import { Home, QrCode, ShoppingBag, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 
-const marketplaceItems = [
-  { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
-  { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') && !path.includes('hasQr=true') },
-  { href: '/san-pham?hasQr=true', label: 'Tra cứu QR', icon: QrCode, match: (path: string) => path.includes('hasQr=true') || path.startsWith('/passport') || path.startsWith('/qr') },
-  { href: '/htx', label: 'Hợp tác xã', icon: Store, match: (path: string) => path.startsWith('/htx') },
-  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
+// Core 4 destinations preferred for native-like public mobile experience
+const coreNavItems = [
+  {
+    href: '/',
+    label: 'Trang chủ',
+    icon: Home,
+    match: (path: string) => path === '/'
+  },
+  {
+    href: '/san-pham',
+    label: 'Sản phẩm',
+    icon: ShoppingBag,
+    match: (path: string) => path === '/san-pham' || (path.startsWith('/san-pham') && !path.includes('/san-pham/'))
+  },
+  {
+    href: '/truy-xuat',
+    label: 'Quét QR',
+    icon: QrCode,
+    match: (path: string) => path === '/truy-xuat' || path.startsWith('/truy-xuat/')
+  },
+  {
+    href: '/htx',
+    label: 'Đối tác',
+    icon: Store,
+    match: (path: string) => path === '/htx' || path.startsWith('/htx/')
+  }
 ] as const;
 
-const internalItems = [
-  { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
-  { href: '/san-pham', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') },
-  { href: '/htx', label: 'HTX', icon: Store, match: (path: string) => path.startsWith('/htx') },
-  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') },
-  { href: '/login', label: 'Đăng nhập', icon: LogIn, match: (path: string) => path.startsWith('/login') }
-] as const;
+// Pages that must hide the global bottom nav to avoid collision with keyboard,
+// reading mode, legal reading, or contextual bottom action bars
+function shouldHideBottomNav(pathname: string): boolean {
+  // Product passport detail pages have their own dedicated contextual bottom bar
+  if (pathname.startsWith('/san-pham/') && pathname !== '/san-pham') return true;
+  if (pathname.startsWith('/passport/')) return true;
+  if (pathname.startsWith('/qr/')) return true;
 
-const passportItems = [
-  { href: '/', label: 'Trang chủ', icon: Home, match: (path: string) => path === '/' },
-  { href: '/san-pham?hasQr=true', label: 'Sản phẩm', icon: ShoppingBag, match: (path: string) => path.startsWith('/san-pham') && !path.startsWith('/truy-xuat') },
-  { href: '/truy-xuat', label: 'Quét QR', icon: QrCode, match: (path: string) => path.startsWith('/truy-xuat') || path.startsWith('/passport') || path.startsWith('/qr') },
-  { href: '/htx', label: 'Đối tác', icon: Store, match: (path: string) => path.startsWith('/htx') },
-  { href: '/tin-tuc', label: 'Tin tức', icon: Newspaper, match: (path: string) => path.startsWith('/tin-tuc') }
-] as const;
+  // Article deep reading mode
+  if (pathname.startsWith('/tin-tuc/') && pathname !== '/tin-tuc') return true;
+
+  // Contact page (avoids virtual keyboard collision)
+  if (pathname === '/lien-he' || pathname.startsWith('/lien-he/')) return true;
+
+  // Legal / policy / FAQ pages
+  const legalRoutes = [
+    '/dieu-khoan-su-dung',
+    '/chinh-sach-bao-mat',
+    '/chinh-sach-doi-tra',
+    '/chinh-sach-van-chuyen',
+    '/chinh-sach-van-hanh',
+    '/cau-hoi-thuong-gap'
+  ];
+  if (legalRoutes.includes(pathname)) return true;
+
+  return false;
+}
 
 export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const pathname = usePathname();
-  const [footerVisible, setFooterVisible] = useState(false);
-  const [scrollHidden, setScrollHidden] = useState(false);
-  const items = siteKey === 'htxonline' ? internalItems : siteKey === 'passport' ? passportItems : marketplaceItems;
-  const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
-  const isPassport = siteKey === 'passport';
-  const enableBottomNav = siteKey !== 'htxonline';
-  const revealThreshold = pathname === '/' ? 520 : pathname.startsWith('/san-pham') || pathname.startsWith('/htx') ? 420 : 260;
+  const [footerIntersecting, setFooterIntersecting] = useState(false);
 
-  useEffect(() => {
-    if (!enableBottomNav) {
-      setFooterVisible(false);
-      setScrollHidden(false);
-    }
-  }, [enableBottomNav]);
+  const isHiddenContextually = shouldHideBottomNav(pathname);
 
+  // Observe footer so bottom nav doesn't permanently obscure footer copyright
   useEffect(() => {
-    if (!enableBottomNav) return;
     const footer = document.querySelector('footer');
     if (!footer) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        setFooterVisible(entry.isIntersecting);
+        setFooterIntersecting(entry.isIntersecting);
       },
-      { threshold: 0.18 }
+      { threshold: 0.25 }
     );
 
     observer.observe(footer);
     return () => observer.disconnect();
-  }, [enableBottomNav]);
+  }, []);
 
-  useEffect(() => {
-    if (!enableBottomNav) return;
-    let lastY = window.scrollY;
-
-    const onScroll = () => {
-      const y = window.scrollY;
-      const isMobile = window.innerWidth < 1024;
-      if (!isMobile) {
-        setScrollHidden(false);
-        lastY = y;
-        return;
-      }
-
-      if (y < revealThreshold) {
-        setScrollHidden(true);
-      } else if (y + 8 < lastY) {
-        setScrollHidden(false);
-      } else if (y > lastY + 10) {
-        setScrollHidden(true);
-      }
-
-      lastY = y;
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-    };
-  }, [enableBottomNav]);
-
-  if (!enableBottomNav) return null;
-
-  const hidden = footerVisible || scrollHidden;
+  if (isHiddenContextually) return null;
 
   return (
     <nav
       data-testid="public-bottom-nav"
-      aria-hidden={hidden || undefined}
-      inert={hidden ? true : undefined}
+      aria-label="Điều hướng chính di động"
+      aria-hidden={footerIntersecting || undefined}
       className={cn(
-        'fixed bottom-[calc(var(--safe-bottom)+0.45rem)] left-1/2 z-30 w-[calc(100%-1rem)] max-w-[23rem] -translate-x-1/2 rounded-[1.55rem] border border-[var(--border-strong)] bg-[rgba(255,255,255,0.94)] px-1.5 py-1.5 shadow-[0_16px_34px_rgba(26,22,16,0.12)] backdrop-blur-xl transition duration-200 lg:hidden',
-        hidden ? 'pointer-events-none invisible translate-y-10 opacity-0' : 'opacity-100'
+        'fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200/80 bg-white/95 backdrop-blur-md transition-all duration-200 lg:hidden shadow-[0_-2px_10px_rgba(0,0,0,0.03)]',
+        footerIntersecting ? 'translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
       )}
+      style={{
+        paddingBottom: 'max(0.25rem, var(--safe-bottom, 0px))'
+      }}
     >
-      <div className="mx-auto grid grid-cols-5 gap-1">
-        {items.map((item) => {
+      <div className="mx-auto grid h-[58px] grid-cols-4 max-w-md items-center px-2">
+        {coreNavItems.map((item) => {
           const active = item.match(pathname);
           const Icon = item.icon;
+
           return (
             <Link
               key={item.href}
               href={item.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'relative flex min-h-[48px] min-w-0 flex-col items-center justify-center gap-1 rounded-xl px-1 text-[10px] font-bold transition-colors',
+                'group relative flex h-full flex-col items-center justify-center gap-1 rounded-lg px-2 py-1 text-center transition-colors select-none touch-action-manipulation',
                 active
-                  ? 'bg-[var(--brand-primary)] text-white shadow-sm'
-                  : 'text-slate-600 hover:text-[var(--text-primary)]'
+                  ? 'text-[#0d7a28]'
+                  : 'text-slate-500 hover:text-slate-800 active:text-[#0d7a28]'
               )}
             >
-              <span className="relative">
-                <Icon size={18} aria-hidden="true" />
+              {/* Subtle top indicator for active tab */}
+              {active && (
+                <span
+                  className="absolute top-0 left-1/2 -translate-x-1/2 h-[2.5px] w-6 rounded-full bg-[#0d7a28]"
+                  aria-hidden="true"
+                />
+              )}
+
+              <span className="relative grid place-items-center transition-transform group-active:scale-90">
+                <Icon size={21} strokeWidth={active ? 2.3 : 1.8} aria-hidden="true" />
               </span>
-              <span className="min-w-0 max-w-full truncate leading-none">{item.label}</span>
+
+              <span
+                className={cn(
+                  'text-[11px] leading-tight tracking-tight',
+                  active ? 'font-bold' : 'font-medium'
+                )}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}

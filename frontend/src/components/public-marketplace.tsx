@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Boxes, Calendar, Phone, QrCode, Search, type LucideIcon } from 'lucide-react';
+import { ArrowRight, Boxes, Calendar, Phone, QrCode, Search, Store, type LucideIcon } from 'lucide-react';
 import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_NEWS_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from './public-image';
 import { publicCardClass } from './public-layout';
 import { publicNewsCategoryLabel, type NewsArticle } from '@/lib/news';
@@ -122,47 +122,75 @@ export function ProductCard({ product, priority = false, compact = false }: { pr
   const hasQr = Boolean(product.passports?.length);
 
   return (
-    <article className={cn(publicCardClass, 'group flex h-full flex-col p-2.5 transition duration-300 hover:-translate-y-1 hover:border-[var(--brand-primary)] hover:shadow-[var(--public-shadow-hover)] sm:p-3', compact && 'p-2 sm:p-3')}>
-      <Link href={`/san-pham/${product.slug}`} className="block overflow-hidden rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--brand-primary-subtle)]">
+    <article className={cn(
+      publicCardClass,
+      'group relative flex h-full flex-col overflow-hidden rounded-xl sm:rounded-2xl border border-[var(--border)] bg-white p-2 sm:p-3 transition-all duration-150 active:scale-[0.99] active:bg-slate-50/50 hover:border-[var(--brand-primary)] hover:shadow-md touch-action-manipulation'
+    )}>
+      {/* Clickable Card Overlay Link */}
+      <Link
+        href={`/san-pham/${product.slug}`}
+        aria-label={`Xem chi tiết ${product.name}`}
+        className="absolute inset-0 z-10 rounded-xl sm:rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+      />
+
+      {/* Product Image: 1:1 square on mobile, 4:3 on desktop */}
+      <div className="relative aspect-square sm:aspect-[4/3] w-full overflow-hidden rounded-lg sm:rounded-xl border border-[var(--border)] bg-[var(--brand-primary-subtle)]">
         <PublicImage
           src={product.thumbnail?.publicUrl}
           alt={product.name}
           fallback={DEFAULT_PRODUCT_IMAGE}
           testId="product-card-image"
           priority={priority}
-          wrapperClassName="aspect-[4/3] w-full bg-[linear-gradient(145deg,var(--surface-muted)_0%,var(--brand-primary-subtle)_100%)]"
-          className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+          wrapperClassName="h-full w-full bg-[linear-gradient(145deg,var(--surface-muted)_0%,var(--brand-primary-subtle)_100%)]"
+          className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
         />
-      </Link>
 
-      <div className={cn('flex flex-1 flex-col', compact ? 'px-0.5 pb-0 pt-2' : 'px-0.5 pb-0.5 pt-3 sm:px-1')}>
-        <div className="flex min-h-7 items-center justify-between gap-2">
-          <p className="min-w-0 truncate text-[0.68rem] font-bold uppercase tracking-[0.1em] text-[var(--brand-primary-strong)]">{product.category?.name ?? 'Nông sản'}</p>
-          {hasQr ? (
-            <span className="inline-flex min-h-7 shrink-0 items-center gap-1 rounded-[var(--public-radius-control)] border border-[var(--border-strong)] bg-[var(--brand-primary-subtle)] px-2 text-[0.66rem] font-bold text-[var(--brand-primary)]">
-              <QrCode size={12} aria-hidden="true" /> Có QR
-            </span>
-          ) : null}
+        {hasQr && (
+          <span className="absolute top-1.5 right-1.5 inline-flex items-center gap-1 rounded-md border border-[#0d7a28]/20 bg-white/95 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#0d7a28] shadow-xs backdrop-blur">
+            <QrCode size={11} aria-hidden="true" />
+            <span>Có QR</span>
+          </span>
+        )}
+      </div>
+
+      {/* Metadata */}
+      <div className="flex flex-1 flex-col pt-2 sm:pt-2.5">
+        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-semibold text-slate-500">
+          <span className="truncate uppercase tracking-wider text-[#0d7a28] font-bold">
+            {product.category?.name ?? 'Nông sản'}
+          </span>
+          <span className="truncate text-slate-400">
+            {product.cooperative?.province || product.zone?.name || ''}
+          </span>
         </div>
-        <p className="mt-1 text-xs font-semibold text-[var(--text-tertiary)]">{product.cooperative?.province || product.zone?.name || 'Nông sản công khai'}</p>
-        <Link href={`/san-pham/${product.slug}`} className={cn('mt-1 block line-clamp-2 min-h-11 font-extrabold leading-6 text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]', compact ? 'text-[0.98rem]' : 'text-[1.08rem]')}>
+
+        <h3 className="mt-1 line-clamp-2 text-xs sm:text-sm font-bold text-[#131935] group-hover:text-[#0d7a28] transition leading-snug">
           {product.name}
-        </Link>
-        {product.cooperative ? (
-          <Link href={`/htx/${product.cooperative.code}`} className="mt-1 inline-flex min-h-10 items-center gap-2 text-xs font-semibold text-[var(--text-secondary)] transition hover:text-[var(--brand-primary)] sm:mt-2 sm:min-h-11">
-            <PublicImage src={product.cooperative.avatarUrl} alt={product.cooperative.name} fallback={defaultCooperativeAvatar} decorative wrapperClassName="h-6 w-6 shrink-0 rounded-full" className="h-full w-full rounded-full object-cover" />
-            <span className="line-clamp-2 min-w-0">{product.cooperative.name}</span>
-          </Link>
-        ) : null}
-        <div className="mt-auto flex items-end justify-between gap-2 border-t border-[var(--border)] pt-3">
+        </h3>
+
+        {product.cooperative && (
+          <p className="mt-1 text-[11px] sm:text-xs text-slate-500 truncate flex items-center gap-1">
+            <Store size={12} className="shrink-0 text-slate-400" />
+            <span className="truncate">{product.cooperative.name}</span>
+          </p>
+        )}
+
+        {/* Price Row (Without redundant button on mobile) */}
+        <div className="mt-auto pt-2 sm:pt-2.5 flex items-end justify-between gap-1.5 border-t border-slate-100">
           <div>
-            <p className={cn('font-extrabold leading-none text-[var(--text-primary)]', compact ? 'text-[1rem] sm:text-[1.35rem]' : 'text-[1.15rem] sm:text-[1.4rem]')}>{formatPrice(product.price)}</p>
-            <p className="mt-1 text-xs text-[var(--text-tertiary)]">/{product.unit}</p>
+            <p className="text-xs sm:text-base font-extrabold text-[#131935] leading-none">
+              {formatPrice(product.price)}
+            </p>
+            <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
+              /{product.unit}
+            </p>
           </div>
-          <Link href={`/san-pham/${product.slug}`} aria-label={`Xem thông tin ${product.name}`} className="inline-flex min-h-11 shrink-0 items-center gap-1 rounded-[var(--public-radius-control)] bg-[var(--brand-primary)] px-3 text-[0.78rem] font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[var(--brand-primary-hover)] focus-visible:ring-4 focus-visible:ring-[var(--brand-primary-subtle)] sm:gap-1.5 sm:px-4 sm:text-sm">
-            {compact ? <><span className="sm:hidden">Xem</span><span className="hidden sm:inline">Xem thông tin</span></> : 'Xem thông tin'}
-            <ArrowRight size={15} aria-hidden="true" />
-          </Link>
+
+          {/* Desktop-only action button */}
+          <span className="hidden sm:inline-flex h-8 items-center gap-1 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs transition group-hover:bg-[#0a6120]">
+            <span>Chi tiết</span>
+            <ArrowRight size={13} aria-hidden="true" />
+          </span>
         </div>
       </div>
     </article>
