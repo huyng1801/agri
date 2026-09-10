@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Clock3, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicMapPreview } from '@/components/public-map-preview';
+import { PublicImage } from '@/components/public-image';
 import { PublicBreadcrumbTrail, PublicFaqItem, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
@@ -118,6 +119,18 @@ export default async function ContactPage() {
                 </div>
               </div>
             </article>
+
+            {siteKey === 'passport' ? (
+              <figure className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
+                <PublicImage
+                  src={siteProfile.pageContent.contactImageUrl}
+                  alt={siteProfile.pageContent.contactImageAlt}
+                  wrapperClassName="aspect-[16/10] rounded-[1.35rem]"
+                  className="h-full w-full object-cover"
+                  priority
+                />
+              </figure>
+            ) : null}
 
             <div className="grid gap-4 lg:grid-cols-[1.06fr_0.94fr]">
               {showMapPreview ? (

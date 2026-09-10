@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Database, Leaf, QrCode, Users } from 'lucide-react';
+import { PublicImage } from '@/components/public-image';
 import { PublicBreadcrumbTrail, PublicPageHeader, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { Button, cn } from '@/components/ui';
 import { buildPublicMetadata } from '@/lib/page-metadata';
+import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -37,6 +39,8 @@ export default async function AboutPage() {
     getRequestAbsoluteUrl('/gioi-thieu')
   ]);
   const isInternal = siteKey === 'htxonline';
+  const isPassport = siteKey === 'passport';
+  const siteProfile = isPassport ? await getPublicSiteProfile(siteKey) : null;
 
   if (isInternal) {
     return (
@@ -54,15 +58,28 @@ export default async function AboutPage() {
 
   return (
     <PublicShell>
-      <PublicPageMain className="pb-10 sm:pb-14 lg:pb-16">
-        <PublicBreadcrumbTrail current="Cách hoạt động" path="/gioi-thieu" homeUrl={homeUrl} currentUrl={currentUrl} />
+        <PublicPageMain className="pb-10 sm:pb-14 lg:pb-16">
+          <PublicBreadcrumbTrail current="Cách hoạt động" path="/gioi-thieu" homeUrl={homeUrl} currentUrl={currentUrl} />
         <section className="overflow-hidden rounded-[2rem] border border-[var(--border)] bg-[linear-gradient(135deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] shadow-[0_22px_55px_rgba(15,23,42,0.07)]">
-          <div className={cn(publicContainerClass, 'px-5 py-9 sm:px-8 sm:py-12 lg:px-12 lg:py-16')}>
-            <PublicPageHeader eyebrow="Cách Agripassport hoạt động" title="Từ dữ liệu sản xuất đến hồ sơ nông sản minh bạch." description="Agripassport không thay thế quy trình sản xuất. Nền tảng giúp tổ chức những dữ liệu đã có, kiểm tra trước khi công khai và kết nối người mua với thông tin đúng sản phẩm." />
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link href="/san-pham"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Xem sản phẩm <ArrowRight size={17} aria-hidden="true" /></Button></Link>
-              <Link href="/lien-he"><Button variant="ghost" className="min-h-12 w-full rounded-full border-[var(--border-strong)] bg-white px-6 text-[var(--brand-primary)] sm:w-auto">Đưa sản phẩm lên nền tảng</Button></Link>
+          <div className={cn(publicContainerClass, 'grid gap-8 px-5 py-9 sm:px-8 sm:py-12 lg:grid-cols-[0.94fr_1.06fr] lg:items-center lg:px-12 lg:py-16')}>
+            <div className={cn(isPassport && 'order-2 lg:order-1')}>
+              <PublicPageHeader eyebrow="Cách Agripassport hoạt động" title="Từ dữ liệu sản xuất đến hồ sơ nông sản minh bạch." description="Agripassport không thay thế quy trình sản xuất. Nền tảng giúp tổ chức những dữ liệu đã có, kiểm tra trước khi công khai và kết nối người mua với thông tin đúng sản phẩm." />
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link href="/san-pham"><Button className="min-h-12 w-full rounded-full px-6 sm:w-auto">Xem sản phẩm <ArrowRight size={17} aria-hidden="true" /></Button></Link>
+                <Link href="/lien-he"><Button variant="ghost" className="min-h-12 w-full rounded-full border-[var(--border-strong)] bg-white px-6 text-[var(--brand-primary)] sm:w-auto">Đưa sản phẩm lên nền tảng</Button></Link>
+              </div>
             </div>
+            {isPassport && siteProfile ? (
+              <figure className="order-1 overflow-hidden rounded-[1.6rem] border border-white/80 bg-white/65 p-2 shadow-[0_20px_44px_rgba(15,23,42,0.1)] lg:order-2">
+                <PublicImage
+                  src={siteProfile.pageContent.introImageUrl}
+                  alt={siteProfile.pageContent.introImageAlt}
+                  wrapperClassName="aspect-[16/10] rounded-[1.25rem]"
+                  className="h-full w-full object-cover"
+                  priority
+                />
+              </figure>
+            ) : null}
           </div>
         </section>
 
