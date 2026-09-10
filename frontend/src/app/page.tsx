@@ -124,6 +124,7 @@ export default async function HomePage() {
   const isInternal = siteKey === "htxonline";
   const isPassport = siteKey === "passport";
   const isMarketplace = siteKey === "agripassport" || siteKey === "local";
+  const passportNewsBannerUrl = "/hero/passport-news-banner.png";
 
   if (isMarketplace) {
     return <AgripassportHome />;
@@ -1418,51 +1419,58 @@ export default async function HomePage() {
         <PublicSection band={!isInternal}>
           <div className="relative isolate overflow-hidden rounded-[var(--public-radius-surface)] border border-[var(--border-strong)] shadow-[var(--public-shadow-hover)]">
             <PublicImage
-              src={siteProfile.pageContent.homeImageUrl}
+              src={isPassport ? passportNewsBannerUrl : siteProfile.pageContent.homeImageUrl}
               alt={
-                siteProfile.pageContent.homeImageAlt ||
-                siteProfile.pageContent.homeTitle
+                isPassport
+                  ? "Hộ chiếu nông nghiệp và hệ thống truy xuất dữ liệu bằng QR"
+                  : siteProfile.pageContent.homeImageAlt || siteProfile.pageContent.homeTitle
               }
-              wrapperClassName="aspect-[16/11] sm:aspect-[18/7] lg:aspect-[21/7]"
+              wrapperClassName={isPassport
+                ? "aspect-[21/10] w-full"
+                : "aspect-[16/11] sm:aspect-[18/7] lg:aspect-[21/7]"}
               className="h-full w-full object-cover"
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,31,26,0.26)_0%,rgba(16,31,26,0.58)_100%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%)]" />
-            <div className="absolute inset-0 flex items-center justify-center px-5 py-8 text-center text-white sm:px-8">
-              <div className="max-w-3xl">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/76">
-                  Kết nối công nghệ
-                </p>
-                <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-[2.9rem]">
-                  {isInternal
-                    ? "Đưa dữ liệu HTX ra thị trường bằng một luồng rõ ràng."
-                    : "Kéo dữ liệu nông nghiệp lên một giao diện công khai gọn, rõ và dễ hiểu hơn."}
-                </h2>
-                <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
-                  <Link
-                    href={closingPrimaryCta.href}
-                    className="inline-flex min-h-12 items-center justify-center rounded-[var(--public-radius-control)] bg-white px-6 text-sm font-bold text-[var(--brand-primary)] shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
-                  >
-                    {closingPrimaryCta.label}
-                  </Link>
-                  {closingSecondaryCta.external ? (
-                    <a
-                      href={closingSecondaryCta.href}
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
-                    >
-                      {closingSecondaryCta.label}
-                    </a>
-                  ) : (
-                    <Link
-                      href={closingSecondaryCta.href}
-                      className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
-                    >
-                      {closingSecondaryCta.label}
-                    </Link>
-                  )}
+            {!isPassport ? (
+              <>
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(16,31,26,0.26)_0%,rgba(16,31,26,0.58)_100%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.18),transparent_30%)]" />
+                <div className="absolute inset-0 flex items-center justify-center px-5 py-8 text-center text-white sm:px-8">
+                  <div className="max-w-3xl">
+                    <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-white/76">
+                      Kết nối công nghệ
+                    </p>
+                    <h2 className="mt-3 text-[2rem] font-extrabold leading-[1.04] tracking-[-0.04em] sm:text-[2.9rem]">
+                      {isInternal
+                        ? "Đưa dữ liệu HTX ra thị trường bằng một luồng rõ ràng."
+                        : "Kéo dữ liệu nông nghiệp lên một giao diện công khai gọn, rõ và dễ hiểu hơn."}
+                    </h2>
+                    <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+                      <Link
+                        href={closingPrimaryCta.href}
+                        className="inline-flex min-h-12 items-center justify-center rounded-[var(--public-radius-control)] bg-white px-6 text-sm font-bold text-[var(--brand-primary)] shadow-[var(--public-shadow-card)] transition hover:-translate-y-0.5"
+                      >
+                        {closingPrimaryCta.label}
+                      </Link>
+                      {closingSecondaryCta.external ? (
+                        <a
+                          href={closingSecondaryCta.href}
+                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                        >
+                          {closingSecondaryCta.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={closingSecondaryCta.href}
+                          className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/24 bg-white/10 px-6 text-sm font-bold text-white transition hover:bg-white/16"
+                        >
+                          {closingSecondaryCta.label}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            ) : null}
           </div>
         </PublicSection>
 
@@ -1661,7 +1669,7 @@ export default async function HomePage() {
                     key={article.id}
                     article={article}
                     priority={index === 0}
-                    fallback="/hero/passport-news-banner.png"
+                    fallback={passportNewsBannerUrl}
                     imageWrapperClassName="aspect-[21/10] w-full bg-[var(--surface-muted)]"
                   />
                 ))}
