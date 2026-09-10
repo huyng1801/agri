@@ -1015,7 +1015,7 @@ export default async function HomePage() {
           </section>
         )}
 
-        {!isPassport ? <PublicSection>
+        <PublicSection>
           <div
             className={cn(
               "mx-auto max-w-5xl text-center",
@@ -1087,14 +1087,14 @@ export default async function HomePage() {
                     <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--brand-primary-strong)] shadow-[var(--public-shadow-card)]">
                       <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
                     </span>
+                    {!isPassport ? (
+                      <p className="mt-4 text-[1.28rem] font-extrabold leading-tight text-[var(--brand-primary)]">
+                        {tile.value}
+                      </p>
+                    ) : null}
                     <p className={cn(
-                      "mt-4 text-[1.28rem] font-extrabold leading-tight",
-                      isPassport ? "text-[var(--text-primary)]" : "text-[var(--brand-primary)]",
-                    )}>
-                      {tile.value}
-                    </p>
-                    <p className={cn(
-                      "mt-2 text-sm font-bold uppercase tracking-[0.08em]",
+                      isPassport ? "mt-4" : "mt-2",
+                      "text-sm font-bold uppercase tracking-[0.08em]",
                       isPassport ? "text-[var(--brand-primary)]" : "text-[var(--text-primary)]",
                     )}>
                       {tile.title}
@@ -1107,7 +1107,7 @@ export default async function HomePage() {
               })}
             </div>
           )}
-        </PublicSection> : null}
+        </PublicSection>
 
         <PublicSection band={!isInternal}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
