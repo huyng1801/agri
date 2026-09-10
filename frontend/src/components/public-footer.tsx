@@ -152,9 +152,23 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </p>
               <p className="flex items-center gap-2">
                 <Phone size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
-                  {profile.hotlineDisplay}
-                </a>
+                <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
+                    {profile.hotlineDisplay}
+                  </a>
+                  {zaloUrl ? (
+                    <a
+                      href={zaloUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      aria-label="Nhắn Zalo"
+                      className="inline-flex min-h-[36px] items-center gap-1 font-normal text-[var(--text-secondary)] hover:underline"
+                    >
+                      <ZaloIcon size={15} />
+                      Zalo
+                    </a>
+                  ) : null}
+                </span>
               </p>
               <p className="flex items-center gap-2">
                 <Mail size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
@@ -162,14 +176,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   {profile.supportEmail}
                 </a>
               </p>
-              {zaloUrl && (
-                <p className="flex items-center gap-2">
-                  <ZaloIcon size={15} />
-                  <a href={zaloUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
-                    Zalo hỗ trợ
-                  </a>
-                </p>
-              )}
             </div>
           </div>
 

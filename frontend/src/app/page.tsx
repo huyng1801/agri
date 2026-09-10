@@ -349,7 +349,7 @@ export default async function HomePage() {
   const heroLeadTitle = isInternal
     ? "Luồng dữ liệu rõ ràng cho hợp tác xã"
     : isPassport
-      ? "HỘ CHIẾU NÔNG NGHIỆP giúp tra cứu QR rõ ràng hơn trên điện thoại"
+      ? "Hộ chiếu nông nghiệp giúp tra cứu QR rõ ràng hơn trên điện thoại"
       : "AGRIPASSPORT SỐ HOÁ NÔNG SẢN, TRUY XUẤT NGUỒN GỐC BẰNG QR";
   const heroLeadDescription = isInternal
     ? "Giữ lớp quản trị nội bộ cho xã viên, dịch vụ và vận hành, nhưng vẫn mở được một giao diện public sáng, thoáng và dễ hiểu khi cần kết nối thị trường."
@@ -654,24 +654,24 @@ export default async function HomePage() {
           icon: BadgeCheck,
         },
         {
-          title: "Dữ liệu trung tâm",
+          title: "Dữ liệu",
           value: "Một nguồn dữ liệu",
           description:
-            "Dữ liệu từ Agripassport, đảm bảo đồng nhất.",
+            "Dữ liệu từ Agripassport đồng nhất.",
           icon: Store,
         },
         {
-          title: "Trải nghiệm mobile",
+          title: "Trải nghiệm",
           value: "Đọc nhanh hơn",
           description:
-            "Ưu tiên giao diện điện thoại, dễ thao tác.",
+            "Giao diện điện thoại dễ thao tác.",
           icon: Users,
         },
         {
-          title: "Niềm tin thị trường",
+          title: "Thị trường",
           value: "Hiểu đúng hơn",
           description:
-            "Thông tin quan trọng, quyết định nhanh hơn.",
+            "Thông tin quyết định nhanh hơn.",
           icon: Leaf,
         },
       ]
@@ -926,25 +926,61 @@ export default async function HomePage() {
             <div className={cn(publicContainerClass, "py-4 sm:py-6 lg:py-8")}>
               <div className="overflow-hidden rounded-[1.9rem] border border-[#e2e9da] bg-white shadow-[0_22px_48px_rgba(15,23,42,0.06)] sm:rounded-[2.15rem]">
                 <div className="relative isolate overflow-hidden border-b border-[#e5eadf]">
-                  <PublicImage
-                    src={siteProfile.pageContent.homeImageUrl}
-                    alt={
-                      siteProfile.pageContent.homeImageAlt ||
-                      siteProfile.pageContent.homeTitle
-                    }
-                    wrapperClassName="aspect-[16/11] sm:aspect-[18/8] lg:aspect-[21/8]"
-                    className="h-full w-full object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(9,17,18,0.18)_100%)]" />
-                  <div
-                    aria-hidden="true"
-                    className="absolute inset-0 opacity-80"
-                    style={{
-                      background:
-                        "radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)",
-                    }}
-                  />
+                  {isPassport ? (
+                    <div className="relative min-h-[20rem] overflow-hidden bg-[#eaf7ed] sm:min-h-[23rem] lg:min-h-[27rem]">
+                      <PublicImage
+                        src="/hero/agripassport-app-showcase.png"
+                        alt="Hồ sơ QR Hộ chiếu nông nghiệp trên điện thoại"
+                        wrapperClassName="absolute inset-0 h-full w-full sm:left-[28%] sm:w-[72%]"
+                        className="h-full w-full object-cover object-center"
+                        priority
+                        fallback="/hero/agripassport-app-showcase.png"
+                      />
+                      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(234,247,237,0.98)_0%,rgba(234,247,237,0.88)_28%,rgba(234,247,237,0.18)_62%,rgba(6,64,32,0.12)_100%)]" />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 opacity-80"
+                        style={{
+                          background:
+                            "radial-gradient(circle at 14% 20%, rgba(255,255,255,0.8), transparent 25%), radial-gradient(circle at 82% 12%, rgba(255,255,255,0.38), transparent 22%)",
+                        }}
+                      />
+                      <div className="relative z-[3] flex min-h-[20rem] items-center px-6 py-8 sm:min-h-[23rem] sm:px-10 lg:min-h-[27rem] lg:px-12">
+                        <div className="max-w-[19rem] rounded-[1.25rem] border border-white/70 bg-white/[0.78] p-4 shadow-[0_18px_42px_rgba(22,101,52,0.12)] backdrop-blur-[2px] sm:max-w-[23rem] sm:p-5">
+                          <PublicLogo
+                            size={68}
+                            variant="passport-wordmark"
+                            className="h-auto max-w-full"
+                          />
+                          <p className="mt-3 text-sm font-semibold leading-6 text-[#155e38] sm:text-base">
+                            Tra cứu QR rõ ràng hơn trên điện thoại
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <PublicImage
+                        src={siteProfile.pageContent.homeImageUrl}
+                        alt={
+                          siteProfile.pageContent.homeImageAlt ||
+                          siteProfile.pageContent.homeTitle
+                        }
+                        wrapperClassName="aspect-[16/11] sm:aspect-[18/8] lg:aspect-[21/8]"
+                        className="h-full w-full object-cover"
+                        priority
+                      />
+                      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_42%,rgba(9,17,18,0.18)_100%)]" />
+                      <div
+                        aria-hidden="true"
+                        className="absolute inset-0 opacity-80"
+                        style={{
+                          background:
+                            "radial-gradient(circle at 12% 18%, rgba(255,255,255,0.52), transparent 22%), radial-gradient(circle at 86% 12%, rgba(255,255,255,0.38), transparent 20%)",
+                        }}
+                      />
+                    </>
+                  )}
                 </div>
 
                 {!isMarketplace ? (
@@ -979,7 +1015,7 @@ export default async function HomePage() {
           </section>
         )}
 
-        <PublicSection>
+        {!isPassport ? <PublicSection>
           <div
             className={cn(
               "mx-auto max-w-5xl text-center",
@@ -1071,7 +1107,7 @@ export default async function HomePage() {
               })}
             </div>
           )}
-        </PublicSection>
+        </PublicSection> : null}
 
         <PublicSection band={!isInternal}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
