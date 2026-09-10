@@ -30,7 +30,7 @@ function MapLink({ href, compact = false }: { href: string; compact?: boolean })
   );
 }
 
-function StaticMapSurface({ address, location }: { address: string; location: PublicMapLocation }) {
+function StaticMapSurface({ address, location, compact = false }: { address: string; location: PublicMapLocation; compact?: boolean }) {
   return (
     <div className="absolute inset-0 overflow-hidden bg-[linear-gradient(135deg,#edf7f1_0%,#d6ebdf_48%,#9dc5ae_100%)]">
       <div className="absolute inset-0 opacity-70 [background-image:linear-gradient(rgba(255,255,255,0.34)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.34)_1px,transparent_1px)] [background-size:32px_32px]" />
@@ -44,11 +44,7 @@ function StaticMapSurface({ address, location }: { address: string; location: Pu
         <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[var(--text-primary)]">{address}</p>
       </div>
       <div className="absolute left-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-[#dc2626] shadow-[0_0_0_7px_rgba(220,38,38,0.16)]" aria-hidden="true" />
-      <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4">
-        <div className="rounded-full border border-white/75 bg-white/88 px-3 py-1.5 text-[0.68rem] font-semibold text-[var(--brand-primary)] shadow-sm backdrop-blur-sm">
-          {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
-        </div>
-      </div>
+      {!compact ? <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4"><div className="rounded-full border border-white/75 bg-white/88 px-3 py-1.5 text-[0.68rem] font-semibold text-[var(--brand-primary)] shadow-sm backdrop-blur-sm">{location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}</div></div> : null}
     </div>
   );
 }
@@ -59,7 +55,7 @@ export function PublicMapPreview({ address, location, mapSearchUrl, mapEmbedUrl,
   if (compact) {
     return (
       <div className={cn('relative isolate min-h-[12rem] overflow-hidden rounded-[var(--public-radius-card)] bg-[var(--brand-primary-subtle)]', className)}>
-        <StaticMapSurface address={address} location={location} />
+        <StaticMapSurface address={address} location={location} compact />
         <div className="absolute inset-x-3 bottom-3 z-10 flex items-center justify-between gap-3 rounded-[var(--public-radius-control)] border border-white/70 bg-white/92 px-3 py-2.5 shadow-sm backdrop-blur-sm sm:inset-x-4 sm:bottom-4">
           <div className="min-w-0">
             <p className="text-[0.64rem] font-bold uppercase tracking-[0.12em] text-[var(--brand-primary)]">Điểm hỗ trợ</p>

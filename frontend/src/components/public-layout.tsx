@@ -70,18 +70,20 @@ export function PublicPageHeader({
   title,
   description,
   action,
-  eyebrow = 'Nền tảng'
+  eyebrow = 'Nền tảng',
+  titleClassName
 }: {
   title: string;
   description: string;
   action?: React.ReactNode;
   eyebrow?: string;
+  titleClassName?: string;
 }) {
   return (
     <div className="mb-5 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="max-w-3xl">
         <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)] sm:text-sm">{eyebrow}</p>
-        <h1 className="type-h1 mt-2 max-w-[18ch] text-[1.7rem] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]">
+        <h1 className={cn('type-h1 mt-2 max-w-[18ch] text-[1.7rem] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]', titleClassName)}>
           {title}
         </h1>
         <p className="mt-2.5 max-w-2xl text-[0.95rem] leading-[1.72] text-[var(--text-secondary)] sm:mt-3 sm:text-base sm:leading-[1.8]">{description}</p>

@@ -3,7 +3,7 @@ import { cn } from './ui';
 export const PUBLIC_LOGO_SRC = '/logo.png';
 export const AGRIPASSPORT_MARK_SRC = '/agripassport-mark.png';
 export const AGRIPASSPORT_WORDMARK_SRC = '/agripassport-wordmark.png';
-export const PASSPORT_WORDMARK_SRC = '/passport-wordmark.png';
+export const PASSPORT_WORDMARK_SRC = '/passport-wordmark-transparent-v2.png';
 export const PASSPORT_MARK_SRC = '/passport-mark.png';
 export const HTXONLINE_WORDMARK_SRC = '/htxonline-wordmark.png';
 export const HTXONLINE_MARK_SRC = '/htxonline-mark.png';
