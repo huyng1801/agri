@@ -1429,6 +1429,7 @@ export default async function HomePage() {
                 ? "aspect-[21/10] w-full"
                 : "aspect-[16/11] sm:aspect-[18/7] lg:aspect-[21/7]"}
               className="h-full w-full object-cover"
+              priority={isPassport}
             />
             {!isPassport ? (
               <>
