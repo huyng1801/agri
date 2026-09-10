@@ -20,7 +20,7 @@ export function PassportCollaboratorForm() {
     const form = event.currentTarget;
     const values = new FormData(form);
     const fullName = String(values.get('fullName') || '').trim();
-    const phone = String(values.get('phone') || '').trim();
+    const phone = String(values.get('phone') || '').trim().replace(/[\s().-]/g, '');
     const email = String(values.get('email') || '').trim();
     const province = String(values.get('province') || '').trim();
     const currentWork = String(values.get('currentWork') || '').trim();
