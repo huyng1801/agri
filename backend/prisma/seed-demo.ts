@@ -868,11 +868,39 @@ async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, admi
   });
   const base = (process.env.PASSPORT_PUBLIC_URL || process.env.FRONTEND_URL || 'https://hochieunongnghiep.com').replace(/\/+$/, '');
   for (const tree of trees) {
-    const existingCode = await prisma.traceabilityCode.findUnique({ where: { treeId: tree.id } });
-    if (!existingCode) await prisma.traceabilityCode.create({ data: { cooperativeId, code: `TREE-${tree.treeCode}`, publicSlug: `${tree.treeCode.toLowerCase()}-demo`, codeType: 'TREE', treeId: tree.id, qrDataUrl: await QRCode.toDataURL(`${base}/cay/${encodeURIComponent(tree.treeCode)}`), status: 'PUBLISHED', publishedAt: new Date() } });
+    const code = `TREE-${tree.treeCode}`;
+    const publicSlug = `${tree.treeCode.toLowerCase()}-demo`;
+    const qrDataUrl = await QRCode.toDataURL(`${base}/cay/${encodeURIComponent(tree.treeCode)}`);
+    const existingCode = await prisma.traceabilityCode.findFirst({
+      where: { OR: [{ treeId: tree.id }, { code }, { publicSlug }] }
+    });
+    if (existingCode) {
+      await prisma.traceabilityCode.update({
+        where: { id: existingCode.id },
+        data: { cooperativeId, code, publicSlug, codeType: 'TREE', treeId: tree.id, qrDataUrl, status: 'PUBLISHED' }
+      });
+    } else {
+      await prisma.traceabilityCode.create({
+        data: { cooperativeId, code, publicSlug, codeType: 'TREE', treeId: tree.id, qrDataUrl, status: 'PUBLISHED', publishedAt: new Date() }
+      });
+    }
   }
-  const existingBatchCode = await prisma.traceabilityCode.findUnique({ where: { productBatchId: batch.id } });
-  if (!existingBatchCode) await prisma.traceabilityCode.create({ data: { cooperativeId, code: `BATCH-${productCode}`, publicSlug: `${productCode.toLowerCase()}-demo`, codeType: 'PRODUCT_BATCH', productBatchId: batch.id, qrDataUrl: await QRCode.toDataURL(`${base}/truy-xuat/${encodeURIComponent(productCode)}`), status: 'PUBLISHED', publishedAt: new Date() } });
+  const batchCode = `BATCH-${productCode}`;
+  const batchPublicSlug = `${productCode.toLowerCase()}-demo`;
+  const batchQr = await QRCode.toDataURL(`${base}/truy-xuat/${encodeURIComponent(productCode)}`);
+  const existingBatchCode = await prisma.traceabilityCode.findFirst({
+    where: { OR: [{ productBatchId: batch.id }, { code: batchCode }, { publicSlug: batchPublicSlug }] }
+  });
+  if (existingBatchCode) {
+    await prisma.traceabilityCode.update({
+      where: { id: existingBatchCode.id },
+      data: { cooperativeId, code: batchCode, publicSlug: batchPublicSlug, codeType: 'PRODUCT_BATCH', productBatchId: batch.id, qrDataUrl: batchQr, status: 'PUBLISHED' }
+    });
+  } else {
+    await prisma.traceabilityCode.create({
+      data: { cooperativeId, code: batchCode, publicSlug: batchPublicSlug, codeType: 'PRODUCT_BATCH', productBatchId: batch.id, qrDataUrl: batchQr, status: 'PUBLISHED', publishedAt: new Date() }
+    });
+  }
 }
 
 function coopCodeForLot(demo: DemoCoop) {
