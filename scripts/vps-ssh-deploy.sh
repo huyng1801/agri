@@ -11,8 +11,5 @@ if ! command -v sshpass >/dev/null 2>&1; then
   sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq sshpass
 fi
 
-mkdir -p ~/.ssh
-ssh-keyscan -H "$HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-
-sshpass -e scp -P "$PORT" "$LOCAL_SCRIPT" "${USER}@${HOST}:/tmp/vps-deploy-remote.sh"
-sshpass -e ssh -p "$PORT" "${USER}@${HOST}" "sed -i 's/\r$//' /tmp/vps-deploy-remote.sh && chmod +x /tmp/vps-deploy-remote.sh && /tmp/vps-deploy-remote.sh"
+sleep 8
+sshpass -e ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectionAttempts=5 -p "$PORT" "${USER}@${HOST}" "bash -s" < "$LOCAL_SCRIPT"
