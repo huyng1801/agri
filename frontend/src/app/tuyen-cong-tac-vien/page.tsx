@@ -117,7 +117,7 @@ export default async function PassportCollaboratorPage() {
               <div className="absolute -right-4 -top-8 h-32 w-32 rounded-full bg-[#d8f6a7]/20 blur-2xl" aria-hidden="true" />
               <div className="relative overflow-hidden rounded-[2rem] border border-white/25 bg-white/[0.12] p-5 shadow-[0_24px_54px_rgba(3,43,22,0.2)] backdrop-blur-sm sm:p-7">
                 <div className="flex items-center justify-between gap-3 border-b border-white/20 pb-5">
-                  <PublicLogo size={50} variant="passport" className="h-12 w-12" />
+                  <PublicLogo size={30} variant="passport-wordmark" className="h-8 w-auto max-w-[13rem]" />
                   <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80">Hồ sơ số</span>
                 </div>
                 <div className="mt-6 rounded-[1.4rem] bg-white p-4 text-[#123c26] shadow-[0_16px_30px_rgba(5,52,26,0.14)]">
