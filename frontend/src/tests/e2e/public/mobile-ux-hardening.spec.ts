@@ -40,8 +40,8 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     });
   }
 
-  // 2. Global Mobile Bottom Navigation Bar: 4 core items on main routes
-  test('Global Bottom Navigation has exactly 4 core items on mobile viewports', async ({ page }) => {
+  // 2. Global Mobile Bottom Navigation Bar: 4 core items, tab navigation, and scroll persistence
+  test('Global Bottom Navigation has 4 core items, active state indicator, and remains rock-solid on scroll', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -51,11 +51,40 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     const navItems = bottomNav.locator('a');
     await expect(navItems).toHaveCount(4);
 
-    // Verify labels: Trang chủ, Sản phẩm, Quét QR, Đối tác
+    // 1. Verify labels: Trang chủ, Sản phẩm, Quét QR, Đối tác
     const expectedLabels = ['Trang chủ', 'Sản phẩm', 'Quét QR', 'Đối tác'];
     for (let i = 0; i < expectedLabels.length; i++) {
       await expect(navItems.nth(i)).toContainText(expectedLabels[i]);
     }
+
+    // 2. Initial active tab is Trang chủ
+    await expect(navItems.nth(0)).toHaveAttribute('aria-current', 'page');
+    await expect(navItems.nth(1)).not.toHaveAttribute('aria-current', 'page');
+
+    // 3. Scroll to footer and ensure bottom nav DOES NOT disappear or flicker
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await page.waitForTimeout(300);
+    await expect(bottomNav).toBeVisible();
+    const isHidden = await bottomNav.evaluate((el) => {
+      const style = window.getComputedStyle(el);
+      return style.opacity === '0' || style.display === 'none' || style.visibility === 'hidden';
+    });
+    expect(isHidden).toBe(false);
+
+    // 4. Click 'Sản phẩm' tab and verify navigation and active state
+    await navItems.nth(1).click();
+    await page.waitForURL('**/san-pham', { timeout: 10000 });
+    await expect(bottomNav.locator('a').nth(1)).toHaveAttribute('aria-current', 'page');
+
+    // 5. Click 'Quét QR' tab
+    await bottomNav.locator('a').nth(2).click();
+    await page.waitForURL('**/truy-xuat', { timeout: 10000 });
+    await expect(bottomNav.locator('a').nth(2)).toHaveAttribute('aria-current', 'page');
+
+    // 6. Click 'Đối tác' tab
+    await bottomNav.locator('a').nth(3).click();
+    await page.waitForURL('**/htx', { timeout: 10000 });
+    await expect(bottomNav.locator('a').nth(3)).toHaveAttribute('aria-current', 'page');
   });
 
   // 3. Products Catalog page (/san-pham) on mobile
@@ -112,8 +141,8 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     });
   });
 
-  // 5. Mobile Top Header & Navigation Drawer
-  test('Mobile header height <= 58px and categorized navigation menu', async ({ page }) => {
+  // 5. Mobile Top Header & Navigation Drawer Interactive Test
+  test('Mobile header height <= 58px and categorized navigation drawer full interactions', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -121,19 +150,52 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(header).toBeVisible();
 
     const menuButton = header.locator('button[aria-label*="menu" i], button[aria-label*="Menu" i], button[aria-expanded]');
-    if (await menuButton.isVisible()) {
-      await menuButton.click();
-      await page.waitForTimeout(300);
+    await expect(menuButton).toBeVisible();
 
-      // Verify category sections exist in the mobile menu:
-      // 'Khám phá Dữ liệu', 'Hệ sinh thái Nông nghiệp Số', 'Hỗ trợ & Kết nối'
-      const drawer = page.locator('div[role="dialog"], aside, [class*="fixed inset-0"]');
-      await expect(drawer.first()).toBeVisible();
+    // 1. Open drawer via menu button
+    await menuButton.click();
+    const drawerDialog = page.locator('div[role="dialog"][aria-label="Menu điều hướng"]');
+    await expect(drawerDialog).toBeVisible({ timeout: 5000 });
 
-      await page.screenshot({
-        path: path.join(screenshotsDir, 'mobile-menu-open-390x844.png')
-      });
-    }
+    // Verify 3 categories exist
+    await expect(drawerDialog.getByText('Khám phá Dữ liệu')).toBeVisible();
+    await expect(drawerDialog.getByText('Hệ sinh thái Nông nghiệp Số')).toBeVisible();
+    await expect(drawerDialog.getByText('Hỗ trợ & Kết nối')).toBeVisible();
+
+    // Verify items have >= 44px touch height
+    const firstLink = drawerDialog.locator('a').first();
+    const linkBox = await firstLink.boundingBox();
+    expect(linkBox?.height).toBeGreaterThanOrEqual(44);
+
+    // Verify close button touch target >= 40px
+    const closeBtn = drawerDialog.locator('button[aria-label="Đóng menu"]');
+    await expect(closeBtn).toBeVisible();
+    const closeBox = await closeBtn.boundingBox();
+    expect(closeBox?.width).toBeGreaterThanOrEqual(40);
+    expect(closeBox?.height).toBeGreaterThanOrEqual(40);
+
+    // Screenshot open drawer
+    await page.screenshot({
+      path: path.join(screenshotsDir, 'mobile-menu-open-390x844.png')
+    });
+
+    // 2. Close via X button
+    await closeBtn.click();
+    await expect(drawerDialog).toBeHidden();
+
+    // 3. Re-open and close via backdrop
+    await menuButton.click();
+    await expect(drawerDialog).toBeVisible();
+    // Backdrop is the first child inside dialog
+    const backdrop = drawerDialog.locator('div[aria-hidden="true"]').first();
+    await backdrop.click({ position: { x: 20, y: 200 } });
+    await expect(drawerDialog).toBeHidden();
+
+    // 4. Re-open and close via Escape key
+    await menuButton.click();
+    await expect(drawerDialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(drawerDialog).toBeHidden();
   });
 
   // 6. Mobile Footer Accordions

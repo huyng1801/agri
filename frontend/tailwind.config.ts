@@ -4,6 +4,9 @@ const config: Config = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      screens: {
+        xs: '375px'
+      },
       colors: {
         ink: 'var(--foreground)',
         leaf: '#2f7d4f',
