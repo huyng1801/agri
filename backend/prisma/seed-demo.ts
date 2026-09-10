@@ -1,6 +1,7 @@
 import {
   FarmingActivityType,
   FileVisibility,
+  NewsSite,
   NewsStatus,
   PassportStatus,
   PrismaClient,
@@ -9,6 +10,7 @@ import {
 } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { customAlphabet } from 'nanoid';
+import QRCode from 'qrcode';
 import { EDITORIAL_NEWS_ARTICLES } from './editorial-news';
 import { EDITORIAL_NEWS_EXPANSION } from './editorial-news-expansion';
 import { SEASON_MANAGEMENT_NEWS } from './editorial-news-season';
@@ -557,6 +559,15 @@ async function resetDemoData() {
   const coopIds = cooperatives.map((item) => item.id);
   if (!coopIds.length) return;
 
+  await prisma.traceabilityCode.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.productBatch.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.lotTree.deleteMany({ where: { lot: { cooperativeId: { in: coopIds } } } });
+  await prisma.treeInput.deleteMany({ where: { event: { cooperativeId: { in: coopIds } } } });
+  await prisma.treeEvent.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.harvest.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.lot.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.tree.deleteMany({ where: { cooperativeId: { in: coopIds } } });
+  await prisma.productionSeason.deleteMany({ where: { cooperativeId: { in: coopIds } } });
   await prisma.orderItem.deleteMany({ where: { cooperativeId: { in: coopIds } } });
   await prisma.payment.deleteMany({ where: { order: { cooperativeId: { in: coopIds } } } });
   await prisma.order.deleteMany({ where: { cooperativeId: { in: coopIds } } });
@@ -793,6 +804,81 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
   return cooperative;
 }
 
+async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, adminId: string) {
+  const cropType = await prisma.cropType.upsert({
+    where: { code: 'XOI' },
+    create: { code: 'XOI', name: 'Xoài', sortOrder: 0, isActive: true },
+    update: { name: 'Xoài', isActive: true }
+  });
+  const season = await prisma.productionSeason.upsert({
+    where: { cooperativeId_code: { cooperativeId, code: 'VU-2026' } },
+    create: { cooperativeId, code: 'VU-2026', name: 'Mùa vụ 2026', status: 'ACTIVE', startDate: new Date('2026-01-01'), endDate: new Date('2026-12-31') },
+    update: { name: 'Mùa vụ 2026', status: 'ACTIVE' }
+  });
+  const zone = await prisma.zone.findFirstOrThrow({ where: { cooperativeId }, orderBy: { createdAt: 'asc' } });
+  const product = await prisma.product.findFirst({ where: { cooperativeId, status: ProductStatus.PUBLISHED }, orderBy: { createdAt: 'asc' } });
+  if (!product) return;
+
+  const trees = [];
+  for (const [index, offset] of [0, 1].entries()) {
+    const zoneCode = zone.code.toUpperCase().replace(/[^A-Z0-9]+/g, '');
+    const coopCode = demo.code.toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 6);
+    const treeCode = `XOI-${coopCode}-${zoneCode}-${String(index + 1).padStart(6, '0')}`;
+    const plantedDate = new Date(`201${8 + index}-06-15`);
+    const tree = await prisma.tree.upsert({
+      where: { treeCode },
+      create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, treeCode, variety: index ? 'Cát Chu' : 'Keo', latitude: 10.4458 + offset * 0.0004, longitude: 105.718 + offset * 0.0004, plantedDate, status: 'HARVESTED', publicVerified: true, createdById: adminId, note: 'Cá thể demo cho luồng hộ chiếu cây' },
+      update: { zoneId: zone.id, cropTypeId: cropType.id, status: 'HARVESTED', publicVerified: true, plantedDate }
+    });
+    trees.push(tree);
+    const eventDate = new Date('2026-07-10');
+    const existingEvent = await prisma.treeEvent.findFirst({ where: { treeId: tree.id, eventType: 'FERTILIZING', description: { startsWith: 'Bón phân hữu cơ' } } });
+    if (!existingEvent) {
+      await prisma.treeEvent.create({ data: { cooperativeId, treeId: tree.id, seasonId: season.id, actorId: adminId, eventDate, eventType: 'FERTILIZING', description: 'Bón phân hữu cơ theo lịch mùa vụ 2026', status: 'PUBLISHED', inputs: { create: [{ materialType: 'FERTILIZER', materialName: 'Phân hữu cơ vi sinh', quantity: 4, unit: 'kg' }] } } });
+    }
+  }
+
+  const harvestDate = new Date('2026-08-20');
+  const harvests = [];
+  for (const [index, tree] of trees.entries()) {
+    const quantity = 42 + index * 8;
+    const harvest = await prisma.harvest.findFirst({ where: { treeId: tree.id, harvestDate } });
+    const savedHarvest = harvest ?? await prisma.harvest.create({ data: { cooperativeId, treeId: tree.id, seasonId: season.id, harvestDate, quantity, unit: 'kg', status: 'RECORDED', recordedById: adminId, note: 'Thu hoạch demo cho ProductBatch' } });
+    harvests.push(savedHarvest);
+  }
+
+  const lotCode = `LO-${coopCodeForLot(demo)}-2026-00001`;
+  const lot = await prisma.lot.upsert({
+    where: { cooperativeId_lotCode: { cooperativeId, lotCode } },
+    create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, lotCode, harvestDate, totalQuantity: 0, unit: 'kg', packagingDate: new Date('2026-08-22'), status: 'PUBLISHED', note: 'Lô demo liên kết theo cá thể cây' },
+    update: { status: 'PUBLISHED', packagingDate: new Date('2026-08-22') }
+  });
+  for (const [index, harvest] of harvests.entries()) {
+    const existing = await prisma.lotTree.findUnique({ where: { lotId_harvestId: { lotId: lot.id, harvestId: harvest.id } } });
+    if (!existing) await prisma.lotTree.create({ data: { lotId: lot.id, treeId: harvest.treeId, harvestId: harvest.id, quantity: 42 + index * 8, unit: 'kg' } });
+  }
+  const totalQuantity = await prisma.lotTree.aggregate({ where: { lotId: lot.id }, _sum: { quantity: true } });
+  await prisma.lot.update({ where: { id: lot.id }, data: { totalQuantity: totalQuantity._sum.quantity ?? 0 } });
+
+  const productCode = `SP-${coopCodeForLot(demo)}-2026-00001`;
+  const batch = await prisma.productBatch.upsert({
+    where: { cooperativeId_productCode: { cooperativeId, productCode } },
+    create: { cooperativeId, productId: product.id, lotId: lot.id, productCode, quantity: totalQuantity._sum.quantity ?? 0, unit: 'kg', harvestDate, packagingDate: new Date('2026-08-22'), status: 'PUBLISHED', publicVerified: true, note: 'ProductBatch demo truy xuất hai chiều' },
+    update: { productId: product.id, lotId: lot.id, quantity: totalQuantity._sum.quantity ?? 0, harvestDate, status: 'PUBLISHED', publicVerified: true }
+  });
+  const base = (process.env.PASSPORT_PUBLIC_URL || process.env.FRONTEND_URL || 'https://hochieunongnghiep.com').replace(/\/+$/, '');
+  for (const tree of trees) {
+    const existingCode = await prisma.traceabilityCode.findUnique({ where: { treeId: tree.id } });
+    if (!existingCode) await prisma.traceabilityCode.create({ data: { cooperativeId, code: `TREE-${tree.treeCode}`, publicSlug: `${tree.treeCode.toLowerCase()}-demo`, codeType: 'TREE', treeId: tree.id, qrDataUrl: await QRCode.toDataURL(`${base}/cay/${encodeURIComponent(tree.treeCode)}`), status: 'PUBLISHED', publishedAt: new Date() } });
+  }
+  const existingBatchCode = await prisma.traceabilityCode.findUnique({ where: { productBatchId: batch.id } });
+  if (!existingBatchCode) await prisma.traceabilityCode.create({ data: { cooperativeId, code: `BATCH-${productCode}`, publicSlug: `${productCode.toLowerCase()}-demo`, codeType: 'PRODUCT_BATCH', productBatchId: batch.id, qrDataUrl: await QRCode.toDataURL(`${base}/truy-xuat/${encodeURIComponent(productCode)}`), status: 'PUBLISHED', publishedAt: new Date() } });
+}
+
+function coopCodeForLot(demo: DemoCoop) {
+  return demo.code.toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 6);
+}
+
 const PUBLIC_ARTICLE_GUIDES: Record<string, string> = {
   'chuyen-doi-so': '<h2>Gợi ý triển khai trong 30 ngày</h2><p>Để bắt đầu mà không tạo áp lực cho đội ngũ, hợp tác xã có thể chia việc thành bốn tuần: tuần đầu kiểm kê và chọn sản phẩm thử nghiệm; tuần thứ hai chuẩn hóa tên, quy cách và người phụ trách; tuần thứ ba nhập dữ liệu sản xuất và kiểm tra trên điện thoại; tuần thứ tư đánh giá điểm vướng rồi thống nhất cách cập nhật. Mỗi tuần nên có một đầu ra cụ thể để mọi người dễ phối hợp.</p><ul><li>Chọn một người chịu trách nhiệm dữ liệu và một người kiểm tra.</li><li>Ghi rõ trường nào bắt buộc trước khi mở hồ sơ công khai.</li><li>Đặt lịch rà soát dữ liệu theo mùa vụ, không chờ đến khi có vấn đề.</li></ul>',
   'truy-xuat-nguon-goc': '<h2>Gợi ý thực hành cho người mua</h2><p>Khi quét một mã QR, hãy đọc theo thứ tự từ dễ kiểm tra đến thông tin chuyên sâu: tên sản phẩm, đơn vị sản xuất, vùng sản xuất, mã lô hoặc thời gian, sau đó là nhật ký và tài liệu liên quan nếu có. Nếu thông tin chưa khớp với bao bì, hãy tạm dừng và liên hệ với đơn vị sản xuất thay vì tự suy đoán.</p><p>Truy xuất tốt giúp người mua có thêm cơ sở lựa chọn, nhưng vẫn cần được kết hợp với nhãn hàng hóa, bảo quản đúng cách và các yêu cầu chất lượng phù hợp với từng sản phẩm.</p>',
@@ -837,6 +923,7 @@ async function seedNews(superAdminId: string) {
     await prisma.newsArticle.upsert({
       where: { slug: existingByTitle?.slug ?? slug },
       create: {
+        siteKey: NewsSite.AGRIPASSPORT,
         categoryId: categoryBySlug.get(article.category),
         authorId: superAdminId,
         title: article.title,
@@ -865,6 +952,7 @@ async function seedNews(superAdminId: string) {
         readabilityScore: 86
       },
       update: {
+        siteKey: NewsSite.AGRIPASSPORT,
         title: article.title,
         slug,
         excerpt: article.excerpt,
@@ -896,6 +984,7 @@ async function seedNews(superAdminId: string) {
     await prisma.newsArticle.updateMany({
       where: { title: article.title },
       data: {
+        siteKey: NewsSite.AGRIPASSPORT,
         excerpt: article.excerpt,
         bodyHtml,
         coverImageUrl: article.cover,
@@ -1024,6 +1113,9 @@ async function main() {
   for (const demo of DEMO_COOPERATIVES) {
     const planId = demo.planSlug === 'pro' ? proPlan.id : basicPlan.id;
     await seedCooperative(demo, planId, adminRole.id);
+    const demoCooperative = await prisma.cooperative.findUniqueOrThrow({ where: { code: demo.code } });
+    const demoAdmin = await prisma.user.findUniqueOrThrow({ where: { email: `admin+${demo.code}@demo.htxonline.vn` } });
+    await seedPlantTraceability(demo, demoCooperative.id, demoAdmin.id);
     productTotal += demo.products.length;
     console.log(`Seeded ${demo.name} (${demo.products.length} sản phẩm)`);
   }

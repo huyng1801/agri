@@ -204,12 +204,12 @@ export function CooperativeCard({ cooperative, priority = false }: { cooperative
 
       <div className="mt-4 grid grid-cols-2 gap-2 border-t border-[var(--border)] pt-3 text-xs">
         <div className="rounded-[var(--public-radius-control)] bg-[var(--surface-muted)] p-2">
-          <span className="text-[var(--text-tertiary)] block text-[0.7rem]">Mã định danh</span>
-          <span className="font-bold text-[var(--text-primary)] truncate block mt-0.5">{cooperative.code}</span>
+          <span className="text-[var(--text-tertiary)] block text-[0.7rem]">Địa bàn hoạt động</span>
+          <span className="font-bold text-[var(--text-primary)] truncate block mt-0.5">{cooperative.province || 'Việt Nam'}</span>
         </div>
         <div className="rounded-[var(--public-radius-control)] bg-[var(--surface-muted)] p-2">
-          <span className="text-[var(--text-tertiary)] block text-[0.7rem]">Sản phẩm số hóa</span>
-          <span className="font-bold text-[var(--brand-primary)] block mt-0.5">{cooperative.productCount} sản phẩm</span>
+          <span className="text-[var(--text-tertiary)] block text-[0.7rem]">Nông sản công khai</span>
+          <span className="font-bold text-[#0d7a28] block mt-0.5">{cooperative.productCount} sản phẩm</span>
         </div>
       </div>
 

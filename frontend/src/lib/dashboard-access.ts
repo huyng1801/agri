@@ -16,6 +16,7 @@ const ROUTE_RULES: RouteRule[] = [
   { prefix: '/dashboard/users', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/users', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/roles', areas: ['admin'], roles: ['SUPER_ADMIN'] },
+  { prefix: '/dashboard/crop-types', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/subscription-plans', areas: ['admin'], roles: ['SUPER_ADMIN'] },
   { prefix: '/dashboard/subscription-plans', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/invoices', areas: ['admin'], roles: ['SUPER_ADMIN'] },
@@ -32,8 +33,14 @@ const ROUTE_RULES: RouteRule[] = [
   { prefix: '/dashboard/products', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
   { prefix: '/dashboard/certifications', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX'] },
   { prefix: '/dashboard/zones', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/trees', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/map', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
   { prefix: '/dashboard/farmers', areas: ['htx'], roles: ['ADMIN_HTX'] },
   { prefix: '/dashboard/farming-logs', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/tree-events', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/harvests', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/lots', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
+  { prefix: '/dashboard/traceability', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] },
   { prefix: '/dashboard/passports', areas: ['htx'], roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'] }
 ];
 

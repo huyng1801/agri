@@ -108,7 +108,7 @@ export function PassportCollaboratorForm() {
     <form
       id="dang-ky"
       onSubmit={submit}
-      className="grid gap-4 rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-[0_22px_52px_rgba(15,23,42,0.07)] sm:p-7"
+      className="grid gap-4 rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-[0_22px_52px_rgba(15,23,42,0.07)] sm:p-7 lg:h-full"
     >
       <div className="border-b border-[var(--border)] pb-4">
         <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Thông tin của bạn</p>

@@ -25,14 +25,24 @@ import {
   FarmingActivityType,
   FarmingLogStatus,
   FileVisibility,
+  HarvestStatus,
   InvoiceStatus,
+  LotStatus,
   MemberStatus,
+  NewsSite,
   NewsStatus,
   OrderStatus,
   PassportStatus,
+  ProductBatchStatus,
   ProductStatus,
   RoleSlug,
+  SeasonStatus,
   SubscriptionStatus,
+  TraceabilityCodeStatus,
+  TraceabilityCodeType,
+  TreeEventStatus,
+  TreeEventType,
+  TreeStatus,
   UserStatus,
   ZoneStatus
 } from '@prisma/client';
@@ -482,6 +492,10 @@ export class UpdateNewsCategoryDto extends CreateNewsCategoryDto {
 
 export class CreateNewsArticleDto {
   @IsOptional()
+  @IsEnum(NewsSite)
+  siteKey?: NewsSite;
+
+  @IsOptional()
   @IsUUID()
   categoryId?: string;
 
@@ -852,6 +866,444 @@ export class UpdatePassportDto {
   @IsOptional()
   @IsEnum(PassportStatus)
   status?: PassportStatus;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  expiredAt?: Date;
+}
+
+export class CreateCropTypeDto {
+  @IsString()
+  @IsNotEmpty()
+  code!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsOptional()
+  @IsString()
+  description?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  sortOrder?: number;
+
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+
+export class UpdateCropTypeDto extends CreateCropTypeDto {
+  @IsOptional()
+  override code!: string;
+
+  @IsOptional()
+  override name!: string;
+}
+
+export class CreateSeasonDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  code!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  name!: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  startDate?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  endDate?: Date;
+
+  @IsOptional()
+  @IsEnum(SeasonStatus)
+  status?: SeasonStatus;
+}
+
+export class UpdateSeasonDto extends CreateSeasonDto {
+  @IsOptional()
+  override code!: string;
+
+  @IsOptional()
+  override name!: string;
+}
+
+export class CreateTreeDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsUUID()
+  zoneId!: string;
+
+  @IsUUID()
+  cropTypeId!: string;
+
+  @IsOptional()
+  @IsString()
+  treeCode?: string;
+
+  @IsOptional()
+  @IsString()
+  variety?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  longitude?: number;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  plantedDate?: Date;
+
+  @IsOptional()
+  @IsEnum(TreeStatus)
+  status?: TreeStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
+
+  @IsOptional()
+  @IsArray()
+  imagesJson?: unknown[];
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class UpdateTreeDto {
+  @IsOptional()
+  @IsUUID()
+  zoneId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  cropTypeId?: string;
+
+  @IsOptional()
+  @IsString()
+  treeCode?: string;
+
+  @IsOptional()
+  @IsString()
+  variety?: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  latitude?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  longitude?: number;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  plantedDate?: Date;
+
+  @IsOptional()
+  @IsEnum(TreeStatus)
+  status?: TreeStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
+
+  @IsOptional()
+  @IsArray()
+  imagesJson?: unknown[];
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class TreeInputDto {
+  @IsOptional()
+  @IsString()
+  materialType?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  materialName!: string;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  quantity?: number;
+
+  @IsOptional()
+  @IsString()
+  unit?: string;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class CreateTreeEventDto {
+  @IsOptional()
+  @IsUUID()
+  treeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  seasonId?: string;
+
+  @Type(() => Date)
+  @IsDate()
+  eventDate!: Date;
+
+  @IsEnum(TreeEventType)
+  eventType!: TreeEventType;
+
+  @IsString()
+  @IsNotEmpty()
+  description!: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => TreeInputDto)
+  inputs?: TreeInputDto[];
+
+  @IsOptional()
+  @IsArray()
+  imagesJson?: unknown[];
+
+  @IsOptional()
+  @IsEnum(TreeEventStatus)
+  status?: TreeEventStatus;
+
+  @IsOptional()
+  @IsObject()
+  metadataJson?: Record<string, unknown>;
+}
+
+export class UpdateTreeEventDto extends CreateTreeEventDto {
+  @IsOptional()
+  override eventDate!: Date;
+
+  @IsOptional()
+  override eventType!: TreeEventType;
+
+  @IsOptional()
+  override description!: string;
+}
+
+export class CreateHarvestDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  treeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  seasonId?: string;
+
+  @Type(() => Date)
+  @IsDate()
+  harvestDate!: Date;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  quantity!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  unit!: string;
+
+  @IsOptional()
+  @IsEnum(HarvestStatus)
+  status?: HarvestStatus;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class CreateLotDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  zoneId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  cropTypeId?: string;
+
+  @IsOptional()
+  @IsString()
+  lotCode?: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  harvestDate?: Date;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  @Min(0)
+  totalQuantity?: number;
+
+  @IsString()
+  @IsNotEmpty()
+  unit!: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  packagingDate?: Date;
+
+  @IsOptional()
+  @IsEnum(LotStatus)
+  status?: LotStatus;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class UpdateLotDto extends CreateLotDto {
+  @IsOptional()
+  override lotCode!: string;
+
+  @IsOptional()
+  override unit!: string;
+}
+
+export class AllocateLotTreeDto {
+  @IsUUID()
+  harvestId!: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  quantity!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  unit!: string;
+}
+
+export class CreateProductBatchDto {
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
+  @IsUUID()
+  productId!: string;
+
+  @IsUUID()
+  lotId!: string;
+
+  @IsOptional()
+  @IsString()
+  productCode?: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsPositive()
+  quantity!: number;
+
+  @IsString()
+  @IsNotEmpty()
+  unit!: string;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  harvestDate?: Date;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  packagingDate?: Date;
+
+  @IsOptional()
+  @IsEnum(ProductBatchStatus)
+  status?: ProductBatchStatus;
+
+  @IsOptional()
+  @IsBoolean()
+  publicVerified?: boolean;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+}
+
+export class UpdateProductBatchDto extends CreateProductBatchDto {
+  @IsOptional()
+  override productId!: string;
+
+  @IsOptional()
+  override lotId!: string;
+
+  @IsOptional()
+  override quantity!: number;
+
+  @IsOptional()
+  override unit!: string;
+}
+
+export class CreateTraceabilityCodeDto {
+  @IsEnum(TraceabilityCodeType)
+  codeType!: TraceabilityCodeType;
+
+  @IsOptional()
+  @IsUUID()
+  treeId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  productBatchId?: string;
+
+  @IsOptional()
+  @IsEnum(TraceabilityCodeStatus)
+  status?: TraceabilityCodeStatus;
+
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  expiredAt?: Date;
+}
+
+export class UpdateTraceabilityCodeDto {
+  @IsOptional()
+  @IsEnum(TraceabilityCodeStatus)
+  status?: TraceabilityCodeStatus;
 
   @IsOptional()
   @Type(() => Date)

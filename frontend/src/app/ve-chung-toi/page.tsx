@@ -14,11 +14,14 @@ import { AgripassportAboutPage } from './agripassport-about-page';
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
+  const isPassport = siteKey === 'passport';
   const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
 
   return buildPublicMetadata({
-    title: isAgripassport ? 'Về Agripassport' : 'Về chúng tôi',
-    description: isAgripassport
+    title: isPassport ? 'Về Hộ Chiếu Nông Nghiệp' : isAgripassport ? 'Về Agripassport' : 'Về HTXONLINE',
+    description: isPassport
+      ? 'Hộ Chiếu Nông Nghiệp là giải pháp định danh số, hồ sơ xuất xứ và truy xuất nguồn gốc QR cho nông sản Việt.'
+      : isAgripassport
       ? 'Agripassport giúp số hóa nông sản, chuẩn hóa dữ liệu sản phẩm và minh bạch nguồn gốc bằng QR.'
       : 'HTXONLINE mang đến lớp quản trị nội bộ, QR truy xuất và quy trình vận hành số cho hợp tác xã Việt Nam.',
     path: '/ve-chung-toi'
@@ -42,8 +45,8 @@ const valuePillars = [
     icon: QrCode
   },
   {
-    title: 'Chốt đơn và đối soát gọn',
-    description: 'Quy trình đặt hàng, COD và phối hợp vận hành được ghi nhận để ban quản trị theo dõi minh bạch hơn.',
+    title: 'Giao thương và đối soát minh bạch',
+    description: 'Quy trình tiếp nhận đơn hàng, đối soát vận hành được ghi nhận để ban quản trị theo dõi minh bạch hơn.',
     icon: ShoppingBag
   }
 ] as const;
@@ -90,7 +93,7 @@ export default async function AboutUsPage() {
   const siteKey = await getRequestPublicSiteKey();
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
 
-  if (siteKey === 'agripassport' || siteKey === 'local') {
+  if (siteKey === 'agripassport' || siteKey === 'local' || siteKey === 'passport') {
     return <AgripassportAboutPage siteProfile={siteProfile} />;
   }
 

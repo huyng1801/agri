@@ -32,6 +32,7 @@ import { ContactsModule } from './modules/contacts/contacts.module';
 import { PlanLimitsModule } from './common/services/plan-limits.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { JobsModule } from './modules/jobs/jobs.module';
+import { PlantTraceabilityModule } from './modules/plant-traceability/plant-traceability.module';
 
 @Module({
   imports: [
@@ -68,7 +69,8 @@ import { JobsModule } from './modules/jobs/jobs.module';
     ContactsModule,
     PlanLimitsModule,
     PaymentsModule,
-    JobsModule
+    JobsModule,
+    PlantTraceabilityModule
   ],
   providers: [
     {

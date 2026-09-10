@@ -9,11 +9,14 @@ import { TopicScroll } from '@/components/topic-scroll';
 import { Button, cn } from '@/components/ui';
 import { fetchPublicNews, fetchPublicNewsCategories, publicNewsCategoryLabel } from '@/lib/news';
 import { buildPublicMetadata } from '@/lib/page-metadata';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const siteKey = await getRequestPublicSiteKey();
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   return buildPublicMetadata({
-    title: 'Tin tức',
-    description: 'Tin về hợp tác xã, dữ liệu sản phẩm, truy xuất, thị trường và chuyển đổi số nông nghiệp.',
+    title: `Tin tức ${siteName}`,
+    description: `Bài viết và cập nhật riêng của ${siteName} về dữ liệu, vận hành và truy xuất nông nghiệp.`,
     path: '/tin-tuc',
     keywords: ['tin tức hợp tác xã', 'tin nông sản', 'chuyển đổi số hợp tác xã', 'QR truy xuất', 'dữ liệu sản phẩm'],
     openGraphTitle: 'Tin tức và cập nhật nền tảng',
@@ -22,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 type NewsPageProps = {
-  searchParams?: Promise<{ search?: string; category?: string }>;
+  searchParams?: Promise<{ search?: string; category?: string; page?: string }>;
 };
 
 const publicTopicDefinitions = [
@@ -34,29 +37,34 @@ const publicTopicDefinitions = [
 ] as const;
 
 export default async function NewsPage({ searchParams }: NewsPageProps) {
+  const siteKey = await getRequestPublicSiteKey();
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   const filters = (await searchParams) ?? {};
-  const params = new URLSearchParams({ limit: '24' });
+  const currentPage = Math.max(1, Number(filters.page) || 1);
+  const pageSize = 12;
+  const params = new URLSearchParams({ limit: String(pageSize), page: String(currentPage) });
   if (filters.search) params.set('search', filters.search);
   if (filters.category) params.set('category', filters.category);
 
-  const [news, categories] = await Promise.all([fetchPublicNews(`/news/public?${params.toString()}`), fetchPublicNewsCategories()]);
+  const [news, categories] = await Promise.all([fetchPublicNews(`/news/public?${params.toString()}`, siteKey), fetchPublicNewsCategories(siteKey)]);
   const publicTopics = publicTopicDefinitions.flatMap((topic) => {
     const category = categories.find((item) => (topic.slugs as readonly string[]).includes(item.slug));
     return category ? [{ ...category, name: topic.label, id: topic.label }] : [];
   });
   const articles = news.data;
-  const featured = articles[0];
+  const isFirstPage = currentPage === 1 && !filters.search && !filters.category;
+  const featured = isFirstPage ? articles[0] : null;
   const rest = featured ? articles.slice(1) : articles;
-  const sideArticles = rest.slice(0, 3);
-  const gridArticles = rest.slice(3);
+  const sideArticles = isFirstPage ? rest.slice(0, 3) : [];
+  const gridArticles = isFirstPage ? rest.slice(3) : articles;
 
   return (
     <PublicShell>
       <PublicPageMain>
         <PublicPageHeader
-          eyebrow="Agripassport cập nhật"
-          title="Tin tức"
-          description="Tin HTX, thị trường, kiến thức nông nghiệp, chuyển đổi số và truy xuất nguồn gốc."
+          eyebrow="Tin tức & Kiến thức"
+          title="Tin tức Nông nghiệp Số"
+          description="Thông tin thị trường, tiến trình chuyển đổi số hợp tác xã, cẩm nang canh tác và giải pháp truy xuất nguồn gốc nông sản."
           action={
             <form action="/tin-tuc" method="GET" className="group flex items-center rounded-xl border border-[var(--border)] bg-white p-1.5 shadow-sm transition hover:border-[#106f8a]/40 focus-within:border-[#106f8a] focus-within:ring-2 focus-within:ring-[#106f8a]/15 w-full sm:w-[380px] lg:w-[420px]">
               <div className="flex flex-1 items-center min-w-0 pl-2.5">
@@ -65,8 +73,8 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
                   type="search"
                   name="search"
                   defaultValue={filters.search ?? ''}
-                  placeholder="Tìm bài viết..."
-                  aria-label="Tìm bài viết"
+                  placeholder="Tìm kiếm bài viết..."
+                  aria-label="Tìm kiếm bài viết"
                   className="h-10 w-full min-w-0 bg-transparent px-2.5 text-sm text-[var(--text-primary)] placeholder:text-slate-400 outline-none focus:outline-none focus:ring-0"
                 />
               </div>
@@ -171,6 +179,30 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
               <NewsCard key={article.id} article={article} priority={index < 3} />
             ))}
           </div>
+
+          {(currentPage > 1 || articles.length === pageSize) && (
+            <div className="mt-8 flex items-center justify-center gap-3">
+              {currentPage > 1 && (
+                <Link
+                  href={`/tin-tuc?${new URLSearchParams({ ...filters, page: String(currentPage - 1) }).toString()}`}
+                  className="inline-flex min-h-11 items-center rounded-xl border border-[var(--border)] bg-white px-5 text-sm font-semibold text-[var(--text-primary)] shadow-xs transition hover:bg-slate-50 hover:border-[#106f8a]"
+                >
+                  ← Trang trước
+                </Link>
+              )}
+              <span className="text-sm font-medium text-slate-500">
+                Trang {currentPage}
+              </span>
+              {articles.length === pageSize && (
+                <Link
+                  href={`/tin-tuc?${new URLSearchParams({ ...filters, page: String(currentPage + 1) }).toString()}`}
+                  className="inline-flex min-h-11 items-center rounded-xl border border-[var(--border)] bg-white px-5 text-sm font-semibold text-[var(--text-primary)] shadow-xs transition hover:bg-slate-50 hover:border-[#106f8a]"
+                >
+                  Trang sau →
+                </Link>
+              )}
+            </div>
+          )}
           </section>
         ) : (
           <EmptyPublicState icon={FileText} title="Chưa có tin tức công khai" description="Tin tức mới sẽ hiển thị tại đây khi được đăng tải." />

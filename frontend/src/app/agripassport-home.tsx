@@ -28,7 +28,7 @@ import { getRequestAbsoluteUrl } from '@/lib/request-site';
 export async function AgripassportHome() {
   const [catalog, news, canonical] = await Promise.all([
     fetchPublicCatalog(100),
-    fetchPublicNews('/news/public?home=true&limit=3'),
+    fetchPublicNews('/news/public?home=true&limit=3', 'agripassport'),
     getRequestAbsoluteUrl('/')
   ]);
 

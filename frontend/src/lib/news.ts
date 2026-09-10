@@ -1,4 +1,7 @@
 import { API_URL, ApiEnvelope } from './api';
+import type { PublicSiteKey } from './domain';
+
+export type NewsSiteKey = 'AGRIPASSPORT' | 'PASSPORT' | 'HTXONLINE';
 
 export type NewsCategory = {
   id: string;
@@ -23,6 +26,7 @@ const publicCategoryLabels: Record<string, string> = {
 
 export type NewsArticle = {
   id: string;
+  siteKey?: NewsSiteKey;
   categoryId?: string | null;
   title: string;
   slug: string;
@@ -68,9 +72,9 @@ export type NewsList = {
   meta?: Record<string, unknown>;
 };
 
-export async function fetchPublicNews(path = '/news/public?limit=12') {
+export async function fetchPublicNews(path = '/news/public?limit=12', siteKey: PublicSiteKey = 'agripassport') {
   try {
-    const response = await fetch(`${API_URL}${path}`, { cache: 'no-store' });
+    const response = await fetch(`${API_URL}${withNewsSite(path, siteKey)}`, { cache: 'no-store' });
     if (!response.ok) return { data: [] } satisfies NewsList;
     const body = (await response.json()) as ApiEnvelope<NewsList | NewsArticle[]>;
     return normalizeNewsList(body.data);
@@ -79,9 +83,9 @@ export async function fetchPublicNews(path = '/news/public?limit=12') {
   }
 }
 
-export async function fetchPublicNewsCategories() {
+export async function fetchPublicNewsCategories(siteKey: PublicSiteKey = 'agripassport') {
   try {
-    const response = await fetch(`${API_URL}/news/public/categories`, { cache: 'no-store' });
+    const response = await fetch(`${API_URL}/news/public/categories${withNewsSite('', siteKey)}`, { cache: 'no-store' });
     if (!response.ok) return [];
     const body = (await response.json()) as ApiEnvelope<NewsCategory[]>;
     return Array.isArray(body.data) ? body.data : [];
@@ -95,9 +99,9 @@ export function publicNewsCategoryLabel(category?: Pick<NewsCategory, 'slug' | '
   return publicCategoryLabels[category.slug] || category.name;
 }
 
-export async function fetchPublicNewsDetail(slug: string) {
+export async function fetchPublicNewsDetail(slug: string, siteKey: PublicSiteKey = 'agripassport') {
   try {
-    const response = await fetch(`${API_URL}/news/public/${encodeURIComponent(slug)}`, { cache: 'no-store' });
+    const response = await fetch(`${API_URL}/news/public/${encodeURIComponent(slug)}${withNewsSite('', siteKey)}`, { cache: 'no-store' });
     if (!response.ok) return null;
     const body = (await response.json()) as ApiEnvelope<NewsArticle>;
     return body.data;
@@ -117,7 +121,13 @@ export function articleTitle(article: NewsArticle) {
 }
 
 export function articleDescription(article: NewsArticle) {
-  return article.seoDescription || article.excerpt || 'Tin tức Agripassport';
+  return article.seoDescription || article.excerpt || 'Tin tức và cập nhật nông nghiệp';
+}
+
+function withNewsSite(path: string, siteKey: PublicSiteKey) {
+  const normalizedSite = siteKey === 'passport' ? 'PASSPORT' : siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
+  const separator = path.includes('?') ? '&' : '?';
+  return `${path}${separator}siteKey=${normalizedSite}`;
 }
 
 export function articleImage(article: NewsArticle) {

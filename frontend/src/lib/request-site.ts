@@ -20,7 +20,18 @@ export async function getRequestPublicSiteKey(): Promise<PublicSiteKey> {
 }
 
 export async function getRequestPublicOrigin() {
-  return publicOriginFromHost(await getRequestHostname());
+  const hostname = await getRequestHostname();
+  if (hostname === 'localhost' || /^127(?:\.\d{1,3}){3}$/.test(hostname)) {
+    try {
+      const headerStore = await headers();
+      const host = headerStore.get('x-forwarded-host') || headerStore.get('host') || hostname;
+      const protocol = headerStore.get('x-forwarded-proto') || 'http';
+      return `${protocol}://${host}`;
+    } catch {
+      return `http://${hostname}`;
+    }
+  }
+  return publicOriginFromHost(hostname);
 }
 
 export async function getRequestAbsoluteUrl(path = '/') {

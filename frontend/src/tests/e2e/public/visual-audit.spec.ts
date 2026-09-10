@@ -53,7 +53,7 @@ const RESPONSIVE_VIEWPORTS = [360, 375, 390, 430, 768, 1024, 1280, 1440, 1920] a
 
 const OUTPUT_ROOT = join(process.cwd(), 'test-results', process.env.UI_AUDIT_DIR || 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
-const auditHost = (process.env.PUBLIC_BASE_URL || '').toLowerCase();
+const auditHost = (process.env.PUBLIC_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3100').toLowerCase();
 const auditSiteName = auditHost.includes('htxonline')
   ? 'HTXONLINE'
   : auditHost.includes('agripassport')

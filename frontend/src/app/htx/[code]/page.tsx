@@ -151,11 +151,13 @@ export default async function CooperativeDetailPage({ params }: CooperativeDetai
                 <div className="flex flex-wrap items-center gap-2 mb-1.5">
                   <span className="inline-flex items-center gap-1 rounded-md bg-[#131935]/10 px-2.5 py-0.5 text-xs font-bold text-[#131935]">
                     <ShieldCheck size={13} />
-                    HTX công khai
+                    Hợp tác xã xác thực
                   </span>
-                  <span className="font-mono text-xs font-bold text-[var(--text-tertiary)]">
-                    Mã HTX: {cooperative.code}
-                  </span>
+                  {cooperative.province && (
+                    <span className="inline-flex items-center gap-1 rounded-md border border-[var(--border)] bg-white px-2 py-0.5 text-[11px] font-semibold text-[var(--text-secondary)]">
+                      {cooperative.province}
+                    </span>
+                  )}
                 </div>
 
                 <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-[var(--text-primary)]">

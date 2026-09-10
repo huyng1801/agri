@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Nunito_Sans } from 'next/font/google';
 import './globals.css';
+import 'leaflet/dist/leaflet.css';
 import { QueryProvider } from '@/components/query-provider';
 import { defaultPublicSiteProfileForSite } from '@/lib/public-site';
 import { getRequestPublicOrigin, getRequestPublicSiteKey } from '@/lib/request-site';

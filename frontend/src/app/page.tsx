@@ -42,6 +42,8 @@ import {
   getRequestPublicSiteKey,
 } from "@/lib/request-site";
 import { AgripassportHome } from './agripassport-home';
+import { PassportPlantHome } from '@/components/passport-plant-home';
+import { PublicHomeRedesign } from '@/components/public-home-redesign';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
@@ -51,11 +53,11 @@ export async function generateMetadata(): Promise<Metadata> {
     siteKey === "htxonline"
       ? "HTXONLINE — Hệ thống quản trị nội bộ cho hợp tác xã"
       : siteKey === "passport"
-        ? "HỘ CHIẾU NÔNG NGHIỆP — QR truy xuất cho sản phẩm và lô sản phẩm"
-        : "AGRIPASSPORT — Số hóa nông sản, truy xuất nguồn gốc bằng QR";
+        ? "HỘ CHIẾU NÔNG NGHIỆP — Nền tảng Hộ Chiếu Nông Nghiệp & Dữ liệu Nông sản Minh bạch"
+        : "AGRIPASSPORT — Nền tảng Hộ Chiếu Nông Nghiệp & Dữ liệu Nông sản Minh bạch";
   const pageDescription =
-    siteKey === "agripassport" || siteKey === "local"
-      ? "Kết nối dữ liệu từ sản xuất đến sản phẩm, giúp hợp tác xã quản lý hiệu quả và người tiêu dùng dễ dàng kiểm chứng thông tin."
+    siteKey === "passport" || siteKey === "agripassport" || siteKey === "local"
+      ? "Nền tảng Hộ Chiếu Nông Nghiệp và dữ liệu nông sản minh bạch: kết nối trực tiếp từ vùng canh tác, HTX đến người tiêu dùng và đối tác thương mại bằng mã QR định danh số."
       : profile.pageContent.homeDescription;
 
   return {
@@ -126,13 +128,13 @@ export default async function HomePage() {
   const isMarketplace = siteKey === "agripassport" || siteKey === "local";
   const passportNewsBannerUrl = "/hero/passport-news-banner.png";
 
-  if (isMarketplace) {
-    return <AgripassportHome />;
+  if (isPassport || isMarketplace) {
+    return <PublicHomeRedesign />;
   }
 
   const [catalog, news, siteProfile] = await Promise.all([
     fetchPublicCatalog(100),
-    fetchPublicNews("/news/public?home=true&limit=3"),
+    fetchPublicNews("/news/public?home=true&limit=3", siteKey),
     getPublicSiteProfile(siteKey),
   ]);
 
@@ -332,7 +334,7 @@ export default async function HomePage() {
     ? "HTXONLINE đứng ở lớp đầu vào, AGRIPASSPORT là lớp công khai trung tâm và Hộ chiếu nông nghiệp là lớp truy xuất minh bạch."
     : "Ba nền tảng không chồng lấn vai trò, chúng nối tiếp nhau để tạo một hành trình dữ liệu rõ ràng hơn.";
   const heroSearchPlaceholder = isPassport
-    ? "Tìm hồ sơ có QR, sản phẩm hoặc hợp tác xã"
+    ? "Tìm mã QR hoặc sản phẩm"
     : "Nhập mã sản phẩm hoặc mã QR để tra cứu nguồn gốc";
   const closingPrimaryCta = isInternal
     ? { href: "/lien-he", label: "Nhận tư vấn triển khai", external: false }
@@ -984,7 +986,7 @@ export default async function HomePage() {
                   </div>
                 ) : null}
 
-                <div className="px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8">
+                <div className={cn("px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8", isPassport && "text-left")}>
                   <div className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary-subtle)] px-3.5 py-1.5 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">
                     <Leaf
                       size={15}
@@ -993,7 +995,7 @@ export default async function HomePage() {
                     />
                     Số hóa dữ liệu nông nghiệp
                   </div>
-                  <h1 className={cn("mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[var(--text-primary)] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]", isPassport && "max-w-none text-[1.2rem] leading-[1.08] tracking-[-0.035em] sm:text-[2.55rem] lg:text-[3.35rem]")}>
+                  <h1 className={cn("mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[var(--text-primary)] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]", isPassport && "mx-0 max-w-none text-[1.2rem] leading-[1.08] tracking-[-0.035em] sm:text-[2.55rem] lg:text-[3.35rem]")}>
                     {isPassport ? (
                       <>
                         <span className="block whitespace-nowrap">Hộ chiếu nông nghiệp giúp tra cứu</span>
@@ -1001,11 +1003,11 @@ export default async function HomePage() {
                       </>
                     ) : heroLeadTitle}
                   </h1>
-                  <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
+                  <p className={cn("mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]", isPassport && "mx-0")}>
                     {heroLeadDescription}
                   </p>
                   {!isInternal ? (
-                    <div className="mx-auto mt-6 max-w-2xl">
+                    <div className={cn("mx-auto mt-6 max-w-2xl", isPassport && "mx-0")}>
                       <PublicSearch placeholder={heroSearchPlaceholder} />
                     </div>
                   ) : null}
@@ -1027,7 +1029,9 @@ export default async function HomePage() {
                 "mx-auto text-[1.82rem] font-extrabold leading-[1.03] tracking-[-0.04em] text-[var(--text-primary)] sm:max-w-none sm:text-[3.1rem]",
                 isInternal
                   ? "max-w-none text-[1.52rem] leading-[0.96] sm:text-[2.65rem] lg:mx-0 lg:text-[3.1rem]"
-                  : "max-w-[13ch]",
+                  : isPassport
+                    ? "max-w-none whitespace-nowrap text-[1.35rem] tracking-[-0.045em]"
+                    : "max-w-[13ch]",
               )}
             >
               {outcomeTitle}
@@ -1076,13 +1080,13 @@ export default async function HomePage() {
               </div>
             </>
           ) : (
-            <div className="mt-8 grid gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
+            <div className="mt-8 grid items-start gap-x-4 gap-y-8 sm:grid-cols-2 lg:grid-cols-6">
               {outcomeTiles.map((tile) => {
                 const Icon = tile.icon;
                 return (
                   <article
                     key={tile.title}
-                    className="text-center"
+                    className="flex min-w-0 flex-col items-center text-center"
                   >
                     <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--brand-primary-strong)] shadow-[var(--public-shadow-card)]">
                       <Icon size={36} strokeWidth={1.7} aria-hidden="true" />
@@ -1094,7 +1098,7 @@ export default async function HomePage() {
                     ) : null}
                     <p className={cn(
                       isPassport ? "mt-4" : "mt-2",
-                      "text-sm font-bold uppercase tracking-[0.08em]",
+                      "sm:whitespace-nowrap text-sm font-bold uppercase tracking-[0.08em]",
                       isPassport ? "text-[var(--brand-primary)]" : "text-[var(--text-primary)]",
                     )}>
                       {tile.title}
@@ -1112,7 +1116,7 @@ export default async function HomePage() {
         <PublicSection band={!isInternal}>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
-              <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:text-[2.8rem]">
+              <h2 className={cn("text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[var(--text-primary)] sm:whitespace-nowrap sm:text-[2.8rem]", isPassport && "text-[1.7rem] sm:text-[2.45rem]")}>
                 {sectionIntro}
               </h2>
               <p
@@ -1164,7 +1168,7 @@ export default async function HomePage() {
           <PublicSection>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-3xl">
-                <h2 className="text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:text-[2.8rem]">
+                <h2 className={cn("text-[1.9rem] font-extrabold leading-[1.02] tracking-[-0.04em] text-[#24283a] sm:whitespace-nowrap sm:text-[2.8rem]", isPassport && "text-[1.7rem] sm:text-[2.45rem]")}>
                   {journeyTitle}
                 </h2>
                 <p className="mt-2 text-[0.98rem] leading-7 text-slate-600 sm:text-base sm:leading-8">

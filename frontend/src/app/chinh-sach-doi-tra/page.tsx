@@ -8,10 +8,10 @@ import { getRequestPublicSiteKey } from '@/lib/request-site';
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
   const siteProfile = await getPublicSiteProfile(siteKey);
-  const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
+  const isPublicSite = siteKey === 'passport' || siteKey === 'agripassport' || siteKey === 'local';
   return buildPublicMetadata({
-    title: isMarketplace ? 'Chính sách xử lý phản ánh' : 'Chính sách đổi trả',
-    description: isMarketplace
+    title: isPublicSite ? 'Chính sách xử lý phản ánh' : 'Chính sách đổi trả',
+    description: isPublicSite
       ? `Cách ${siteProfile.appName} tiếp nhận và xử lý phản ánh về thông tin công khai.`
       : `Điều kiện đổi trả và trách nhiệm xử lý theo thỏa thuận giữa các bên trên ${siteProfile.appName}.`,
     path: '/chinh-sach-doi-tra'
@@ -22,12 +22,12 @@ export default async function ReturnPolicyPage() {
   const siteKey = await getRequestPublicSiteKey();
   const siteProfile = await getPublicSiteProfile(siteKey);
   const platformName = siteProfile.appName;
-  const isMarketplace = siteKey === 'agripassport' || siteKey === 'local';
-  const title = isMarketplace ? 'Chính sách xử lý phản ánh' : 'Chính sách đổi trả';
-  const description = isMarketplace
+  const isPublicSite = siteKey === 'passport' || siteKey === 'agripassport' || siteKey === 'local';
+  const title = isPublicSite ? 'Chính sách xử lý phản ánh' : 'Chính sách đổi trả';
+  const description = isPublicSite
     ? `Cách ${platformName} tiếp nhận và xử lý phản ánh về thông tin công khai.`
     : `Điều kiện đổi trả và trách nhiệm xử lý theo thỏa thuận giữa các bên trên ${platformName}.`;
-  const sections = isMarketplace
+  const sections = isPublicSite
     ? [
         {
           title: '1. Mục đích',

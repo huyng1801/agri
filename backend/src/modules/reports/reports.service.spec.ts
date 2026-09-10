@@ -24,7 +24,11 @@ describe('ReportsService', () => {
       farmingLog: { count: jest.fn().mockResolvedValue(10) },
       traceabilityPassport: { count: jest.fn().mockResolvedValue(4) },
       subscriptionInvoice: { count: jest.fn().mockResolvedValue(1), aggregate: jest.fn().mockResolvedValue({ _sum: { amount: 1000000 } }) },
-      order: { count: jest.fn().mockResolvedValue(2) }
+      order: { count: jest.fn().mockResolvedValue(2) },
+      tree: { count: jest.fn().mockResolvedValue(6) },
+      lot: { count: jest.fn().mockResolvedValue(2) },
+      productBatch: { count: jest.fn().mockResolvedValue(2) },
+      harvest: { count: jest.fn().mockResolvedValue(8) }
     });
 
     const result = await service.overview(adminHtx, { range: '30d' });

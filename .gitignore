@@ -16,3 +16,11 @@ test-results/
 nginx/certs/
 nginx/logs/
 backend/prisma/migrations/*/migration_lock.toml
+*.docx
+tmp/
+output/
+.agents/
+.playwright-cli/
+skills-lock.json
+pnpm-lock.yaml
+yeucau/

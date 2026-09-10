@@ -18,6 +18,7 @@ import { formatDate } from '@/lib/format';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { brandizeSiteText } from '@/lib/page-metadata';
 import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
+import type { PublicSiteKey } from '@/lib/domain';
 import { Badge, Panel } from '@/components/ui';
 
 type PageProps = {
@@ -28,7 +29,8 @@ type PageProps = {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await fetchPublicNewsDetail(slug);
+  const siteKey = await getRequestPublicSiteKey();
+  const article = await fetchPublicNewsDetail(slug, siteKey);
   if (!article) {
     return {
       title: 'Không tìm thấy bài viết',
@@ -38,7 +40,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const title = articleTitle(article);
   const description = articleDescription(article);
-  const siteKey = await getRequestPublicSiteKey();
   const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const image = articleImage(article);
   const keywords = article.tagsJson?.length
@@ -78,8 +79,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function NewsDetailPage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await fetchPublicNewsDetail(slug);
   const siteKey = await getRequestPublicSiteKey();
+  const article = await fetchPublicNewsDetail(slug, siteKey);
   const siteProfile = await getPublicSiteProfile(siteKey);
   if (!article) {
     return (
@@ -106,7 +107,7 @@ export default async function NewsDetailPage({ params }: PageProps) {
     );
   }
 
-  const related = await getRelatedArticles(article);
+  const related = await getRelatedArticles(article, siteKey);
   const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const logoUrl = await getRequestAbsoluteUrl('/logo.png');
   const image = articleImage(article);
@@ -205,10 +206,10 @@ export default async function NewsDetailPage({ params }: PageProps) {
   );
 }
 
-async function getRelatedArticles(article: NewsArticle) {
+async function getRelatedArticles(article: NewsArticle, siteKey: PublicSiteKey) {
   const params = new URLSearchParams({ limit: '4' });
   if (article.category?.slug) params.set('category', article.category.slug);
-  const related = await fetchPublicNews(`/news/public?${params.toString()}`);
+  const related = await fetchPublicNews(`/news/public?${params.toString()}`, siteKey);
   return related.data.filter((item) => item.id !== article.id).slice(0, 3);
 }
 

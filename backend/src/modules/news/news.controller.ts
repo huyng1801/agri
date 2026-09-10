@@ -23,14 +23,14 @@ export class NewsController {
 
   @Public()
   @Get('public/categories')
-  publicCategories() {
-    return this.news.publicCategories();
+  publicCategories(@Query() query: Record<string, unknown>) {
+    return this.news.publicCategories(query);
   }
 
   @Public()
   @Get('public/:slug')
-  publicDetail(@Param('slug') slug: string) {
-    return this.news.publicDetail(slug);
+  publicDetail(@Param('slug') slug: string, @Query() query: Record<string, unknown>) {
+    return this.news.publicDetail(slug, query);
   }
 
   @Get('categories')

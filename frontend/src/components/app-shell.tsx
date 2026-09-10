@@ -12,12 +12,14 @@ import {
   Home,
   LogOut,
   Map,
+  MapPinned,
   MessageSquareText,
   Newspaper,
   Package,
   QrCode,
   Settings,
   ShieldCheck,
+  Sprout,
   Users,
   WalletCards
 } from 'lucide-react';
@@ -38,6 +40,7 @@ const nav: NavItem[] = [
   { href: '/dashboard/cooperatives', label: 'HTX', icon: Boxes, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-cooperatives' },
   { href: '/dashboard/users', label: 'Tài khoản', icon: Users, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-users' },
   { href: '/dashboard/roles', label: 'Vai trò & quyền', icon: ShieldCheck, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-roles' },
+  { href: '/dashboard/crop-types', label: 'Loại cây', icon: Sprout, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-crop-types' },
   { href: '/dashboard/subscription-plans', label: 'Gói SaaS', icon: WalletCards, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-plans' },
   { href: '/dashboard/invoices', label: 'Hóa đơn SaaS', icon: FileText, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-invoices' },
   { href: '/dashboard/news', label: 'Tin tức', icon: Newspaper, roles: ['SUPER_ADMIN'], areas: ['admin'], testId: 'admin-menu-news' },
@@ -52,7 +55,13 @@ const nav: NavItem[] = [
   { href: '/dashboard/products', label: 'Sản phẩm', icon: Package, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-products' },
   { href: '/dashboard/certifications', label: 'Chứng nhận', icon: ShieldCheck, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-certifications' },
   { href: '/dashboard/zones', label: 'Vùng trồng', icon: Map, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-zones' },
+  { href: '/dashboard/trees', label: 'Cây', icon: Sprout, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-trees' },
+  { href: '/dashboard/map', label: 'Bản đồ cây', icon: MapPinned, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-tree-map' },
   { href: '/dashboard/farming-logs', label: 'Nhật ký', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-farming-logs' },
+  { href: '/dashboard/tree-events', label: 'Nhật ký cây', icon: History, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-tree-events' },
+  { href: '/dashboard/harvests', label: 'Thu hoạch', icon: Package, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-harvests' },
+  { href: '/dashboard/lots', label: 'Lô sản phẩm', icon: Boxes, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-lots' },
+  { href: '/dashboard/traceability', label: 'Mã truy xuất', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'], areas: ['htx'], testId: 'htx-menu-traceability' },
   { href: '/dashboard/passports', label: 'QR', icon: QrCode, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-passports' },
   { href: '/dashboard/orders', label: 'Đơn hàng', icon: ClipboardList, roles: ['ADMIN_HTX', 'MEMBER_HTX'], areas: ['htx'], testId: 'htx-menu-orders' },
   { href: '/dashboard/users', label: 'Thành viên', icon: Users, roles: ['ADMIN_HTX'], areas: ['htx'], testId: 'htx-menu-members' },
@@ -209,6 +218,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             onClick={() => setMobileMenuOpen(true)}
             className="flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-lg text-[10px] font-bold text-slate-500 hover:text-[#131935]"
             aria-label="Xem thêm chức năng"
+            data-testid="mobile-more-button"
           >
             <Boxes size={18} aria-hidden="true" />
             <span>Thêm</span>
@@ -218,7 +228,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       {/* Full Mobile Menu Sheet */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-xs lg:hidden">
+        <div data-testid="mobile-more-menu" className="fixed inset-0 z-50 flex flex-col bg-black/50 backdrop-blur-xs lg:hidden">
           <div className="flex-1 overflow-y-auto bg-white p-5 mt-16 rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-200">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
               <div className="flex items-center gap-2">
@@ -245,6 +255,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     key={item.href}
                     href={item.href}
                     onClick={() => setMobileMenuOpen(false)}
+                    data-testid={item.testId}
                     className={cn(
                       'flex items-center gap-2 rounded-xl p-3 text-xs font-bold transition border',
                       active

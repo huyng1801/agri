@@ -46,5 +46,5 @@ export function baseUrls() {
 }
 
 export function isExternalUrl(url: string) {
-  return !/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(url);
+  return !/^https?:\/\/(?:127(?:\.\d{1,3}){3}|localhost)(:\d+)?/i.test(url);
 }

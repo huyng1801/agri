@@ -13,11 +13,13 @@ import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-si
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
-  const appName = siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
+  const appName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
   return buildPublicMetadata({
     title: `Liên hệ ${appName}`,
     description:
-      siteKey === 'htxonline'
+      siteKey === 'passport'
+        ? 'Liên hệ Hộ chiếu Nông nghiệp để tìm hiểu thông tin định danh, QR truy xuất nguồn gốc nông sản và kết nối HTX.'
+        : siteKey === 'htxonline'
         ? 'Liên hệ HTXONLINE để được tư vấn quản trị và vận hành hợp tác xã.'
         : 'Liên hệ Agripassport để tìm hiểu sản phẩm, QR truy xuất và kết nối với hợp tác xã.',
     path: '/lien-he'
@@ -31,14 +33,17 @@ export default async function ContactPage() {
     getRequestAbsoluteUrl('/lien-he')
   ]);
   const siteProfile = await getPublicSiteProfile(siteKey);
-  const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
+  const isHtxonline = siteKey === 'htxonline';
+  const isPassport = siteKey === 'passport';
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteProfile.address)}`;
   const mapLocation = getPublicMapLocation(siteProfile);
   const showMapPreview = Boolean(siteProfile.address.trim());
-  const contactDescription = isAgripassport
-    ? 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.'
-    : siteProfile.pageContent.contactDescription;
-  const faqs = isAgripassport
+  const contactDescription = isHtxonline
+    ? siteProfile.pageContent.contactDescription
+    : isPassport
+    ? 'Tìm hiểu định danh nông sản, cấp mã QR truy xuất nguồn gốc hoặc hợp tác triển khai giải pháp Hộ chiếu Nông nghiệp.'
+    : 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.';
+  const faqs = !isHtxonline
     ? siteProfile.faqs.filter((faq) => !/COD|đơn hàng/i.test(`${faq.question} ${faq.answer}`))
     : siteProfile.faqs;
 
@@ -150,7 +155,7 @@ export default async function ContactPage() {
               <article className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
                 <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Nhịp phản hồi</p>
                 <h2 className="type-h2 mt-2 text-[1.35rem]">
-                  {isAgripassport ? 'Chúng tôi sẽ giúp bạn tìm đúng thông tin.' : 'Hỗ trợ rõ luồng nội bộ, công khai và QR.'}
+                  {isHtxonline ? 'Hỗ trợ rõ luồng nội bộ, công khai và QR.' : 'Chúng tôi luôn sẵn sàng hỗ trợ bạn.'}
                 </h2>
                 <div className="mt-4 space-y-3">
                   <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3">
@@ -161,16 +166,16 @@ export default async function ContactPage() {
                     </p>
                   </div>
                   <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
-                    {isAgripassport
-                      ? 'Gửi câu hỏi về sản phẩm, QR, nguồn gốc hoặc HTX; đội ngũ sẽ phản hồi theo đúng nội dung bạn cần.'
-                      : 'Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'}
+                    {isHtxonline
+                      ? 'Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'
+                      : 'Gửi câu hỏi về sản phẩm, mã QR truy xuất, nguồn gốc nông sản hoặc kết nối HTX; đội ngũ sẽ phản hồi nhanh chóng.'}
                   </div>
                 </div>
               </article>
             </div>
           </div>
 
-          <PublicContactForm sourcePath="/lien-he" variant="contact" audience={isAgripassport ? 'public' : 'operator'} />
+          <PublicContactForm sourcePath="/lien-he" variant="contact" audience={isHtxonline ? 'operator' : 'public'} />
         </section>
 
         <section className="mt-6">
@@ -199,24 +204,29 @@ export default async function ContactPage() {
             </article>
 
             <article className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Lưu ý khi liên hệ</p>
+              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hướng dẫn liên hệ</p>
               <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[2.1rem]">
-                {isAgripassport ? 'Kênh liên hệ chính thức của Agripassport.' : 'Luồng hỗ trợ được tách rõ giữa nội bộ HTX và lớp công khai.'}
+                {isHtxonline ? 'Quy trình tiếp nhận và xử lý yêu cầu' : 'Tiếp nhận yêu cầu theo từng nhóm đối tượng'}
               </h2>
-              <div className="mt-5 grid gap-3">
-                <div className="rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-4">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Hotline công khai</p>
-                  <p className="mt-2 text-lg font-medium text-[var(--text-primary)]">{siteProfile.hotlineDisplay}</p>
+              <div className="mt-5 space-y-3">
+                <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Hợp tác xã & Nông hộ</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                    Cần hướng dẫn tạo tài khoản, đăng ký vùng trồng hoặc số hóa quy trình cấp mã QR Hộ Chiếu Nông Nghiệp, vui lòng điền form yêu cầu hỗ trợ chuyển đổi số.
+                  </p>
                 </div>
-                <div className="rounded-[1.2rem] border border-[var(--border-strong)] bg-[var(--surface-elevated)] p-4">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Email hỗ trợ</p>
-                  <p className="mt-2 break-all text-lg font-bold text-[var(--text-primary)]">{siteProfile.supportEmail}</p>
+                <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Doanh nghiệp & Người tiêu dùng</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                    Cần kết nối tiêu thụ nông sản số lượng lớn, đối chiếu hồ sơ kiểm định hoặc phản hồi thông tin sản phẩm, đội ngũ sẽ hỗ trợ xác minh trong 24 giờ.
+                  </p>
                 </div>
-                <p className="text-sm leading-7 text-slate-600">
-                  {isAgripassport
-                    ? 'Bạn có thể gọi hotline hoặc gửi email để được hỗ trợ tra cứu sản phẩm, QR và thông tin hợp tác xã.'
-                    : 'HTXONLINE ưu tiên hỗ trợ chuẩn hóa quản trị nội bộ, phân quyền, dữ liệu vận hành và kết nối sang các lớp công khai của hệ sinh thái khi cần.'}
-                </p>
+                <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Cam kết phản hồi</p>
+                  <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
+                    Tất cả thư điện tử và thông tin liên hệ được bảo mật theo quy định, phản hồi đúng thẩm quyền và lưu vết trong hệ thống tiếp nhận.
+                  </p>
+                </div>
               </div>
             </article>
           </div>

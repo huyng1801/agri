@@ -45,7 +45,15 @@ const permissions = {
     'certifications.read',
     'orders.read',
     'news.*',
-    'files.*'
+    'files.*',
+    'crop_types.*',
+    'trees.*',
+    'tree_events.*',
+    'seasons.*',
+    'harvests.*',
+    'lots.*',
+    'product_batches.*',
+    'traceability_codes.*'
   ],
   ADMIN_HTX: [
     'cooperatives.read',
@@ -69,7 +77,15 @@ const permissions = {
     'files.*',
     'notifications.*',
     'orders.*',
-    'news.*'
+    'news.*',
+    'crop_types.read',
+    'trees.*',
+    'tree_events.*',
+    'seasons.*',
+    'harvests.*',
+    'lots.*',
+    'product_batches.*',
+    'traceability_codes.*'
   ],
   MEMBER_HTX: [
     'products.read',
@@ -87,7 +103,25 @@ const permissions = {
     'reports.overview',
     'notifications.read',
     'notifications.update',
-    'orders.*'
+    'orders.*',
+    'crop_types.read',
+    'trees.read',
+    'trees.create',
+    'trees.update',
+    'tree_events.*',
+    'seasons.read',
+    'seasons.create',
+    'seasons.update',
+    'harvests.*',
+    'lots.read',
+    'lots.create',
+    'lots.update',
+    'product_batches.read',
+    'product_batches.create',
+    'product_batches.update',
+    'traceability_codes.read',
+    'traceability_codes.create',
+    'traceability_codes.update'
   ],
   FARMER: [
     'products.read',
@@ -100,9 +134,19 @@ const permissions = {
     'files.upload',
     'reports.overview',
     'notifications.read',
-    'notifications.update'
+    'notifications.update',
+    'crop_types.read',
+    'trees.*',
+    'tree_events.*',
+    'seasons.read',
+    'harvests.*',
+    'lots.read',
+    'product_batches.read',
+    'traceability_codes.read'
   ],
-  BUYER: ['public.read', 'orders.read']
+  BUYER: ['public.read', 'orders.read'],
+  ENTERPRISE: ['public.read', 'trees.read', 'lots.read', 'product_batches.read', 'traceability_codes.read'],
+  AUTHORITY: ['public.read', 'trees.read', 'tree_events.read', 'harvests.read', 'lots.read', 'product_batches.read', 'traceability_codes.read', 'reports.overview']
 };
 
 async function main() {
@@ -118,6 +162,24 @@ async function main() {
       update: {
         permissions: permissions[slug] ?? []
       }
+    });
+  }
+
+  const cropTypes = [
+    ['XOI', 'Xoài'],
+    ['SAU_RIENG', 'Sầu riêng'],
+    ['DUA', 'Dừa'],
+    ['CA_PHE', 'Cà phê'],
+    ['BUOI', 'Bưởi'],
+    ['NHAN', 'Nhãn'],
+    ['VAI', 'Vải'],
+    ['CAM', 'Cam']
+  ] as const;
+  for (const [code, name] of cropTypes) {
+    await prisma.cropType.upsert({
+      where: { code },
+      create: { code, name, sortOrder: cropTypes.findIndex(([item]) => item === code) },
+      update: { name, isActive: true }
     });
   }
 

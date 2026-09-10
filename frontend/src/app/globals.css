@@ -64,9 +64,17 @@
   --shadow-soft: 0 12px 32px rgba(15, 23, 42, 0.06);
   --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.04);
 
-  /* Clean, industrial geometry tokens */
-  --public-container-max: 1280px;
-  --public-container-wide: 1440px;
+  /* Clean, industrial geometry & container tokens */
+  --container-max: 1280px;
+  --gutter-desktop: 32px;
+  --gutter-tablet: 24px;
+  --gutter-mobile: 16px;
+  --section-py-desktop: 5.5rem;
+  --section-py-tablet: 4rem;
+  --section-py-mobile: 3rem;
+
+  --public-container-max: var(--container-max);
+  --public-container-wide: var(--container-max);
   --public-reading-max: 760px;
   --public-radius-control: 0.5rem; /* 8px */
   --public-radius-card: 0.875rem; /* 14px */
@@ -222,29 +230,60 @@ button {
 }
 
 .type-display {
-  font-size: clamp(2.25rem, 5vw, 4rem);
-  font-weight: 800;
-  line-height: 0.98;
-  letter-spacing: -0.055em;
-}
-
-.type-h1 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.045em;
-}
-
-.type-h2 {
-  font-size: clamp(1.6rem, 3vw, 2.65rem);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
   font-weight: 800;
   line-height: 1.05;
   letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.type-hero-h1 {
+  font-size: clamp(1.875rem, 4vw, 3.25rem);
+  font-weight: 750;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.type-h1,
+.type-page-h1 {
+  font-size: clamp(1.875rem, 3.5vw, 2.75rem);
+  font-weight: 750;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.type-h2 {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+.type-h3 {
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: -0.015em;
+}
+
+.type-body {
+  font-size: clamp(0.96875rem, 0.8vw, 1.0625rem);
+  line-height: 1.65;
+  text-wrap: pretty;
 }
 
 .type-body-large {
-  font-size: 1.08rem;
-  line-height: 1.8;
+  font-size: clamp(1.0625rem, 1vw, 1.15rem);
+  line-height: 1.75;
+  text-wrap: pretty;
+}
+
+.type-meta {
+  font-size: clamp(0.8125rem, 0.5vw, 0.875rem);
+  line-height: 1.4;
 }
 
 .public-surface {

@@ -22,6 +22,12 @@ export class ProductsController {
   }
 
   @Public()
+  @Get('public/categories')
+  publicCategories() {
+    return this.products.publicCategories();
+  }
+
+  @Public()
   @Get('public/:slug')
   publicDetail(@Param('slug') slug: string) {
     return this.products.publicDetail(slug);

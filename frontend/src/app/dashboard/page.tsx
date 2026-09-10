@@ -18,6 +18,8 @@ import {
   Package,
   QrCode,
   ShieldCheck,
+  Sprout,
+  TriangleAlert,
   TrendingUp,
   Users,
   WalletCards
@@ -59,9 +61,11 @@ export default function DashboardPage() {
       ]
     : [
         { label: 'Sản phẩm', value: metricValue(overview, 'products') ?? 8, icon: Package, change: 'Đã chuẩn hóa' },
-        { label: 'Mã QR Passport', value: metricValue(overview, 'passports') ?? 6, icon: QrCode, change: 'Đang kích hoạt' },
         { label: 'Vùng sản xuất', value: metricValue(overview, 'zones') ?? 4, icon: Map, change: 'Đã định vị' },
-        { label: 'Nhật ký thực địa', value: metricValue(overview, 'logs') ?? 24, icon: ClipboardList, change: 'Đã ghi nhận' }
+        { label: 'Cá thể cây', value: metricValue(overview, 'trees') ?? 1280, icon: Sprout, change: 'Có hộ chiếu riêng' },
+        { label: 'Lô sản phẩm', value: metricValue(overview, 'lots') ?? 15, icon: Boxes, change: 'Đang theo dõi' },
+        { label: 'Sản lượng thu hoạch', value: metricValue(overview, 'harvests') ?? 12, icon: Package, change: 'Lần ghi nhận' },
+        { label: 'Cây cần theo dõi', value: metricValue(overview, 'treeAlerts') ?? 4, icon: TriangleAlert, change: 'Cảnh báo vận hành' }
       ];
 
   const quickActions = isSuperAdmin
@@ -78,14 +82,20 @@ export default function DashboardPage() {
       ]
     : isFarmerOnly
       ? [
-          ['/dashboard/farming-logs', 'Ghi nhật ký canh tác', 'Ghi nhận nhật ký mùa vụ thực tế'],
+          ['/dashboard/trees', 'Tạo hộ chiếu cây', 'Định danh từng cá thể trong vùng'],
+          ['/dashboard/tree-events', 'Ghi nhật ký cây', 'Ghi nhận hoạt động theo mã cây'],
+          ['/dashboard/harvests', 'Ghi nhận thu hoạch', 'Nối sản lượng về đúng cây'],
+          ['/dashboard/map', 'Mở bản đồ vườn', 'Xem cây theo vị trí GPS'],
           ['/dashboard/products', 'Xem sản phẩm', 'Danh mục sản phẩm của HTX'],
           ['/dashboard/zones', 'Xem vùng trồng', 'Thông tin lô đất và diện tích'],
           ['/dashboard/orders', 'Xem đơn hàng', 'Đơn đặt hàng nông sản']
         ]
       : [
-          ['/dashboard/farming-logs', 'Ghi nhật ký mùa vụ', 'Cập nhật diễn biến canh tác thực địa'],
-          ['/dashboard/passports', 'Cấp mã QR Passport', 'Tạo định danh cho sản phẩm và lô hàng'],
+          ['/dashboard/trees', 'Quản lý hộ chiếu cây', 'Tạo và theo dõi hồ sơ cá thể'],
+          ['/dashboard/tree-events', 'Nhật ký theo cây', 'Cập nhật diễn biến canh tác thực địa'],
+          ['/dashboard/harvests', 'Thu hoạch', 'Nối cây với sản lượng thực tế'],
+          ['/dashboard/lots', 'Lô sản phẩm', 'Gom nhiều cây vào một lô'],
+          ['/dashboard/traceability', 'Mã truy xuất', 'ProductBatch và QR public'],
           ['/dashboard/certifications', 'Quản lý chứng nhận', 'Hồ sơ VietGAP, OCOP, hữu cơ'],
           ['/dashboard/farmers', 'Hồ sơ thành viên', 'Danh sách xã viên và nông hộ'],
           ['/dashboard/zones', 'Vùng trồng & mã số', 'Quản lý diện tích và tọa độ'],
@@ -103,6 +113,12 @@ export default function DashboardPage() {
     '/dashboard/audit-logs': History,
     '/dashboard/backups': Database,
     '/dashboard/farming-logs': ClipboardList,
+    '/dashboard/trees': Sprout,
+    '/dashboard/tree-events': History,
+    '/dashboard/harvests': Package,
+    '/dashboard/lots': Boxes,
+    '/dashboard/map': Map,
+    '/dashboard/traceability': QrCode,
     '/dashboard/certifications': ShieldCheck,
     '/dashboard/passports': QrCode,
     '/dashboard/farmers': Users,

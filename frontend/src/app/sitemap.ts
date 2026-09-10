@@ -41,7 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return staticPages;
   }
 
-  const [catalog, news] = await Promise.all([fetchPublicCatalog(200), fetchPublicNews('/news/public?limit=200')]);
+  const [catalog, news] = await Promise.all([fetchPublicCatalog(200), fetchPublicNews('/news/public?limit=200', siteKey)]);
 
   const productPages: MetadataRoute.Sitemap = catalog.products.map((product) => ({
     url: `${baseUrl}/san-pham/${product.slug}`,

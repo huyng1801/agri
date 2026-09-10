@@ -19,6 +19,8 @@ enum RoleSlug {
   MEMBER_HTX
   FARMER
   BUYER
+  ENTERPRISE
+  AUTHORITY
 }
 
 enum CooperativeStatus {
@@ -60,6 +62,74 @@ enum ZoneStatus {
   ACTIVE
   INACTIVE
   ARCHIVED
+}
+
+enum TreeStatus {
+  ACTIVE
+  NEEDS_ATTENTION
+  ALERT
+  HARVESTED
+  INACTIVE
+}
+
+enum TreeEventType {
+  PLANTING
+  WATERING
+  FERTILIZING
+  SPRAYING
+  PRUNING
+  WEEDING
+  FLOWERING
+  FRUITING
+  PEST_CONTROL
+  INSPECTION
+  HARVESTING
+  OTHER
+}
+
+enum TreeEventStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum SeasonStatus {
+  PLANNING
+  ACTIVE
+  CLOSED
+}
+
+enum HarvestStatus {
+  RECORDED
+  ALLOCATED
+  ARCHIVED
+}
+
+enum LotStatus {
+  DRAFT
+  OPEN
+  PACKED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ProductBatchStatus {
+  DRAFT
+  PACKAGED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum TraceabilityCodeType {
+  TREE
+  PRODUCT_BATCH
+}
+
+enum TraceabilityCodeStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+  EXPIRED
 }
 
 enum FarmingActivityType {
@@ -129,6 +199,12 @@ enum NewsStatus {
   ARCHIVED
 }
 
+enum NewsSite {
+  AGRIPASSPORT
+  PASSPORT
+  HTXONLINE
+}
+
 model User {
   id                  String              @id @default(uuid())
   email               String              @unique
@@ -148,6 +224,9 @@ model User {
   farmerProfile       FarmerProfile?
   createdProducts     Product[]           @relation("ProductCreator")
   assignedProducts    Product[]           @relation("ProductFarmer")
+  createdTrees        Tree[]              @relation("TreeCreator")
+  treeEvents          TreeEvent[]         @relation("TreeEventActor")
+  recordedHarvests    Harvest[]           @relation("HarvestRecorder")
   authoredNews        NewsArticle[]       @relation("NewsAuthor")
   farmingLogs         FarmingLog[]        @relation("FarmingLogActor")
   auditLogs           AuditLog[]          @relation("AuditActor")
@@ -204,6 +283,13 @@ model Cooperative {
   users           User[]
   products        Product[]
   zones           Zone[]
+  trees           Tree[]
+  treeEvents      TreeEvent[]
+  seasons         ProductionSeason[]
+  harvests        Harvest[]
+  lots            Lot[]
+  productBatches  ProductBatch[]
+  traceabilityCodes TraceabilityCode[]
   farmingLogs     FarmingLog[]
   files           FileAsset[]
   subscriptions   CooperativeSubscription[]
@@ -349,6 +435,7 @@ model NewsArticle {
   id                 String        @id @default(uuid())
   categoryId         String?
   authorId           String?
+  siteKey            NewsSite      @default(AGRIPASSPORT)
   title              String
   slug               String        @unique
   excerpt            String?
@@ -384,6 +471,7 @@ model NewsArticle {
   updatedAt          DateTime      @updatedAt
 
   @@index([categoryId])
+  @@index([siteKey])
   @@index([status])
   @@index([publishedAt])
   @@map("news_articles")
@@ -415,6 +503,7 @@ model Product {
   creator         User?                   @relation("ProductCreator", fields: [createdBy], references: [id])
   farmingLogs     FarmingLog[]
   passports       TraceabilityPassport[]
+  batches         ProductBatch[]
   orderItems      OrderItem[]
   certifications  Certification[]
   createdAt       DateTime                @default(now())
@@ -443,6 +532,8 @@ model Zone {
   status        ZoneStatus   @default(ACTIVE)
   cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   products      Product[]
+  trees         Tree[]
+  lots          Lot[]
   farmingLogs   FarmingLog[]
   certifications Certification[]
   createdAt     DateTime     @default(now())
@@ -452,6 +543,237 @@ model Zone {
   @@index([cooperativeId])
   @@index([cooperativeId, isPublic])
   @@map("zones")
+}
+
+model CropType {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  trees       Tree[]
+  lots        Lot[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
+  @@map("crop_types")
+}
+
+model ProductionSeason {
+  id            String       @id @default(uuid())
+  cooperativeId String
+  code          String
+  name          String
+  startDate     DateTime?
+  endDate       DateTime?
+  status        SeasonStatus  @default(PLANNING)
+  cooperative   Cooperative   @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  treeEvents    TreeEvent[]
+  harvests      Harvest[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@unique([cooperativeId, code])
+  @@index([cooperativeId, status])
+  @@map("production_seasons")
+}
+
+model Tree {
+  id                  String              @id @default(uuid())
+  cooperativeId       String
+  zoneId              String
+  cropTypeId          String
+  treeCode            String              @unique
+  variety             String?
+  latitude            Decimal?
+  longitude           Decimal?
+  plantedDate         DateTime?
+  status              TreeStatus           @default(ACTIVE)
+  publicVerified      Boolean             @default(false)
+  imagesJson          Json                @default("[]")
+  note                String?
+  cooperative         Cooperative         @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  zone                Zone                @relation(fields: [zoneId], references: [id])
+  cropType            CropType            @relation(fields: [cropTypeId], references: [id])
+  createdBy           User?               @relation("TreeCreator", fields: [createdById], references: [id])
+  createdById         String?
+  events              TreeEvent[]
+  harvests            Harvest[]
+  lotTrees            LotTree[]
+  traceabilityCode    TraceabilityCode?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  @@index([cooperativeId])
+  @@index([zoneId])
+  @@index([cropTypeId])
+  @@index([cooperativeId, status])
+  @@map("trees")
+}
+
+model TreeEvent {
+  id            String           @id @default(uuid())
+  cooperativeId String
+  treeId        String
+  seasonId      String?
+  actorId       String?
+  eventDate     DateTime
+  eventType     TreeEventType
+  description   String
+  imagesJson    Json             @default("[]")
+  status        TreeEventStatus  @default(PUBLISHED)
+  metadataJson  Json             @default("{}")
+  cooperative   Cooperative      @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  tree          Tree             @relation(fields: [treeId], references: [id], onDelete: Cascade)
+  season        ProductionSeason? @relation(fields: [seasonId], references: [id])
+  actor         User?            @relation("TreeEventActor", fields: [actorId], references: [id])
+  inputs        TreeInput[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@index([cooperativeId])
+  @@index([treeId, eventDate])
+  @@index([seasonId])
+  @@index([eventType])
+  @@map("tree_events")
+}
+
+model TreeInput {
+  id           String    @id @default(uuid())
+  eventId      String
+  materialType String?
+  materialName String
+  quantity     Decimal?
+  unit         String?
+  note         String?
+  event        TreeEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+
+  @@index([eventId])
+  @@map("tree_inputs")
+}
+
+model Harvest {
+  id            String         @id @default(uuid())
+  cooperativeId String
+  treeId        String
+  seasonId      String?
+  harvestDate   DateTime
+  quantity      Decimal
+  unit          String
+  status        HarvestStatus  @default(RECORDED)
+  note          String?
+  recordedById  String?
+  cooperative   Cooperative    @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  tree          Tree           @relation(fields: [treeId], references: [id], onDelete: Cascade)
+  season        ProductionSeason? @relation(fields: [seasonId], references: [id])
+  recordedBy    User?          @relation("HarvestRecorder", fields: [recordedById], references: [id])
+  lotTrees      LotTree[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([cooperativeId])
+  @@index([treeId, harvestDate])
+  @@index([seasonId])
+  @@map("harvests")
+}
+
+model Lot {
+  id            String          @id @default(uuid())
+  cooperativeId String
+  zoneId        String?
+  cropTypeId    String?
+  lotCode       String
+  harvestDate   DateTime?
+  totalQuantity Decimal         @default(0)
+  unit          String
+  packagingDate DateTime?
+  status        LotStatus       @default(DRAFT)
+  note          String?
+  cooperative   Cooperative     @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  zone          Zone?           @relation(fields: [zoneId], references: [id])
+  cropType      CropType?       @relation(fields: [cropTypeId], references: [id])
+  lotTrees      LotTree[]
+  productBatches ProductBatch[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([cooperativeId, lotCode])
+  @@index([cooperativeId, status])
+  @@index([zoneId])
+  @@index([cropTypeId])
+  @@map("lots")
+}
+
+model LotTree {
+  id           String   @id @default(uuid())
+  lotId        String
+  treeId       String
+  harvestId    String
+  quantity     Decimal
+  unit         String
+  lot          Lot      @relation(fields: [lotId], references: [id], onDelete: Cascade)
+  tree         Tree     @relation(fields: [treeId], references: [id])
+  harvest      Harvest  @relation(fields: [harvestId], references: [id])
+  createdAt    DateTime @default(now())
+
+  @@unique([lotId, harvestId])
+  @@index([treeId])
+  @@index([harvestId])
+  @@map("lot_trees")
+}
+
+model ProductBatch {
+  id              String             @id @default(uuid())
+  cooperativeId   String
+  productId       String
+  lotId           String
+  productCode     String
+  quantity        Decimal
+  unit            String
+  harvestDate     DateTime?
+  packagingDate   DateTime?
+  status          ProductBatchStatus @default(DRAFT)
+  publicVerified  Boolean            @default(false)
+  note            String?
+  cooperative     Cooperative        @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  product         Product            @relation(fields: [productId], references: [id])
+  lot             Lot                @relation(fields: [lotId], references: [id])
+  traceabilityCode TraceabilityCode?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@unique([cooperativeId, productCode])
+  @@index([cooperativeId, status])
+  @@index([lotId])
+  @@index([productId])
+  @@map("product_batches")
+}
+
+model TraceabilityCode {
+  id             String                 @id @default(uuid())
+  cooperativeId  String
+  code           String                 @unique
+  publicSlug     String                 @unique
+  codeType       TraceabilityCodeType
+  treeId         String?                @unique
+  productBatchId  String?               @unique
+  qrDataUrl      String?
+  status         TraceabilityCodeStatus @default(DRAFT)
+  publishedAt    DateTime?
+  expiredAt      DateTime?
+  viewCount      Int                    @default(0)
+  cooperative    Cooperative            @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  tree           Tree?                  @relation(fields: [treeId], references: [id])
+  productBatch   ProductBatch?          @relation(fields: [productBatchId], references: [id])
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  @@index([cooperativeId, codeType])
+  @@index([status])
+  @@map("traceability_codes")
 }
 
 model FarmingLog {

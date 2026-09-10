@@ -1,20 +1,29 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Boxes, Filter, MapPin, QrCode, Search, SlidersHorizontal, Sparkles, Store, X } from 'lucide-react';
+import { ArrowRight, Boxes, Sparkles } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
 import { EmptyPublicState, ProductCard, PublicProduct, publicListItems } from '@/components/public-marketplace';
-import { PublicPageHeader, PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { PublicPageMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { buildPublicMetadata } from '@/lib/page-metadata';
-import { Button } from '@/components/ui';
-import { getPublicSiteProfile } from '@/lib/public-site';
-import { getRequestPublicSiteKey } from '@/lib/request-site';
+import { ProductFilterBar, ProductFilterValues } from '@/components/product-filter-drawer';
 
-export async function generateMetadata(): Promise<Metadata> {
+type ProductFilters = ProductFilterValues & {
+  page?: string;
+};
+
+type ProductsPageProps = {
+  searchParams?: Promise<ProductFilters>;
+};
+
+export async function generateMetadata({ searchParams }: ProductsPageProps): Promise<Metadata> {
+  const filters = (await searchParams) ?? {};
+  const page = parseInt(filters.page || '1', 10);
+  const path = page > 1 ? `/san-pham?page=${page}` : '/san-pham';
   return buildPublicMetadata({
-    title: 'Danh mục Sản phẩm Nông sản',
+    title: page > 1 ? `Danh mục Nông sản - Trang ${page}` : 'Danh mục Sản phẩm Nông sản',
     description: 'Tra cứu nông sản hợp tác xã, đặc sản vùng miền, tiêu chuẩn chất lượng và hồ sơ mã QR Hộ Chiếu Nông Nghiệp.',
-    path: '/san-pham',
+    path,
     openGraphTitle: 'Danh mục Nông sản Chuẩn hóa - AGRIPASSPORT',
     openGraphDescription: 'Tìm kiếm sản phẩm nông nghiệp từ các hợp tác xã xác thực, lọc theo giá, địa phương và mã QR Passport.'
   });
@@ -24,65 +33,87 @@ type ProductList = {
   data: PublicProduct[];
 };
 
-type ProductFilters = {
-  search?: string;
-  category?: string;
-  cooperative?: string;
-  province?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  hasQr?: string;
-  sort?: string;
+type GetProductsResult = {
+  products: PublicProduct[];
+  total: number;
+  totalPages: number;
+  currentPage: number;
 };
 
-type ProductsPageProps = {
-  searchParams?: Promise<ProductFilters>;
-};
-
-async function getProducts(filters: ProductFilters) {
-  const params = new URLSearchParams({ limit: '100' });
+async function getProducts(filters: ProductFilters, page: number = 1, limit: number = 12): Promise<GetProductsResult> {
+  const params = new URLSearchParams({
+    limit: String(limit),
+    page: String(page)
+  });
   for (const key of ['search', 'category', 'cooperative', 'province', 'minPrice', 'maxPrice', 'hasQr', 'sort'] as const) {
-    if (filters[key]) params.set(key, filters[key]);
+    if (filters[key]) params.set(key, filters[key] as string);
   }
 
   try {
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
+    if (!response.ok) return { products: [], total: 0, totalPages: 1, currentPage: page };
+    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]> & {
+      meta?: { total?: number; totalPages?: number; page?: number; limit?: number };
+    };
+    const products = publicListItems(body.data);
+    const total = Number(body.meta?.total ?? products.length);
+    const totalPages = Number(body.meta?.totalPages ?? (Math.ceil(total / limit) || 1));
+    return {
+      products,
+      total,
+      totalPages,
+      currentPage: page
+    };
+  } catch {
+    return { products: [], total: 0, totalPages: 1, currentPage: page };
+  }
+}
+
+async function getCategories(): Promise<Array<{ id: string; name: string; slug: string }>> {
+  try {
+    const response = await fetch(`${API_URL}/products/public/categories`, { cache: 'no-store' });
     if (!response.ok) return [];
-    const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]>;
-    return publicListItems(body.data);
+    const body = await response.json();
+    if (Array.isArray(body?.data)) {
+      return body.data;
+    }
+    return [];
   } catch {
     return [];
   }
 }
 
+function buildPageUrl(filters: ProductFilters, newPage: number) {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(filters)) {
+    if (v && k !== 'page') params.set(k, v as string);
+  }
+  if (newPage > 1) params.set('page', String(newPage));
+  const qs = params.toString();
+  return qs ? `/san-pham?${qs}` : '/san-pham';
+}
+
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const filters = (await searchParams) ?? {};
-  const siteKey = await getRequestPublicSiteKey();
-  const [products, siteProfile] = await Promise.all([getProducts(filters), getPublicSiteProfile(siteKey)]);
+  const currentPage = Math.max(1, parseInt(filters.page || '1', 10));
+  const [productsData, categoriesData] = await Promise.all([
+    getProducts(filters, currentPage, 12),
+    getCategories()
+  ]);
 
-  const hasActiveFilter = Boolean(
-    filters.search ||
-      filters.category ||
-      filters.cooperative ||
-      filters.province ||
-      filters.minPrice ||
-      filters.maxPrice ||
-      filters.hasQr ||
-      filters.sort
-  );
+  const { products, total, totalPages } = productsData;
 
-  const qrProductsCount = products.filter((product) => product.passports?.length).length;
-  const provinceCount = new Set(products.map((product) => product.cooperative?.province).filter(Boolean)).size;
-
-  // Extract category options from fetched products
-  const categoryOptions = Array.from(
-    new Map(
-      products
-        .map((product) => product.category)
-        .filter((category): category is NonNullable<PublicProduct['category']> => Boolean(category))
-        .map((category) => [category.slug, category])
-    ).values()
-  ).slice(0, 8);
+  // Extract or use categories
+  const categoryOptions = categoriesData.length > 0
+    ? categoriesData.slice(0, 12)
+    : Array.from(
+        new Map(
+          products
+            .map((product) => product.category)
+            .filter((category): category is NonNullable<PublicProduct['category']> => Boolean(category))
+            .map((category) => [category.slug, category])
+        ).values()
+      ).slice(0, 10);
 
   return (
     <PublicShell>
@@ -91,201 +122,101 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         <div className="border-b border-[var(--border)] pb-6 mb-8">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#106f8a]">
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
                 <Sparkles size={13} />
-                <span>Hạ tầng Dữ liệu Nông sản Quốc gia</span>
+                <span>Nền tảng Hộ Chiếu Nông Nghiệp & Dữ liệu Nông sản Minh bạch</span>
               </div>
               <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
                 Danh mục Nông sản Hợp tác xã
               </h1>
               <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Tra cứu thông tin nông sản chuẩn hóa từ các hợp tác xã uy tín. Dữ liệu công khai bao gồm quy cách, vùng canh tác, chứng nhận an toàn và mã QR Hộ Chiếu Nông Nghiệp.
+                Tra cứu thông tin nông sản chuẩn hóa từ các hợp tác xã uy tín. Dữ liệu công khai bao gồm quy cách đóng gói, vùng canh tác, chứng nhận an toàn và mã QR Hộ Chiếu Nông Nghiệp.
               </p>
             </div>
 
             {/* Live Data Summary Pills */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 font-semibold text-[var(--text-primary)] shadow-sm">
-                <strong className="text-[#106f8a] font-bold">{products.length}</strong> sản phẩm
+              <span className="rounded-xl border border-[var(--border)] bg-white px-3.5 py-2 font-semibold text-[var(--text-primary)] shadow-xs">
+                Tổng cộng <strong className="text-[#106f8a] font-bold">{total}</strong> sản phẩm
               </span>
-              <span className="rounded-lg border border-[var(--border)] bg-white px-3 py-1.5 font-semibold text-[var(--text-primary)] shadow-sm">
-                <strong className="text-[#131935] font-bold">{provinceCount}</strong> tỉnh thành
+              <span className="rounded-xl border border-[var(--border)] bg-white px-3.5 py-2 font-semibold text-[var(--text-primary)] shadow-xs">
+                Trang <strong className="text-[#131935] font-bold">{currentPage}</strong> / {totalPages}
               </span>
-              <span className="rounded-lg border border-[#0d7a28]/30 bg-[#0d7a28]/10 px-3 py-1.5 font-semibold text-[#0d7a28]">
-                <strong className="font-bold">{qrProductsCount}</strong> có QR Passport
+              <span className="rounded-xl border border-[#0d7a28]/30 bg-[#0d7a28]/10 px-3.5 py-2 font-semibold text-[#0d7a28]">
+                Hiển thị <strong className="font-bold">{products.length}</strong> sản phẩm / trang
               </span>
             </div>
           </div>
-
-          {/* Quick Category Chips */}
-          {categoryOptions.length > 0 && (
-            <div className="mt-6 -mx-1 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex min-w-max items-center gap-2">
-                <span className="text-xs font-bold uppercase tracking-wider text-[var(--text-tertiary)] mr-1">
-                  Ngành hàng:
-                </span>
-                <Link
-                  href="/san-pham"
-                  aria-current={!filters.category ? 'page' : undefined}
-                  className={`inline-flex h-8 items-center rounded-lg px-3.5 text-xs font-bold transition ${
-                    !filters.category
-                      ? 'bg-[#106f8a] text-white shadow-sm'
-                      : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#106f8a] hover:text-[#106f8a]'
-                  }`}
-                >
-                  Tất cả ngành hàng
-                </Link>
-                {categoryOptions.map((cat) => {
-                  const isActive = filters.category === cat.slug;
-                  return (
-                    <Link
-                      key={cat.slug}
-                      href={`/san-pham?category=${encodeURIComponent(cat.slug)}`}
-                      aria-current={isActive ? 'page' : undefined}
-                      className={`inline-flex h-8 items-center rounded-lg px-3.5 text-xs font-bold transition ${
-                        isActive
-                          ? 'bg-[#106f8a] text-white shadow-sm'
-                          : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#106f8a] hover:text-[#106f8a]'
-                      }`}
-                    >
-                      {cat.name}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Enterprise Search & Filter Bar */}
-        <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm mb-8">
-          <form action="/san-pham" method="GET" className="space-y-3">
-            {/* Row 1: Primary Search Input */}
-            <div className="relative">
-              <Search
-                size={18}
-                className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-tertiary)]"
-                aria-hidden="true"
-              />
-              <input
-                name="search"
-                defaultValue={filters.search ?? ''}
-                placeholder="Tìm sản phẩm, hợp tác xã..."
-                aria-label="Tìm kiếm sản phẩm"
-                className="h-11 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] pl-10 pr-4 text-sm font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
-              />
-            </div>
-
-            {/* Row 2: Secondary Filters & Actions */}
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-12 lg:items-center">
-              {/* Province input */}
-              <div className="lg:col-span-3">
-                <input
-                  name="province"
-                  defaultValue={filters.province ?? ''}
-                  placeholder="Tỉnh / Thành phố"
-                  aria-label="Lọc theo tỉnh thành"
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-3 text-xs font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
-                />
-              </div>
-
-              {/* Price from */}
-              <div className="lg:col-span-2">
-                <input
-                  name="minPrice"
-                  defaultValue={filters.minPrice ?? ''}
-                  inputMode="numeric"
-                  placeholder="Giá từ (đ)"
-                  aria-label="Giá tối thiểu"
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-3 text-xs font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
-                />
-              </div>
-
-              {/* Price to */}
-              <div className="lg:col-span-2">
-                <input
-                  name="maxPrice"
-                  defaultValue={filters.maxPrice ?? ''}
-                  inputMode="numeric"
-                  placeholder="Giá đến (đ)"
-                  aria-label="Giá tối đa"
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-3 text-xs font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
-                />
-              </div>
-
-              {/* Sort selector */}
-              <div className="lg:col-span-2">
-                <select
-                  name="sort"
-                  defaultValue={filters.sort ?? ''}
-                  aria-label="Sắp xếp kết quả"
-                  className="h-10 w-full rounded-lg border border-[var(--border)] bg-[var(--surface-subtle)] px-2 text-xs font-medium text-[var(--text-primary)] outline-none transition focus:border-[#106f8a] focus:bg-white focus:ring-2 focus:ring-[#106f8a]/20"
-                >
-                  <option value="">Mới nhất</option>
-                  <option value="price_asc">Giá: Thấp đến cao</option>
-                  <option value="price_desc">Giá: Cao đến thấp</option>
-                </select>
-              </div>
-
-              {/* QR Checkbox Toggle */}
-              <div className="sm:col-span-2 lg:col-span-3 flex items-center justify-between gap-2">
-                <label className="inline-flex items-center gap-2 cursor-pointer select-none text-xs font-semibold text-[var(--text-primary)]">
-                  <input
-                    type="checkbox"
-                    name="hasQr"
-                    value="true"
-                    defaultChecked={filters.hasQr === 'true'}
-                    className="h-4 w-4 rounded border-[var(--border-strong)] text-[#106f8a] focus:ring-[#106f8a]"
-                  />
-                  <span>Chỉ sản phẩm có QR</span>
-                </label>
-
-                <div className="flex items-center gap-2">
-                  <button
-                    type="submit"
-                    className="inline-flex h-11 items-center justify-center rounded-lg bg-[#106f8a] px-5 text-xs font-bold text-white shadow-sm transition hover:bg-[#0d596e]"
-                  >
-                    Lọc dữ liệu
-                  </button>
-                  {hasActiveFilter && (
-                    <Link
-                      href="/san-pham"
-                      className="inline-flex h-11 items-center justify-center gap-1 rounded-lg border border-[var(--border)] bg-white px-3 text-xs font-semibold text-[var(--text-secondary)] transition hover:bg-slate-100"
-                    >
-                      <X size={13} />
-                      <span>Xóa lọc</span>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Hidden inputs to preserve query context */}
-            {filters.category && <input type="hidden" name="category" value={filters.category} />}
-            {filters.cooperative && <input type="hidden" name="cooperative" value={filters.cooperative} />}
-          </form>
-        </div>
+        {/* Search & Filter Bar (Mobile Drawer + Desktop Row) */}
+        <ProductFilterBar initialFilters={filters} categoryOptions={categoryOptions} />
 
         {/* 4-Column Product Grid */}
         {products.length ? (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {products.map((product, index) => (
-              <ProductCard key={product.id} product={product} priority={index < 4} />
-            ))}
+          <div className="space-y-10">
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+              {products.map((product, index) => (
+                <ProductCard key={product.id} product={product} priority={index < 4} />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <nav aria-label="Phân trang sản phẩm" className="flex items-center justify-center gap-2 pt-6 border-t border-[var(--border)]">
+                {currentPage > 1 && (
+                  <Link
+                    href={buildPageUrl(filters, currentPage - 1)}
+                    className="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--border)] bg-white px-4 text-xs font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28]"
+                  >
+                    Trang trước
+                  </Link>
+                )}
+
+                <div className="flex items-center gap-1.5">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                    const isCurrent = p === currentPage;
+                    return (
+                      <Link
+                        key={p}
+                        href={buildPageUrl(filters, p)}
+                        aria-current={isCurrent ? 'page' : undefined}
+                        className={`grid h-10 w-10 place-items-center rounded-xl text-xs font-bold transition ${
+                          isCurrent
+                            ? 'bg-[#0d7a28] text-white shadow-xs'
+                            : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#0d7a28] hover:text-[#0d7a28]'
+                        }`}
+                      >
+                        {p}
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {currentPage < totalPages && (
+                  <Link
+                    href={buildPageUrl(filters, currentPage + 1)}
+                    className="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--border)] bg-white px-4 text-xs font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28]"
+                  >
+                    Trang sau
+                  </Link>
+                )}
+              </nav>
+            )}
           </div>
         ) : (
-          <div className="rounded-xl border border-[var(--border)] bg-white p-8 sm:p-12 text-center shadow-xs">
-            <span className="mx-auto grid h-12 w-12 place-items-center rounded-xl border border-[var(--border)] bg-[var(--surface-subtle)] text-[#106f8a]" aria-hidden="true">
-              <Boxes size={22} />
+          <div className="rounded-2xl border border-[var(--border)] bg-white p-8 sm:p-12 text-center shadow-xs">
+            <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] text-[#0d7a28]" aria-hidden="true">
+              <Boxes size={26} />
             </span>
-            <h2 className="mt-3 text-base sm:text-lg font-bold text-[var(--text-primary)]">Không tìm thấy sản phẩm phù hợp</h2>
+            <h2 className="mt-4 text-lg font-bold text-[var(--text-primary)]">Không tìm thấy nông sản phù hợp</h2>
             <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[var(--text-secondary)] max-w-md mx-auto">
-              Thử thay đổi bộ lọc hoặc xóa từ khóa tìm kiếm để xem danh mục đầy đủ.
+              Thử thay đổi bộ lọc, chọn tỉnh thành khác hoặc xóa từ khóa tìm kiếm để xem danh mục đầy đủ.
             </p>
-            <div className="mt-5">
+            <div className="mt-6">
               <Link
                 href="/san-pham"
-                className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#106f8a] px-5 text-xs font-bold text-white shadow-sm transition hover:bg-[#0d596e]"
+                className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[#0d7a28] px-6 text-xs font-bold text-white shadow-xs transition hover:bg-[#0a6120]"
               >
                 Xem toàn bộ danh mục
               </Link>

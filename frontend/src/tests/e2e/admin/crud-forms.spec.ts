@@ -785,6 +785,7 @@ function newsCategoryFixture() {
 function newsFixture(id: string, title: string) {
   return {
     id,
+    siteKey: 'AGRIPASSPORT',
     categoryId: 'category-e2e',
     title,
     slug: 'bai-seed-de-kiem-thu',

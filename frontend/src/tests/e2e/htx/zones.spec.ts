@@ -82,7 +82,7 @@ test.describe('htx zones dashboard', () => {
     await openDashboardNavigation(page, testInfo.project.name);
     await expect(visibleTestId(page, 'htx-menu-zones')).toBeVisible();
     if (testInfo.project.name !== 'chromium') {
-      await page.getByTestId('mobile-more-button').click();
+      await page.getByRole('button', { name: 'Đóng', exact: true }).click();
       await expect(page.getByTestId('mobile-more-menu')).toHaveCount(0);
     }
     await expect(page.getByText('Vùng xoài mẫu')).toBeVisible();

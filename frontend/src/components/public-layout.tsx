@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { ArrowLeft, ArrowRight, ChevronDown } from 'lucide-react';
 import { cn } from './ui';
 
-export const publicContainerClass = 'mx-auto w-full max-w-[var(--public-container-max)] px-4 sm:px-5 lg:px-6';
+export const publicContainerClass = 'mx-auto w-full max-w-[var(--container-max,1280px)] px-4 sm:px-6 lg:px-8';
 
 export function PublicPageMain({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <main
       id="main-content"
-      className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}
+      className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-12 sm:pt-10 lg:py-16', className)}
     >
       {children}
     </main>
@@ -19,7 +19,7 @@ export function PublicDetailMain({ children, className }: { children: React.Reac
   return (
     <main
       id="main-content"
-      className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-10 sm:pt-10 lg:py-12', className)}
+      className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-12 sm:pt-10 lg:py-16', className)}
     >
       {children}
     </main>
@@ -80,13 +80,13 @@ export function PublicPageHeader({
   titleClassName?: string;
 }) {
   return (
-    <div className="mb-5 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
+    <div className="mb-6 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="max-w-3xl">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)] sm:text-sm">{eyebrow}</p>
-        <h1 className={cn('type-h1 mt-2 max-w-[18ch] text-[1.7rem] sm:mt-3 sm:max-w-none sm:text-[3.2rem] sm:leading-[0.96]', titleClassName)}>
+        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)] sm:text-xs">{eyebrow}</p>
+        <h1 className={cn('type-page-h1 mt-2 text-[1.75rem] sm:mt-2.5 sm:text-[2.65rem]', titleClassName)}>
           {title}
         </h1>
-        <p className="mt-2.5 max-w-2xl text-[0.95rem] leading-[1.72] text-[var(--text-secondary)] sm:mt-3 sm:text-base sm:leading-[1.8]">{description}</p>
+        <p className="mt-2.5 max-w-[65ch] text-sm leading-[1.68] text-[var(--text-secondary)] sm:mt-3 sm:text-base sm:leading-[1.75]">{description}</p>
       </div>
       {action}
     </div>
@@ -97,7 +97,7 @@ export function PublicSection({ children, band = false, className }: { children:
   return (
     <section
       className={cn(
-        band ? 'border-y border-[#ece8dd] bg-[#f7f7f2] py-10 sm:py-12 lg:py-14' : 'bg-white py-10 sm:py-12 lg:py-14',
+        band ? 'border-y border-[var(--border)] bg-[var(--surface-muted)] py-10 sm:py-14 lg:py-20' : 'bg-white py-10 sm:py-14 lg:py-20',
         className
       )}
     >

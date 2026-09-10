@@ -29,10 +29,11 @@ import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react
 import { API_URL, apiFetch } from '@/lib/api';
 import { marketplaceUrl } from '@/lib/domain';
 import { formatDate } from '@/lib/format';
-import type { NewsArticle, NewsCategory, NewsList } from '@/lib/news';
+import type { NewsArticle, NewsCategory, NewsList, NewsSiteKey } from '@/lib/news';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type NewsForm = {
+  siteKey: NewsSiteKey;
   categoryId: string;
   title: string;
   slug: string;
@@ -200,6 +201,7 @@ type LocalDraftPayload = {
 };
 
 const emptyForm: NewsForm = {
+  siteKey: 'AGRIPASSPORT',
   categoryId: '',
   title: '',
   slug: '',
@@ -1587,6 +1589,15 @@ export default function NewsDashboardPage() {
                 <span className={cn('text-[11px] font-semibold leading-4', lengthHintClass(titleLength, 35, 70))}>
                   {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính để hệ thống gợi ý đường dẫn và SEO tốt hơn.'}
                 </span>
+              </label>
+              <label className="space-y-1 text-sm font-semibold">
+                <span>Website xuất bản</span>
+                <Select data-testid="news-site-select" value={form.siteKey} onChange={(event) => update('siteKey', event.target.value as NewsSiteKey)}>
+                  <option value="AGRIPASSPORT">AGRIPASSPORT</option>
+                  <option value="PASSPORT">HỘ CHIẾU NÔNG NGHIỆP</option>
+                  <option value="HTXONLINE">HTXONLINE</option>
+                </Select>
+                <span className="text-xs font-normal text-slate-500">Bài viết chỉ hiển thị trên đúng website được chọn.</span>
               </label>
               {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
@@ -3500,6 +3511,7 @@ export default function NewsDashboardPage() {
                       <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                         <Badge className={statusClass(article.status)}>{statusLabel(article.status)}</Badge>
                         <span>{formatDate(article.publishedAt || article.createdAt)}</span>
+                        <span>{article.siteKey === 'PASSPORT' ? 'Hộ chiếu' : article.siteKey === 'HTXONLINE' ? 'HTXONLINE' : 'Agripassport'}</span>
                         <span>Điểm SEO {article.seoScore}</span>
                       </div>
                       <div className="mt-2 flex gap-2">
@@ -3545,6 +3557,7 @@ function formPayload(form: NewsForm) {
 
 function fromArticle(article: NewsArticle): NewsForm {
   return {
+    siteKey: article.siteKey ?? 'AGRIPASSPORT',
     categoryId: article.categoryId ?? '',
     title: article.title,
     slug: article.slug,

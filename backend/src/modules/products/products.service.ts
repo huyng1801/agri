@@ -135,6 +135,7 @@ export class ProductsService {
         certifications: {
           where: { isPublic: true },
           orderBy: { createdAt: 'desc' },
+          take: 12,
           include: {
             file: { select: { id: true, publicUrl: true, objectKey: true, mimeType: true } }
           }
@@ -259,6 +260,37 @@ export class ProductsService {
       cooperativeId: existing.cooperativeId
     });
     return updated;
+  }
+
+  async publicCategories() {
+    return this.prisma.productCategory.findMany({
+      where: {
+        products: {
+          some: {
+            status: 'PUBLISHED',
+            publicVerified: true,
+            cooperative: { publicVerified: true, status: 'ACTIVE' }
+          }
+        }
+      },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        _count: {
+          select: {
+            products: {
+              where: {
+                status: 'PUBLISHED',
+                publicVerified: true,
+                cooperative: { publicVerified: true, status: 'ACTIVE' }
+              }
+            }
+          }
+        }
+      },
+      orderBy: { name: 'asc' }
+    });
   }
 
   async categories(user: AuthUser, query: Record<string, unknown>) {

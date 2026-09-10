@@ -1,4 +1,4 @@
-import { NewsStatus, RoleSlug } from '@prisma/client';
+import { NewsSite, NewsStatus, RoleSlug } from '@prisma/client';
 import { NewsService } from './news.service';
 
 describe('NewsService', () => {
@@ -84,5 +84,30 @@ describe('NewsService', () => {
     await service.removeCategory(user, 'category-1');
 
     expect(update).toHaveBeenCalledWith({ where: { id: 'category-1' }, data: { isActive: false } });
+  });
+
+  it('scopes public news to the requested website', async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const count = jest.fn().mockResolvedValue(0);
+    const service = new NewsService(
+      {
+        newsArticle: { findMany, count }
+      } as never,
+      { record: jest.fn() } as never
+    );
+
+    await service.publicList({ siteKey: 'PASSPORT', limit: '12' });
+
+    expect(findMany.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.PASSPORT }));
+    expect(count.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.PASSPORT }));
+  });
+
+  it('rejects an unknown public website instead of falling back across sites', async () => {
+    const service = new NewsService(
+      { newsArticle: { findMany: jest.fn(), count: jest.fn() } } as never,
+      { record: jest.fn() } as never
+    );
+
+    await expect(service.publicList({ siteKey: 'UNKNOWN' })).rejects.toThrow('Website tin tức không hợp lệ');
   });
 });

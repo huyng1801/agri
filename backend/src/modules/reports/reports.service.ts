@@ -18,7 +18,7 @@ export class ReportsService {
     const range = this.parseDateRange(query);
     const dateFilter = this.dateWhere(range);
 
-    const [cooperatives, users, products, zones, logs, passports, unpaidInvoices, contacts, revenue, orders] = await Promise.all([
+    const [cooperatives, users, products, zones, logs, passports, unpaidInvoices, contacts, revenue, orders, trees, lots, productBatches, harvests, treeAlerts] = await Promise.all([
       isSuperAdmin(user) ? this.prisma.cooperative.count() : Promise.resolve(1),
       this.prisma.user.count({ where: { ...tenant, ...dateFilter } }),
       this.prisma.product.count({ where: tenant }),
@@ -31,7 +31,12 @@ export class ReportsService {
         where: { ...tenant, status: 'PAID', ...(range.from || range.to ? { paidAt: dateFilter.createdAt } : {}) },
         _sum: { amount: true }
       }),
-      this.prisma.order.count({ where: { ...tenant, ...dateFilter } })
+      this.prisma.order.count({ where: { ...tenant, ...dateFilter } }),
+      this.prisma.tree.count({ where: tenant }),
+      this.prisma.lot.count({ where: tenant }),
+      this.prisma.productBatch.count({ where: tenant }),
+      this.prisma.harvest.count({ where: tenant }),
+      this.prisma.tree.count({ where: { ...tenant, status: { in: ['NEEDS_ATTENTION', 'ALERT'] } } })
     ]);
 
     const metrics = [
@@ -39,6 +44,11 @@ export class ReportsService {
       { key: 'users', label: 'Thành viên', value: users },
       { key: 'products', label: 'Sản phẩm', value: products },
       { key: 'zones', label: 'Vùng trồng', value: zones },
+      { key: 'trees', label: 'Cá thể cây', value: trees },
+      { key: 'lots', label: 'Lô sản phẩm', value: lots },
+      { key: 'productBatches', label: 'ProductBatch', value: productBatches },
+      { key: 'harvests', label: 'Lần thu hoạch', value: harvests },
+      { key: 'treeAlerts', label: 'Cây cần theo dõi', value: treeAlerts },
       { key: 'logs', label: 'Nhật ký canh tác', value: logs },
       { key: 'passports', label: 'QR Passport', value: passports },
       { key: 'orders', label: 'Đơn hàng COD', value: orders },

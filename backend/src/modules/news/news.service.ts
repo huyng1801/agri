@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { NewsStatus, Prisma } from '@prisma/client';
+import { NewsSite, NewsStatus, Prisma } from '@prisma/client';
 import sanitizeHtml from 'sanitize-html';
 import { CreateNewsArticleDto, CreateNewsCategoryDto, UpdateNewsArticleDto, UpdateNewsCategoryDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
@@ -26,11 +26,11 @@ export class NewsService {
     return this.prisma.newsCategory.findMany({ where, orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }] });
   }
 
-  async publicCategories() {
+  async publicCategories(query: Record<string, unknown> = {}) {
     return this.prisma.newsCategory.findMany({
       where: {
         isActive: true,
-        articles: { some: this.publicWhere() }
+        articles: { some: this.publicWhere(query.siteKey) }
       },
       orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }]
     });
@@ -110,7 +110,7 @@ export class NewsService {
 
   async publicList(query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
-    const where: Prisma.NewsArticleWhereInput = this.publicWhere();
+    const where: Prisma.NewsArticleWhereInput = this.publicWhere(query.siteKey);
     if (query.search) {
       const search = String(query.search);
       where.OR = [
@@ -144,11 +144,11 @@ export class NewsService {
     return article;
   }
 
-  async publicDetail(slug: string) {
+  async publicDetail(slug: string, query: Record<string, unknown> = {}) {
     const article = await this.prisma.newsArticle.findFirst({
       where: {
         slug,
-        ...this.publicWhere()
+        ...this.publicWhere(query.siteKey)
       },
       include: this.articleIncludes()
     });
@@ -217,11 +217,11 @@ export class NewsService {
   private normalizeArticle(dto: CreateNewsArticleDto): NormalizedNewsArticleCreate;
   private normalizeArticle(
     dto: UpdateNewsArticleDto,
-    existing: { status: NewsStatus; publishedAt: Date | null }
+    existing: { status: NewsStatus; publishedAt: Date | null; siteKey: NewsSite }
   ): Prisma.NewsArticleUncheckedUpdateInput;
   private normalizeArticle(
     dto: CreateNewsArticleDto | UpdateNewsArticleDto,
-    existing?: { status: NewsStatus; publishedAt: Date | null }
+    existing?: { status: NewsStatus; publishedAt: Date | null; siteKey?: NewsSite }
   ): NormalizedNewsArticleCreate | Prisma.NewsArticleUncheckedUpdateInput {
     const status = dto.status;
     const title = dto.title;
@@ -244,6 +244,7 @@ export class NewsService {
 
     const data = {
       categoryId: dto.categoryId,
+      siteKey: dto.siteKey ?? existing?.siteKey ?? NewsSite.AGRIPASSPORT,
       title,
       excerpt: dto.excerpt,
       bodyHtml,
@@ -297,9 +298,10 @@ export class NewsService {
     } as const;
   }
 
-  private publicWhere(): Prisma.NewsArticleWhereInput {
+  private publicWhere(siteKey?: unknown): Prisma.NewsArticleWhereInput {
     const now = new Date();
     return {
+      siteKey: normalizeNewsSite(siteKey),
       status: NewsStatus.PUBLISHED,
       publicVerified: true,
       AND: [
@@ -380,6 +382,12 @@ export class NewsService {
     if (avgWords <= 40) return 55;
     return 35;
   }
+}
+
+function normalizeNewsSite(value: unknown): NewsSite {
+  if (value === undefined || value === null || value === '') return NewsSite.AGRIPASSPORT;
+  if (Object.values(NewsSite).includes(String(value) as NewsSite)) return String(value) as NewsSite;
+  throw new BadRequestException('Website tin tức không hợp lệ');
 }
 
 function stripHtml(value: string) {

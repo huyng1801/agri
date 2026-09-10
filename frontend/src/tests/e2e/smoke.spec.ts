@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test';
 test('home page renders primary entry points', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible({ timeout: 15_000 });
-  await expect(page.getByRole('link', { name: 'Sản phẩm', exact: true })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Tin tức', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Sản phẩm', exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Tin tức', exact: true }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: /Đăng nhập/ }).first()).toBeVisible();
 });
 

@@ -21,10 +21,12 @@ const PUBLIC_MARKETPLACE_PATHS = [
   '/chinh-sach-doi-tra',
   '/chinh-sach-van-hanh',
   '/chinh-sach-van-chuyen',
-  '/huong-dan-mua-hang'
+  '/huong-dan-mua-hang',
+  '/cay',
+  '/truy-xuat'
 ];
 
-const PASSPORT_PATHS = ['/passport', '/qr'];
+const PASSPORT_PATHS = ['/passport', '/qr', '/cay', '/truy-xuat'];
 
 export function proxy(request: NextRequest) {
   const hostname = normalizeHostname(request.headers.get('x-forwarded-host') || request.headers.get('host') || request.nextUrl.hostname);
