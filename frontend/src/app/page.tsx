@@ -993,8 +993,13 @@ export default async function HomePage() {
                     />
                     Số hóa dữ liệu nông nghiệp
                   </div>
-                  <h1 className={cn("mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[var(--text-primary)] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]", isPassport && "max-w-[12.5ch] text-[2.2rem] leading-[0.98] tracking-[-0.04em] sm:max-w-[15ch] sm:text-[3rem] lg:max-w-[16ch] lg:text-[3.65rem]")}>
-                    {heroLeadTitle}
+                  <h1 className={cn("mx-auto mt-4 max-w-[10.5ch] text-[2.55rem] font-extrabold leading-[0.94] tracking-[-0.05em] text-[var(--text-primary)] sm:max-w-[14ch] sm:text-[3.55rem] lg:text-[4.3rem]", isPassport && "max-w-none text-[1.2rem] leading-[1.08] tracking-[-0.035em] sm:text-[2.55rem] lg:text-[3.35rem]")}>
+                    {isPassport ? (
+                      <>
+                        <span className="block whitespace-nowrap">Hộ chiếu nông nghiệp giúp tra cứu</span>
+                        <span className="block whitespace-nowrap">QR rõ ràng hơn trên điện thoại</span>
+                      </>
+                    ) : heroLeadTitle}
                   </h1>
                   <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-8 text-slate-600 sm:text-[1.05rem]">
                     {heroLeadDescription}

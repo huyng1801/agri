@@ -9,6 +9,63 @@ import { PublicMapPreview } from './public-map-preview';
 import { ZaloIcon } from './zalo-icon';
 import { cn } from './ui';
 
+type FooterLink = { href: string; label: string };
+type FooterSection = { title: string; links: FooterLink[] };
+
+const sharedPublicFooterSections: FooterSection[] = [
+  {
+    title: 'Khám phá dữ liệu',
+    links: [
+      { href: '/san-pham', label: 'Sản phẩm' },
+      { href: '/htx', label: 'Vùng trồng & HTX' },
+      { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
+    ]
+  },
+  {
+    title: 'Giải pháp & quy trình',
+    links: [
+      { href: '/gioi-thieu', label: 'Giới thiệu' },
+      { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
+      { href: '/tin-tuc', label: 'Tin tức' }
+    ]
+  },
+  {
+    title: 'Hỗ trợ khách hàng',
+    links: [
+      { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
+      { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
+      { href: '/lien-he', label: 'Liên hệ' }
+    ]
+  }
+];
+
+const internalFooterSections: FooterSection[] = [
+  {
+    title: 'Khám phá dữ liệu',
+    links: [
+      { href: '/san-pham', label: 'Sản phẩm công khai' },
+      { href: '/htx', label: 'Hợp tác xã đối tác' },
+      { href: '/gioi-thieu', label: 'Dịch vụ vận hành' }
+    ]
+  },
+  {
+    title: 'Giải pháp & quy trình',
+    links: [
+      { href: '/gioi-thieu', label: 'Giới thiệu HTXONLINE' },
+      { href: '/tin-tuc', label: 'Bản tin nông nghiệp' },
+      { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' }
+    ]
+  },
+  {
+    title: 'Hỗ trợ khách hàng',
+    links: [
+      { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
+      { href: '/dieu-khoan-su-dung', label: 'Điều khoản dịch vụ' },
+      { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' }
+    ]
+  }
+];
+
 export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const profile = await getPublicSiteProfile(siteKey);
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
@@ -17,13 +74,12 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const isPassport = siteKey === 'passport';
   const zaloUrl = isPassport ? getPublicZaloUrl(profile, true) : '';
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
+  const footerSections = isInternal ? internalFooterSections : sharedPublicFooterSections;
 
   const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'HỘ CHIẾU NÔNG NGHIỆP' : 'AGRIPASSPORT';
   const brandDescription = isInternal
     ? 'Hệ thống quản trị nội bộ cho hợp tác xã: chuẩn hóa dữ liệu thành viên, quản lý sản xuất, tài chính và đồng bộ công khai.'
-    : isPassport
-      ? 'Nền tảng hồ sơ số và truy xuất nguồn gốc nông sản bằng mã QR: minh bạch dữ liệu thực địa từ vùng trồng đến người mua.'
-      : 'Nền tảng số hóa nông sản, chuẩn hóa dữ liệu vùng canh tác, quy trình sản xuất và QR Passport kết nối thị trường tiêu thụ.';
+    : 'Nền tảng hồ sơ số và truy xuất nguồn gốc nông sản bằng mã QR: minh bạch dữ liệu thực địa từ vùng trồng đến người mua.';
 
   const brandOrg = isInternal
     ? 'Hệ thống Quản trị Hợp tác xã HTXONLINE'
@@ -36,42 +92,6 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
     : isPassport
       ? `© ${new Date().getFullYear()} HỘ CHIẾU NÔNG NGHIỆP`
       : `© ${new Date().getFullYear()} AGRIPASSPORT`;
-
-  const dataLinks = isInternal
-    ? [
-        { href: '/san-pham', label: 'Sản phẩm công khai' },
-        { href: '/htx', label: 'Hợp tác xã đối tác' },
-        { href: '/gioi-thieu', label: 'Dịch vụ vận hành' }
-      ]
-    : isPassport
-      ? [
-          { href: '/san-pham?hasQr=true', label: 'Sản phẩm' },
-          { href: '/htx', label: 'Đối tác' },
-          { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' }
-        ]
-      : [
-          { href: '/san-pham', label: 'Trang sản phẩm' },
-          { href: '/htx', label: 'Hợp tác xã' },
-          { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' }
-        ];
-
-  const aboutLinks = isPassport
-    ? [
-        { href: '/gioi-thieu', label: 'Giới thiệu' },
-        { href: '/tin-tuc', label: 'Tin tức' },
-        { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
-      ]
-    : [
-        { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
-        { href: '/huong-dan-mua-hang', label: 'Hướng dẫn sử dụng' },
-        { href: '/tin-tuc', label: 'Bản tin nông nghiệp' }
-      ];
-
-  const legalLinks = [
-    { href: '/dieu-khoan-su-dung', label: 'Điều khoản dịch vụ' },
-    { href: '/chinh-sach-bao-mat', label: 'Chính sách bảo mật' },
-    { href: '/chinh-sach-van-hanh', label: 'Quy chuẩn xác thực' }
-  ];
 
   return (
     <footer className="mt-16 border-t border-[var(--border)] bg-white text-[var(--text-primary)]">
@@ -89,53 +109,18 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
             </p>
           </div>
 
-          {/* Column 2: Data */}
-          <div>
-            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
-              Khám phá dữ liệu
-            </h3>
-            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
-              {dataLinks.map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 3: About */}
-          <div>
-            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
-              Về {brandName}
-            </h3>
-            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
-              {aboutLinks.map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Column 4: Customer support */}
-          <div>
-            <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
-              Hỗ trợ khách hàng
-            </h3>
-            <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
-              {legalLinks.map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {footerSections.map((section) => (
+            <div key={section.title}>
+              <h3 className="mb-1 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">{section.title}</h3>
+              <ul className="space-y-0 text-xs text-[var(--text-secondary)]">
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="inline-flex min-h-[32px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
 
         {/* Contact, map and registration row */}
