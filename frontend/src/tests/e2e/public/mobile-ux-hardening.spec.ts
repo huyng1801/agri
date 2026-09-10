@@ -45,7 +45,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    const bottomNav = page.locator('nav[aria-label="Thanh điều hướng chính"]');
+    const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
     await expect(bottomNav).toBeVisible();
 
     const navItems = bottomNav.locator('a');
@@ -90,7 +90,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await page.goto('/lien-he', { waitUntil: 'domcontentloaded' });
 
     // Contextual bottom nav should be hidden on /lien-he
-    const bottomNav = page.locator('nav[aria-label="Thanh điều hướng chính"]');
+    const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
     await expect(bottomNav).toBeHidden();
 
     // Form inputs >= 16px
@@ -165,6 +165,83 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
 
     await page.screenshot({
       path: path.join(screenshotsDir, 'mobile-footer-390x844.png')
+    });
+  });
+
+  // 7. Product Passport Detail page on mobile
+  test('Product Passport Detail mobile UX (contextual bar, zero global nav, facts grid)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/san-pham', { waitUntil: 'domcontentloaded' });
+
+    // Click first product card
+    const firstProduct = page.locator('a[href^="/san-pham/"]').first();
+    await expect(firstProduct).toBeVisible();
+    await firstProduct.click();
+    await page.waitForLoadState('domcontentloaded');
+
+    // Verify global bottom nav is hidden on product detail
+    const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
+    await expect(bottomNav).toBeHidden();
+
+    // Zero overflow on detail page
+    const isOverflowing = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > window.innerWidth;
+    });
+    expect(isOverflowing).toBeFalsy();
+
+    // Contextual top bar (Back button)
+    const backButton = page.locator('button[aria-label="Quay lại"]');
+    await expect(backButton).toBeVisible();
+
+    // Contextual Share button
+    const shareButton = page.locator('button[aria-label="Chia sẻ"]');
+    await expect(shareButton).toBeVisible();
+
+    // Sticky Subnav exists
+    const stickyNav = page.locator('nav[aria-label="Điều hướng nhanh hồ sơ"]').first();
+    await expect(stickyNav).toBeVisible();
+
+    // Screenshot at 390x844
+    await page.screenshot({
+      path: path.join(screenshotsDir, 'passport-detail-390x844.png'),
+      fullPage: false
+    });
+
+    // Test at 320x568 (iPhone SE)
+    await page.setViewportSize({ width: 320, height: 568 });
+    await page.waitForTimeout(300);
+    const isOverflowingSmall = await page.evaluate(() => {
+      return document.documentElement.scrollWidth > window.innerWidth;
+    });
+    expect(isOverflowingSmall).toBeFalsy();
+
+    await page.screenshot({
+      path: path.join(screenshotsDir, 'passport-detail-320x568.png'),
+      fullPage: false
+    });
+  });
+
+  // 8. HTX Directory and QR Traceability pages on mobile
+  test('HTX Directory and QR Scan pages on mobile (zero overflow, bottom nav active)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+
+    // HTX directory
+    await page.goto('/htx', { waitUntil: 'domcontentloaded' });
+    let isOverflowing = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    expect(isOverflowing).toBeFalsy();
+
+    let bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
+    await expect(bottomNav).toBeVisible();
+
+    // QR Scan / Traceability page
+    await page.goto('/truy-xuat', { waitUntil: 'domcontentloaded' });
+    isOverflowing = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    expect(isOverflowing).toBeFalsy();
+    await expect(bottomNav).toBeVisible();
+
+    await page.screenshot({
+      path: path.join(screenshotsDir, 'truy-xuat-390x844.png'),
+      fullPage: false
     });
   });
 });
