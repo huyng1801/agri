@@ -190,11 +190,11 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(isOverflowing).toBeFalsy();
 
     // Contextual top bar (Back button)
-    const backButton = page.locator('button[aria-label="Quay lại"]');
+    const backButton = page.locator('button[aria-label*="Quay lại"]');
     await expect(backButton).toBeVisible();
 
     // Contextual Share button
-    const shareButton = page.locator('button[aria-label="Chia sẻ"]');
+    const shareButton = page.locator('button[aria-label*="Chia sẻ"]');
     await expect(shareButton).toBeVisible();
 
     // Sticky Subnav exists

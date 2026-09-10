@@ -442,7 +442,11 @@ export function ProductPassportClient({
       {/* =========================================================================
           STICKY SUBNAV / TABS (Section 27: One row, short mobile labels)
          ========================================================================= */}
-      <nav className="sticky top-[56px] sm:top-[64px] z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-2 backdrop-blur-md shadow-xs sm:mx-0 sm:rounded-xl sm:border">
+      <nav
+        aria-label="Điều hướng nhanh hồ sơ"
+        data-testid="passport-subnav"
+        className="sticky top-[56px] sm:top-[64px] z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-2 backdrop-blur-md shadow-xs sm:mx-0 sm:rounded-xl sm:border"
+      >
         <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           {[
             { key: 'overview', label: 'Tổng quan', id: 'section-overview' },
