@@ -5,12 +5,14 @@ COPY frontend/package.json frontend/package.json
 RUN npm ci --workspace frontend --fetch-retries=5 --fetch-retry-factor=2 --fetch-retry-mintimeout=20000 --fetch-retry-maxtimeout=120000
 
 FROM node:22-alpine AS builder
-WORKDIR /app/frontend
+WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 ARG NEXT_PUBLIC_API_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-COPY --from=deps /app/node_modules /app/node_modules
-COPY frontend .
+COPY --from=deps /app /app
+COPY frontend /app/frontend
+WORKDIR /app/frontend
+ENV PATH=/app/frontend/node_modules/.bin:/app/node_modules/.bin:$PATH
 RUN npm run build
 
 FROM node:22-alpine AS runner
