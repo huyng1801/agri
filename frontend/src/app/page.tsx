@@ -87,7 +87,7 @@ type HighlightTile = {
 
 type OutcomeTile = {
   title: string;
-  value: string;
+  value?: string;
   description: string;
   icon: LucideIcon;
 };
@@ -634,42 +634,36 @@ export default async function HomePage() {
     ? [
         {
           title: "QR công khai",
-          value: "Mở nhanh",
           description:
-            "Quét mã, vào thẳng hồ sơ số đã duyệt.",
+            "Quét mã hồ sơ số đã duyệt.",
           icon: QrCode,
         },
         {
           title: "Hồ sơ số",
-          value: `${featuredProducts.length} hồ sơ`,
           description:
             "Sản phẩm có truy xuất rõ ràng.",
           icon: ShoppingBag,
         },
         {
           title: "Nguồn gốc",
-          value: "Xem theo phạm vi",
           description:
             "Chỉ hiển thị thông tin công khai.",
           icon: BadgeCheck,
         },
         {
           title: "Dữ liệu",
-          value: "Một nguồn dữ liệu",
           description:
             "Dữ liệu từ Agripassport đồng nhất.",
           icon: Store,
         },
         {
           title: "Trải nghiệm",
-          value: "Đọc nhanh hơn",
           description:
             "Giao diện điện thoại dễ thao tác.",
           icon: Users,
         },
         {
           title: "Thị trường",
-          value: "Hiểu đúng hơn",
           description:
             "Thông tin quyết định nhanh hơn.",
           icon: Leaf,
@@ -1081,7 +1075,7 @@ export default async function HomePage() {
                 const Icon = tile.icon;
                 return (
                   <article
-                    key={`${tile.title}-${tile.value}`}
+                    key={tile.title}
                     className="text-center"
                   >
                     <span className="mx-auto grid h-20 w-20 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-muted)] text-[var(--brand-primary-strong)] shadow-[var(--public-shadow-card)]">
