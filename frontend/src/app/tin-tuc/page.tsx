@@ -26,10 +26,9 @@ type NewsPageProps = {
 };
 
 const publicTopicDefinitions = [
-  { label: 'Nông nghiệp', slugs: ['nong-nghiep'] },
   { label: 'Truy xuất', slugs: ['truy-xuat'] },
-  { label: 'Hợp tác', slugs: ['hop-tac'] },
-  { label: 'Sản phẩm', slugs: ['san-pham'] },
+  { label: 'Chuyển đổi số', slugs: ['chuyen-doi-so'] },
+  { label: 'Hợp tác xã', slugs: ['hop-tac'] },
   { label: 'Thị trường', slugs: ['tin-thi-truong', 'thi-truong'] },
   { label: 'Kiến thức', slugs: ['cau-chuyen-san-pham'] }
 ] as const;

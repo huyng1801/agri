@@ -11,10 +11,11 @@ export type NewsCategory = {
 
 const publicCategoryLabels: Record<string, string> = {
   'cau-chuyen-san-pham': 'Kiến thức',
+  'chuyen-doi-so': 'Chuyển đổi số',
   'nong-nghiep': 'Nông nghiệp',
   'truy-xuat': 'Truy xuất',
   'truy-xuat-nguon-goc': 'Truy xuất',
-  'hop-tac': 'Hợp tác',
+  'hop-tac': 'Hợp tác xã',
   'san-pham': 'Sản phẩm',
   'thi-truong': 'Thị trường',
   'tin-thi-truong': 'Thị trường'

@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import { getPublicMapLocation, getPublicSiteProfile, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
 import { type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
 import { PublicMapPreview } from './public-map-preview';
+import { ZaloIcon } from './zalo-icon';
 import { cn } from './ui';
 
 export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
@@ -14,6 +15,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const mapLocation = getPublicMapLocation(profile);
   const isInternal = siteKey === 'htxonline';
   const isPassport = siteKey === 'passport';
+  const zaloUrl = isPassport ? getPublicZaloUrl(profile, true) : '';
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
   const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'HỘ CHIẾU NÔNG NGHIỆP' : 'AGRIPASSPORT';
@@ -45,7 +47,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
       ? [
           { href: '/san-pham?hasQr=true', label: 'Sản phẩm' },
           { href: '/htx', label: 'Đối tác' },
-          { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
+          { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' }
         ]
       : [
           { href: '/san-pham', label: 'Trang sản phẩm' },
@@ -56,8 +58,8 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const aboutLinks = isPassport
     ? [
         { href: '/gioi-thieu', label: 'Giới thiệu' },
-        { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
-        { href: '/tin-tuc', label: 'Tin tức' }
+        { href: '/tin-tuc', label: 'Tin tức' },
+        { href: '/huong-dan-mua-hang', label: 'Tra cứu QR' }
       ]
     : [
         { href: '/cau-hoi-thuong-gap', label: 'Câu hỏi thường gặp' },
@@ -160,6 +162,14 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   {profile.supportEmail}
                 </a>
               </p>
+              {zaloUrl && (
+                <p className="flex items-center gap-2">
+                  <ZaloIcon size={15} />
+                  <a href={zaloUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
+                    Zalo hỗ trợ
+                  </a>
+                </p>
+              )}
             </div>
           </div>
 
