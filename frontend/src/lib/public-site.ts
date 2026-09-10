@@ -49,6 +49,9 @@ export const defaultMapEmbedUrl =
 
 const publicMediaPlaceholderUrl = '/public-media-placeholder.svg';
 const agripassportAboutIllustrationUrl = '/hero/htx-farmer-hero-v2.png';
+const passportHomeIllustrationUrl = '/hero/agripassport-app-showcase.png';
+const passportAboutIllustrationUrl = '/hero/passport-about-hero.png';
+const passportContactIllustrationUrl = '/hero/passport-contact-hero.png';
 
 export const defaultPublicMapLocation: PublicMapLocation = {
   latitude: 10.4458,
@@ -176,21 +179,21 @@ const siteDefaults: Record<Exclude<PublicSiteKey, 'local'>, PublicSiteProfile> =
       homeTitle: 'HỘ CHIẾU NÔNG NGHIỆP giúp người mua truy xuất nguồn gốc nhanh và rõ hơn.',
       homeDescription:
         'Mỗi QR mở ra một hồ sơ công khai về sản phẩm, vùng trồng, quá trình canh tác và chứng nhận phù hợp để minh bạch thông tin với người tiêu dùng và đối tác.',
-      homeImageUrl: publicMediaPlaceholderUrl,
+      homeImageUrl: passportHomeIllustrationUrl,
       homeImageAlt: 'QR truy xuất cho sản phẩm nông nghiệp',
       introTitle: 'Giới thiệu Hộ chiếu nông nghiệp',
       introDescription: 'Hồ sơ số được tạo từ dữ liệu sản phẩm trên Agripassport để phục vụ truy xuất và minh bạch thông tin.',
-      introImageUrl: publicMediaPlaceholderUrl,
+      introImageUrl: passportAboutIllustrationUrl,
       introImageAlt: 'Hồ sơ QR và truy xuất nguồn gốc nông nghiệp',
       aboutTitle: 'Mỗi QR là một hồ sơ nguồn gốc công khai',
       aboutDescription:
         'Người mua, đối tác và các bên được phép tra cứu có thể xem vùng trồng, nhật ký, chứng nhận và dữ liệu nguồn gốc theo phạm vi HTX công khai.',
-      aboutImageUrl: publicMediaPlaceholderUrl,
+      aboutImageUrl: passportAboutIllustrationUrl,
       aboutImageAlt: 'Minh bạch nguồn gốc thông qua hồ sơ số',
       contactTitle: 'Cần tư vấn triển khai QR và hộ chiếu số cho sản phẩm?',
       contactDescription:
         'Đội vận hành hỗ trợ chuẩn hóa dữ liệu truy xuất, cấu trúc QR và phạm vi thông tin công khai để hồ sơ số rõ ràng, đáng tin hơn.',
-      contactImageUrl: publicMediaPlaceholderUrl,
+      contactImageUrl: passportContactIllustrationUrl,
       contactImageAlt: 'Hỗ trợ triển khai QR và hồ sơ số cho nông sản'
     }
   }
