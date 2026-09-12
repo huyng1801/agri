@@ -33,7 +33,7 @@ const internalNavigation = [
 ] as const satisfies readonly PublicNavigationEntry[];
 
 const passportNavigation = [
-  { kind: 'link', href: '/', label: 'Trang chủ' },
+  { kind: 'link', href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
   { kind: 'link', href: '/gioi-thieu', label: 'Giới thiệu' },
   {
     kind: 'dropdown',

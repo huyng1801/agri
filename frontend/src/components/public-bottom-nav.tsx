@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingBag, Store } from 'lucide-react';
+import { BriefcaseBusiness, Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingBag, Store } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
@@ -18,7 +18,8 @@ const iconByHref: Record<string, LucideIcon> = {
   '/san-pham?hasQr=true': QrCode,
   '/htx': Store,
   '/tin-tuc': Newspaper,
-  '/lien-he': Mail
+  '/lien-he': Mail,
+  '/tuyen-cong-tac-vien': BriefcaseBusiness
 };
 
 function isHrefActive(pathname: string, hasQrQuery: boolean, href: string) {

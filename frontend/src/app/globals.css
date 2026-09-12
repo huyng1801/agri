@@ -479,6 +479,43 @@ button {
   .public-app-shell main#main-content > section:nth-of-type(7) > div > div > div.relative.z-10.max-w-2xl > div.flex {
     justify-content: center;
   }
+
+  /* Normalize the legacy Passport news markup to the same three-card grid.
+   * The current Passport source already renders flat cards, so these rules
+   * only affect the older nested featured/side-article structure. */
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > article:first-child {
+    grid-column: span 1 / span 1;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > div {
+    display: contents;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > div > article {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 1.25rem;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > div > article > a:first-child {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > div > article > div {
+    margin-top: 1rem;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(8) > div > div:nth-child(2) > div > article:nth-child(3) {
+    display: none;
+  }
 }
 
 .public-surface {
