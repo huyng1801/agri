@@ -262,7 +262,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
       ).first();
       await expect(activeSlide).toBeVisible();
 
-      const sizes = await activeSlide.locator('h2 > span').evaluateAll((elements) =>
+      const sizes = await activeSlide.locator(':is(h1, h2) > span').evaluateAll((elements) =>
         elements.map((element) => parseFloat(window.getComputedStyle(element).fontSize))
       );
       expect(sizes[0]).toBeLessThanOrEqual(29);

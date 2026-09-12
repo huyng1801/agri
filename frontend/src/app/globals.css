@@ -404,12 +404,12 @@ button {
 /* The hero switches to its mobile layout below lg, so keep tablet widths from
  * reusing the desktop-sized headline and prevent navigation labels from wrapping. */
 @media (max-width: 1023px) {
-  .public-app-shell section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] h2 > span:first-child {
+  .public-app-shell section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] :is(h1, h2) > span:first-child {
     font-size: clamp(1.45rem, 5.6vw, 1.8rem);
     line-height: 1.12;
   }
 
-  .public-app-shell section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] h2 > span:nth-child(2) {
+  .public-app-shell section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] :is(h1, h2) > span:nth-child(2) {
     font-size: clamp(1.2rem, 5.1vw, 1.5rem);
     line-height: 1.18;
   }
