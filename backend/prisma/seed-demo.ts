@@ -14,6 +14,10 @@ import QRCode from 'qrcode';
 import { EDITORIAL_NEWS_ARTICLES } from './editorial-news';
 import { EDITORIAL_NEWS_EXPANSION } from './editorial-news-expansion';
 import { SEASON_MANAGEMENT_NEWS } from './editorial-news-season';
+import { PASSPORT_NEWS_CATEGORY_BY_SLUG, PASSPORT_NEWS_SLUG_SET } from './passport-news-catalog';
+import { preparePassportNewsBody } from './passport-news-content';
+import { PASSPORT_PRODUCTION_ARTICLES, passportNewsCoverUrl } from './passport-news-production';
+import { resolveNewsSeedSlug } from './news-seed-slug';
 
 const prisma = new PrismaClient();
 const passportCode = customAlphabet('ABCDEFGHJKLMNPQRSTUVWXYZ23456789', 10);
@@ -827,8 +831,8 @@ async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, admi
     const plantedDate = new Date(`201${8 + index}-06-15`);
     const tree = await prisma.tree.upsert({
       where: { treeCode },
-      create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, treeCode, variety: index ? 'Cát Chu' : 'Keo', latitude: 10.4458 + offset * 0.0004, longitude: 105.718 + offset * 0.0004, plantedDate, status: 'HARVESTED', publicVerified: true, createdById: adminId, note: 'Cá thể demo cho luồng hộ chiếu cây' },
-      update: { zoneId: zone.id, cropTypeId: cropType.id, status: 'HARVESTED', publicVerified: true, plantedDate }
+      create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, treeCode, variety: index ? 'Cát Chu' : 'Keo', latitude: 10.4458 + offset * 0.0004, longitude: 105.718 + offset * 0.0004, plantedDate, status: 'HARVESTED', publicVerified: true, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }], createdById: adminId, note: 'Cá thể demo cho luồng hộ chiếu cây' },
+      update: { zoneId: zone.id, cropTypeId: cropType.id, status: 'HARVESTED', publicVerified: true, plantedDate, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }] }
     });
     trees.push(tree);
     const eventDate = new Date('2026-07-10');
@@ -916,8 +920,9 @@ const PUBLIC_ARTICLE_GUIDES: Record<string, string> = {
   'tin-htx': '<h2>Gợi ý phối hợp trong hợp tác xã</h2><p>Hợp tác xã nên thống nhất một quy trình ngắn: người sản xuất ghi nhận, người phụ trách kiểm tra, người quản lý duyệt phần công khai và đội ngũ cập nhật khi có thay đổi. Phân công rõ giúp dữ liệu không phụ thuộc vào một cá nhân và dễ duy trì qua nhiều mùa vụ.</p>'
 };
 
-function preparePublicNewsBody(bodyHtml: string, category: string) {
+function preparePublicNewsBody(bodyHtml: string, category: string, siteKey: NewsSite) {
   const bodyWithGuide = `${bodyHtml}${PUBLIC_ARTICLE_GUIDES[category] || ''}`;
+  if (siteKey === NewsSite.PASSPORT) return preparePassportNewsBody(bodyWithGuide);
   return bodyWithGuide
     .replace(/\bHTXONLINE\b/gi, 'lớp quản trị nội bộ')
     .replace(/\bCOD\b/gi, 'quy trình giao nhận')
@@ -928,42 +933,86 @@ function preparePublicNewsBody(bodyHtml: string, category: string) {
 async function seedNews(superAdminId: string) {
   const categories = await prisma.newsCategory.findMany();
   const categoryBySlug = new Map(categories.map((item) => [item.slug, item.id]));
-  const editorialArticles = [...EDITORIAL_NEWS_ARTICLES, ...EDITORIAL_NEWS_EXPANSION].map((article) => ({
+  const editorialArticles = [...EDITORIAL_NEWS_ARTICLES, ...EDITORIAL_NEWS_EXPANSION]
+    .filter((article) => !PASSPORT_NEWS_SLUG_SET.has(article.slug))
+    .map((article) => ({
+      ...article,
+      cover: PHOTOS[article.coverKey as keyof typeof PHOTOS]
+    }));
+  const passportArticles = PASSPORT_PRODUCTION_ARTICLES.map((article) => ({
     ...article,
     cover: PHOTOS[article.coverKey as keyof typeof PHOTOS]
   }));
-  const allArticles = [...DOCUMENT_NEWS_ARTICLES, ...editorialArticles, {
-    ...SEASON_MANAGEMENT_NEWS,
-    cover: PHOTOS[SEASON_MANAGEMENT_NEWS.coverKey]
-  }];
+  const documentArticles = DOCUMENT_NEWS_ARTICLES.filter((article) => !PASSPORT_NEWS_SLUG_SET.has(article.slug));
+  const allArticles = [...documentArticles, ...editorialArticles, ...passportArticles];
+  const siteArticleIndexes = new Map<NewsSite, number>();
 
   for (const [index, article] of allArticles.entries()) {
     const slug = article.slug;
-    const existingByTitle = await prisma.newsArticle.findFirst({ where: { title: article.title }, select: { slug: true } });
+    const siteKey = PASSPORT_NEWS_SLUG_SET.has(slug) ? NewsSite.PASSPORT : NewsSite.AGRIPASSPORT;
+    const siteArticleIndex = siteArticleIndexes.get(siteKey) ?? 0;
+    const articleCategory = siteKey === NewsSite.PASSPORT
+      ? PASSPORT_NEWS_CATEGORY_BY_SLUG.get(slug) || article.category
+      : article.category;
+    const cover = siteKey === NewsSite.PASSPORT
+      ? passportNewsCoverUrl('coverKey' in article ? article.coverKey : 'fieldQr')
+      : article.cover;
+    const siteLabel = siteKey === NewsSite.PASSPORT ? 'Hộ chiếu nông nghiệp' : 'Agripassport';
+    siteArticleIndexes.set(siteKey, siteArticleIndex + 1);
+    const existingBySlug = await prisma.newsArticle.findUnique({
+      where: { slug },
+      select: { slug: true, siteKey: true, title: true }
+    });
+    const existingBySiteTitle = await prisma.newsArticle.findFirst({
+      where: { title: article.title, siteKey },
+      select: { slug: true }
+    });
+    const scopeSuffix = siteKey === NewsSite.PASSPORT ? 'ho-chieu' : siteKey.toLowerCase();
+    const needsScopedSlug = Boolean(
+      existingBySlug &&
+      !existingBySiteTitle &&
+      !(existingBySlug.siteKey === siteKey && existingBySlug.title === article.title)
+    );
+    const occupiedScopedSlugs = needsScopedSlug
+      ? new Set(
+          (await prisma.newsArticle.findMany({
+            where: { slug: { startsWith: `${slug}-${scopeSuffix}` } },
+            select: { slug: true }
+          })).map((item) => item.slug)
+        )
+      : undefined;
+    const existingSlug = resolveNewsSeedSlug({
+      requestedSlug: slug,
+      title: article.title,
+      siteKey,
+      existingBySlug,
+      existingBySiteTitle,
+      occupiedSlugs: occupiedScopedSlugs
+    });
     const publishedAt = new Date();
     if (article.slug !== SEASON_MANAGEMENT_NEWS.slug) {
-      publishedAt.setDate(publishedAt.getDate() - index * 3);
+      publishedAt.setDate(publishedAt.getDate() - siteArticleIndex * 3);
     }
-    const bodyHtml = preparePublicNewsBody(article.bodyHtml, article.category);
+    const bodyHtml = preparePublicNewsBody(article.bodyHtml, articleCategory, siteKey);
     const coverImageAlt = `Ảnh minh họa: ${article.title}`;
     const focusKeyword = article.focusKeyword;
     const seoDescription = article.seoDescription;
     await prisma.newsArticle.upsert({
-      where: { slug: existingByTitle?.slug ?? slug },
+      where: { slug: existingSlug },
       create: {
-        siteKey: NewsSite.AGRIPASSPORT,
-        categoryId: categoryBySlug.get(article.category),
+        siteKey,
+        categoryId: categoryBySlug.get(articleCategory),
         authorId: superAdminId,
         title: article.title,
-        slug,
+        slug: existingSlug,
         excerpt: article.excerpt,
         bodyHtml,
-        coverImageUrl: article.cover,
+        coverImageUrl: cover,
         coverImageAlt,
         status: NewsStatus.PUBLISHED,
         publicVerified: true,
-        isFeatured: index < 4,
-        showOnHome: index < 6,
+        isFeatured: siteArticleIndex < 4,
+        showOnHome: siteArticleIndex < 6,
         focusKeyword,
         publishedAt,
         viewCount: 120 + index * 17,
@@ -971,66 +1020,65 @@ async function seedNews(superAdminId: string) {
         seoDescription,
         ogTitle: article.title,
         ogDescription: seoDescription,
-        ogImageUrl: article.cover,
+        ogImageUrl: cover,
         twitterTitle: article.title,
         twitterDescription: seoDescription,
-        twitterImageUrl: article.cover,
-        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        twitterImageUrl: cover,
+        tagsJson: [focusKeyword, articleCategory, siteLabel],
         seoScore: 92,
         readabilityScore: 86
       },
       update: {
-        siteKey: NewsSite.AGRIPASSPORT,
+        siteKey,
         title: article.title,
-        slug,
+        slug: existingSlug,
         excerpt: article.excerpt,
-        coverImageUrl: article.cover,
+        coverImageUrl: cover,
         coverImageAlt,
         status: NewsStatus.PUBLISHED,
         publicVerified: true,
-        isFeatured: index < 4,
-        showOnHome: index < 6,
+        isFeatured: siteArticleIndex < 4,
+        showOnHome: siteArticleIndex < 6,
         bodyHtml,
         focusKeyword,
         seoTitle: article.title,
         seoDescription,
         ogTitle: article.title,
         ogDescription: seoDescription,
-        ogImageUrl: article.cover,
+        ogImageUrl: cover,
         twitterTitle: article.title,
         twitterDescription: seoDescription,
-        twitterImageUrl: article.cover,
-        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        twitterImageUrl: cover,
+        tagsJson: [focusKeyword, articleCategory, siteLabel],
         seoScore: 92,
         readabilityScore: 86,
         publishedAt
       }
     });
 
-    // Older demo runs may have left a second row with the same title. Keep every
-    // matching public row aligned so stale cover URLs cannot leak into the catalog.
+    // Align only rows owned by this site so same-title articles remain isolated.
     await prisma.newsArticle.updateMany({
-      where: { title: article.title },
+      where: { title: article.title, siteKey },
       data: {
-        siteKey: NewsSite.AGRIPASSPORT,
+        siteKey,
         excerpt: article.excerpt,
         bodyHtml,
-        coverImageUrl: article.cover,
+        coverImageUrl: cover,
         coverImageAlt,
         status: NewsStatus.PUBLISHED,
         publicVerified: true,
-        isFeatured: index < 4,
-        showOnHome: index < 6,
+        isFeatured: siteArticleIndex < 4,
+        showOnHome: siteArticleIndex < 6,
         focusKeyword,
         seoTitle: article.title,
         seoDescription,
         ogTitle: article.title,
         ogDescription: seoDescription,
-        ogImageUrl: article.cover,
+        ogImageUrl: cover,
         twitterTitle: article.title,
         twitterDescription: seoDescription,
-        twitterImageUrl: article.cover,
-        tagsJson: [focusKeyword, article.category, 'Agripassport'],
+        twitterImageUrl: cover,
+        tagsJson: [focusKeyword, articleCategory, siteLabel],
         seoScore: 92,
         readabilityScore: 86
       }
@@ -1047,6 +1095,8 @@ async function seedNews(superAdminId: string) {
     where: { status: NewsStatus.PUBLISHED, seoScore: 0 },
     data: { seoScore: 78, readabilityScore: 86 }
   });
+
+  return allArticles.length;
 }
 
 async function hideTestArtifacts() {
@@ -1149,8 +1199,8 @@ async function main() {
   }
 
   if (superAdmin) {
-    await seedNews(superAdmin.id);
-    console.log(`Seeded ${DOCUMENT_NEWS_ARTICLES.length + EDITORIAL_NEWS_ARTICLES.length + EDITORIAL_NEWS_EXPANSION.length + 1} bài tin tức biên tập`);
+    const newsCount = await seedNews(superAdmin.id);
+    console.log(`Seeded ${newsCount} bài tin tức biên tập`);
   }
 
   await seedSampleOrders();

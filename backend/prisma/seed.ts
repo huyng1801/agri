@@ -1,7 +1,147 @@
-import { Prisma, PrismaClient, RoleSlug } from '@prisma/client';
+import { NewsSite, NewsStatus, Prisma, PrismaClient, RoleSlug } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import { preparePassportNewsBody } from './passport-news-content';
+import { PASSPORT_PRODUCTION_ARTICLES, passportNewsCoverUrl } from './passport-news-production';
+import { resolveNewsSeedSlug } from './news-seed-slug';
 
 const prisma = new PrismaClient();
+
+async function seedPassportNews(superAdminId: string) {
+  const categories = await prisma.newsCategory.findMany();
+  const categoryBySlug = new Map(categories.map((item) => [item.slug, item.id]));
+
+  for (const [index, article] of PASSPORT_PRODUCTION_ARTICLES.entries()) {
+    const existingBySlug = await prisma.newsArticle.findUnique({
+      where: { slug: article.slug },
+      select: { slug: true, siteKey: true, title: true }
+    });
+    const existingPassportByTitle = await prisma.newsArticle.findFirst({
+      where: { title: article.title, siteKey: NewsSite.PASSPORT },
+      select: { slug: true }
+    });
+    const needsScopedSlug = Boolean(
+      existingBySlug &&
+      !existingPassportByTitle &&
+      !(existingBySlug.siteKey === NewsSite.PASSPORT && existingBySlug.title === article.title)
+    );
+    const occupiedScopedSlugs = needsScopedSlug
+      ? new Set(
+          (await prisma.newsArticle.findMany({
+            where: { slug: { startsWith: `${article.slug}-ho-chieu` } },
+            select: { slug: true }
+          })).map((item) => item.slug)
+        )
+      : undefined;
+    const existingSlug = resolveNewsSeedSlug({
+      requestedSlug: article.slug,
+      title: article.title,
+      siteKey: NewsSite.PASSPORT,
+      existingBySlug,
+      existingBySiteTitle: existingPassportByTitle,
+      occupiedSlugs: occupiedScopedSlugs
+    });
+    const publishedAt = new Date();
+    publishedAt.setDate(publishedAt.getDate() - index * 3);
+    const bodyHtml = preparePassportNewsBody(article.bodyHtml);
+    const coverImageUrl = passportNewsCoverUrl(article.coverKey);
+    const coverImageAlt = `Ảnh minh họa: ${article.title}`;
+    const tagsJson = [article.focusKeyword, article.category, 'Hộ chiếu nông nghiệp'];
+
+    await prisma.newsArticle.upsert({
+      where: { slug: existingSlug },
+      create: {
+        siteKey: NewsSite.PASSPORT,
+        categoryId: categoryBySlug.get(article.category),
+        authorId: superAdminId,
+        title: article.title,
+        slug: existingSlug,
+        excerpt: article.excerpt,
+        bodyHtml,
+        coverImageUrl,
+        coverImageAlt,
+        status: NewsStatus.PUBLISHED,
+        publicVerified: true,
+        isFeatured: index < 4,
+        showOnHome: index < 6,
+        focusKeyword: article.focusKeyword,
+        publishedAt,
+        viewCount: 120 + index * 17,
+        seoTitle: article.title,
+        seoDescription: article.seoDescription,
+        ogTitle: article.title,
+        ogDescription: article.seoDescription,
+        ogImageUrl: coverImageUrl,
+        twitterTitle: article.title,
+        twitterDescription: article.seoDescription,
+        twitterImageUrl: coverImageUrl,
+        tagsJson,
+        seoScore: 92,
+        readabilityScore: 86
+      },
+      update: {
+        siteKey: NewsSite.PASSPORT,
+        categoryId: categoryBySlug.get(article.category),
+        authorId: superAdminId,
+        title: article.title,
+        slug: existingSlug,
+        excerpt: article.excerpt,
+        bodyHtml,
+        coverImageUrl,
+        coverImageAlt,
+        status: NewsStatus.PUBLISHED,
+        publicVerified: true,
+        isFeatured: index < 4,
+        showOnHome: index < 6,
+        focusKeyword: article.focusKeyword,
+        publishedAt,
+        seoTitle: article.title,
+        seoDescription: article.seoDescription,
+        ogTitle: article.title,
+        ogDescription: article.seoDescription,
+        ogImageUrl: coverImageUrl,
+        twitterTitle: article.title,
+        twitterDescription: article.seoDescription,
+        twitterImageUrl: coverImageUrl,
+        tagsJson,
+        seoScore: 92,
+        readabilityScore: 86
+      }
+    });
+
+    // Align Passport duplicates only; do not alter same-title articles on other sites.
+    await prisma.newsArticle.updateMany({
+      where: { title: article.title, siteKey: NewsSite.PASSPORT },
+      data: {
+        siteKey: NewsSite.PASSPORT,
+        categoryId: categoryBySlug.get(article.category),
+        authorId: superAdminId,
+        excerpt: article.excerpt,
+        bodyHtml,
+        coverImageUrl,
+        coverImageAlt,
+        status: NewsStatus.PUBLISHED,
+        publicVerified: true,
+        isFeatured: index < 4,
+        showOnHome: index < 6,
+        focusKeyword: article.focusKeyword,
+        seoTitle: article.title,
+        seoDescription: article.seoDescription,
+        ogTitle: article.title,
+        ogDescription: article.seoDescription,
+        ogImageUrl: coverImageUrl,
+        twitterTitle: article.title,
+        twitterDescription: article.seoDescription,
+        twitterImageUrl: coverImageUrl,
+        tagsJson,
+        seoScore: 92,
+        readabilityScore: 86
+      }
+    });
+  }
+
+  return PASSPORT_PRODUCTION_ARTICLES.length;
+}
+
 const defaultPublicFaqs = [
   {
     question: 'Agripassport hỗ trợ gì cho hợp tác xã?',
@@ -397,6 +537,9 @@ async function main() {
     },
     update: {}
   });
+
+  const newsCount = await seedPassportNews(admin.id);
+  console.log(`Seeded ${newsCount} bài tin tức Hộ chiếu nông nghiệp`);
 
   console.log(`Seed done. Super Admin: ${email}`);
 }
