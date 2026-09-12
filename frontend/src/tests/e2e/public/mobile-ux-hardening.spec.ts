@@ -284,6 +284,24 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
+  test('Process section title stays on one line from tablet width upward', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 900 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const title = page.locator(
+      'main#main-content > section[class*="bg-[var(--surface-muted)]"] > div > div:first-child > h2'
+    ).first();
+    await expect(title).toBeVisible();
+
+    const layout = await title.evaluate((element) => ({
+      clientWidth: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+      lineCount: Math.round(element.getBoundingClientRect().height / parseFloat(window.getComputedStyle(element).lineHeight))
+    }));
+    expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1);
+    expect(layout.lineCount).toBe(1);
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];

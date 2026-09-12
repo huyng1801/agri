@@ -444,6 +444,14 @@ button {
   }
 }
 
+/* Keep the process-section title aligned with the reference at tablet and
+ * desktop widths without forcing an overflow on narrow phone screens. */
+@media (min-width: 640px) {
+  .public-app-shell main#main-content > section[class*='bg-[var(--surface-muted)]'] > div > div:first-child > h2 {
+    white-space: nowrap;
+  }
+}
+
 .public-surface {
   border: 1px solid var(--border);
   background: var(--surface-elevated);
