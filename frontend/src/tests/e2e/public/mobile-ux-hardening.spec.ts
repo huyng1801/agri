@@ -209,6 +209,28 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(drawerDialog).toBeHidden();
   });
 
+  test('Public headings use the compact mobile typography scale', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const routes = ['/', '/ve-chung-toi', '/san-pham', '/htx', '/tin-tuc', '/cay', '/truy-xuat', '/lien-he'];
+
+    for (const route of routes) {
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      const oversizedHeadings = await page.locator('.public-app-shell h1, .public-app-shell h2, .public-app-shell h3').evaluateAll((elements) =>
+        elements.flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          if (!rect.width || !rect.height || style.display === 'none' || element.classList.contains('sr-only')) return [];
+
+          const size = parseFloat(style.fontSize);
+          const maxSize = element.tagName === 'H1' ? 28 : element.tagName === 'H2' ? 24 : 20;
+          return size > maxSize ? [{ text: (element.textContent || '').trim().slice(0, 80), size, maxSize }] : [];
+        })
+      );
+
+      expect(oversizedHeadings, `oversized public headings on ${route}`).toEqual([]);
+    }
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];
