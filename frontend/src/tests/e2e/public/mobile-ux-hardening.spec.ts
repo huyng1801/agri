@@ -142,7 +142,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
   });
 
   // 5. Mobile Top Header & Navigation Drawer Interactive Test
-  test('Mobile header height <= 58px and categorized navigation drawer full interactions', async ({ page }) => {
+  test('Mobile header height <= 58px and shared navigation drawer full interactions', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -157,14 +157,23 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     const drawerDialog = page.locator('div[role="dialog"][aria-label="Menu điều hướng"]');
     await expect(drawerDialog).toBeVisible({ timeout: 5000 });
 
-    // Verify 3 categories exist
-    await expect(drawerDialog.getByText('Khám phá Dữ liệu')).toBeVisible();
-    await expect(drawerDialog.getByText('Hệ sinh thái Nông nghiệp Số')).toBeVisible();
-    await expect(drawerDialog.getByText('Hỗ trợ & Kết nối')).toBeVisible();
+    const drawerNav = drawerDialog.getByTestId('public-mobile-nav');
+    await expect(drawerNav).toBeVisible();
+    await expect(drawerNav.locator('a')).toHaveCount(7);
+    await expect(drawerNav.locator('a').evaluateAll((links) => links.map((link) => link.textContent?.trim()))).resolves.toEqual([
+      'Trang chủ',
+      'Về Agripassport',
+      'Sản phẩm',
+      'Hợp tác xã',
+      'Truy xuất QR',
+      'Tin tức',
+      'Liên hệ'
+    ]);
 
     // Verify items have >= 44px touch height
-    const firstLink = drawerDialog.locator('a').first();
-    const linkBox = await firstLink.boundingBox();
+    const firstNavigationLink = drawerNav.locator('a').first();
+    await expect(firstNavigationLink).toBeVisible();
+    const linkBox = await firstNavigationLink.boundingBox();
     expect(linkBox?.height).toBeGreaterThanOrEqual(44);
 
     // Verify close button touch target >= 40px
@@ -196,6 +205,37 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(drawerDialog).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(drawerDialog).toBeHidden();
+  });
+
+  test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];
+
+    for (const route of routes) {
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
+      const undersized = await page.locator('a,button,input,select,textarea,[role="button"],[role="tab"]').evaluateAll((elements) =>
+        elements.flatMap((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = window.getComputedStyle(element);
+          const isHidden =
+            !rect.width ||
+            !rect.height ||
+            style.display === 'none' ||
+            style.visibility === 'hidden' ||
+            element.classList.contains('sr-only') ||
+            element.closest('[aria-hidden="true"]') ||
+            element.getAttribute('aria-label') === 'Open Next.js Dev Tools';
+          if (isHidden || (rect.width >= 44 && rect.height >= 44)) return [];
+          return [{
+            label: element.getAttribute('aria-label') || (element.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 60),
+            width: Math.round(rect.width),
+            height: Math.round(rect.height)
+          }];
+        })
+      );
+
+      expect(undersized, `undersized public controls on ${route}`).toEqual([]);
+    }
   });
 
   // 6. Mobile Footer Accordions

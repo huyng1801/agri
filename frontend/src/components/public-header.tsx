@@ -4,88 +4,20 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Briefcase,
+  ChevronDown,
   ChevronRight,
-  Home,
-  Info,
   LogIn,
   Menu,
-  Newspaper,
-  Phone,
   QrCode,
-  Scan,
-  ShieldCheck,
-  ShoppingBag,
-  Sprout,
-  Store,
-  Users,
   X
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PublicLogo } from './public-logo';
 import { publicContainerClass } from './public-layout';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
-
-const marketplaceNavItems = [
-  { href: '/', label: 'Trang chủ' },
-  { href: '/ve-chung-toi', label: 'Về Agripassport' },
-  { href: '/san-pham', label: 'Sản phẩm' },
-  { href: '/htx', label: 'Hợp tác xã' },
-  { href: '/san-pham?hasQr=true', label: 'Truy xuất QR' },
-  { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' }
-] as const;
-
-const internalNavItems = [
-  { href: '/', label: 'Trang chủ' },
-  { href: '/san-pham', label: 'Sản phẩm' },
-  { href: '/htx', label: 'HTX' },
-  { href: '/gioi-thieu', label: 'Dịch vụ' },
-  { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' }
-] as const;
-
-const passportNavItems = [
-  { href: '/', label: 'Trang chủ' },
-  { href: '/gioi-thieu', label: 'Giới thiệu' },
-  { href: '/cay', label: 'Hộ chiếu cây' },
-  { href: '/truy-xuat', label: 'Truy xuất' },
-  { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
-  { href: '/htx', label: 'Đối tác' },
-  { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
-  { href: '/tin-tuc', label: 'Tin tức' },
-  { href: '/lien-he', label: 'Liên hệ' }
-] as const;
-
-// Categorized Mobile Menu Groups (Section 6 of Brief)
-const mobileMenuGroups = [
-  {
-    title: 'Khám phá Dữ liệu',
-    items: [
-      { href: '/', label: 'Trang chủ', icon: Home },
-      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR Passport', icon: ShieldCheck },
-      { href: '/san-pham', label: 'Danh mục Nông sản', icon: ShoppingBag },
-      { href: '/htx', label: 'Đối tác & Hợp tác xã', icon: Store }
-    ]
-  },
-  {
-    title: 'Hệ sinh thái Nông nghiệp Số',
-    items: [
-      { href: '/cay', label: 'Hộ chiếu cây', icon: Sprout },
-      { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên số hóa', icon: Users },
-      { href: '/gioi-thieu', label: 'Giới thiệu giải pháp', icon: Info }
-    ]
-  },
-  {
-    title: 'Hỗ trợ & Kết nối',
-    items: [
-      { href: '/truy-xuat', label: 'Cổng tra cứu QR', icon: Scan },
-      { href: '/tin-tuc', label: 'Tin tức & Chuyển đổi số', icon: Newspaper },
-      { href: '/lien-he', label: 'Liên hệ hợp tác', icon: Phone }
-    ]
-  }
-];
+import { getPublicNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
 
 function isNavActive(pathname: string, hasQrQuery: boolean, href: string) {
   if (href.includes('?hasQr=true')) return pathname === '/san-pham' && hasQrQuery;
@@ -93,8 +25,13 @@ function isNavActive(pathname: string, hasQrQuery: boolean, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function isNavigationEntryActive(pathname: string, hasQrQuery: boolean, entry: PublicNavigationEntry) {
+  return isNavActive(pathname, hasQrQuery, entry.href) ||
+    (entry.kind === 'dropdown' && entry.items.some((item) => isNavActive(pathname, hasQrQuery, item.href)));
+}
+
 export function PublicHeader({
-  appName = 'HỘ CHIẾU NÔNG NGHIỆP',
+  appName = 'Hộ chiếu nông nghiệp',
   siteKey = 'passport'
 }: {
   appName?: string;
@@ -103,7 +40,10 @@ export function PublicHeader({
   const pathname = usePathname();
   const [hasQrQuery, setHasQrQuery] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [passportMenuOpen, setPassportMenuOpen] = useState(false);
+  const [mobilePassportMenuOpen, setMobilePassportMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const passportMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -112,7 +52,7 @@ export function PublicHeader({
   const isInternal = siteKey === 'htxonline';
   const isPassport = siteKey === 'passport';
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
-  const navItems = isInternal ? internalNavItems : isPassport ? passportNavItems : marketplaceNavItems;
+  const navigation = getPublicNavigation(siteKey);
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
   const navCta =
@@ -127,19 +67,34 @@ export function PublicHeader({
   useEffect(() => {
     setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
     setMobileMenuOpen(false);
+    setPassportMenuOpen(false);
+    setMobilePassportMenuOpen(false);
   }, [pathname]);
 
-  // Handle ESC key to dismiss mobile drawer
+  // Dismiss open navigation layers with Escape.
   useEffect(() => {
-    if (!mobileMenuOpen) return;
+    if (!mobileMenuOpen && !passportMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMobileMenuOpen(false);
+        setPassportMenuOpen(false);
+        setMobilePassportMenuOpen(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, passportMenuOpen]);
+
+  useEffect(() => {
+    if (!passportMenuOpen) return;
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!passportMenuRef.current?.contains(event.target as Node)) {
+        setPassportMenuOpen(false);
+      }
+    };
+    document.addEventListener('pointerdown', handlePointerDown);
+    return () => document.removeEventListener('pointerdown', handlePointerDown);
+  }, [passportMenuOpen]);
 
   // Strict multi-layer scroll locking for iOS WebKit & Android Chrome
   useEffect(() => {
@@ -159,6 +114,10 @@ export function PublicHeader({
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) setMobilePassportMenuOpen(false);
+  }, [mobileMenuOpen]);
+
   return (
     <>
       <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all pt-[var(--safe-top,0px)]">
@@ -167,7 +126,7 @@ export function PublicHeader({
           <div className="flex min-w-0 items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5 shrink-0 select-none" aria-label={`${appName} - Trang chủ`}>
               {isAgri || isPassport || isInternal ? (
-                <PublicLogo size={34} variant={logoVariant} className="h-[30px] sm:h-[34px] lg:h-[38px] w-auto max-w-[8.5rem] sm:max-w-[11rem]" />
+                <PublicLogo size={56} variant={logoVariant} className="h-14 w-auto max-w-[12rem]" />
               ) : (
                 <div className="flex items-center gap-2">
                   <span className="grid h-9 w-9 place-items-center rounded-lg bg-[var(--brand-primary)] text-white shadow-xs">
@@ -181,22 +140,75 @@ export function PublicHeader({
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex min-w-0 items-center gap-0.5" aria-label="Menu chính">
-            {navItems.map((item) => {
-              const active = isNavActive(pathname, hasQrQuery, item.href);
+            {navigation.map((entry) => {
+              const active = isNavigationEntryActive(pathname, hasQrQuery, entry);
+              const linkClass = cn(
+                'whitespace-nowrap rounded-lg px-2.5 py-2 text-[0.8rem] font-semibold transition duration-150 xl:px-3 xl:text-sm',
+                active
+                  ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]'
+                  : 'text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]'
+              );
+
+              if (entry.kind === 'link') {
+                return (
+                  <Link key={entry.href} href={entry.href} className={linkClass} aria-current={active ? 'page' : undefined}>
+                    {entry.label}
+                  </Link>
+                );
+              }
+
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'whitespace-nowrap rounded-lg px-2.5 py-2 text-[0.8rem] font-semibold transition duration-150 xl:px-3 xl:text-sm',
-                    active
-                      ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]'
-                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]'
-                  )}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {item.label}
-                </Link>
+                <div key={entry.href} ref={passportMenuRef} className="relative flex items-center">
+                  <Link href={entry.href} className={cn(linkClass, 'rounded-r-none pr-1.5')} aria-current={active ? 'page' : undefined}>
+                    {entry.label}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setPassportMenuOpen((open) => !open)}
+                    aria-expanded={passportMenuOpen}
+                    aria-haspopup="menu"
+                    aria-label={`${passportMenuOpen ? 'Đóng' : 'Mở'} menu ${entry.label}`}
+                    className={cn(
+                      linkClass,
+                      'rounded-l-none pl-1 pr-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-inset'
+                    )}
+                  >
+                    <ChevronDown size={14} className={cn('transition-transform', passportMenuOpen && 'rotate-180')} aria-hidden="true" />
+                  </button>
+                  {passportMenuOpen ? (
+                    <div
+                      role="menu"
+                      aria-label={`Các trang trong ${entry.label}`}
+                      className="absolute left-0 top-[calc(100%+0.5rem)] z-50 w-72 overflow-hidden rounded-2xl border border-[var(--border)] bg-white p-2 shadow-xl"
+                    >
+                      {entry.items.map((item) => {
+                        const ItemIcon = item.icon;
+                        const itemActive = isNavActive(pathname, hasQrQuery, item.href);
+                        return (
+                          <Link
+                            key={item.href}
+                            href={item.href}
+                            role="menuitem"
+                            onClick={() => setPassportMenuOpen(false)}
+                            aria-current={itemActive ? 'page' : undefined}
+                            className={cn(
+                              'flex items-start gap-3 rounded-xl px-3 py-3 transition hover:bg-[var(--surface-muted)]',
+                              itemActive && 'bg-[var(--brand-primary-subtle)]'
+                            )}
+                          >
+                            <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
+                              <ItemIcon size={16} aria-hidden="true" />
+                            </span>
+                            <span className="min-w-0">
+                              <span className="block text-sm font-bold text-[var(--text-primary)]">{item.label}</span>
+                              <span className="mt-0.5 block text-xs leading-5 text-[var(--text-secondary)]">{item.description}</span>
+                            </span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  ) : null}
+                </div>
               );
             })}
           </nav>
@@ -226,7 +238,7 @@ export function PublicHeader({
             <Link
               href={navCta.href}
               aria-label={navCta.label}
-              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs active:scale-95 touch-action-manipulation"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs active:scale-95 touch-action-manipulation"
             >
               <CtaIcon size={16} aria-hidden="true" />
               <span className="hidden xs:inline">{navCta.label}</span>
@@ -237,7 +249,7 @@ export function PublicHeader({
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu điều hướng'}
-              className="inline-flex h-10 w-10 min-h-[40px] min-w-[40px] items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs transition hover:bg-slate-50 active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+              className="inline-flex h-11 w-11 min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs transition hover:bg-slate-50 active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
             >
               {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </button>
@@ -272,56 +284,102 @@ export function PublicHeader({
                 {/* Top Bar inside Menu */}
                 <div className="flex h-14 items-center justify-between border-b border-slate-100 px-4 shrink-0">
                   <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center">
-                    <PublicLogo size={30} variant={logoVariant} className="h-7 w-auto" />
+                    <PublicLogo size={56} variant={logoVariant} className="h-14 w-auto max-w-[10rem]" />
                   </Link>
                   <button
                     type="button"
                     onClick={() => setMobileMenuOpen(false)}
                     aria-label="Đóng menu"
-                    className="grid h-10 w-10 min-h-[40px] min-w-[40px] place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition active:scale-95 touch-action-manipulation"
+                    className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition active:scale-95 touch-action-manipulation"
                   >
                     <X size={18} aria-hidden="true" />
                   </button>
                 </div>
 
-                {/* Scrollable Grouped Items */}
+                {/* Use the same ordered navigation model as desktop. */}
                 <div
                   className="flex-1 overflow-y-auto px-4 py-3 space-y-5 overscroll-contain"
                   style={{ WebkitOverflowScrolling: 'touch' }}
                 >
-                  {mobileMenuGroups.map((group) => (
-                    <div key={group.title} className="space-y-1">
-                      <p className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                        {group.title}
-                      </p>
-                      <div className="space-y-0.5 pt-0.5">
-                        {group.items.map((item) => {
-                          const active = isNavActive(pathname, hasQrQuery, item.href);
-                          const Icon = item.icon;
-                          return (
+                  <div data-testid={isPassport ? 'passport-mobile-nav' : 'public-mobile-nav'} className="space-y-1">
+                    {navigation.map((entry) => {
+                      const active = isNavigationEntryActive(pathname, hasQrQuery, entry);
+                      if (entry.kind === 'link') {
+                        return (
+                          <Link
+                            key={entry.href}
+                            href={entry.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={cn(
+                              'flex min-h-[48px] items-center justify-between rounded-xl px-3 text-sm font-semibold transition active:scale-[0.99] touch-action-manipulation',
+                              active
+                                ? 'bg-[#0d7a28]/10 text-[#0d7a28] font-bold'
+                                : 'text-slate-700 hover:bg-slate-50 active:bg-slate-100'
+                            )}
+                            aria-current={active ? 'page' : undefined}
+                          >
+                            <span>{entry.label}</span>
+                            <ChevronRight size={15} className="text-slate-300" aria-hidden="true" />
+                          </Link>
+                        );
+                      }
+
+                      return (
+                        <div key={entry.href} className="rounded-xl">
+                          <div
+                            className={cn(
+                              'flex min-h-[48px] items-center rounded-xl px-3 text-sm font-semibold transition',
+                              active ? 'bg-[#0d7a28]/10 text-[#0d7a28]' : 'text-slate-700'
+                            )}
+                          >
                             <Link
-                              key={item.href}
-                              href={item.href}
+                              href={entry.href}
                               onClick={() => setMobileMenuOpen(false)}
-                              className={cn(
-                                'flex h-[48px] items-center justify-between rounded-xl px-3 text-sm font-semibold transition active:scale-[0.99] touch-action-manipulation',
-                                active
-                                  ? 'bg-[#0d7a28]/10 text-[#0d7a28] font-bold'
-                                  : 'text-slate-700 hover:bg-slate-50 active:bg-slate-100'
-                              )}
+                              className="flex min-h-[48px] flex-1 items-center font-semibold"
                               aria-current={active ? 'page' : undefined}
                             >
-                              <div className="flex items-center gap-3">
-                                <Icon size={18} className={active ? 'text-[#0d7a28]' : 'text-slate-400'} />
-                                <span>{item.label}</span>
-                              </div>
-                              <ChevronRight size={15} className="text-slate-300" />
+                              {entry.label}
                             </Link>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                            <button
+                              type="button"
+                              onClick={() => setMobilePassportMenuOpen((open) => !open)}
+                              aria-expanded={mobilePassportMenuOpen}
+                              aria-controls="passport-mobile-submenu"
+                              aria-label={`${mobilePassportMenuOpen ? 'Đóng' : 'Mở'} menu ${entry.label}`}
+                              className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-lg text-[#0d7a28] transition hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                            >
+                              <ChevronDown size={17} className={cn('transition-transform', mobilePassportMenuOpen && 'rotate-180')} aria-hidden="true" />
+                            </button>
+                          </div>
+                          {mobilePassportMenuOpen ? (
+                            <div id="passport-mobile-submenu" className="ml-3 mt-1 space-y-1 border-l border-[#0d7a28]/20 pl-3">
+                              {entry.items.map((item) => {
+                                const ItemIcon = item.icon;
+                                const itemActive = isNavActive(pathname, hasQrQuery, item.href);
+                                return (
+                                  <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={cn(
+                                      'flex min-h-[48px] items-center gap-3 rounded-xl px-3 text-sm transition active:scale-[0.99] touch-action-manipulation',
+                                      itemActive
+                                        ? 'bg-[#0d7a28]/10 font-bold text-[#0d7a28]'
+                                        : 'font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100'
+                                    )}
+                                    aria-current={itemActive ? 'page' : undefined}
+                                  >
+                                    <ItemIcon size={17} className={itemActive ? 'text-[#0d7a28]' : 'text-slate-400'} aria-hidden="true" />
+                                    <span>{item.label}</span>
+                                  </Link>
+                                );
+                              })}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 {/* Bottom Actions inside Menu */}
@@ -332,7 +390,7 @@ export function PublicHeader({
                     className="flex h-11 min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-800 shadow-xs hover:border-[#0d7a28] transition active:scale-95 touch-action-manipulation"
                   >
                     <LogIn size={15} className="text-[#0d7a28]" />
-                    <span>Đăng nhập Cổng Quản trị HTX</span>
+                    <span>Đăng nhập cổng quản trị hợp tác xã</span>
                   </Link>
 
                   <div className="pt-1 text-center text-xs text-slate-500">
