@@ -302,6 +302,30 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(layout.lineCount).toBe(1);
   });
 
+  test('Featured products description stays on one line from tablet width upward', async ({ page }) => {
+    const description = page.locator(
+      'main#main-content > section[class*="bg-white"][class*="py-14"] > div > div:first-child > div:first-child > p'
+    ).first();
+
+    for (const width of [1024, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+      await expect(description).toBeVisible();
+
+      const layout = await description.evaluate((element) => {
+        const style = window.getComputedStyle(element);
+        return {
+          clientWidth: element.clientWidth,
+          scrollWidth: element.scrollWidth,
+          lineCount: Math.round(element.getBoundingClientRect().height / parseFloat(style.lineHeight))
+        };
+      });
+
+      expect(layout.scrollWidth).toBeLessThanOrEqual(layout.clientWidth + 1);
+      expect(layout.lineCount).toBe(1);
+    }
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];

@@ -450,6 +450,12 @@ button {
   .public-app-shell main#main-content > section[class*='bg-[var(--surface-muted)]'] > div > div:first-child > h2 {
     white-space: nowrap;
   }
+
+  /* Give the featured-products description enough room to stay on one line
+   * while keeping the secondary action aligned on the same row. */
+  .public-app-shell main#main-content > section[class*='bg-white'][class*='py-14'] > div > div:first-child > div:first-child > p {
+    max-width: none;
+  }
 }
 
 .public-surface {
