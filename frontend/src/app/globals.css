@@ -464,6 +464,16 @@ button {
   .public-app-shell main#main-content > section[class*='bg-[var(--surface-muted)]'][class*='py-14'] > div > div:first-child {
     max-width: none;
   }
+
+  /* Center the HTX call-to-action content inside the desktop banner. */
+  .public-app-shell main#main-content > section:nth-of-type(7) > div > div > div.relative.z-10.max-w-2xl {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .public-app-shell main#main-content > section:nth-of-type(7) > div > div > div.relative.z-10.max-w-2xl > div.flex {
+    justify-content: center;
+  }
 }
 
 .public-surface {

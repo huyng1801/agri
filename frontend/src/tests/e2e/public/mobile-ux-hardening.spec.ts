@@ -354,6 +354,33 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
+  test('HTX desktop call-to-action content stays centered inside its banner', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'hochieunongnghiep.com' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+    const banner = page.locator('main#main-content > section').filter({ hasText: 'Nâng tầm giá trị nông sản' }).first();
+    const content = banner.getByRole('heading', { name: /Nâng tầm giá trị nông sản/i }).locator('..');
+    const actions = content.locator('div.flex').last();
+    await expect(content).toBeVisible();
+
+    const layout = await content.evaluate((element) => {
+      const bannerElement = element.closest('section');
+      const contentRect = element.getBoundingClientRect();
+      const bannerRect = bannerElement?.getBoundingClientRect();
+      return {
+        textAlign: window.getComputedStyle(element).textAlign,
+        contentCenter: contentRect.left + contentRect.width / 2,
+        bannerCenter: bannerRect ? bannerRect.left + bannerRect.width / 2 : 0
+      };
+    });
+    const actionsLayout = await actions.evaluate((element) => window.getComputedStyle(element).justifyContent);
+
+    expect(layout.textAlign).toBe('center');
+    expect(Math.abs(layout.contentCenter - layout.bannerCenter)).toBeLessThanOrEqual(1);
+    expect(actionsLayout).toBe('center');
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];
