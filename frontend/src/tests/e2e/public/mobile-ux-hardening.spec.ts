@@ -249,6 +249,41 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(oversizedParagraphs, 'oversized public body copy on mobile').toEqual([]);
   });
 
+  test('Passport hero stays compact and stacks actions below desktop breakpoint', async ({ page }) => {
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 768, height: 900 }
+    ]) {
+      await page.setViewportSize(viewport);
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+      const activeSlide = page.locator(
+        'main[data-site-home="passport"] section[aria-roledescription="carousel"] [class~="lg:hidden"] [role="group"][aria-hidden="false"]'
+      ).first();
+      await expect(activeSlide).toBeVisible();
+
+      const sizes = await activeSlide.locator('h2 > span').evaluateAll((elements) =>
+        elements.map((element) => parseFloat(window.getComputedStyle(element).fontSize))
+      );
+      expect(sizes[0]).toBeLessThanOrEqual(29);
+      expect(sizes[1]).toBeLessThanOrEqual(24);
+
+      const actions = activeSlide.locator(':scope > div:last-child');
+      await expect(actions.locator('a')).toHaveCount(2);
+      const actionsLayout = await actions.evaluate((element) => {
+        const style = window.getComputedStyle(element);
+        return { display: style.display, flexDirection: style.flexDirection };
+      });
+      expect(actionsLayout).toEqual({ display: 'flex', flexDirection: 'column' });
+
+      const actionWidths = await actions.locator('a').evaluateAll((links) =>
+        links.map((link) => Math.round(link.getBoundingClientRect().width))
+      );
+      expect(actionWidths[0]).toBeGreaterThanOrEqual(viewport.width - 48);
+      expect(actionWidths[1]).toBe(actionWidths[0]);
+    }
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];

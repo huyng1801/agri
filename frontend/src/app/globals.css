@@ -144,6 +144,12 @@
   border-color: var(--brand-primary) !important;
 }
 
+/* Passport uses sentence case for readable Vietnamese labels. Keep this scoped
+ * so the legacy editorial style of the other public sites remains unchanged. */
+[data-public-site="passport"] .uppercase {
+  text-transform: none;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -394,6 +400,50 @@ button {
     line-height: 1.6;
   }
 }
+
+/* The hero switches to its mobile layout below lg, so keep tablet widths from
+ * reusing the desktop-sized headline and prevent navigation labels from wrapping. */
+@media (max-width: 1023px) {
+  .public-app-shell main[data-site-home='passport'] section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] h2 > span:first-child {
+    font-size: clamp(1.45rem, 5.6vw, 1.8rem);
+    line-height: 1.12;
+  }
+
+  .public-app-shell main[data-site-home='passport'] section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] h2 > span:nth-child(2) {
+    font-size: clamp(1.2rem, 5.1vw, 1.5rem);
+    line-height: 1.18;
+  }
+
+  .public-app-shell main[data-site-home='passport'] section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] > p {
+    font-size: clamp(0.875rem, 2.1vw, 0.9375rem);
+    line-height: 1.58;
+  }
+
+  .public-app-shell main[data-site-home='passport'] section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] > div:last-child {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .public-app-shell main[data-site-home='passport'] section[aria-roledescription='carousel'] [class~='lg:hidden'] [role='group'] > div:last-child > a {
+    margin-top: 0;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  [data-testid='public-bottom-nav'] a {
+    flex: 0 0 64px;
+    min-width: 64px;
+  }
+
+  [data-testid='public-bottom-nav'] a > span {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+}
+
 .public-surface {
   border: 1px solid var(--border);
   background: var(--surface-elevated);
@@ -697,4 +747,3 @@ button {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
