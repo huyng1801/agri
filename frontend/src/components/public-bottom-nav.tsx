@@ -2,37 +2,39 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, QrCode, ShoppingBag, Store } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingBag, Store } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
+import { getPublicNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
 
-// Core 4 destinations preferred for native-like public mobile experience
-const coreNavItems = [
-  {
-    href: '/',
-    label: 'Trang chủ',
-    icon: Home,
-    match: (path: string) => path === '/'
-  },
-  {
-    href: '/san-pham',
-    label: 'Sản phẩm',
-    icon: ShoppingBag,
-    match: (path: string) => path === '/san-pham' || (path.startsWith('/san-pham') && !path.includes('/san-pham/'))
-  },
-  {
-    href: '/truy-xuat',
-    label: 'Quét QR',
-    icon: QrCode,
-    match: (path: string) => path === '/truy-xuat' || path.startsWith('/truy-xuat/')
-  },
-  {
-    href: '/htx',
-    label: 'Đối tác',
-    icon: Store,
-    match: (path: string) => path === '/htx' || path.startsWith('/htx/')
-  }
-] as const;
+const iconByHref: Record<string, LucideIcon> = {
+  '/': Home,
+  '/ve-chung-toi': Info,
+  '/gioi-thieu': Info,
+  '/cay': Leaf,
+  '/san-pham': ShoppingBag,
+  '/san-pham?hasQr=true': QrCode,
+  '/htx': Store,
+  '/tin-tuc': Newspaper,
+  '/lien-he': Mail
+};
+
+function isHrefActive(pathname: string, hasQrQuery: boolean, href: string) {
+  if (href.includes('?hasQr=true')) return pathname === '/san-pham' && hasQrQuery;
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+function isNavigationEntryActive(pathname: string, hasQrQuery: boolean, entry: PublicNavigationEntry) {
+  return isHrefActive(pathname, hasQrQuery, entry.href) ||
+    (entry.kind === 'dropdown' && entry.items.some((item) => isHrefActive(pathname, hasQrQuery, item.href)));
+}
+
+function getNavigationIcon(entry: PublicNavigationEntry): LucideIcon {
+  return iconByHref[entry.href] ?? (entry.kind === 'dropdown' ? Leaf : Info);
+}
 
 // Pages that must hide the global bottom nav to avoid collision with keyboard,
 // reading mode, legal reading, or contextual bottom action bars
@@ -65,7 +67,13 @@ function shouldHideBottomNav(pathname: string): boolean {
 
 export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
   const pathname = usePathname();
+  const [hasQrQuery, setHasQrQuery] = useState(false);
   const isHiddenContextually = shouldHideBottomNav(pathname);
+  const navigation = getPublicNavigation(siteKey);
+
+  useEffect(() => {
+    setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
+  }, [pathname]);
 
   if (isHiddenContextually) return null;
 
@@ -74,22 +82,22 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
       data-testid="public-bottom-nav"
       role="navigation"
       aria-label="Điều hướng chính di động"
-      className="fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200/90 bg-white/95 backdrop-blur-md transition-all duration-200 lg:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.04)]"
+      className="fixed bottom-0 left-0 right-0 z-30 overflow-x-auto border-t border-slate-200/90 bg-white/95 backdrop-blur-md transition-all duration-200 lg:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.04)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={{
         paddingBottom: 'max(0.35rem, var(--safe-bottom, 0px))'
       }}
     >
-      <div className="mx-auto grid h-[60px] grid-cols-4 max-w-md items-center px-2">
-        {coreNavItems.map((item) => {
-          const active = item.match(pathname);
-          const Icon = item.icon;
+      <div className="mx-auto flex h-[60px] w-max min-w-full max-w-md items-center justify-center px-2">
+        {navigation.map((entry) => {
+          const active = isNavigationEntryActive(pathname, hasQrQuery, entry);
+          const Icon = getNavigationIcon(entry);
 
           return (
             <Link
-              key={item.href}
-              href={item.href}
+              key={entry.href}
+              href={entry.href}
               aria-current={active ? 'page' : undefined}
-              className="group relative flex h-full flex-col items-center justify-center gap-0.5 rounded-lg py-1 text-center transition-colors select-none touch-action-manipulation"
+              className="group relative flex h-full min-w-[64px] shrink-0 flex-col items-center justify-center gap-0.5 rounded-lg px-1 py-1 text-center transition-colors select-none touch-action-manipulation"
             >
               {/* Top Accent Indicator */}
               {active && (
@@ -118,7 +126,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
                   active ? 'font-bold text-[var(--brand-primary)]' : 'font-medium text-slate-500 group-hover:text-slate-800'
                 )}
               >
-                {item.label}
+                {entry.label}
               </span>
             </Link>
           );

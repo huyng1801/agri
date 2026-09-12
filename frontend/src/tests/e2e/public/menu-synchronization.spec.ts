@@ -25,7 +25,14 @@ test.describe('Desktop and mobile menu synchronization', () => {
 
       await page.setViewportSize({ width: 390, height: 844 });
       await page.reload({ waitUntil: 'domcontentloaded' });
-      await page.locator('header').getByRole('button', { name: 'Mở menu điều hướng' }).click();
+      const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
+      await expect(bottomNav).toBeVisible();
+      const bottomLinks = await navigationLinks(bottomNav.locator('a'));
+      const menuButton = page.locator('header').getByRole('button', { name: /Mở menu điều hướng|Đóng menu/ });
+      await expect(menuButton).toBeVisible();
+      await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+      await menuButton.click();
+      await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
       const drawer = page.getByRole('dialog', { name: 'Menu điều hướng' });
       await expect(drawer).toBeVisible();
       const mobileNav = drawer.getByTestId(site.siteKey === 'passport' ? 'passport-mobile-nav' : 'public-mobile-nav');
@@ -34,8 +41,11 @@ test.describe('Desktop and mobile menu synchronization', () => {
       const mobileLinks = await navigationLinks(mobileNav.locator('a'));
 
       expect(desktopLinks.map((link) => link.label)).toEqual(site.labels);
+      expect(bottomLinks.map((link) => link.label)).toEqual(site.labels);
       expect(mobileLinks.map((link) => link.label)).toEqual(site.labels);
+      expect(bottomLinks.map((link) => link.href)).toEqual(desktopLinks.map((link) => link.href));
       expect(mobileLinks.map((link) => link.href)).toEqual(desktopLinks.map((link) => link.href));
+      expect(await bottomNav.locator('a').evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44))).toBe(true);
       expect(await mobileNav.locator('a').evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44))).toBe(true);
     });
   }

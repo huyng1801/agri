@@ -40,8 +40,8 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     });
   }
 
-  // 2. Global Mobile Bottom Navigation Bar: 4 core items, tab navigation, and scroll persistence
-  test('Global Bottom Navigation has 4 core items, active state indicator, and remains rock-solid on scroll', async ({ page }) => {
+  // 2. Global Mobile Bottom Navigation mirrors the shared public menu and remains rock-solid on scroll
+  test('Global Bottom Navigation mirrors the shared menu and remains rock-solid on scroll', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -49,12 +49,14 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(bottomNav).toBeVisible();
 
     const navItems = bottomNav.locator('a');
-    await expect(navItems).toHaveCount(4);
+    await expect(navItems).toHaveCount(7);
 
-    // 1. Verify labels: Trang chủ, Sản phẩm, Quét QR, Đối tác
-    const expectedLabels = ['Trang chủ', 'Sản phẩm', 'Quét QR', 'Đối tác'];
+    // 1. Verify the local marketplace menu is the same ordered model used by the header.
+    const expectedLabels = ['Trang chủ', 'Về Agripassport', 'Sản phẩm', 'Hợp tác xã', 'Truy xuất QR', 'Tin tức', 'Liên hệ'];
+    const expectedHrefs = ['/', '/ve-chung-toi', '/san-pham', '/htx', '/san-pham?hasQr=true', '/tin-tuc', '/lien-he'];
     for (let i = 0; i < expectedLabels.length; i++) {
       await expect(navItems.nth(i)).toContainText(expectedLabels[i]);
+      await expect(navItems.nth(i)).toHaveAttribute('href', expectedHrefs[i]);
     }
 
     // 2. Initial active tab is Trang chủ
@@ -72,19 +74,17 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(isHidden).toBe(false);
 
     // 4. Click 'Sản phẩm' tab and verify navigation and active state
-    await navItems.nth(1).click();
+    await navItems.nth(2).click();
     await page.waitForURL('**/san-pham', { timeout: 10000 });
-    await expect(bottomNav.locator('a').nth(1)).toHaveAttribute('aria-current', 'page');
-
-    // 5. Click 'Quét QR' tab
-    await bottomNav.locator('a').nth(2).click();
-    await page.waitForURL('**/truy-xuat', { timeout: 10000 });
     await expect(bottomNav.locator('a').nth(2)).toHaveAttribute('aria-current', 'page');
 
-    // 6. Click 'Đối tác' tab
+    // 5. Click 'Hợp tác xã' tab
     await bottomNav.locator('a').nth(3).click();
     await page.waitForURL('**/htx', { timeout: 10000 });
     await expect(bottomNav.locator('a').nth(3)).toHaveAttribute('aria-current', 'page');
+
+    // 6. The QR entry stays in the same menu model and points to the filtered catalog.
+    await expect(bottomNav.locator('a').nth(4)).toHaveAttribute('href', '/san-pham?hasQr=true');
   });
 
   // 3. Products Catalog page (/san-pham) on mobile
@@ -149,11 +149,13 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     const header = page.locator('header');
     await expect(header).toBeVisible();
 
-    const menuButton = header.locator('button[aria-label*="menu" i], button[aria-label*="Menu" i], button[aria-expanded]');
+    const menuButton = header.getByRole('button', { name: /Mở menu điều hướng|Đóng menu/ });
     await expect(menuButton).toBeVisible();
+    await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
 
     // 1. Open drawer via menu button
     await menuButton.click();
+    await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
     const drawerDialog = page.locator('div[role="dialog"][aria-label="Menu điều hướng"]');
     await expect(drawerDialog).toBeVisible({ timeout: 5000 });
 
