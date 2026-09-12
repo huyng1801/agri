@@ -384,6 +384,15 @@ button {
     font-size: 0.875rem;
     line-height: 1.65;
   }
+
+  .public-app-shell div[class*="text-[1rem]"],
+  .public-app-shell p.text-lg,
+  .public-app-shell p.text-xl,
+  .public-app-shell p[class*="text-[1.18rem]"],
+  .public-app-shell p[class*="text-[1.1rem]"] {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
 }
 .public-surface {
   border: 1px solid var(--border);

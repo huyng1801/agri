@@ -231,6 +231,24 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
+  test('Public body copy stays compact on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/ve-chung-toi', { waitUntil: 'domcontentloaded' });
+
+    const oversizedParagraphs = await page.locator('.public-app-shell p').evaluateAll((elements) =>
+      elements.flatMap((element) => {
+        const rect = element.getBoundingClientRect();
+        const style = window.getComputedStyle(element);
+        if (!rect.width || !rect.height || style.display === 'none' || element.classList.contains('sr-only')) return [];
+
+        const size = parseFloat(style.fontSize);
+        return size > 16 ? [{ text: (element.textContent || '').trim().slice(0, 80), size }] : [];
+      })
+    );
+
+    expect(oversizedParagraphs, 'oversized public body copy on mobile').toEqual([]);
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];
