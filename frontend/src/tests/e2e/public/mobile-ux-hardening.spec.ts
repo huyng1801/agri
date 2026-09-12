@@ -258,7 +258,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
       const activeSlide = page.locator(
-        'main[data-site-home="passport"] section[aria-roledescription="carousel"] [class~="lg:hidden"] [role="group"][aria-hidden="false"]'
+        'section[aria-roledescription="carousel"] [class~="lg:hidden"] [role="group"][aria-hidden="false"]'
       ).first();
       await expect(activeSlide).toBeVisible();
 
