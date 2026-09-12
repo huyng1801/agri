@@ -326,6 +326,34 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
+  test('Data layer section title and description stay on one line on desktop widths', async ({ page }) => {
+    const section = page.locator(
+      'main#main-content > section[class*="bg-[var(--surface-muted)]"][class*="py-14"]'
+    ).first();
+    const header = section.locator(':scope > div > div:first-child');
+
+    for (const width of [1024, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto('/', { waitUntil: 'domcontentloaded' });
+
+      const layout = await header.locator('h2, p').evaluateAll((elements) =>
+        elements.map((element) => {
+          const style = window.getComputedStyle(element);
+          return {
+            lineCount: Math.round(element.getBoundingClientRect().height / parseFloat(style.lineHeight)),
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth
+          };
+        })
+      );
+
+      expect(layout).toHaveLength(2);
+      expect(layout.every((element) => element.lineCount === 1)).toBe(true);
+      expect(layout.every((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
+    }
+  });
+
   test('Public mobile controls keep a 44px minimum hit area', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     const routes = ['/', '/san-pham', '/tin-tuc', '/gioi-thieu', '/lien-he', '/cay', '/truy-xuat', '/public/passport/DEMO-PASSPORT'];
