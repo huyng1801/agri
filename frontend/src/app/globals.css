@@ -459,6 +459,11 @@ button {
 }
 
 @media (min-width: 1024px) {
+  /* Keep public section introductions on one line once the desktop layout has room. */
+  .public-app-shell main#main-content > section[class*='bg-white'][class*='py-14'] > div > div:first-child > div:first-child > p {
+    white-space: nowrap;
+  }
+
   /* Let the data-layer section copy use the full desktop content width so
    * its supporting sentence does not wrap beside the section heading. */
   .public-app-shell main#main-content > section[class*='bg-[var(--surface-muted)]'][class*='py-14'] > div > div:first-child {
