@@ -276,6 +276,10 @@ test.describe('admin CRUD forms', () => {
         await route.fulfill(jsonEnvelope(newsCategoryFixture()));
         return;
       }
+      if (method === 'GET' && /\/news\/[^/]+$/.test(path)) {
+        await route.fulfill(jsonEnvelope(article));
+        return;
+      }
       if (method === 'GET') {
         await route.fulfill(jsonEnvelope({ data: [article], meta: { page: 1, limit: 50, total: 1 } }));
         return;
@@ -291,7 +295,10 @@ test.describe('admin CRUD forms', () => {
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
-    await expect(page.getByRole('button', { name: 'HTML' })).toBeHidden();
+    await expect(page.getByTestId('news-list-row-news-seed')).toBeVisible();
+    await expect(page.getByTestId('news-list-create-button')).toBeVisible();
+    await page.getByTestId('news-list-create-button').click();
+    await expect(page).toHaveURL(/\/dashboard\/news\/new\?siteKey=AGRIPASSPORT/);
     await page.getByTestId('news-title-input').fill('E2E Bài viết truy xuất nguồn gốc');
     await page.getByTestId('news-content-editor').fill('Nội dung bài viết E2E để kiểm tra luồng lưu nháp.');
     await page.getByTestId('news-save-draft-button').click();
@@ -299,13 +306,18 @@ test.describe('admin CRUD forms', () => {
 
     await page.getByRole('button', { name: 'Nâng cao', exact: true }).click();
     await expect(page.getByRole('button', { name: 'HTML' })).toBeVisible();
-    await page.locator('details').filter({ hasText: 'Kho bài viết' }).locator('summary').click();
-    await page.getByRole('button', { name: 'Sửa', exact: true }).click();
+    await page.getByRole('button', { name: 'Danh sách bài viết' }).click();
+    await expect(page).toHaveURL(/\/dashboard\/news$/);
+    await page.getByTestId('news-list-row-news-e2e').getByRole('link', { name: /Sửa bài/ }).click();
+    await expect(page).toHaveURL(/\/dashboard\/news\/news-e2e\?siteKey=AGRIPASSPORT/);
+    await expect(page.getByTestId('news-title-input')).toHaveValue('E2E Bài viết truy xuất nguồn gốc');
     await page.getByTestId('news-title-input').fill('E2E Bài viết truy xuất nguồn gốc đã sửa');
     await page.getByTestId('news-save-draft-button').click();
     await expect.poll(() => mutations.filter((item) => item.method === 'PATCH').length).toBe(1);
 
-    await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
+    await page.getByRole('button', { name: 'Danh sách bài viết' }).click();
+    await page.once('dialog', (dialog) => dialog.accept());
+    await page.getByTestId('news-list-delete-news-e2e').click();
     await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'DELETE']);
     expect(mutations[0].body).toMatchObject({ title: 'E2E Bài viết truy xuất nguồn gốc', status: 'DRAFT' });
@@ -338,29 +350,21 @@ test.describe('admin CRUD forms', () => {
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
-    await expect(page.getByTestId('news-simple-seo-summary')).toBeVisible();
-    await expect(page.locator('.news-editor-sidebar')).toBeHidden();
-    await expect(page.getByTestId('news-site-select')).toHaveCount(0);
-    await page.getByTestId('news-title-input').fill('Nháp cần chuyển sang website khác');
-    await page.getByTestId('news-content-editor').fill('Nội dung nháp để kiểm tra việc đổi website.');
-
-    await expect(page.getByTestId('news-site-filter')).toHaveValue('AGRIPASSPORT');
-    await page.getByTestId('news-site-filter').selectOption('PASSPORT');
+    await expect(page.getByTestId('news-list-site-filter')).toHaveValue('AGRIPASSPORT');
+    await page.getByTestId('news-list-site-filter').selectOption('PASSPORT');
+    await expect(page.getByTestId('news-list-site-filter')).toHaveValue('PASSPORT');
+    await page.getByTestId('news-list-create-button').click();
+    await expect(page).toHaveURL(/\/dashboard\/news\/new\?siteKey=PASSPORT/);
     await expect(page.getByTestId('news-site-filter')).toHaveValue('PASSPORT');
-    await expect(page.getByTestId('news-title-input')).toHaveValue('');
-    await expect(page.getByTestId('news-site-switch-confirm')).toHaveCount(0);
-
-    await page.getByTestId('news-site-filter').selectOption('HTXONLINE');
-    await expect(page.getByTestId('news-site-filter')).toHaveValue('HTXONLINE');
-    await page.getByTestId('news-title-input').fill('Bài đăng HTXONLINE từ form admin');
+    await page.getByTestId('news-title-input').fill('Bài đăng Passport từ form admin');
     await page.getByTestId('news-content-editor').fill('Nội dung bài đăng HTXONLINE để kiểm tra payload.');
     await page.getByTestId('news-save-draft-button').click();
 
     await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
     expect(mutations[0].body).toMatchObject({
-      siteKey: 'HTXONLINE',
+      siteKey: 'PASSPORT',
       status: 'DRAFT',
-      title: 'Bài đăng HTXONLINE từ form admin'
+      title: 'Bài đăng Passport từ form admin'
     });
   });
 
@@ -386,7 +390,7 @@ test.describe('admin CRUD forms', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
     await page.getByRole('button', { name: 'Nâng cao', exact: true }).click();
 
@@ -428,7 +432,7 @@ test.describe('admin CRUD forms', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
     await expect(page.getByText('Định dạng và công cụ thêm', { exact: true })).toBeVisible();
 
@@ -452,30 +456,23 @@ test.describe('admin CRUD forms', () => {
 
   test('@admin @form news stays compact and usable on a small viewport', async ({ page }) => {
     const { adminUrl } = baseUrls();
+    const article = newsFixture('news-list-mobile-seed', 'Bài viết hiển thị trên màn hình nhỏ');
 
     await page.route('**/api/v1/news**', async (route) => {
       const request = route.request();
       const path = new URL(request.url()).pathname;
-      if (path.endsWith('/categories')) {
-        await route.fulfill(jsonEnvelope([newsCategoryFixture()]));
-        return;
-      }
-      await route.fulfill(jsonEnvelope({ data: [], meta: { page: 1, limit: 50, total: 0 } }));
+      await route.fulfill(path.endsWith('/categories')
+        ? jsonEnvelope([newsCategoryFixture()])
+        : jsonEnvelope({ data: [article], meta: { page: 1, limit: 20, total: 1 } }));
     });
 
     await page.setViewportSize({ width: 390, height: 844 });
     await seedAuthenticatedSession(page, superAdminUser);
     await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
-    await expect(page.getByText('Định dạng và công cụ thêm', { exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Công cụ', exact: true })).toHaveAttribute('aria-expanded', 'true');
-    await expect(page.getByRole('button', { name: 'Tự điền SEO', exact: true })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Tối ưu bài vừa dán', exact: true })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Đồng bộ social', exact: true })).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Làm sạch nội dung dán', exact: true })).toHaveCount(0);
-    await expect(page.getByTestId('news-publish-button')).toHaveCount(1);
-    await expect(page.locator('.news-editor-progress-actions')).toHaveCount(0);
-    await expect(page.getByRole('button', { name: 'Chữ đậm' })).toHaveCount(0);
+    await expect(page.getByTestId('news-list-row-news-list-mobile-seed')).toBeVisible();
+    await expect(page.getByTestId('news-list-create-button')).toBeVisible();
+    await expect(page.getByTestId('news-list-search-input')).toBeVisible();
 
     const compactMetrics = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
@@ -483,13 +480,9 @@ test.describe('admin CRUD forms', () => {
     }));
     expect(compactMetrics.scrollWidth).toBeLessThanOrEqual(compactMetrics.clientWidth + 1);
 
-    await page.getByRole('button', { name: 'Xem SEO', exact: true }).click();
-    await expect(page.getByTestId('news-focus-keyword-input')).toBeVisible();
-    const advancedMetrics = await page.evaluate(() => ({
-      clientWidth: document.documentElement.clientWidth,
-      scrollWidth: document.documentElement.scrollWidth
-    }));
-    expect(advancedMetrics.scrollWidth).toBeLessThanOrEqual(advancedMetrics.clientWidth + 1);
+    await page.getByTestId('news-list-create-button').click();
+    await expect(page).toHaveURL(/\/dashboard\/news\/new\?siteKey=AGRIPASSPORT/);
+    await expect(page.getByTestId('news-title-input')).toBeVisible();
   });
 
   test('@admin @form news exposes complete SEO metadata controls in advanced mode', async ({ page }) => {
@@ -516,7 +509,7 @@ test.describe('admin CRUD forms', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
     await page.getByTestId('news-title-input').fill('Nông sản số và truy xuất nguồn gốc');
     await page.getByTestId('news-content-editor').fill('Nội dung bài viết về dữ liệu nông sản và truy xuất nguồn gốc.');
@@ -594,9 +587,9 @@ test.describe('admin CRUD forms', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${adminUrl}/dashboard/news/new?siteKey=PASSPORT`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
-    await page.getByTestId('news-site-filter').selectOption('PASSPORT');
+    await expect(page.getByTestId('news-site-filter')).toHaveValue('PASSPORT');
     await expect(page.getByTestId('news-quick-guide')).toContainText('tiêu đề + nội dung');
     await expect(page.getByRole('button', { name: 'Chèn tiêu đề H2' })).toBeVisible();
     await page.getByRole('button', { name: 'Công cụ' }).click();
@@ -647,7 +640,7 @@ test.describe('admin CRUD forms', () => {
     });
 
     await seedAuthenticatedSession(page, superAdminUser);
-    await page.goto(`${adminUrl}/dashboard/news`, { waitUntil: 'domcontentloaded' });
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
     await page.getByTestId('news-title-input').fill('E2E lưu nháp bằng phím tắt');
     await page.getByTestId('news-content-editor').fill('Nội dung bài viết được lưu bằng Control S.');
