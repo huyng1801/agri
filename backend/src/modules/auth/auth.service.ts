@@ -17,6 +17,7 @@ import {
   ResetPasswordDto
 } from '../../common/dto';
 import { AuthUser } from '../../common/types';
+import { AuthPortal, publicRegistrationRole, rolesAllowedInPortal } from '../../common/portal';
 import { PrismaService } from '../prisma/prisma.service';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 
@@ -29,16 +30,20 @@ export class AuthService {
   ) {}
 
   async register(dto: RegisterDto) {
+    const registrationRole = publicRegistrationRole(dto.portal);
+    if (!registrationRole) {
+      throw new BadRequestException('Cổng này không mở đăng ký công khai');
+    }
+    if (dto.role && dto.role !== registrationRole) {
+      throw new BadRequestException('Không thể tự cấp vai trò quản trị khi đăng ký');
+    }
+
     const existing = await this.prisma.user.findUnique({ where: { email: dto.email.toLowerCase() } });
     if (existing) {
       throw new BadRequestException('Email đã tồn tại');
     }
 
-    const userCount = await this.prisma.user.count();
-    const roleSlug = userCount === 0 ? RoleSlug.SUPER_ADMIN : dto.role ?? RoleSlug.BUYER;
-    if (roleSlug === RoleSlug.SUPER_ADMIN && userCount > 0) {
-      throw new BadRequestException('Không thể đăng ký Super Admin công khai');
-    }
+    const roleSlug = registrationRole;
 
     const role = await this.prisma.role.findUniqueOrThrow({ where: { slug: roleSlug } });
     const passwordHash = await bcrypt.hash(dto.password, 12);
@@ -65,8 +70,8 @@ export class AuthService {
       cooperativeId: user.cooperativeId
     });
 
-    const tokens = await this.issueTokens(user);
-    return { user: this.serializeUser(user), ...tokens };
+    const tokens = await this.issueTokens(user, dto.portal);
+    return { user: this.serializeUser(user, dto.portal), ...tokens };
   }
 
   async login(dto: LoginDto) {
@@ -85,6 +90,10 @@ export class AuthService {
     if (!ok) {
       throw new UnauthorizedException('Email hoặc mật khẩu không đúng');
     }
+    const roles = user.roles.map((item) => item.role.slug);
+    if (!rolesAllowedInPortal(roles, dto.portal)) {
+      throw new UnauthorizedException('Tài khoản không thuộc cổng đăng nhập này');
+    }
 
     await this.prisma.user.update({
       where: { id: user.id },
@@ -92,19 +101,26 @@ export class AuthService {
     });
 
     await this.audit.record({
-      user: this.toAuthUser(user),
+      user: this.toAuthUser(user, dto.portal),
       action: 'auth.login',
       entity: 'User',
       entityId: user.id,
       cooperativeId: user.cooperativeId
     });
 
-    const tokens = await this.issueTokens(user);
-    return { user: this.serializeUser(user), ...tokens };
+    const tokens = await this.issueTokens(user, dto.portal);
+    return { user: this.serializeUser(user, dto.portal), ...tokens };
   }
 
-  async refresh(dto: RefreshTokenDto) {
-    const payload = await this.verifyRefresh(dto.refreshToken);
+  async refresh(dto: RefreshTokenDto, cookieRefreshToken?: string) {
+    const refreshToken = dto.refreshToken ?? cookieRefreshToken;
+    if (!refreshToken) {
+      throw new UnauthorizedException('Refresh token không hợp lệ');
+    }
+    const payload = await this.verifyRefresh(refreshToken);
+    if (!payload.portal) {
+      throw new UnauthorizedException('Phiên đăng nhập cũ cần đăng nhập lại');
+    }
     const user = await this.prisma.user.findUnique({
       where: { id: payload.sub },
       include: this.includeRoles()
@@ -112,12 +128,16 @@ export class AuthService {
     if (!user || !user.refreshTokenHash) {
       throw new UnauthorizedException('Refresh token không hợp lệ');
     }
-    const ok = await bcrypt.compare(dto.refreshToken, user.refreshTokenHash);
+    const ok = await bcrypt.compare(refreshToken, user.refreshTokenHash);
     if (!ok) {
       throw new UnauthorizedException('Refresh token không hợp lệ');
     }
-    const tokens = await this.issueTokens(user);
-    return { user: this.serializeUser(user), ...tokens };
+    const roles = user.roles.map((item) => item.role.slug);
+    if (!rolesAllowedInPortal(roles, payload.portal)) {
+      throw new UnauthorizedException('Tài khoản không còn thuộc cổng đăng nhập này');
+    }
+    const tokens = await this.issueTokens(user, payload.portal);
+    return { user: this.serializeUser(user, payload.portal), ...tokens };
   }
 
   async logout(user: AuthUser) {
@@ -137,7 +157,7 @@ export class AuthService {
     if (!found) {
       throw new NotFoundException('Không tìm thấy người dùng');
     }
-    return this.serializeUser(found);
+    return this.serializeUser(found, user.portal);
   }
 
   async forgotPassword(dto: ForgotPasswordDto) {
@@ -205,11 +225,12 @@ export class AuthService {
     return { changed: true };
   }
 
-  async issueTokens(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown } }[] }) {
+  async issueTokens(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown } }[] }, portal: AuthPortal) {
     const payload = {
       sub: user.id,
       email: user.email,
-      roles: user.roles.map((item) => item.role.slug)
+      roles: user.roles.map((item) => item.role.slug),
+      portal
     };
     const accessToken = await this.jwt.signAsync(payload, {
       secret: process.env.JWT_ACCESS_SECRET || 'replace-with-a-long-access-secret',
@@ -228,7 +249,7 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  serializeUser(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown; name?: string } }[] }) {
+  serializeUser(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown; name?: string } }[] }, portal?: AuthPortal) {
     return {
       id: user.id,
       email: user.email,
@@ -238,6 +259,7 @@ export class AuthService {
       cooperativeId: user.cooperativeId,
       roles: user.roles.map((item) => item.role.slug),
       permissions: user.roles.flatMap((item) => item.role.permissions as string[]),
+      portal,
       createdAt: user.createdAt
     };
   }
@@ -252,20 +274,21 @@ export class AuthService {
     } as const;
   }
 
-  private toAuthUser(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown } }[] }): AuthUser {
+  private toAuthUser(user: User & { roles: { role: { slug: RoleSlug; permissions: unknown } }[] }, portal: AuthPortal): AuthUser {
     return {
       id: user.id,
       email: user.email,
       fullName: user.fullName,
       cooperativeId: user.cooperativeId,
       roles: user.roles.map((item) => item.role.slug),
-      permissions: user.roles.flatMap((item) => item.role.permissions as string[])
+      permissions: user.roles.flatMap((item) => item.role.permissions as string[]),
+      portal
     };
   }
 
   private async verifyRefresh(refreshToken: string) {
     try {
-      return await this.jwt.verifyAsync<{ sub: string }>(refreshToken, {
+      return await this.jwt.verifyAsync<{ sub: string; portal?: AuthPortal }>(refreshToken, {
         secret: process.env.JWT_REFRESH_SECRET || 'replace-with-a-long-refresh-secret'
       });
     } catch {

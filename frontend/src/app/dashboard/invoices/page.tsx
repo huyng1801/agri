@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Download, FileText, Pencil, Plus, RefreshCcw, Search, WalletCards, XCircle } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { API_URL, apiFetch, currentUser } from '@/lib/api';
+import { API_URL, apiFetch, authRequestHeaders, currentUser } from '@/lib/api';
 import { formatCurrency, formatDate, statusTone } from '@/lib/format';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
 
@@ -165,9 +165,9 @@ export default function InvoicesPage() {
   async function downloadPdf(invoice: Invoice) {
     setDownloadingId(invoice.id);
     try {
-      const token = window.localStorage.getItem('agri_access_token');
       const response = await fetch(`${API_URL}/invoices/${invoice.id}/pdf`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+        headers: authRequestHeaders(),
+        credentials: 'include'
       });
       if (!response.ok) throw new Error('Không tải được PDF hóa đơn');
       const blob = await response.blob();

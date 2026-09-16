@@ -1,9 +1,27 @@
 import { expect, test, type Locator } from '@playwright/test';
 
 const publicSites = [
-  { host: 'hochieunongnghiep.com', siteKey: 'passport', labels: ['Trang chủ', 'Giới thiệu', 'Hộ chiếu cây', 'Đối tác', 'Tin tức', 'Liên hệ'] },
-  { host: 'agripassport.com', siteKey: 'agripassport', labels: ['Trang chủ', 'Về Agripassport', 'Sản phẩm', 'Hợp tác xã', 'Truy xuất QR', 'Tin tức', 'Liên hệ'] },
-  { host: 'htxonline.vn', siteKey: 'htxonline', labels: ['Trang chủ', 'Sản phẩm', 'HTX', 'Dịch vụ', 'Tin tức', 'Liên hệ'] }
+  {
+    host: 'hochieunongnghiep.com',
+    siteKey: 'passport',
+    labels: ['Trang chủ', 'Giới thiệu', 'Tra cứu', 'Đối tác', 'Tin tức', 'Liên hệ'],
+    mobileLabels: ['Trang chủ', 'Sản phẩm', 'Truy xuất QR', 'Tin tức', 'Liên hệ'],
+    mobileHrefs: ['/', '/san-pham', '/truy-xuat', '/tin-tuc', '/lien-he']
+  },
+  {
+    host: 'agripassport.com',
+    siteKey: 'agripassport',
+    labels: ['Trang chủ', 'Về Agripassport', 'Sản phẩm', 'Hợp tác xã', 'Truy xuất QR', 'Tin tức', 'Liên hệ'],
+    mobileLabels: ['Trang chủ', 'Sản phẩm', 'Truy xuất QR', 'Tin tức', 'Liên hệ'],
+    mobileHrefs: ['/', '/san-pham', '/san-pham?hasQr=true', '/tin-tuc', '/lien-he']
+  },
+  {
+    host: 'htxonline.vn',
+    siteKey: 'htxonline',
+    labels: ['Trang chủ', 'Sản phẩm', 'HTX', 'Dịch vụ', 'Tin tức', 'Liên hệ'],
+    mobileLabels: ['Trang chủ', 'Sản phẩm', 'HTX', 'Tin tức', 'Liên hệ'],
+    mobileHrefs: ['/', '/san-pham', '/htx', '/tin-tuc', '/lien-he']
+  }
 ] as const;
 
 async function navigationLinks(locator: Locator) {
@@ -25,6 +43,9 @@ test.describe('Desktop and mobile menu synchronization', () => {
 
       await page.setViewportSize({ width: 390, height: 844 });
       await page.reload({ waitUntil: 'domcontentloaded' });
+      // The mobile header is server-rendered; give the client event handlers a
+      // frame to hydrate before exercising the drawer control.
+      await page.waitForTimeout(250);
       const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
       await expect(bottomNav).toBeVisible();
       const bottomLinks = await navigationLinks(bottomNav.locator('a'));
@@ -41,9 +62,9 @@ test.describe('Desktop and mobile menu synchronization', () => {
       const mobileLinks = await navigationLinks(mobileNav.locator('a'));
 
       expect(desktopLinks.map((link) => link.label)).toEqual(site.labels);
-      expect(bottomLinks.map((link) => link.label)).toEqual(site.labels);
+      expect(bottomLinks.map((link) => link.label)).toEqual(site.mobileLabels);
       expect(mobileLinks.map((link) => link.label)).toEqual(site.labels);
-      expect(bottomLinks.map((link) => link.href)).toEqual(desktopLinks.map((link) => link.href));
+      expect(bottomLinks.map((link) => link.href)).toEqual(site.mobileHrefs);
       expect(mobileLinks.map((link) => link.href)).toEqual(desktopLinks.map((link) => link.href));
       expect(await bottomNav.locator('a').evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44))).toBe(true);
       expect(await mobileNav.locator('a').evaluateAll((links) => links.every((link) => link.getBoundingClientRect().height >= 44))).toBe(true);

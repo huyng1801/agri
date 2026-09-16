@@ -1,5 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { RoleSlug } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
@@ -27,6 +28,13 @@ export class FilesController {
     return this.files.presign(user, dto);
   }
 
+  @Post('upload')
+  @Permissions('files.upload')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
+  upload(@CurrentUser() user: AuthUser, @UploadedFile() file?: UploadedImage) {
+    return this.files.upload(user, file);
+  }
+
   @Post('confirm-upload')
   @Permissions('files.upload')
   confirm(@CurrentUser() user: AuthUser, @Body() dto: ConfirmUploadDto) {
@@ -45,3 +53,10 @@ export class FilesController {
     return this.files.remove(user, id);
   }
 }
+
+type UploadedImage = {
+  originalname: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+};

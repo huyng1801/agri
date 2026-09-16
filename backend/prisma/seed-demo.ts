@@ -808,11 +808,34 @@ async function seedCooperative(demo: DemoCoop, planId: string, adminRoleId: stri
   return cooperative;
 }
 
+type DemoCropDefinition = {
+  code: string;
+  name: string;
+  variety: string;
+};
+
+function cropDefinitionForDemo(demo: DemoCoop): DemoCropDefinition {
+  const haystack = `${demo.code} ${demo.name} ${demo.products[0]?.name ?? ''}`.toLowerCase();
+  if (haystack.includes('lua') || haystack.includes('gao')) return { code: 'LUA', name: 'Lúa', variety: 'ST25' };
+  if (haystack.includes('rau')) return { code: 'RAU', name: 'Rau củ', variety: 'Rau sạch' };
+  if (haystack.includes('xoai')) return { code: 'XOI', name: 'Xoài', variety: 'Cát Hòa Lộc' };
+  if (haystack.includes('ca-phe')) return { code: 'CAP', name: 'Cà phê', variety: 'Arabica' };
+  if (haystack.includes('mat-ong') || haystack.includes('mật ong')) return { code: 'ONG', name: 'Ong mật', variety: 'Hoa cà phê' };
+  if (haystack.includes('thuy-san')) return { code: 'TOM', name: 'Thủy sản', variety: 'Tôm càng xanh' };
+  if (haystack.includes('ga-') || haystack.includes('gà ')) return { code: 'GA', name: 'Gà', variety: 'Gà thả vườn' };
+  if (haystack.includes('nam-') || haystack.includes('nấm')) return { code: 'NAM', name: 'Nấm', variety: 'Nấm hương' };
+  if (haystack.includes('hong-') || haystack.includes('hồng')) return { code: 'HONG', name: 'Hồng', variety: 'Hồng treo gió' };
+  if (haystack.includes('tra-') || haystack.includes('trà')) return { code: 'TRA', name: 'Trà', variety: 'Shan Tuyết' };
+  if (haystack.includes('trai-cay') || haystack.includes('trái cây')) return { code: 'CHOM', name: 'Chôm chôm', variety: 'Java' };
+  return { code: 'NONGSAN', name: 'Nông sản', variety: 'Demo' };
+}
+
 async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, adminId: string) {
+  const crop = cropDefinitionForDemo(demo);
   const cropType = await prisma.cropType.upsert({
-    where: { code: 'XOI' },
-    create: { code: 'XOI', name: 'Xoài', sortOrder: 0, isActive: true },
-    update: { name: 'Xoài', isActive: true }
+    where: { code: crop.code },
+    create: { code: crop.code, name: crop.name, sortOrder: 0, isActive: true },
+    update: { name: crop.name, isActive: true }
   });
   const season = await prisma.productionSeason.upsert({
     where: { cooperativeId_code: { cooperativeId, code: 'VU-2026' } },
@@ -827,12 +850,13 @@ async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, admi
   for (const [index, offset] of [0, 1].entries()) {
     const zoneCode = zone.code.toUpperCase().replace(/[^A-Z0-9]+/g, '');
     const coopCode = demo.code.toUpperCase().replace(/[^A-Z0-9]+/g, '').slice(0, 6);
+    // Keep the existing tree identifiers stable so already-issued public QR links remain valid.
     const treeCode = `XOI-${coopCode}-${zoneCode}-${String(index + 1).padStart(6, '0')}`;
     const plantedDate = new Date(`201${8 + index}-06-15`);
     const tree = await prisma.tree.upsert({
       where: { treeCode },
-      create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, treeCode, variety: index ? 'Cát Chu' : 'Keo', latitude: 10.4458 + offset * 0.0004, longitude: 105.718 + offset * 0.0004, plantedDate, status: 'HARVESTED', publicVerified: true, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }], createdById: adminId, note: 'Cá thể demo cho luồng hộ chiếu cây' },
-      update: { zoneId: zone.id, cropTypeId: cropType.id, status: 'HARVESTED', publicVerified: true, plantedDate, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }] }
+      create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, treeCode, variety: `${crop.variety}${index ? ' · lô 2' : ''}`, latitude: 10.4458 + offset * 0.0004, longitude: 105.718 + offset * 0.0004, plantedDate, status: 'HARVESTED', publicVerified: true, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }], createdById: adminId, note: 'Cá thể demo cho luồng hộ chiếu cây' },
+      update: { zoneId: zone.id, cropTypeId: cropType.id, variety: `${crop.variety}${index ? ' · lô 2' : ''}`, status: 'HARVESTED', publicVerified: true, plantedDate, imagesJson: [{ url: index ? PHOTOS.orchard : PHOTOS.mango, caption: 'Ảnh thực địa cây demo' }] }
     });
     trees.push(tree);
     const eventDate = new Date('2026-07-10');
@@ -855,7 +879,7 @@ async function seedPlantTraceability(demo: DemoCoop, cooperativeId: string, admi
   const lot = await prisma.lot.upsert({
     where: { cooperativeId_lotCode: { cooperativeId, lotCode } },
     create: { cooperativeId, zoneId: zone.id, cropTypeId: cropType.id, lotCode, harvestDate, totalQuantity: 0, unit: 'kg', packagingDate: new Date('2026-08-22'), status: 'PUBLISHED', note: 'Lô demo liên kết theo cá thể cây' },
-    update: { status: 'PUBLISHED', packagingDate: new Date('2026-08-22') }
+    update: { cropTypeId: cropType.id, status: 'PUBLISHED', packagingDate: new Date('2026-08-22') }
   });
   for (const [index, harvest] of harvests.entries()) {
     const existing = await prisma.lotTree.findUnique({ where: { lotId_harvestId: { lotId: lot.id, harvestId: harvest.id } } });

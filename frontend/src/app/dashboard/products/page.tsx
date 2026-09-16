@@ -2,11 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ImagePlus, Package, Pencil, Plus, RefreshCcw, Save, Search, Trash2 } from 'lucide-react';
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { API_URL, apiFetch } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
+import { Badge, Button, Input, LinkButton, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type ProductStatus = 'DRAFT' | 'PUBLISHED' | 'HIDDEN' | 'ARCHIVED';
 
@@ -275,9 +274,7 @@ export default function ProductsPage() {
               <div className="flex gap-2">
                 <Button type="button" variant="ghost" onClick={() => setFormOpen(false)}>Đóng</Button>
                 {editingId && (
-                  <Link href={`/san-pham/${form.slug}`} target="_blank">
-                    <Button type="button" variant="ghost">Xem trang công khai</Button>
-                  </Link>
+                  <LinkButton href={`/san-pham/${form.slug}`} target="_blank" variant="ghost">Xem trang công khai</LinkButton>
                 )}
               </div>
             </div>
@@ -459,9 +456,7 @@ export default function ProductsPage() {
                   <Pencil size={16} aria-hidden="true" />
                   Sửa
                 </Button>
-                <Link href={`/san-pham/${product.slug}`} target="_blank">
-                <Button type="button" variant="ghost">Trang công khai</Button>
-                </Link>
+                <LinkButton href={`/san-pham/${product.slug}`} target="_blank" variant="ghost">Trang công khai</LinkButton>
                 <Button type="button" variant="danger" onClick={() => archiveProduct.mutate(product.id)} disabled={archiveProduct.isPending}>
                   <Trash2 size={16} aria-hidden="true" />
                   Ẩn

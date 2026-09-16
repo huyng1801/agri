@@ -3,11 +3,10 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { CalendarClock, Eye, Link as LinkIcon, Pencil, Plus, QrCode, RefreshCcw, Save, ShieldCheck, Trash2 } from 'lucide-react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { formatDate, statusTone } from '@/lib/format';
-import { Badge, Button, Input, Panel, Select, cn } from '@/components/ui';
+import { Badge, Button, Input, LinkButton, Panel, Select, cn } from '@/components/ui';
 
 type PassportStatus = 'DRAFT' | 'PUBLISHED' | 'HIDDEN' | 'EXPIRED';
 
@@ -236,12 +235,10 @@ export default function PassportsPage() {
                     <Pencil size={16} aria-hidden="true" />
                     Sửa
                   </Button>
-                  <Link href={publicUrl} target="_blank">
-                    <Button type="button" variant="ghost">
-                      <LinkIcon size={16} aria-hidden="true" />
-                      Trang công khai
-                    </Button>
-                  </Link>
+                  <LinkButton href={publicUrl} target="_blank" variant="ghost">
+                    <LinkIcon size={16} aria-hidden="true" />
+                    Trang công khai
+                  </LinkButton>
                   {passport.qrDataUrl && (
                     <a className="inline-flex min-h-11 items-center justify-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint" href={passport.qrDataUrl} download={`${passport.passportCode}.png`}>
                       Tải QR

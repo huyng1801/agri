@@ -23,30 +23,30 @@ export async function PublicPolicyBody({
   }));
 
   return (
-    <div className="space-y-4">
-      <Panel className="space-y-3 border-slate-200 bg-slate-50/90">
+    <div data-public-policy="true" className="public-policy-layout">
+      <aside className="public-policy-nav rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-muted)] p-3 sm:p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Mục lục nhanh</p>
-            <p className="mt-1 text-sm font-bold text-ink">Chọn đúng mục cần đọc trước, để quét nhanh trên mobile thay vì cuộn hết một mạch.</p>
+            <p className="text-xs font-semibold tracking-[0.1em] text-[var(--brand-primary)]">Mục lục nhanh</p>
+            <p className="mt-1 text-sm font-bold leading-6 text-[var(--text-primary)]">Chọn đúng mục cần đọc trước.</p>
           </div>
-          <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{sections.length} mục</span>
+          <span className="rounded-full border border-[var(--border)] bg-white px-3 py-1 text-xs font-bold text-[var(--text-secondary)]">{sections.length} mục</span>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <nav aria-label="Mục lục chính sách" className="mt-3 flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
           {quickLinks.map((item) => (
             <a
               key={item.id}
               href={`#${item.id}`}
-              className="inline-flex min-h-11 items-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-ink transition hover:border-leaf hover:text-leaf"
+              className="inline-flex min-h-11 shrink-0 items-center rounded-xl border border-[var(--border)] bg-white px-3 text-xs font-semibold text-[var(--text-primary)] transition hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)] sm:px-3.5 sm:text-sm"
             >
               {item.title}
             </a>
           ))}
-        </div>
-      </Panel>
-      <Panel className="space-y-8">
+        </nav>
+      </aside>
+      <Panel className="public-policy-content space-y-0">
         {sections.map((section) => (
-          <section key={section.title} id={sectionId(section.title)} className="scroll-mt-24">
+          <section key={section.title} id={sectionId(section.title)} className="public-policy-section scroll-mt-24">
             <h2 className="text-lg font-bold text-[var(--text-primary)]">{brandizeSiteText(section.title, siteKey)}</h2>
             <div className={cn('mt-3 space-y-3', publicProseClass)}>
               {(section.paragraphs ?? []).map((paragraph) => (

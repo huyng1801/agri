@@ -27,6 +27,8 @@ const AUDIT_ROUTES: AuditRoute[] = [
   { id: 'products', path: '/san-pham', batch: 'Shell', note: 'Filter form, product grid' },
   { id: 'products-search', path: '/san-pham?search=tra', batch: 'Shell', note: 'Search results state' },
   { id: 'cooperatives', path: '/htx', batch: 'Shell', note: 'HTX cards with avatars' },
+  { id: 'product-lookup', path: '/truy-xuat', batch: 'Lookup', note: 'Product lookup form and guidance' },
+  { id: 'tree-lookup', path: '/cay', batch: 'Lookup', note: 'Tree passport lookup form and guidance' },
   { id: 'news', path: '/tin-tuc', batch: 'Shell', note: 'Featured article + grid' },
   { id: 'login', path: '/login', batch: 'Auth', note: 'Login form layout, CTA, mobile fit' },
   { id: 'register', path: '/register', batch: 'Auth', note: 'Register form layout, validation states' },
@@ -54,7 +56,10 @@ const RESPONSIVE_VIEWPORTS = [360, 375, 390, 430, 768, 1024, 1280, 1440, 1920] a
 const OUTPUT_ROOT = join(process.cwd(), 'test-results', process.env.UI_AUDIT_DIR || 'ui-audit');
 const ANALYSIS_PATH = join(OUTPUT_ROOT, 'analysis.md');
 const auditHost = (process.env.PUBLIC_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3100').toLowerCase();
-const auditSiteName = auditHost.includes('htxonline')
+const auditForwardedHost = process.env.UI_AUDIT_SITE === 'passport' ? 'hochieunongnghiep.com' : process.env.UI_AUDIT_SITE === 'agripassport' ? 'agripassport.com' : process.env.UI_AUDIT_SITE === 'htxonline' ? 'htxonline.vn' : '';
+const auditSiteName = process.env.UI_AUDIT_SITE === 'passport'
+  ? 'Hộ chiếu nông nghiệp'
+  : auditHost.includes('htxonline')
   ? 'HTXONLINE'
   : auditHost.includes('agripassport')
     ? 'AGRIPASSPORT'
@@ -80,6 +85,12 @@ function findingsPathFor(viewport: 'desktop' | 'mobile') {
 
 test.describe('public visual audit', () => {
   test.describe.configure({ mode: 'serial' });
+
+  test.beforeEach(async ({ page }) => {
+    if (auditForwardedHost) {
+      await page.setExtraHTTPHeaders({ 'x-forwarded-host': auditForwardedHost });
+    }
+  });
 
   let passportCode = 'DEMO-PASSPORT';
   let newsSlug = 'st25-niem-tu-hao-gao-viet-tren-ban-an-quoc-te';
@@ -216,8 +227,10 @@ test.describe('public visual audit', () => {
   }
 
   test('@audit Agripassport public excludes internal commerce copy', async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== 'chromium', 'Public content gate runs once on Chromium');
-    const forbiddenCopy = /HTXONLINE|Giỏ hàng|Thanh toán COD|Đặt hàng COD|Tra cứu đơn hàng|\bCOD\b/i;
+    test.skip(testInfo.project.name !== 'chromium' || process.env.UI_AUDIT_SITE !== 'agripassport', 'This content gate belongs to the Agripassport site.');
+    // Ecosystem links such as HTXONLINE are intentionally public; only checkout
+    // language and commerce routes are forbidden on the informational site.
+    const forbiddenCopy = /Giỏ hàng|Thanh toán COD|Đặt hàng COD|Tra cứu đơn hàng|\bCOD\b/i;
     const forbiddenRoute = /\/(gio-hang|thanh-toan|dat-hang-thanh-cong|tra-cuu-don-hang)(?:\/|$)/i;
 
     for (const route of AUDIT_ROUTES) {
@@ -296,7 +309,7 @@ News fixture: \`${newsSlug}\`
 - Review passes: structural refinement, visual refinement and restraint/subtraction were applied before this audit.
 - Specialized design skills named in the supplied brief were not installed in this environment; QA used the existing Playwright audit, local screenshot inspection and the repository's current tooling instead.
 - Public data remains verification-gated; this work does not change API contracts, Prisma schema, auth, order or checkout internals.
-- Public content gate: no internal HTXONLINE/COD copy or commerce route links rendered across audited Agripassport routes.
+- Public content gate: no checkout/COD copy or commerce route links rendered across audited Agripassport routes; ecosystem links remain allowed.
 
 ${fails.length ? `### Failures\n${fails.map((item) => `- ${item.route} (${item.viewport}): ${item.images}`).join('\n')}\n` : ''}
 ${warns.length ? `### Warnings\n${warns.map((item) => `- ${item.route} (${item.viewport}): ${item.layout}; ${item.images}`).join('\n')}\n` : ''}
@@ -328,12 +341,16 @@ Responsive screenshots are saved under \`${reportOutputLabel}/responsive/{route}
 async function warmLazyImages(page: Page) {
   await page.evaluate(async () => {
     const height = document.documentElement.scrollHeight;
+    const root = document.documentElement;
+    const previousScrollBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
     window.scrollTo(0, height);
     await new Promise((resolve) => setTimeout(resolve, 450));
     window.scrollTo(0, Math.floor(height / 2));
     await new Promise((resolve) => setTimeout(resolve, 250));
     window.scrollTo(0, 0);
     await new Promise((resolve) => setTimeout(resolve, 200));
+    root.style.scrollBehavior = previousScrollBehavior;
   });
 }
 
@@ -343,7 +360,10 @@ async function capturePageScreenshot(page: Page, shotPath: string, viewportLabel
     return;
   }
 
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+  });
   await page.screenshot({ path: shotPath, fullPage: false });
 
   const { scrollHeight, viewportHeight } = await page.evaluate(() => ({
@@ -362,7 +382,10 @@ async function capturePageScreenshot(page: Page, shotPath: string, viewportLabel
   await page.evaluate((y) => window.scrollTo(0, y), bottomY);
   await page.waitForTimeout(250);
   await page.screenshot({ path: shotPath.replace('.png', '-bottom.png'), fullPage: false });
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+  });
 }
 
 async function analyzeImages(page: Page) {
@@ -406,13 +429,17 @@ async function analyzeLayout(page: Page, route: AuditRoute) {
       if (unlabeledControl) notes.push('visible control missing accessible name');
       const imageMissingAlt = Array.from(document.images).some((image) => !image.hasAttribute('alt'));
       if (imageMissingAlt) notes.push('image missing alt attribute');
-      const undersizedButton = Array.from(document.querySelectorAll('button, [role="button"]')).find((element) => {
-        if (element.hasAttribute('data-nextjs-dev-tools-button')) return false;
-        const style = window.getComputedStyle(element);
-        const rect = element.getBoundingClientRect();
-        return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
-      });
-      if (undersizedButton) notes.push('interactive control below 44px tap target');
+      // 44px is the touch target contract for the mobile public experience.
+      // Desktop controls can be smaller because they are operated by pointer/keyboard.
+      if (window.innerWidth < 768) {
+        const undersizedButton = Array.from(document.querySelectorAll('button, [role="button"]')).find((element) => {
+          if (element.hasAttribute('data-nextjs-dev-tools-button')) return false;
+          const style = window.getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
+        });
+        if (undersizedButton) notes.push('interactive control below 44px mobile touch target');
+      }
       if (meta.id.includes('cart') || meta.id === 'checkout') {
         const empty = document.querySelector('[data-testid="cart-empty"]');
         if (empty) notes.push('cart empty state visible');

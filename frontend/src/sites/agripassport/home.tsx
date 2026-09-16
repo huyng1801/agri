@@ -107,7 +107,7 @@ export async function AgripassportHome() {
   return (
     <PublicShell>
       <PublicStructuredData data={structuredData} />
-      <main id="main-content" className="bg-[var(--surface-1)]">
+      <main id="main-content" data-site-home="agripassport" className="bg-[var(--surface-1)]">
         {/* =========================================================================
             SECTION 1: INDUSTRIAL DATA HERO (Asymmetric Split 60 / 40)
            ========================================================================= */}
@@ -147,7 +147,7 @@ export async function AgripassportHome() {
                 {/* Unified Single-Surface Search Bar */}
                 <div className="mt-6 max-w-2xl">
                   <PublicSearch
-                    placeholder="Tìm nông sản, hợp tác xã..."
+                    placeholder="Tìm nông sản, hợp tác xã…"
                     className="w-full"
                   />
                 </div>

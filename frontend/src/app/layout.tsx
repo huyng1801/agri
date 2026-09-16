@@ -10,7 +10,11 @@ const nunitoSans = Nunito_Sans({
   subsets: ['vietnamese', 'latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-body',
-  display: 'swap'
+  display: 'swap',
+  // The generated Vietnamese/Latin subsets are selected by unicode-range at
+  // runtime. Avoid preloading only two subsets and triggering unused-preload
+  // warnings on routes whose above-the-fold text resolves to another subset.
+  preload: false
 });
 
 export async function generateMetadata(): Promise<Metadata> {

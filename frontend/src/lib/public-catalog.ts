@@ -233,25 +233,24 @@ export const STANDARD_PRODUCTS: PublicProduct[] = [
 
 export const STANDARD_COOPERATIVES: PublicCooperative[] = cooperativesFromProducts(STANDARD_PRODUCTS);
 
+function fallbackCatalog(limit: number): PublicCatalog {
+  if (process.env.NODE_ENV === 'production') {
+    return { products: [], cooperatives: [], totalProducts: 0 };
+  }
+  return {
+    products: STANDARD_PRODUCTS.slice(0, limit),
+    cooperatives: STANDARD_COOPERATIVES,
+    totalProducts: STANDARD_PRODUCTS.length
+  };
+}
+
 export async function fetchPublicCatalog(limit = 100): Promise<PublicCatalog> {
   try {
     const response = await fetch(`${API_URL}/products/public?limit=${limit}`, { cache: 'no-store' });
-    if (!response.ok) {
-      return {
-        products: STANDARD_PRODUCTS.slice(0, limit),
-        cooperatives: STANDARD_COOPERATIVES,
-        totalProducts: STANDARD_PRODUCTS.length
-      };
-    }
+    if (!response.ok) return fallbackCatalog(limit);
     const body = (await response.json()) as ApiEnvelope<ProductListPayload> & { meta?: CatalogMeta };
     const products = publicListItems(body.data);
-    if (!products.length) {
-      return {
-        products: STANDARD_PRODUCTS.slice(0, limit),
-        cooperatives: STANDARD_COOPERATIVES,
-        totalProducts: STANDARD_PRODUCTS.length
-      };
-    }
+    if (!products.length) return fallbackCatalog(limit);
     const cooperatives = cooperativesFromProducts(products);
     return {
       products,
@@ -259,28 +258,21 @@ export async function fetchPublicCatalog(limit = 100): Promise<PublicCatalog> {
       totalProducts: body.meta?.total ?? products.length
     };
   } catch {
-    return {
-      products: STANDARD_PRODUCTS.slice(0, limit),
-      cooperatives: STANDARD_COOPERATIVES,
-      totalProducts: STANDARD_PRODUCTS.length
-    };
+    return fallbackCatalog(limit);
   }
 }
 
 export async function fetchProductsForCooperative(code: string, limit = 100): Promise<PublicProduct[]> {
+  const fallbackProducts = () => process.env.NODE_ENV === 'production' ? [] : STANDARD_PRODUCTS.filter((p) => p.cooperative?.code === code);
   try {
     const params = new URLSearchParams({ limit: String(limit), cooperative: code });
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
-    if (!response.ok) {
-      return STANDARD_PRODUCTS.filter((p) => p.cooperative?.code === code);
-    }
+    if (!response.ok) return fallbackProducts();
     const body = (await response.json()) as ApiEnvelope<ProductListPayload>;
     const products = publicListItems(body.data);
-    if (!products.length) {
-      return STANDARD_PRODUCTS.filter((p) => p.cooperative?.code === code);
-    }
+    if (!products.length) return fallbackProducts();
     return products;
   } catch {
-    return STANDARD_PRODUCTS.filter((p) => p.cooperative?.code === code);
+    return fallbackProducts();
   }
 }

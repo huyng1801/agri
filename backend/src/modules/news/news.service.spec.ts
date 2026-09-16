@@ -35,6 +35,7 @@ describe('NewsService', () => {
     );
 
     await service.create(user, {
+      siteKey: NewsSite.AGRIPASSPORT,
       title: 'Tin kiểm thử bảo mật',
       bodyHtml:
         '<p>Nội dung an toàn</p><script>alert(1)</script><img src="javascript:alert(1)" onerror="bad" /><a href="https://htxonline.vn" onclick="bad">HTXONLINE</a>',
@@ -109,5 +110,20 @@ describe('NewsService', () => {
     );
 
     await expect(service.publicList({ siteKey: 'UNKNOWN' })).rejects.toThrow('Website tin tức không hợp lệ');
+  });
+
+  it('requires an explicit website scope for the admin article library', async () => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const count = jest.fn().mockResolvedValue(0);
+    const service = new NewsService(
+      { newsArticle: { findMany, count } } as never,
+      { record: jest.fn() } as never
+    );
+
+    await service.list({ siteKey: 'HTXONLINE', limit: '12' });
+
+    expect(findMany.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.HTXONLINE }));
+    expect(count.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.HTXONLINE }));
+    await expect(service.list({ limit: '12' })).rejects.toThrow('Cần chọn website tin tức');
   });
 });

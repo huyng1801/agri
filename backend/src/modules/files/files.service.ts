@@ -64,6 +64,38 @@ export class FilesService {
     };
   }
 
+  async upload(user: AuthUser, file?: { originalname: string; mimetype: string; size: number; buffer: Buffer }) {
+    if (!file) throw new BadRequestException('Chưa chọn file để tải lên');
+    this.validateFile(file.mimetype, file.size);
+
+    const cooperativeId = requireTenant(user, undefined);
+    const bucket = process.env.R2_BUCKET || 'agri-passport';
+    const objectKey = this.objectKey(cooperativeId, file.originalname);
+    const publicUrl = process.env.R2_PUBLIC_BASE_URL
+      ? `${process.env.R2_PUBLIC_BASE_URL.replace(/\/$/, '')}/${objectKey}`
+      : undefined;
+
+    if (!publicUrl) throw new BadRequestException('Chưa cấu hình địa chỉ public cho kho ảnh');
+
+    const client = this.s3Client();
+    await client.send(new PutObjectCommand({
+      Bucket: bucket,
+      Key: objectKey,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+      CacheControl: 'public, max-age=31536000, immutable'
+    }));
+
+    return this.confirm(user, {
+      fileName: file.originalname,
+      mimeType: file.mimetype,
+      sizeBytes: file.size,
+      objectKey,
+      publicUrl,
+      visibility: FileVisibility.PUBLIC
+    });
+  }
+
   async confirm(user: AuthUser, dto: ConfirmUploadDto) {
     this.validateFile(dto.mimeType, dto.sizeBytes);
     const cooperativeId = requireTenant(user, dto.cooperativeId);
@@ -145,25 +177,7 @@ export class FilesService {
   }
 
   private async createSignedUrl(bucket: string, objectKey: string, mimeType: string) {
-    const accountId = process.env.R2_ACCOUNT_ID;
-    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-    const configured =
-      accountId &&
-      accessKeyId &&
-      secretAccessKey &&
-      ![accountId, accessKeyId, secretAccessKey].some((value) => value.includes('CHANGE_ME'));
-    if (!configured) {
-      return `https://r2-placeholder.local/${bucket}/${objectKey}?missing=R2_KEYS`;
-    }
-    const client = new S3Client({
-      region: 'auto',
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId,
-        secretAccessKey
-      }
-    });
+    const client = this.s3Client();
     return getSignedUrl(
       client,
       new PutObjectCommand({
@@ -173,5 +187,22 @@ export class FilesService {
       }),
       { expiresIn: 300 }
     );
+  }
+
+  private s3Client() {
+    const accountId = process.env.R2_ACCOUNT_ID;
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+    const configured =
+      accountId &&
+      accessKeyId &&
+      secretAccessKey &&
+      ![accountId, accessKeyId, secretAccessKey].some((value) => value.includes('CHANGE_ME'));
+    if (!configured) throw new BadRequestException('Chưa cấu hình kho ảnh R2');
+    return new S3Client({
+      region: 'auto',
+      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+      credentials: { accessKeyId, secretAccessKey }
+    });
   }
 }

@@ -27,63 +27,63 @@ import { buildPublicMetadata } from '@/lib/page-metadata';
 
 export async function generateMetadata(): Promise<Metadata> {
   return buildPublicMetadata({
-    title: 'Tuyển Cộng tác viên Chuyển đổi số Nông nghiệp',
-    description: 'Gia nhập mạng lưới cộng tác viên Hộ Chiếu Nông Nghiệp: đồng hành cùng các hợp tác xã số hóa vùng canh tác, cấp mã QR truy xuất nguồn gốc và gia tăng thu nhập linh hoạt.',
+    title: 'Tuyển cộng tác viên chuyển đổi số nông nghiệp',
+    description: 'Gia nhập mạng lưới cộng tác viên Hộ chiếu nông nghiệp: đồng hành cùng các hợp tác xã số hóa vùng canh tác, cấp mã QR truy xuất nguồn gốc và gia tăng thu nhập linh hoạt.',
     path: '/tuyen-cong-tac-vien',
-    keywords: ['cộng tác viên nông nghiệp', 'chuyển đổi số HTX', 'hồ sơ số', 'truy xuất QR']
+    keywords: ['cộng tác viên nông nghiệp', 'chuyển đổi số hợp tác xã', 'hồ sơ số', 'truy xuất QR']
   });
 }
 
 const personas = [
   {
     icon: Sprout,
-    title: 'Kỹ sư Nông nghiệp & Khuyến nông viên',
+    title: 'Kỹ sư nông nghiệp và khuyến nông viên',
     highlight: 'Chuyên môn kỹ thuật sâu',
     desc: 'Hiểu rõ quy trình sinh trưởng, mùa vụ, tiêu chuẩn VietGAP/GlobalGAP và quản lý vật tư đầu vào.',
     role: 'Hỗ trợ nông hộ lập nhật ký canh tác chuẩn hóa và thẩm định quy trình thực tế tại vườn.'
   },
   {
     icon: HeartHandshake,
-    title: 'Cán bộ & Xã viên nòng cốt HTX',
+    title: 'Cán bộ và xã viên nòng cốt hợp tác xã',
     highlight: 'Thấu hiểu địa phương',
     desc: 'Gắn bó trực tiếp với cộng đồng nhà nông, nắm bắt hiện trạng phân lô ruộng đất và năng lực sản xuất.',
     role: 'Làm cầu nối triển khai chuyển đổi số trực tiếp cho các thành viên trong hợp tác xã.'
   },
   {
     icon: GraduationCap,
-    title: 'Thanh niên & Sinh viên Nông nghiệp',
-    highlight: 'Năng động & am hiểu công nghệ',
+    title: 'Thanh niên và sinh viên nông nghiệp',
+    highlight: 'Năng động và am hiểu công nghệ',
     desc: 'Thành thạo ứng dụng di động, mạng xã hội, nhạy bén với công nghệ và mong muốn cống hiến cho quê hương.',
     role: 'Hướng dẫn nông dân dùng smartphone chụp ảnh nhật ký, gắn tem QR và kiểm tra thông tin.'
   },
   {
     icon: TrendingUp,
-    title: 'Chuyên viên Kinh doanh & Chuỗi cung ứng',
+    title: 'Chuyên viên kinh doanh và chuỗi cung ứng',
     highlight: 'Kết nối đầu ra nông sản',
     desc: 'Có mối quan hệ với các chuỗi siêu thị, cửa hàng thực phẩm an toàn, đại lý thu mua và doanh nghiệp chế biến.',
-    role: 'Hỗ trợ HTX đưa các sản phẩm đã cấp Hộ Chiếu Nông Nghiệp tiếp cận kênh phân phối cao cấp.'
+    role: 'Hỗ trợ hợp tác xã đưa các sản phẩm đã cấp Hộ chiếu nông nghiệp tiếp cận kênh phân phối cao cấp.'
   }
 ];
 
 const unifiedSteps = [
   {
     step: '01',
-    title: 'Kết nối & Khảo sát Hợp tác xã',
+    title: 'Kết nối và khảo sát hợp tác xã',
     desc: 'Tiếp cận hợp tác xã hoặc vùng trồng tại địa phương, nắm bắt nhu cầu chuẩn hóa dữ liệu và minh bạch nguồn gốc sản phẩm.'
   },
   {
     step: '02',
-    title: 'Hướng dẫn số hóa vùng trồng & nhật ký',
-    desc: 'Cùng ban quản trị HTX nhập dữ liệu diện tích, giống cây trồng và thiết lập thói quen ghi nhật ký chăm bón, thu hoạch.'
+    title: 'Hướng dẫn số hóa vùng trồng và nhật ký',
+    desc: 'Cùng ban quản trị hợp tác xã nhập dữ liệu diện tích, giống cây trồng và thiết lập thói quen ghi nhật ký chăm bón, thu hoạch.'
   },
   {
     step: '03',
-    title: 'Thẩm định hồ sơ & cấp Hộ Chiếu Số',
+    title: 'Thẩm định hồ sơ và cấp hộ chiếu số',
     desc: 'Đội ngũ kỹ thuật của nền tảng hỗ trợ kiểm tra tính xác thực, cấp mã số định danh và kích hoạt hồ sơ QR Passport.'
   },
   {
     step: '04',
-    title: 'Gắn tem QR & Mở rộng tiêu thụ',
+    title: 'Gắn tem QR và mở rộng tiêu thụ',
     desc: 'Đưa sản phẩm đã cấp tem chứng thư ra thị trường, giúp người tiêu dùng quét mã tra cứu và ghi nhận kết quả cộng tác.'
   }
 ];
@@ -92,7 +92,7 @@ const benefits = [
   {
     icon: Clock,
     title: 'Thu nhập linh hoạt',
-    desc: 'Chủ động thời gian, nhận thù lao và chính sách hoa hồng xứng đáng theo từng hồ sơ HTX hoàn tất thành công.'
+    desc: 'Chủ động thời gian, nhận thù lao và chính sách hoa hồng xứng đáng theo từng hồ sơ hợp tác xã hoàn tất thành công.'
   },
   {
     icon: ShieldCheck,
@@ -126,7 +126,7 @@ const faqs = [
   },
   {
     question: 'Khi nào hồ sơ hợp tác xã được tính là hoàn thành?',
-    answer: 'Hồ sơ được ghi nhận hoàn thành khi thông tin vùng trồng, sản phẩm và chứng nhận của HTX được thẩm định đạt chuẩn và sản phẩm được kích hoạt mã QR Passport công khai trên hệ thống.'
+    answer: 'Hồ sơ được ghi nhận hoàn thành khi thông tin vùng trồng, sản phẩm và chứng nhận của hợp tác xã được thẩm định đạt chuẩn và sản phẩm được kích hoạt mã QR hộ chiếu số công khai trên hệ thống.'
   }
 ];
 
@@ -143,15 +143,15 @@ export default async function PassportCollaboratorPage() {
 
           <div className="relative z-10 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12 lg:items-center">
             <div className="lg:col-span-7 space-y-5">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-[#d6f3c7]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1.5 text-xs font-bold tracking-wider text-[#d6f3c7]">
                 <Leaf size={14} />
-                <span>Mạng lưới Chuyển đổi số Nông nghiệp</span>
+                <span>Mạng lưới chuyển đổi số nông nghiệp</span>
               </span>
 
               <h1 className="type-hero-h1 text-white leading-tight">
-                Cùng Hộ Chiếu Nông Nghiệp{' '}
+                Cùng Hộ chiếu nông nghiệp{' '}
                 <span className="block text-[#b8edc0]">
-                  Đồng hành số hóa Hợp tác xã
+                  Đồng hành số hóa hợp tác xã
                 </span>
               </h1>
 
@@ -198,7 +198,7 @@ export default async function PassportCollaboratorPage() {
               <div className="relative overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-2 shadow-2xl backdrop-blur-sm">
                 <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-white/10">
                   <PublicImage
-                    src="/hero/htx-farmer-hero-v1.png"
+                    src="/hero/htx-farmer-hero-v1.webp"
                     alt="Cộng tác viên hỗ trợ nông dân tại hiện trường"
                     fallback="/news/field-qr.webp"
                     priority
@@ -206,11 +206,11 @@ export default async function PassportCollaboratorPage() {
                     className="h-full w-full object-cover"
                   />
                   <div className="absolute bottom-3 left-3 right-3 rounded-xl border border-white/20 bg-[#062c22]/85 p-3.5 backdrop-blur-md">
-                    <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#b8edc0]">
+                    <p className="text-[10px] font-extrabold tracking-wider text-[#b8edc0]">
                       Sứ mệnh đồng hành
                     </p>
                     <p className="text-xs font-bold text-white mt-0.5">
-                      Mang công nghệ số tới từng nông hộ & mảnh vườn
+                      Mang công nghệ số tới từng nông hộ và mảnh vườn
                     </p>
                   </div>
                 </div>
@@ -224,14 +224,14 @@ export default async function PassportCollaboratorPage() {
            ========================================================================= */}
         <section className="space-y-6">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
+            <span className="text-xs font-bold tracking-wider text-[#0d7a28]">
               Giá trị nhận được
             </span>
             <h2 className="type-h2 text-[var(--text-primary)]">
-              Tại sao nên trở thành Cộng tác viên?
+              Tại sao nên trở thành cộng tác viên?
             </h2>
             <p className="type-body text-[var(--text-secondary)]">
-              Cơ hội phát triển năng lực cá nhân, mở rộng quan hệ với các HTX và tạo giá trị bền vững cho cộng đồng.
+              Cơ hội phát triển năng lực cá nhân, mở rộng quan hệ với các hợp tác xã và tạo giá trị bền vững cho cộng đồng.
             </p>
           </div>
 
@@ -265,7 +265,7 @@ export default async function PassportCollaboratorPage() {
            ========================================================================= */}
         <section className="rounded-3xl bg-[var(--surface-muted)] p-6 sm:p-10 lg:p-12 border border-[var(--border)] space-y-8">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
+            <span className="text-xs font-bold tracking-wider text-[#0d7a28]">
               Đối tượng tham gia
             </span>
             <h2 className="type-h2 text-[var(--text-primary)]">
@@ -315,11 +315,11 @@ export default async function PassportCollaboratorPage() {
            ========================================================================= */}
         <section id="quy-trinh" className="space-y-8 scroll-mt-20">
           <div className="text-center max-w-2xl mx-auto space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
+            <span className="text-xs font-bold tracking-wider text-[#0d7a28]">
               Lộ trình triển khai
             </span>
             <h2 className="type-h2 text-[var(--text-primary)]">
-              Bốn bước hỗ trợ Hợp tác xã số hóa
+              Bốn bước hỗ trợ hợp tác xã số hóa
             </h2>
             <p className="type-body text-[var(--text-secondary)]">
               Quy trình khép kín, minh bạch và có sự đồng hành trực tiếp từ ban quản trị nền tảng.
@@ -358,7 +358,7 @@ export default async function PassportCollaboratorPage() {
         <section className="rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)] p-6 sm:p-10 lg:p-12">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-12 lg:items-start">
             <div className="lg:col-span-5 space-y-4">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
+            <span className="text-xs font-bold tracking-wider text-[#0d7a28]">
                 Giải đáp thắc mắc
               </span>
               <h2 className="type-h2 text-[var(--text-primary)]">
@@ -400,17 +400,17 @@ export default async function PassportCollaboratorPage() {
                     <span>Đăng ký tham gia</span>
                   </span>
                   <h2 className="type-h2 text-[var(--text-primary)] mt-3">
-                    Gia nhập mạng lưới Cộng tác viên
+                    Gia nhập mạng lưới cộng tác viên
                   </h2>
                   <p className="type-body text-[var(--text-secondary)] mt-2">
-                    Điền thông tin cơ bản bên cạnh. Đội ngũ vận hành của Hộ Chiếu Nông Nghiệp sẽ liên hệ lại trong vòng 24 giờ làm việc để hướng dẫn chi tiết.
+                    Điền thông tin cơ bản bên cạnh. Đội ngũ vận hành của Hộ chiếu nông nghiệp sẽ liên hệ lại trong vòng 24 giờ làm việc để hướng dẫn chi tiết.
                   </p>
                 </div>
 
                 <div className="overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)]">
                   <div className="aspect-[16/9] w-full overflow-hidden">
                     <PublicImage
-                      src="/hero/passport-about-hero.png"
+                      src="/hero/passport-about-hero.webp"
                       alt="Nông dân và cộng tác viên cùng kiểm tra nông sản"
                       fallback="/news/field-qr.webp"
                       wrapperClassName="h-full w-full"

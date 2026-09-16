@@ -8,6 +8,7 @@ export function PublicPageMain({ children, className }: { children: React.ReactN
   return (
     <main
       id="main-content"
+      data-public-main="true"
       className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-12 sm:pt-10 lg:py-16', className)}
     >
       {children}
@@ -19,6 +20,7 @@ export function PublicDetailMain({ children, className }: { children: React.Reac
   return (
     <main
       id="main-content"
+      data-public-main="true"
       className={cn(publicContainerClass, 'pb-[calc(8.8rem+var(--safe-bottom))] pt-6 sm:pb-12 sm:pt-10 lg:py-16', className)}
     >
       {children}
@@ -28,7 +30,7 @@ export function PublicDetailMain({ children, className }: { children: React.Reac
 
 export function PublicBreadcrumb({ href, label }: { href: string; label: string }) {
   return (
-    <Link href={href} className="mb-4 inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-[var(--brand-primary)] transition hover:text-[var(--brand-primary-hover)]">
+    <Link href={href} className="mb-4 inline-flex min-h-11 items-center gap-2 rounded-lg px-1 text-sm font-semibold text-[var(--brand-primary)] transition hover:bg-[var(--brand-primary-subtle)] hover:text-[var(--brand-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)]">
       <ArrowLeft size={16} aria-hidden="true" />
       {label}
     </Link>
@@ -71,18 +73,20 @@ export function PublicPageHeader({
   description,
   action,
   eyebrow = 'Nền tảng',
-  titleClassName
+  titleClassName,
+  eyebrowClassName
 }: {
   title: string;
   description: string;
   action?: React.ReactNode;
   eyebrow?: string;
   titleClassName?: string;
+  eyebrowClassName?: string;
 }) {
   return (
     <div className="mb-6 flex flex-col gap-3.5 lg:mb-8 lg:flex-row lg:items-end lg:justify-between lg:gap-6">
       <div className="max-w-3xl">
-        <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)] sm:text-xs">{eyebrow}</p>
+        <p className={cn('text-xs font-semibold tracking-[0.1em] text-[var(--brand-primary-strong)] sm:text-sm', eyebrowClassName)}>{eyebrow}</p>
         <h1 className={cn('type-page-h1 mt-2 text-[1.75rem] sm:mt-2.5 sm:text-[2.65rem]', titleClassName)}>
           {title}
         </h1>
@@ -138,7 +142,7 @@ export function PublicSectionHeader({
 
 export const publicCardClass = 'overflow-hidden rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[var(--public-shadow-card)]';
 
-export const publicProseClass = 'text-base leading-7 text-[var(--text-secondary)]';
+export const publicProseClass = 'public-prose text-base leading-7 text-[var(--text-secondary)]';
 
 export function PublicInfoTile({ title, description }: { title: string; description: string }) {
   return (
@@ -152,7 +156,7 @@ export function PublicInfoTile({ title, description }: { title: string; descript
 export function PublicFaqItem({ question, answer, defaultOpen = false }: { question: string; answer: string; defaultOpen?: boolean }) {
   return (
     <details open={defaultOpen} className="group rounded-[var(--public-radius-card)] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_10px_24px_rgba(15,23,42,0.035)]">
-      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left font-semibold text-[var(--text-primary)] marker:hidden focus-visible:outline-none sm:px-5 [&::-webkit-details-marker]:hidden">
+      <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-4 px-4 py-3 text-left font-semibold text-[var(--text-primary)] marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-inset sm:px-5 [&::-webkit-details-marker]:hidden">
         <span>{question}</span>
         <ChevronDown size={18} aria-hidden="true" className="shrink-0 text-[var(--brand-primary)] transition-transform duration-200 group-open:rotate-180" />
       </summary>

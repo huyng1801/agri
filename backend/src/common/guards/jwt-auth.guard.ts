@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RoleSlug, UserStatus } from '@prisma/client';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 import { PrismaService } from '../../modules/prisma/prisma.service';
+import { isAuthPortal } from '../portal';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -36,9 +37,16 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     try {
-      const payload = await this.jwtService.verifyAsync<{ sub: string }>(token, {
+      const payload = await this.jwtService.verifyAsync<{ sub: string; portal?: string }>(token, {
         secret: process.env.JWT_ACCESS_SECRET || 'replace-with-a-long-access-secret'
       });
+      if (!isAuthPortal(payload.portal)) {
+        throw new UnauthorizedException('Phiên đăng nhập chưa gắn cổng truy cập');
+      }
+      const clientPortal = request.headers['x-client-portal'];
+      if (clientPortal !== payload.portal) {
+        throw new UnauthorizedException('Phiên đăng nhập không thuộc cổng truy cập này');
+      }
       const user = await this.prisma.user.findUnique({
         where: { id: payload.sub },
         include: {
@@ -63,7 +71,8 @@ export class JwtAuthGuard implements CanActivate {
         fullName: user.fullName,
         cooperativeId: user.cooperativeId,
         roles: roles.length ? roles : [RoleSlug.BUYER],
-        permissions
+        permissions,
+        portal: payload.portal
       };
 
       return true;

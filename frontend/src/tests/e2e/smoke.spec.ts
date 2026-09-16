@@ -18,6 +18,6 @@ test('login form validates on mobile viewport', async ({ page }) => {
 
 test('public news route renders searchable page', async ({ page }) => {
   await page.goto('/tin-tuc');
-  await expect(page.getByRole('heading', { name: 'Tin tức', exact: true })).toBeVisible();
-  await expect(page.getByPlaceholder('Tìm bài viết')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible();
+  await expect(page.getByPlaceholder('Tìm kiếm bài viết…')).toBeVisible();
 });

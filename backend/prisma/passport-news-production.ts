@@ -3,6 +3,7 @@ import { EDITORIAL_NEWS_EXPANSION } from './editorial-news-expansion';
 import { SEASON_MANAGEMENT_NEWS } from './editorial-news-season';
 import { PASSPORT_EDITORIAL_NEWS_ARTICLES } from './editorial-news-passport';
 import { PASSPORT_NEWS_CATALOG } from './passport-news-catalog';
+import { PASSPORT_NEWS_BODY_OVERRIDES } from './passport-news-body-overrides';
 
 // This article is kept here so the production seed does not import seed-demo.ts.
 // Its wording follows the supplied Word source and excludes contact/footer copy.
@@ -44,7 +45,10 @@ for (const item of PASSPORT_NEWS_CATALOG) {
 // Catalog order is the publication order used by both production and demo seeds.
 export const PASSPORT_PRODUCTION_ARTICLES = PASSPORT_NEWS_CATALOG.map((item) => ({
   ...sourceBySlug.get(item.slug)!,
-  category: item.category
+  category: item.category,
+  ...(PASSPORT_NEWS_BODY_OVERRIDES[item.slug]
+    ? { bodyHtml: PASSPORT_NEWS_BODY_OVERRIDES[item.slug] }
+    : {})
 }));
 
 const coverFiles: Record<string, string> = {

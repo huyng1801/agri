@@ -15,30 +15,46 @@ type PublicMetadataInput = {
 
 export function brandizeSiteText(value: string, siteKey: PublicSiteKey = 'agripassport') {
   if (!value) return '';
-  if (siteKey === 'htxonline') {
-    return value
+  const emailPattern = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
+  const transform = (text: string) => {
+    if (siteKey === 'htxonline') {
+      return text
       .replace(/\bAGRIPASSPORT\b/gi, 'HTXONLINE')
       .replace(/\bAgri Passport\b/gi, 'HTXONLINE')
       .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'HTXONLINE');
+    }
+    if (siteKey === 'passport') {
+      return text
+        .replace(/\bHTXONLINE\b/gi, 'Hộ chiếu nông nghiệp')
+        .replace(/\bAGRIPASSPORT\b/gi, 'Hộ chiếu nông nghiệp')
+        .replace(/\bAgri Passport\b/gi, 'Hộ chiếu nông nghiệp')
+        .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'Hộ chiếu nông nghiệp')
+        .replace(/\bQR Passport\b/gi, 'QR truy xuất')
+        .replace(/\bHTX\b/g, 'hợp tác xã')
+        .replace(/\bBVTV\b/g, 'bảo vệ thực vật');
+    }
+    return text
+      .replace(/\bHTXONLINE\b/gi, 'AGRIPASSPORT')
+      .replace(/\bAgri Passport\b/gi, 'AGRIPASSPORT')
+      .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'AGRIPASSPORT')
+      .replace(/Đặt hàng COD/gi, 'Kết nối với HTX')
+      .replace(/bán hàng COD/gi, 'kết nối thị trường')
+      .replace(/đơn hàng COD/gi, 'yêu cầu hỗ trợ')
+      .replace(/Thanh toán COD/gi, 'Gửi yêu cầu')
+      .replace(/Tra cứu đơn hàng/gi, 'Theo dõi yêu cầu')
+      .replace(/Giỏ hàng/gi, 'Danh sách sản phẩm')
+      .replace(/\bCOD\b/gi, 'kết nối trực tiếp');
+  };
+
+  let cursor = 0;
+  let result = '';
+  for (const match of value.matchAll(emailPattern)) {
+    const index = match.index ?? cursor;
+    result += transform(value.slice(cursor, index));
+    result += match[0];
+    cursor = index + match[0].length;
   }
-  if (siteKey === 'passport') {
-    return value
-      .replace(/\bHTXONLINE\b/gi, 'HỘ CHIẾU NÔNG NGHIỆP')
-      .replace(/\bAGRIPASSPORT\b/gi, 'HỘ CHIẾU NÔNG NGHIỆP')
-      .replace(/\bAgri Passport\b/gi, 'HỘ CHIẾU NÔNG NGHIỆP')
-      .replace(/\bQR Passport\b/gi, 'QR truy xuất');
-  }
-  return value
-    .replace(/\bHTXONLINE\b/gi, 'AGRIPASSPORT')
-    .replace(/\bAgri Passport\b/gi, 'AGRIPASSPORT')
-    .replace(/\bHỘ CHIẾU NÔNG NGHIỆP\b/gi, 'AGRIPASSPORT')
-    .replace(/Đặt hàng COD/gi, 'Kết nối với HTX')
-    .replace(/bán hàng COD/gi, 'kết nối thị trường')
-    .replace(/đơn hàng COD/gi, 'yêu cầu hỗ trợ')
-    .replace(/Thanh toán COD/gi, 'Gửi yêu cầu')
-    .replace(/Tra cứu đơn hàng/gi, 'Theo dõi yêu cầu')
-    .replace(/Giỏ hàng/gi, 'Danh sách sản phẩm')
-    .replace(/\bCOD\b/gi, 'kết nối trực tiếp');
+  return result + transform(value.slice(cursor));
 }
 
 export async function buildPublicMetadata(input: PublicMetadataInput): Promise<Metadata> {

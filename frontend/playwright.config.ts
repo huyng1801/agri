@@ -7,6 +7,7 @@ loadEnvFile(resolve(__dirname, '.env.e2e'));
 
 const publicBaseURL = process.env.PUBLIC_BASE_URL || process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:3000';
 const usesLocalServer = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(publicBaseURL);
+const localPort = new URL(publicBaseURL).port || '3000';
 
 export default defineConfig({
   testDir: './src/tests/e2e',
@@ -23,8 +24,8 @@ export default defineConfig({
   ],
   webServer: usesLocalServer
     ? {
-        command: 'npm run dev',
-        url: 'http://127.0.0.1:3000',
+        command: `npx next dev -p ${localPort}`,
+        url: `http://127.0.0.1:${localPort}`,
         reuseExistingServer: true,
         timeout: 120_000
       }

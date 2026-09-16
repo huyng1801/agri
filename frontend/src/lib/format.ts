@@ -9,7 +9,11 @@ export function formatCurrency(value: unknown) {
 
 export function formatDate(value: unknown) {
   if (!value) return '—';
-  return new Intl.DateTimeFormat('vi-VN').format(new Date(String(value)));
+  const date = new Date(String(value));
+  if (Number.isNaN(date.getTime())) return '—';
+  // Keep server and browser output identical when an ISO timestamp is close
+  // to midnight in the server's UTC timezone.
+  return new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' }).format(date);
 }
 
 export function statusTone(status?: string) {

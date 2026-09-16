@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ChevronDown, ExternalLink, Mail, MapPin, Phone, ShieldCheck } from 'lucide-react';
-import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref } from '@/lib/public-site';
+import { getPublicMapLocation, getPublicSiteProfile, getPublicZaloUrl, telHref, type PublicSiteProfile } from '@/lib/public-site';
 import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 import { publicContainerClass } from './public-layout';
 import { PublicLogo } from './public-logo';
@@ -43,17 +43,17 @@ const passportFooterSections: FooterSection[] = [
   {
     title: 'Hộ chiếu cây',
     links: [
-      { href: '/cay', label: 'Danh sách cây' },
-      { href: '/cay', label: 'Bản đồ tận cây' },
+      { href: '/cay', label: 'Hồ sơ cây' },
+      { href: '/cay', label: 'Bản đồ vùng trồng' },
       { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' }
     ]
   },
   {
-    title: 'Truy xuất công khai',
+    title: 'Truy xuất',
     links: [
-      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
       { href: '/truy-xuat', label: 'Truy xuất sản phẩm' },
-      { href: '/htx', label: 'Vùng trồng & đối tác' }
+      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
+      { href: '/htx', label: 'Vùng trồng và đối tác' }
     ]
   },
   {
@@ -93,8 +93,8 @@ const internalFooterSections: FooterSection[] = [
   }
 ];
 
-export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
-  const profile = await getPublicSiteProfile(siteKey);
+export async function PublicFooter({ siteKey = 'agripassport', profile: providedProfile }: { siteKey?: PublicSiteKey; profile?: PublicSiteProfile }) {
+  const profile = providedProfile ?? await getPublicSiteProfile(siteKey);
   const mapSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(profile.address)}`;
   const mapLocation = getPublicMapLocation(profile);
   const isInternal = siteKey === 'htxonline';
@@ -102,8 +102,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const zaloUrl = isPassport ? getPublicZaloUrl(profile, true) : '';
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
   const footerSections = isInternal ? internalFooterSections : isPassport ? passportFooterSections : agripassportFooterSections;
+  const footerHeadingCase = isPassport ? 'normal-case tracking-normal' : 'uppercase tracking-wider';
 
-  const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'HỘ CHIẾU NÔNG NGHIỆP' : 'AGRIPASSPORT';
+  const brandName = isInternal ? 'HTXONLINE' : isPassport ? 'Hộ chiếu nông nghiệp' : 'AGRIPASSPORT';
   const brandDescription = isInternal
     ? 'Hệ thống quản trị nội bộ cho hợp tác xã: chuẩn hóa dữ liệu thành viên, quản lý sản xuất, tài chính và đồng bộ công khai.'
     : isPassport
@@ -119,7 +120,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
   const copyrightText = isInternal
     ? `© ${new Date().getFullYear()} HTXONLINE. Nền tảng Quản trị Hợp tác xã Số.`
     : isPassport
-      ? `© ${new Date().getFullYear()} HỘ CHIẾU NÔNG NGHIỆP`
+      ? `© ${new Date().getFullYear()} Hộ chiếu nông nghiệp`
       : `© ${new Date().getFullYear()} AGRIPASSPORT`;
 
   return (
@@ -130,7 +131,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           {/* Column 1: Organization & Identity */}
           <div className="space-y-3">
             <Link href="/" className="inline-block" aria-label={`${brandName} - Trang chủ`}>
-              <PublicLogo size={38} variant={logoVariant} className="h-[38px] w-auto" />
+              <PublicLogo size={56} variant={logoVariant} className="h-14 w-auto max-w-[12rem]" />
             </Link>
 
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -141,7 +142,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           {/* Desktop Section Columns (hidden on mobile) */}
           {footerSections.map((section) => (
             <div key={section.title} className="hidden sm:block">
-              <h3 className="mb-2.5 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)]">{section.title}</h3>
+              <h3 className={cn('mb-2.5 text-xs font-bold text-[var(--text-primary)]', footerHeadingCase)}>{section.title}</h3>
               <ul className="space-y-1 text-xs text-[var(--text-secondary)]">
                 {section.links.map((link) => (
                   <li key={link.label}>
@@ -160,7 +161,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           <div className="sm:hidden border-t border-[var(--border)] pt-2 space-y-1">
             {footerSections.map((section) => (
               <details key={section.title} className="group border-b border-[var(--border)] py-2">
-                <summary className="flex cursor-pointer list-none items-center justify-between py-1 text-xs font-bold uppercase tracking-wider text-[var(--text-primary)] [&::-webkit-details-marker]:hidden">
+                <summary className={cn('flex min-h-11 cursor-pointer list-none items-center justify-between py-1 text-xs font-bold text-[var(--text-primary)] [&::-webkit-details-marker]:hidden', footerHeadingCase)}>
                   <span>{section.title}</span>
                   <ChevronDown size={15} className="text-[var(--text-secondary)] transition-transform duration-200 group-open:rotate-180" />
                 </summary>
@@ -168,9 +169,9 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   {section.links.map((link) => (
                     <li key={link.label}>
                       {link.external ? (
-                        <a href={link.href} target="_blank" rel="noreferrer" className="inline-flex min-h-[36px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</a>
+                        <a href={link.href} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</a>
                       ) : (
-                        <Link href={link.href} className="inline-flex min-h-[36px] items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</Link>
+                        <Link href={link.href} className="inline-flex min-h-11 items-center py-0.5 transition hover:text-[var(--brand-primary)]">{link.label}</Link>
                       )}
                     </li>
                   ))}
@@ -183,7 +184,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
         {/* Contact, map and registration row */}
         <div className="mt-8 grid w-full grid-cols-1 gap-6 border-t border-[var(--border)] pt-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
           <div>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className={cn('mb-2 text-xs font-semibold text-[var(--text-primary)]', footerHeadingCase)}>
               Thông tin liên hệ
             </h3>
             <div className="space-y-2 text-xs leading-relaxed text-[var(--text-secondary)]">
@@ -195,7 +196,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               <p className="flex items-center gap-2">
                 <Phone size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
                 <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                  <a href={telHref(profile.hotline)} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
+                  <a href={telHref(profile.hotline)} className="inline-flex min-h-11 items-center font-normal text-[var(--text-secondary)] hover:underline">
                     {profile.hotlineDisplay}
                   </a>
                   {zaloUrl ? (
@@ -204,7 +205,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                       target="_blank"
                       rel="noreferrer"
                       aria-label="Nhắn Zalo"
-                      className="inline-flex min-h-[36px] items-center gap-1 font-normal text-[var(--text-secondary)] hover:underline"
+                      className="inline-flex min-h-11 min-w-11 items-center justify-center gap-1 font-normal text-[var(--text-secondary)] hover:underline"
                     >
                       <ZaloIcon size={15} />
                       Zalo
@@ -214,7 +215,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
               </p>
               <p className="flex items-center gap-2">
                 <Mail size={15} className="shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
-                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-[36px] items-center font-normal text-[var(--text-secondary)] hover:underline">
+                <a href={`mailto:${profile.supportEmail}`} className="inline-flex min-h-11 items-center font-normal text-[var(--text-secondary)] hover:underline">
                   {profile.supportEmail}
                 </a>
               </p>
@@ -223,7 +224,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
 
           <div className="sm:col-span-2">
             <div className="mb-2 sm:mb-4 flex items-center justify-between gap-3">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+              <h3 className={cn('text-xs font-semibold text-[var(--text-primary)]', footerHeadingCase)}>
                 Bản đồ địa điểm
               </h3>
             </div>
@@ -249,7 +250,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
                   href={mapSearchUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs font-semibold text-[var(--brand-primary)] shadow-2xs active:bg-slate-50 min-h-[40px]"
+                  className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-xs font-semibold text-[var(--brand-primary)] shadow-2xs active:bg-slate-50 min-h-11"
                 >
                   <MapPin size={14} />
                   <span>Google Maps</span>
@@ -260,7 +261,7 @@ export async function PublicFooter({ siteKey = 'agripassport' }: { siteKey?: Pub
           </div>
 
           <div>
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)]">
+            <h3 className={cn('mb-2 text-xs font-semibold text-[var(--text-primary)]', footerHeadingCase)}>
               Thông tin pháp lý
             </h3>
             <p className="text-xs leading-relaxed text-[var(--text-secondary)]">

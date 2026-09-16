@@ -2,16 +2,17 @@
 
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { CheckCircle2, ExternalLink, MapPinned, Plus, QrCode, RefreshCcw, Sprout, TriangleAlert } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
-import type { Map as LeafletMap } from 'leaflet';
+import { CheckCircle2, ExternalLink, ImagePlus, MapPinned, Plus, QrCode, RefreshCcw, Sprout, TriangleAlert, Upload } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { apiFetch as rawApiFetch, currentUser, type ApiEnvelope } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
+import { GisMap } from '@/components/gis-map';
 
 type ListResponse<T> = { data: T[]; meta?: { total?: number; totalPages?: number } };
 type ApiItem<T> = { data: T };
 type CropType = { id: string; code: string; name: string; isActive: boolean };
+type TreeImage = { url: string; caption?: string; name?: string };
 type Zone = { id: string; code: string; name: string; address?: string | null; latitude?: string | number | null; longitude?: string | number | null };
 type Tree = {
   id: string;
@@ -25,7 +26,9 @@ type Tree = {
   plantedDate?: string | null;
   status: string;
   publicVerified: boolean;
+  imagesJson?: unknown;
   note?: string | null;
+  cooperative?: { id: string; name: string; representative?: string | null };
   zone?: Zone;
   cropType?: CropType;
   traceabilityCode?: { id: string; code: string; qrDataUrl?: string | null; status: string } | null;
@@ -39,6 +42,34 @@ type Lot = { id: string; lotCode: string; unit: string; totalQuantity: string | 
 type Product = { id: string; code: string; name: string; unit: string; status: string; publicVerified?: boolean };
 type ProductBatch = { id: string; productCode: string; quantity: string | number; unit: string; harvestDate?: string | null; packagingDate?: string | null; status: string; publicVerified: boolean; product?: Product; lot?: Lot; traceabilityCode?: TraceabilityCode | null };
 type TraceabilityCode = { id: string; code: string; publicSlug: string; codeType: string; status: string; qrDataUrl?: string | null; tree?: { treeCode: string } | null; productBatch?: { productCode: string } | null };
+
+function normalizeTreeImages(value: unknown): TreeImage[] {
+  if (!Array.isArray(value)) return [];
+  return value.flatMap((item) => {
+    if (typeof item === 'string') return isSafeImageUrl(item) ? [{ url: item }] : [];
+    if (!item || typeof item !== 'object') return [];
+    const image = item as { url?: unknown; publicUrl?: unknown; caption?: unknown; name?: unknown };
+    const url = typeof image.url === 'string' ? image.url : typeof image.publicUrl === 'string' ? image.publicUrl : null;
+    if (!url || !isSafeImageUrl(url)) return [];
+    const caption = typeof image.caption === 'string' ? image.caption : typeof image.name === 'string' ? image.name : undefined;
+    return [{ url, ...(caption ? { caption } : {}) }];
+  });
+}
+
+function isSafeImageUrl(url: string) {
+  return /^https?:\/\//i.test(url) || url.startsWith('/');
+}
+
+function treeAge(plantedDate?: string | null) {
+  if (!plantedDate) return 'Chưa cập nhật';
+  const planted = new Date(plantedDate);
+  if (Number.isNaN(planted.getTime())) return 'Chưa cập nhật';
+  const today = new Date();
+  let years = today.getFullYear() - planted.getFullYear();
+  const beforeAnniversary = today.getMonth() < planted.getMonth() || (today.getMonth() === planted.getMonth() && today.getDate() < planted.getDate());
+  if (beforeAnniversary) years -= 1;
+  return years < 0 ? 'Chưa cập nhật' : `${years} năm`;
+}
 
 type UnwrappedList<T> = T extends ListResponse<infer Item> ? Item[] : T;
 
@@ -89,7 +120,11 @@ function TreesListDashboard() {
   const [user, setUser] = useState<ReturnType<typeof currentUser>>(null);
   const [search, setSearch] = useState('');
   const [formOpen, setFormOpen] = useState(false);
-  const [form, setForm] = useState({ zoneId: '', cropTypeId: '', variety: '', plantedDate: '', latitude: '', longitude: '', publicVerified: false, note: '' });
+  const [locationState, setLocationState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [locationError, setLocationError] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [imageError, setImageError] = useState('');
+  const [form, setForm] = useState({ zoneId: '', cropTypeId: '', variety: '', plantedDate: '', latitude: '', longitude: '', publicVerified: false, note: '', imagesJson: [] as TreeImage[] });
   useEffect(() => setUser(currentUser()), []);
   const trees = useQuery({ queryKey: ['plant-trees', search], queryFn: () => apiFetch<ListResponse<Tree>>(`/trees?limit=100${search ? `&search=${encodeURIComponent(search)}` : ''}`) });
   const zones = useQuery({ queryKey: ['plant-zones'], queryFn: () => apiFetch<ListResponse<Zone>>('/zones?limit=100') });
@@ -97,21 +132,85 @@ function TreesListDashboard() {
   const save = useMutation({
     mutationFn: () => apiFetch<Tree>('/trees', { method: 'POST', body: JSON.stringify({ ...form, latitude: form.latitude ? Number(form.latitude) : undefined, longitude: form.longitude ? Number(form.longitude) : undefined, plantedDate: form.plantedDate ? new Date(form.plantedDate).toISOString() : undefined }) }),
     onSuccess: () => {
-      setForm({ zoneId: '', cropTypeId: '', variety: '', plantedDate: '', latitude: '', longitude: '', publicVerified: false, note: '' });
+      setForm({ zoneId: '', cropTypeId: '', variety: '', plantedDate: '', latitude: '', longitude: '', publicVerified: false, note: '', imagesJson: [] });
+      setLocationState('idle');
+      setLocationError('');
+      setImageError('');
       setFormOpen(false);
       queryClient.invalidateQueries({ queryKey: ['plant-trees'] });
     }
   });
+  function toggleForm() {
+    setFormOpen((open) => !open);
+    setLocationState('idle');
+    setLocationError('');
+    setImageError('');
+  }
+  async function uploadTreeImage(file: File) {
+    if (!file.type.startsWith('image/')) {
+      setImageError('Ảnh cây phải là tệp hình ảnh hợp lệ.');
+      return;
+    }
+    setUploadingImage(true);
+    setImageError('');
+    try {
+      const plan = await apiFetch<{ objectKey: string; uploadUrl: string; method?: string; headers?: Record<string, string>; publicUrl?: string }>('/files/presign-upload', {
+        method: 'POST',
+        body: JSON.stringify({ fileName: file.name, mimeType: file.type, sizeBytes: file.size, visibility: 'PUBLIC' })
+      });
+      if (!plan.data.publicUrl) throw new Error('Thiếu địa chỉ ảnh public. Hãy kiểm tra cấu hình lưu trữ R2.');
+      const uploadResponse = await fetch(plan.data.uploadUrl, { method: plan.data.method || 'PUT', headers: plan.data.headers, body: file });
+      if (!uploadResponse.ok) throw new Error('Không upload được ảnh cây lên bộ nhớ lưu trữ.');
+      const confirmed = await apiFetch<{ id: string; publicUrl?: string | null }>('/files/confirm-upload', {
+        method: 'POST',
+        body: JSON.stringify({ fileName: file.name, mimeType: file.type, sizeBytes: file.size, objectKey: plan.data.objectKey, publicUrl: plan.data.publicUrl, visibility: 'PUBLIC' })
+      });
+      const url = confirmed.data.publicUrl || plan.data.publicUrl;
+      if (!url) throw new Error('Ảnh đã upload nhưng chưa nhận được địa chỉ hiển thị.');
+      setForm((current) => ({ ...current, imagesJson: [...current.imagesJson, { url, name: file.name }] }));
+    } catch (error) {
+      setImageError(error instanceof Error ? error.message : 'Không thể upload ảnh cây.');
+    } finally {
+      setUploadingImage(false);
+    }
+  }
+  function useCurrentLocation() {
+    if (!navigator.geolocation) {
+      setLocationState('error');
+      setLocationError('Thiết bị hoặc trình duyệt không hỗ trợ định vị GPS.');
+      return;
+    }
+
+    setLocationState('loading');
+    setLocationError('');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setForm((current) => ({ ...current, latitude: coords.latitude.toFixed(6), longitude: coords.longitude.toFixed(6) }));
+        setLocationState('success');
+      },
+      (error) => {
+        setLocationState('error');
+        setLocationError(
+          error.code === error.PERMISSION_DENIED
+            ? 'Bạn chưa cho phép website dùng vị trí. Hãy bật quyền Vị trí cho trình duyệt rồi thử lại.'
+            : error.code === error.TIMEOUT
+              ? 'Không lấy được vị trí trong thời gian cho phép. Hãy đứng nơi thoáng rồi thử lại.'
+              : 'Không lấy được vị trí hiện tại. Hãy kiểm tra GPS và thử lại.'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  }
   const items = trees.data?.data ?? [];
   const stats = { total: items.length, active: items.filter((tree) => tree.status === 'ACTIVE').length, attention: items.filter((tree) => ['NEEDS_ATTENTION', 'ALERT'].includes(tree.status)).length, harvested: items.filter((tree) => tree.status === 'HARVESTED').length };
   const canCreate = Boolean(user?.roles.some((role) => ['SUPER_ADMIN', 'ADMIN_HTX', 'MEMBER_HTX', 'FARMER'].includes(role)));
 
   return (
     <div className="space-y-5" data-testid="trees-screen">
-      <PageHeader icon={Sprout} eyebrow="Hồ chiếu cây" title="Mỗi cây một hồ sơ sống" description="Định danh từng cá thể, ghi nhận vòng đời và nối thẳng dữ liệu thu hoạch về lô sản phẩm." onRefresh={() => trees.refetch()} action={canCreate ? <Button onClick={() => setFormOpen((open) => !open)}><Plus size={18} />{formOpen ? 'Đóng form' : 'Tạo hồ sơ cây'}</Button> : null} />
+      <PageHeader icon={Sprout} eyebrow="Hồ chiếu cây" title="Mỗi cây một hồ sơ sống" description="Định danh từng cá thể, ghi nhận vòng đời và nối thẳng dữ liệu thu hoạch về lô sản phẩm." onRefresh={() => trees.refetch()} action={canCreate ? <Button onClick={toggleForm}><Plus size={18} />{formOpen ? 'Đóng form' : 'Tạo hồ sơ cây'}</Button> : null} />
       <div className="grid gap-3 sm:grid-cols-4"><Metric label="Tổng cây" value={stats.total} icon={Sprout} /><Metric label="Đang sinh trưởng" value={stats.active} icon={CheckCircle2} tone="green" /><Metric label="Cần theo dõi" value={stats.attention} icon={TriangleAlert} tone="amber" /><Metric label="Đã thu hoạch" value={stats.harvested} icon={QrCode} tone="sky" /></div>
 
-      {formOpen && canCreate && <Panel className="border-emerald-200 bg-emerald-50/50"><form className="space-y-4" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}><div><h2 className="text-lg font-bold text-ink">Tạo hộ chiếu cây</h2><p className="text-sm text-slate-600">Mã cây sẽ tự sinh theo dạng `LOAI-MA_VUNG-000001` và không đổi sau khi cấp.</p></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><Field label="Vùng sản xuất"><Select required value={form.zoneId} onChange={(event) => setForm({ ...form, zoneId: event.target.value })}><option value="">Chọn vùng</option>{(zones.data?.data ?? []).map((zone) => <option key={zone.id} value={zone.id}>{zone.code} · {zone.name}</option>)}</Select></Field><Field label="Loại cây"><Select required value={form.cropTypeId} onChange={(event) => setForm({ ...form, cropTypeId: event.target.value })}><option value="">Chọn loại cây</option>{(cropTypes.data?.data ?? []).map((crop) => <option key={crop.id} value={crop.id}>{crop.name}</option>)}</Select></Field><Field label="Giống cây"><Input value={form.variety} onChange={(event) => setForm({ ...form, variety: event.target.value })} placeholder="Dona, Cát Chu..." /></Field><Field label="Ngày trồng"><Input type="date" value={form.plantedDate} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setForm({ ...form, plantedDate: event.target.value })} /></Field><Field label="Vĩ độ (nội bộ)"><Input type="number" step="0.000001" value={form.latitude} onChange={(event) => setForm({ ...form, latitude: event.target.value })} /></Field><Field label="Kinh độ (nội bộ)"><Input type="number" step="0.000001" value={form.longitude} onChange={(event) => setForm({ ...form, longitude: event.target.value })} /></Field></div><Field label="Ghi chú"><Textarea value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder="Đặc điểm nhận diện, tình trạng ban đầu..." /></Field><label className="flex items-center gap-2 text-sm font-semibold text-slate-700"><input type="checkbox" checked={form.publicVerified} onChange={(event) => setForm({ ...form, publicVerified: event.target.checked })} /> Đã xác minh cho phép hiển thị công khai</label>{save.isError && <ErrorMessage error={save.error} />}<Button type="submit" disabled={save.isPending}>{save.isPending ? 'Đang tạo...' : 'Tạo hộ chiếu cây'}</Button></form></Panel>}
+      {formOpen && canCreate && <Panel className="border-emerald-200 bg-emerald-50/50"><form className="space-y-4" onSubmit={(event) => { event.preventDefault(); save.mutate(); }}><div><h2 className="text-lg font-bold text-ink">Tạo hộ chiếu cây</h2><p className="text-sm text-slate-600">Mã cây sẽ tự sinh theo dạng `LOAI-MA_VUNG-000001` và không đổi sau khi cấp.</p></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"><Field label="Vùng sản xuất"><Select required value={form.zoneId} onChange={(event) => setForm({ ...form, zoneId: event.target.value })}><option value="">Chọn vùng</option>{(zones.data?.data ?? []).map((zone) => <option key={zone.id} value={zone.id}>{zone.code} · {zone.name}</option>)}</Select></Field><Field label="Loại cây"><Select required value={form.cropTypeId} onChange={(event) => setForm({ ...form, cropTypeId: event.target.value })}><option value="">Chọn loại cây</option>{(cropTypes.data?.data ?? []).map((crop) => <option key={crop.id} value={crop.id}>{crop.name}</option>)}</Select></Field><Field label="Giống cây"><Input value={form.variety} onChange={(event) => setForm({ ...form, variety: event.target.value })} placeholder="Dona, Cát Chu..." /></Field><Field label="Ngày trồng"><Input type="date" value={form.plantedDate} max={new Date().toISOString().slice(0, 10)} onChange={(event) => setForm({ ...form, plantedDate: event.target.value })} /></Field><Field label="Vĩ độ (nội bộ)"><Input type="number" step="0.000001" value={form.latitude} onChange={(event) => setForm({ ...form, latitude: event.target.value })} /></Field><Field label="Kinh độ (nội bộ)"><Input type="number" step="0.000001" value={form.longitude} onChange={(event) => setForm({ ...form, longitude: event.target.value })} /></Field></div><div className="rounded-xl border border-emerald-200 bg-white/70 p-3"><div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-bold text-ink">Định vị tại vườn</p><p className="text-xs leading-5 text-slate-500">Đứng cạnh cây, bật GPS và cho phép trình duyệt truy cập vị trí.</p></div><Button type="button" variant="secondary" onClick={useCurrentLocation} disabled={locationState === 'loading'} data-testid="use-current-location"><MapPinned size={17} />{locationState === 'loading' ? 'Đang lấy vị trí...' : 'Lấy vị trí hiện tại'}</Button></div>{locationState === 'success' && <p className="mt-2 text-xs font-semibold text-emerald-700" role="status">Đã lấy GPS: {form.latitude}, {form.longitude}</p>}{locationState === 'error' && <p className="mt-2 text-xs font-semibold text-rose-700" role="alert">{locationError}</p>}</div><Field label="Ghi chú"><Textarea value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} placeholder="Đặc điểm nhận diện, tình trạng ban đầu..." /></Field><div className="rounded-xl border border-slate-200 bg-white p-4" data-testid="tree-image-upload"><div className="flex items-center gap-2"><ImagePlus size={18} className="text-emerald-700" /><p className="text-sm font-bold text-ink">Hình ảnh cây</p></div><p className="mt-1 text-xs leading-5 text-slate-500">Tải ảnh thực địa lên để ảnh được lưu cùng hồ sơ và có thể hiển thị trong phạm vi public đã duyệt.</p>{form.imagesJson.length > 0 && <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">{form.imagesJson.map((image) => <div key={image.url} className="group relative overflow-hidden rounded-lg border border-slate-200"><img src={image.url} alt={image.caption || image.name || 'Ảnh cây'} className="aspect-square w-full object-cover" /><button type="button" className="absolute right-1 top-1 rounded bg-white/90 px-2 py-1 text-xs font-bold text-rose-700 opacity-0 shadow-sm group-hover:opacity-100" onClick={() => setForm((current) => ({ ...current, imagesJson: current.imagesJson.filter((item) => item.url !== image.url) }))}>Xóa</button></div>)}</div>}<label className="mt-3 inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-ink hover:bg-mint"><Upload size={17} />{uploadingImage ? 'Đang tải ảnh lên...' : 'Tải ảnh cây lên'}<input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" disabled={uploadingImage} onChange={(event) => { const file = event.target.files?.[0]; if (file) void uploadTreeImage(file); event.currentTarget.value = ''; }} /></label>{imageError && <p className="mt-2 text-xs font-semibold text-rose-700" role="alert">{imageError}</p>}</div><label className="flex items-center gap-2 text-sm font-semibold text-slate-700"><input type="checkbox" checked={form.publicVerified} onChange={(event) => setForm({ ...form, publicVerified: event.target.checked })} /> Đã xác minh cho phép hiển thị công khai</label>{save.isError && <ErrorMessage error={save.error} />}<Button type="submit" disabled={save.isPending || uploadingImage}>{save.isPending ? 'Đang tạo...' : 'Tạo hộ chiếu cây'}</Button></form></Panel>}
 
       <Panel className="space-y-4"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="text-lg font-bold">Danh sách cá thể cây</h2><p className="text-sm text-slate-500">Chọn một cây để xem timeline, thu hoạch và mã QR.</p></div><div className="flex gap-2"><Input aria-label="Tìm cây" placeholder="Tìm mã cây, giống, vùng..." value={search} onChange={(event) => setSearch(event.target.value)} /><Button variant="ghost" onClick={() => trees.refetch()} aria-label="Tải lại danh sách"><RefreshCcw size={18} /></Button></div></div>{trees.isError && <ErrorMessage error={trees.error} />}{!trees.isLoading && !items.length && <EmptyState label="Chưa có hồ sơ cây" /> }<div className="grid gap-3 lg:grid-cols-2">{items.map((tree) => <TreeCard key={tree.id} tree={tree} />)}</div></Panel>
     </div>
@@ -119,12 +218,64 @@ function TreesListDashboard() {
 }
 
 function TreeDetailDashboard({ id }: { id: string }) {
+  const queryClient = useQueryClient();
   const tree = useQuery({ queryKey: ['plant-tree', id], queryFn: () => apiFetch<Tree>(`/trees/${id}`) });
+  const issueQr = useMutation({
+    mutationFn: () => apiFetch<TraceabilityCode>('/traceability-codes', { method: 'POST', body: JSON.stringify({ codeType: 'TREE', treeId: id, status: 'PUBLISHED' }) }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['plant-tree', id] });
+      queryClient.invalidateQueries({ queryKey: ['traceability-codes'] });
+    }
+  });
   const value = tree.data?.data;
   if (tree.isLoading) return <LoadingPanel />;
   if (tree.isError || !value) return <ErrorMessage error={tree.error} />;
   const timeline = [...(value.events ?? []), ...(value.harvests ?? []).map((harvest) => ({ ...harvest, eventDate: harvest.harvestDate, eventType: 'HARVESTING', description: `Thu hoạch ${harvest.quantity} ${harvest.unit}` }))].sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
-  return <div className="space-y-5" data-testid="tree-detail-screen"><Link href="/dashboard/trees" className="text-sm font-bold text-emerald-700 hover:underline">← Về danh sách cây</Link><PageHeader icon={Sprout} eyebrow="Hộ chiếu cá thể" title={value.treeCode} description={`${value.cropType?.name ?? 'Nông sản'}${value.variety ? ` · ${value.variety}` : ''} · ${value.zone?.name ?? 'Chưa gắn vùng'}`} action={value.publicVerified ? <Link href={`/cay/${encodeURIComponent(value.treeCode)}`} target="_blank" className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-ink"><ExternalLink size={17} />Xem bản public</Link> : null} /><div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,.75fr)]"><Panel className="space-y-5"><div className="flex flex-wrap items-center gap-2"><Badge className={statusTone(value.status)}>{statusLabels[value.status] ?? value.status}</Badge>{value.publicVerified && <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700"><CheckCircle2 size={14} />Đã xác minh public</Badge>}</div><div className="grid gap-4 sm:grid-cols-2"><Info label="Loại cây / giống" value={`${value.cropType?.name ?? '—'}${value.variety ? ` / ${value.variety}` : ''}`} /><Info label="Ngày trồng" value={value.plantedDate ? formatDate(value.plantedDate) : 'Chưa cập nhật'} /><Info label="Vùng sản xuất" value={`${value.zone?.code ?? '—'} · ${value.zone?.name ?? '—'}`} /><Info label="Tọa độ nội bộ" value={coordinates(value.latitude, value.longitude)} /></div><div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-800">Chuỗi truy xuất</p><p className="mt-2 text-sm font-semibold text-slate-700">Cây → Nhật ký → Thu hoạch → Lô → Sản phẩm → QR</p></div></Panel><Panel className="space-y-4"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-500">Mã truy xuất cây</p><p className="mt-2 font-mono text-sm font-bold text-ink">{value.traceabilityCode?.code ?? 'Chưa cấp mã'}</p></div>{value.traceabilityCode?.qrDataUrl ? <img src={value.traceabilityCode.qrDataUrl} alt={`QR ${value.treeCode}`} className="mx-auto h-48 w-48 rounded-xl border border-slate-200 p-2" /> : <div className="grid h-48 place-items-center rounded-xl bg-slate-50 text-center text-sm text-slate-500"><QrCode className="mb-2 text-emerald-700" size={38} /><span>Cấp mã QR sau khi hồ sơ được xác minh</span></div>}</Panel></div><Panel><div className="mb-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-700">Timeline vòng đời</p><h2 className="mt-1 text-xl font-bold">Dữ liệu phát sinh theo thời gian</h2></div>{!timeline.length ? <EmptyState label="Chưa có sự kiện hoặc thu hoạch" /> : <div className="relative ml-2 border-l-2 border-emerald-100 pl-6">{timeline.map((event) => <div key={`${event.eventType}-${event.id}`} className="relative pb-7 last:pb-0"><span className="absolute -left-[35px] top-1 grid h-4 w-4 place-items-center rounded-full border-4 border-white bg-emerald-600 shadow-sm" /><p className="text-xs font-semibold text-slate-500">{formatDate(event.eventDate)}</p><h3 className="mt-1 font-bold text-ink">{eventTypeLabel(event.eventType)}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{event.description}</p>{'inputs' in event && event.inputs?.length ? <p className="mt-2 text-xs text-slate-500">Vật tư: {event.inputs.map((input) => `${input.materialName}${input.quantity ? ` (${input.quantity} ${input.unit ?? ''})` : ''}`).join(', ')}</p> : null}</div>)}</div>}</Panel></div>;
+  const images = normalizeTreeImages(value.imagesJson);
+  const mapLatitude = value.latitude ?? value.zone?.latitude ?? null;
+  const mapLongitude = value.longitude ?? value.zone?.longitude ?? null;
+  return (
+    <div className="space-y-5" data-testid="tree-detail-screen">
+      <Link href="/dashboard/trees" className="text-sm font-bold text-emerald-700 hover:underline">← Về danh sách cây</Link>
+      <PageHeader icon={Sprout} eyebrow="Hộ chiếu cá thể" title={value.treeCode} description={`${value.cropType?.name ?? 'Nông sản'}${value.variety ? ` · ${value.variety}` : ''} · ${value.zone?.name ?? 'Chưa gắn vùng'}`} action={value.publicVerified ? <Link href={`/cay/${encodeURIComponent(value.treeCode)}`} target="_blank" className="inline-flex min-h-11 items-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-ink"><ExternalLink size={17} />Xem bản public</Link> : null} />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,.75fr)]">
+        <Panel className="space-y-5">
+          <div className="flex flex-wrap items-center gap-2"><Badge className={statusTone(value.status)}>{statusLabels[value.status] ?? value.status}</Badge>{value.publicVerified && <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700"><CheckCircle2 size={14} />Đã xác minh public</Badge>}</div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Info label="ID cây" value={value.treeCode} />
+            <Info label="QR cây" value={value.traceabilityCode?.code ?? 'Chưa cấp mã'} />
+            <Info label="GPS chính xác (nội bộ)" value={coordinates(value.latitude, value.longitude)} />
+            <Info label="Loài / giống" value={`${value.cropType?.name ?? '—'}${value.variety ? ` / ${value.variety}` : ''}`} />
+            <Info label="Tuổi cây" value={treeAge(value.plantedDate)} />
+            <Info label="Ngày trồng" value={value.plantedDate ? formatDate(value.plantedDate) : 'Chưa cập nhật'} />
+            <Info label="Chủ sở hữu / đơn vị quản lý" value={value.cooperative?.name ?? 'Chưa cập nhật'} />
+            <Info label="Vùng trồng" value={`${value.zone?.code ?? '—'} · ${value.zone?.name ?? '—'}`} />
+            <Info label="Tình trạng cây" value={statusLabels[value.status] ?? value.status} />
+          </div>
+          {value.note && <div className="rounded-xl border border-slate-200 bg-slate-50 p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-500">Ghi chú hồ sơ</p><p className="mt-2 text-sm leading-relaxed text-slate-700">{value.note}</p></div>}
+          <div className="rounded-xl border border-emerald-100 bg-emerald-50/60 p-4"><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-800">Chuỗi truy xuất</p><p className="mt-2 text-sm font-semibold text-slate-700">Cây → Nhật ký → Thu hoạch → Lô → Sản phẩm → QR</p></div>
+        </Panel>
+        <Panel className="space-y-4" data-testid="tree-qr-card">
+          <div><p className="text-xs font-bold uppercase tracking-[.14em] text-slate-500">QR cây</p><p className="mt-2 font-mono text-sm font-bold text-ink">{value.traceabilityCode?.code ?? 'Chưa cấp mã'}</p></div>
+          {value.traceabilityCode?.qrDataUrl ? <img src={value.traceabilityCode.qrDataUrl} alt={`QR cây ${value.treeCode}`} className="mx-auto h-48 w-48 rounded-xl border border-slate-200 p-2" /> : <div className="grid min-h-48 place-items-center rounded-xl bg-slate-50 p-4 text-center text-sm text-slate-500"><div><QrCode className="mx-auto mb-2 text-emerald-700" size={38} /><p>{value.traceabilityCode ? 'Mã QR chưa có ảnh hiển thị' : 'Hồ sơ chưa được cấp mã QR'}</p>{value.publicVerified && !value.traceabilityCode ? <Button type="button" className="mt-4" onClick={() => issueQr.mutate()} disabled={issueQr.isPending} data-testid="issue-tree-qr">{issueQr.isPending ? 'Đang cấp mã...' : 'Cấp mã QR cây'}</Button> : !value.publicVerified ? <p className="mt-2 text-xs">Cần xác minh public trước khi cấp QR.</p> : null}</div></div>}
+          {issueQr.isError && <ErrorMessage error={issueQr.error} />}
+          <p className="text-xs leading-5 text-slate-500">Mã QR mở hồ sơ public của đúng cá thể cây. Tọa độ chính xác không nằm trong dữ liệu public.</p>
+        </Panel>
+      </div>
+      <Panel data-testid="tree-images-panel"><div className="flex items-center justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-700">Hình ảnh</p><h2 className="mt-1 text-xl font-bold">Ảnh thực địa của cây</h2></div><span className="text-sm font-semibold text-slate-500">{images.length} ảnh</span></div>{images.length ? <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{images.map((image) => <figure key={image.url} className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50"><img src={image.url} alt={image.caption || image.name || `Ảnh cây ${value.treeCode}`} className="aspect-[4/3] w-full object-cover" loading="lazy" /><figcaption className="p-3 text-xs text-slate-600">{image.caption || image.name || 'Ảnh cây'}</figcaption></figure>)}</div> : <div className="mt-4 rounded-xl bg-slate-50 p-5 text-sm text-slate-500">Chưa có hình ảnh thực địa cho hồ sơ này.</div>}</Panel>
+      <Panel className="overflow-hidden p-0" data-testid="tree-gis-panel"><GisMap markers={[{ id: value.id, label: `${value.treeCode} · ${value.cropType?.name ?? 'Cây'}`, latitude: mapLatitude, longitude: mapLongitude, status: value.status, href: `/dashboard/trees/${value.id}` }]} className="h-[380px] rounded-[var(--public-radius-card)]" mapTitle="Bản đồ GIS của hồ sơ cây" privacyLabel="Tọa độ cây và vùng chỉ hiển thị trong phạm vi nội bộ đã đăng nhập." emptyLabel="Hồ sơ này chưa có tọa độ cây hoặc tọa độ vùng." ariaLabel={`Bản đồ GIS ${value.treeCode}`} /></Panel>
+      <div className="grid gap-4 xl:grid-cols-2"><TreeCultivationHistory events={value.events ?? []} /><TreeHarvestHistory harvests={value.harvests ?? []} /></div>
+      <Panel><div className="mb-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-700">Timeline vòng đời</p><h2 className="mt-1 text-xl font-bold">Đối chiếu toàn bộ lịch sử theo thời gian</h2></div>{!timeline.length ? <EmptyState label="Chưa có sự kiện hoặc thu hoạch" /> : <div className="relative ml-2 border-l-2 border-emerald-100 pl-6">{timeline.map((event) => <div key={`${event.eventType}-${event.id}`} className="relative pb-7 last:pb-0"><span className="absolute -left-[35px] top-1 grid h-4 w-4 place-items-center rounded-full border-4 border-white bg-emerald-600 shadow-sm" /><p className="text-xs font-semibold text-slate-500">{formatDate(event.eventDate)}</p><h3 className="mt-1 font-bold text-ink">{eventTypeLabel(event.eventType)}</h3><p className="mt-1 text-sm leading-relaxed text-slate-600">{event.description}</p>{'inputs' in event && event.inputs?.length ? <p className="mt-2 text-xs text-slate-500">Vật tư: {event.inputs.map((input) => `${input.materialName}${input.quantity ? ` (${input.quantity} ${input.unit ?? ''})` : ''}`).join(', ')}</p> : null}</div>)}</div>}</Panel>
+    </div>
+  );
+}
+
+function TreeCultivationHistory({ events }: { events: TreeEvent[] }) {
+  return <Panel data-testid="tree-cultivation-history"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-700">Lịch sử canh tác</p><h2 className="mt-1 text-xl font-bold">Nhật ký theo cây</h2></div><span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">{events.length} mốc</span></div>{events.length ? <div className="mt-4 space-y-3">{events.map((event) => <div key={event.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><Badge className="border-emerald-200 bg-emerald-50 text-emerald-700">{eventTypeLabel(event.eventType)}</Badge><span className="text-xs font-semibold text-slate-500">{formatDate(event.eventDate)}</span></div><p className="mt-2 text-sm leading-relaxed text-slate-700">{event.description}</p>{event.inputs?.length ? <p className="mt-2 text-xs text-slate-500">Vật tư: {event.inputs.map((input) => `${input.materialName}${input.quantity ? ` (${input.quantity} ${input.unit ?? ''})` : ''}`).join(', ')}</p> : null}</div>)}</div> : <div className="mt-4 rounded-xl bg-slate-50 p-5 text-sm text-slate-500">Chưa có lịch sử canh tác.</div>}</Panel>;
+}
+
+function TreeHarvestHistory({ harvests }: { harvests: Harvest[] }) {
+  return <Panel data-testid="tree-harvest-history"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-[.14em] text-emerald-700">Lịch sử thu hoạch</p><h2 className="mt-1 text-xl font-bold">Sản lượng đã ghi nhận</h2></div><span className="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700">{harvests.length} lần</span></div>{harvests.length ? <div className="mt-4 space-y-3">{harvests.map((harvest) => <div key={harvest.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="font-bold text-ink">{formatDate(harvest.harvestDate)}</p><p className="text-xs text-slate-500">{statusLabels[harvest.status] ?? harvest.status}</p></div><p className="text-lg font-extrabold text-emerald-700">{harvest.quantity} {harvest.unit}</p></div>{harvest.lotTrees?.length ? <p className="mt-2 text-xs text-slate-500">Lô liên kết: {harvest.lotTrees.map((row) => row.lot?.lotCode).filter(Boolean).join(', ')}</p> : <p className="mt-2 text-xs text-slate-500">Chưa phân bổ vào lô sản phẩm.</p>}</div>)}</div> : <div className="mt-4 rounded-xl bg-slate-50 p-5 text-sm text-slate-500">Chưa có lịch sử thu hoạch.</div>}</Panel>;
 }
 
 export function TreeEventsDashboard() {
@@ -178,53 +329,7 @@ export function TreeMapDashboard() {
   const trees = useQuery({ queryKey: ['map-trees'], queryFn: () => apiFetch<ListResponse<Tree>>('/trees?limit=100') });
   const items = trees.data?.data ?? [];
   const withCoordinates = items.filter((tree) => tree.latitude !== null && tree.longitude !== null);
-  return <div className="space-y-5" data-testid="tree-map-screen"><PageHeader icon={MapPinned} eyebrow="Bản đồ tận cây" title="Nhìn cả vùng, chạm từng cây" description="Tọa độ chính xác chỉ hiển thị sau đăng nhập; trang public chỉ nhận vùng và vị trí đã làm mờ." /><Panel className="overflow-hidden p-0"><div className="relative min-h-[480px]"><LeafletTreeMap trees={withCoordinates} /><div className="pointer-events-none absolute bottom-5 left-5 rounded-xl border border-white/70 bg-white/90 p-4 text-xs shadow-lg backdrop-blur"><p className="font-bold text-ink">{withCoordinates.length} cây có tọa độ</p><p className="mt-1 text-slate-500">{items.length - withCoordinates.length} cây chưa định vị</p><div className="mt-3 space-y-1.5"><Legend color="bg-emerald-600" label="Bình thường" /><Legend color="bg-amber-500" label="Cần theo dõi" /><Legend color="bg-rose-600" label="Cảnh báo" /><Legend color="bg-sky-600" label="Đã thu hoạch" /></div></div></div></Panel><div className="flex flex-wrap gap-2"><a href="https://www.openstreetmap.org" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:underline"><ExternalLink size={15} />Mở nền bản đồ OpenStreetMap</a><span className="text-sm text-slate-500">Bản đồ Leaflet dùng nền OpenStreetMap và tọa độ GPS trong dashboard.</span></div></div>;
-}
-
-function LeafletTreeMap({ trees }: { trees: Tree[] }) {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<LeafletMap | null>(null);
-
-  useEffect(() => {
-    let disposed = false;
-    let map: LeafletMap | null = null;
-
-    import('leaflet').then((leaflet) => {
-      if (disposed || !mapContainerRef.current) return;
-      map = leaflet.map(mapContainerRef.current, { scrollWheelZoom: false }).setView([16.2, 107.9], 5);
-      leaflet.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors',
-        maxZoom: 19
-      }).addTo(map);
-
-      const bounds = leaflet.latLngBounds([]);
-      for (const tree of trees) {
-        const latitude = Number(tree.latitude);
-        const longitude = Number(tree.longitude);
-        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) continue;
-        const marker = leaflet.circleMarker([latitude, longitude], {
-          radius: 9,
-          color: '#ffffff',
-          weight: 3,
-          fillColor: markerHex(tree.status),
-          fillOpacity: 0.95
-        }).addTo(map);
-        marker.bindTooltip(tree.treeCode, { direction: 'top', offset: [0, -8] });
-        marker.on('click', () => window.location.assign(`/dashboard/trees/${tree.id}`));
-        bounds.extend([latitude, longitude]);
-      }
-      if (bounds.isValid()) map.fitBounds(bounds.pad(0.25));
-      mapRef.current = map;
-    });
-
-    return () => {
-      disposed = true;
-      map?.remove();
-      mapRef.current = null;
-    };
-  }, [trees]);
-
-  return <div ref={mapContainerRef} className="min-h-[480px] w-full bg-[#d1fae5]" aria-label="Bản đồ vị trí cây" />;
+  return <div className="space-y-5" data-testid="tree-map-screen"><PageHeader icon={MapPinned} eyebrow="Bản đồ tận cây" title="Nhìn cả vùng, chạm từng cây" description="Tọa độ chính xác chỉ hiển thị sau đăng nhập; trang public chỉ nhận vùng và vị trí đã làm mờ." /><Panel className="overflow-hidden p-0"><div className="relative min-h-[480px]"><GisMap markers={withCoordinates.map((tree) => ({ id: tree.id, label: tree.treeCode, latitude: tree.latitude, longitude: tree.longitude, status: tree.status, href: `/dashboard/trees/${tree.id}` }))} className="h-[480px] min-h-[480px] rounded-none" mapTitle="Bản đồ GIS tận cây" privacyLabel="Màu marker phản ánh trạng thái hồ sơ; bấm marker để mở hộ chiếu cây." emptyLabel="Chưa có cây nào được định vị." ariaLabel="Bản đồ GIS vị trí cây trong vùng sản xuất" /><div className="pointer-events-none absolute bottom-5 left-5 z-[500] rounded-xl border border-white/70 bg-white/90 p-4 text-xs shadow-lg backdrop-blur"><p className="font-bold text-ink">{withCoordinates.length} cây có tọa độ</p><p className="mt-1 text-slate-500">{items.length - withCoordinates.length} cây chưa định vị</p><div className="mt-3 space-y-1.5"><Legend color="bg-emerald-600" label="Bình thường" /><Legend color="bg-amber-500" label="Cần theo dõi" /><Legend color="bg-rose-600" label="Cảnh báo" /><Legend color="bg-sky-600" label="Đã thu hoạch" /></div></div></div></Panel><div className="flex flex-wrap gap-2"><a href="https://www.openstreetmap.org" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold text-emerald-700 hover:underline"><ExternalLink size={15} />Mở nền bản đồ OpenStreetMap</a><span className="text-sm text-slate-500">Bản đồ Leaflet dùng nền OpenStreetMap và tọa độ GPS trong dashboard.</span></div></div>;
 }
 
 export function TreeCodesDashboard() {

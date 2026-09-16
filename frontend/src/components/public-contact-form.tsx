@@ -3,6 +3,7 @@
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { API_URL, type ApiEnvelope } from '@/lib/api';
+import type { PublicSiteKey } from '@/lib/domain';
 import { Button, Input, Textarea, cn } from './ui';
 
 const phonePattern = /^(0|\+84)[0-9]{8,10}$/;
@@ -25,13 +26,15 @@ type PublicContactFormProps = {
   sourcePath?: string;
   variant?: 'default' | 'hero' | 'contact';
   audience?: 'operator' | 'public';
+  siteKey?: PublicSiteKey;
 };
 
-export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default', audience = 'operator' }: PublicContactFormProps) {
+export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default', audience = 'operator', siteKey = 'agripassport' }: PublicContactFormProps) {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const helpTopics = audience === 'public' ? PUBLIC_HELP_TOPICS : HELP_TOPICS;
+  const visibleHelpTopics = siteKey === 'passport' ? helpTopics.map((item) => ({ ...item, label: item.label.replace(/\s*&\s*/g, ' và ') })) : helpTopics;
   const [topic, setTopic] = useState<string>(helpTopics[0].id);
   const isHero = variant === 'hero';
   const isContact = variant === 'contact';
@@ -47,7 +50,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     const phone = String(payload.get('phone') || '').trim();
     const email = String(payload.get('email') || '').trim();
     const message = String(payload.get('message') || '').trim();
-    const topicLabel = helpTopics.find((item) => item.id === topic)?.label ?? topic;
+    const topicLabel = visibleHelpTopics.find((item) => item.id === topic)?.label ?? topic;
     const composedMessage = `[${topicLabel}]\n${message}`;
 
     if (!fullName) return setError('Họ tên là bắt buộc');
@@ -85,7 +88,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     return (
       <form className="grid gap-4 lg:grid-cols-[0.88fr_1.12fr] lg:gap-5" onSubmit={submit}>
         <div className="min-w-0 rounded-[1.8rem] bg-[linear-gradient(145deg,#0d1325_0%,#14253a_38%,#245f3e_100%)] p-5 text-white shadow-[0_24px_60px_rgba(13,19,37,0.22)] sm:p-6">
-          <div className="inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-white/80">
+          <div className={cn('inline-flex items-center rounded-full border border-white/12 bg-white/10 px-3 py-1 text-[0.68rem] font-semibold tracking-[0.2em] text-white/80', siteKey !== 'passport' && 'uppercase')}>
             Tư vấn nhanh
           </div>
           <h2 className="mt-3 text-[1.45rem] font-extrabold leading-[1.05] sm:text-[1.9rem]">Bạn muốn đội vận hành hỗ trợ phần nào trước?</h2>
@@ -93,7 +96,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
             Chọn đúng nhu cầu để chúng tôi phản hồi nhanh hơn, ưu tiên triển khai sát mô hình HTX hoặc sản phẩm của bạn.
           </p>
           <div className="mt-5 grid gap-3">
-            {HELP_TOPICS.map((item) => {
+            {visibleHelpTopics.map((item) => {
               const selected = topic === item.id;
               return (
                 <label
@@ -128,7 +131,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
               { label: 'Ưu tiên', value: 'Mobile-first' }
             ].map((item) => (
               <div key={item.label} className="rounded-[1.25rem] border border-white/10 bg-white/10 p-3">
-                <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/60">{item.label}</p>
+                <p className={cn('text-[0.68rem] font-semibold tracking-[0.18em] text-white/60', siteKey !== 'passport' && 'uppercase')}>{item.label}</p>
                 <p className="mt-1.5 text-sm font-bold text-white">{item.value}</p>
               </div>
             ))}
@@ -137,33 +140,33 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
         <div className="grid min-w-0 gap-4 rounded-[1.8rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] sm:p-5">
           <div>
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-slate-500">Điền thông tin</p>
+            <p className={cn('text-[0.72rem] font-semibold tracking-[0.2em] text-slate-500', siteKey !== 'passport' && 'uppercase')}>Điền thông tin</p>
             <h3 className="mt-2 text-[1.25rem] font-extrabold leading-tight text-ink sm:text-[1.6rem]">Chúng tôi sẽ liên hệ lại sớm nhất.</h3>
           </div>
 
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
-            <span>Họ tên / Tên HTX</span>
-            <Input data-testid="contact-name-input" name="fullName" required className="bg-[var(--surface-0)]" placeholder="VD: HTX Lúa ST25 Đồng Tháp" />
+            <span>{siteKey === 'passport' ? 'Họ tên / Tên hợp tác xã' : 'Họ tên / Tên HTX'}</span>
+            <Input data-testid="contact-name-input" name="fullName" required autoComplete="name" className="bg-[var(--surface-0)]" placeholder={siteKey === 'passport' ? 'Ví dụ: Hợp tác xã lúa ST25 Đồng Tháp' : 'VD: HTX Lúa ST25 Đồng Tháp'} />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Số điện thoại</span>
-            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" className="bg-[var(--surface-0)]" placeholder="0907 001 200" />
+            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" autoComplete="tel" className="bg-[var(--surface-0)]" placeholder="0907 001 200" />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Email</span>
-            <Input data-testid="contact-email-input" name="email" type="email" className="bg-[var(--surface-0)]" placeholder="ban@htx.vn" />
+            <Input data-testid="contact-email-input" name="email" type="email" autoComplete="email" spellCheck={false} className="bg-[var(--surface-0)]" placeholder="ban@htx.vn" />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Nội dung</span>
-            <Textarea data-testid="contact-message-input" name="message" required className="min-h-32 bg-[var(--surface-0)]" placeholder="Mô tả ngắn nhu cầu của bạn..." />
+            <Textarea data-testid="contact-message-input" name="message" required autoComplete="off" className="min-h-32 bg-[var(--surface-0)]" placeholder="Mô tả ngắn nhu cầu của bạn…" />
           </label>
           {success && (
-            <div data-testid="toast-success" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
+            <div data-testid="toast-success" role="status" aria-live="polite" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
               {success}
             </div>
           )}
           {error && (
-            <div data-testid="toast-error" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+            <div data-testid="toast-error" role="alert" aria-live="polite" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
               {error}
             </div>
           )}
@@ -180,7 +183,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     return (
       <form className="grid gap-4 rounded-[2rem] border border-[#e7e3d7] bg-white p-5 shadow-[0_18px_42px_rgba(15,23,42,0.06)] sm:p-6" onSubmit={submit}>
         <div className="border-b border-[#ece8dd] pb-4">
-          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[var(--brand-primary-strong)]">Điền thông tin</p>
+          <p className={cn('text-[0.72rem] font-semibold tracking-[0.2em] text-[var(--brand-primary-strong)]', siteKey !== 'passport' && 'uppercase')}>Điền thông tin</p>
           <h2 className="mt-2 text-[1.45rem] font-extrabold leading-[1.06] text-[var(--text-primary)] sm:text-[1.95rem]">Để lại thông tin để được tư vấn</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-[0.96rem]">
             Chọn điều bạn đang quan tâm để chúng tôi phản hồi đúng nội dung và nhanh hơn.
@@ -189,24 +192,24 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
-            <span>Họ tên / Tên HTX</span>
-            <Input data-testid="contact-name-input" name="fullName" required className="bg-white" placeholder="VD: HTX Lúa ST25 Đồng Tháp" />
+            <span>{siteKey === 'passport' ? 'Họ tên / Tên hợp tác xã' : 'Họ tên / Tên HTX'}</span>
+            <Input data-testid="contact-name-input" name="fullName" required autoComplete="name" className="bg-white" placeholder={siteKey === 'passport' ? 'Ví dụ: Hợp tác xã lúa ST25 Đồng Tháp' : 'VD: HTX Lúa ST25 Đồng Tháp'} />
           </label>
           <label className="grid gap-1.5 text-sm font-semibold text-ink">
             <span>Số điện thoại</span>
-            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" className="bg-white" placeholder="0907 001 200" />
+            <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" autoComplete="tel" className="bg-white" placeholder="0907 001 200" />
           </label>
         </div>
 
         <label className="grid gap-1.5 text-sm font-semibold text-ink">
           <span>Email</span>
-          <Input data-testid="contact-email-input" name="email" type="email" className="bg-white" placeholder="ban@htx.vn" />
+          <Input data-testid="contact-email-input" name="email" type="email" autoComplete="email" spellCheck={false} className="bg-white" placeholder="ban@htx.vn" />
         </label>
 
         <div className="grid gap-2.5">
           <p className="text-sm font-semibold text-ink">Nhu cầu hỗ trợ</p>
           <div className="grid gap-2 sm:grid-cols-2">
-            {helpTopics.map((item) => {
+            {visibleHelpTopics.map((item) => {
               const selected = topic === item.id;
               return (
                 <label
@@ -235,16 +238,16 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
         <label className="grid gap-1.5 text-sm font-semibold text-ink">
           <span>Nội dung</span>
-          <Textarea data-testid="contact-message-input" name="message" required className="min-h-36 bg-white" placeholder={audience === 'public' ? 'Bạn muốn biết thêm về sản phẩm, nguồn gốc hoặc HTX nào?' : 'Mô tả ngắn mô hình HTX, sản phẩm hoặc nhu cầu hỗ trợ của bạn...'} />
+          <Textarea data-testid="contact-message-input" name="message" required autoComplete="off" className="min-h-36 bg-white" placeholder={audience === 'public' ? siteKey === 'passport' ? 'Bạn muốn biết thêm về sản phẩm, nguồn gốc hoặc hợp tác xã nào?' : 'Bạn muốn biết thêm về sản phẩm, nguồn gốc hoặc HTX nào?' : siteKey === 'passport' ? 'Mô tả ngắn mô hình hợp tác xã, sản phẩm hoặc nhu cầu hỗ trợ của bạn…' : 'Mô tả ngắn mô hình HTX, sản phẩm hoặc nhu cầu hỗ trợ của bạn…'} />
         </label>
 
         {success && (
-          <div data-testid="toast-success" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
+          <div data-testid="toast-success" role="status" aria-live="polite" className="rounded-[1.2rem] bg-mint p-3 text-sm font-semibold text-leaf">
             {success}
           </div>
         )}
         {error && (
-          <div data-testid="toast-error" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+          <div data-testid="toast-error" role="alert" aria-live="polite" className="rounded-[1.2rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">
             {error}
           </div>
         )}
@@ -261,22 +264,22 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
     <form className="grid gap-3 rounded-[1.6rem] border border-[#e6d9c4] bg-[rgba(255,253,248,0.96)] p-4 shadow-[var(--shadow-card)] sm:p-5" onSubmit={submit}>
       <label className="space-y-1 text-sm font-semibold">
         <span>Họ tên</span>
-        <Input data-testid="contact-name-input" name="fullName" required />
+        <Input data-testid="contact-name-input" name="fullName" required autoComplete="name" />
       </label>
       <label className="space-y-1 text-sm font-semibold">
         <span>Số điện thoại</span>
-        <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" />
+        <Input data-testid="contact-phone-input" name="phone" required inputMode="tel" autoComplete="tel" />
       </label>
       <label className="space-y-1 text-sm font-semibold">
         <span>Email</span>
-        <Input data-testid="contact-email-input" name="email" type="email" />
+        <Input data-testid="contact-email-input" name="email" type="email" autoComplete="email" spellCheck={false} />
       </label>
       <label className="space-y-1 text-sm font-semibold">
         <span>Nội dung</span>
-        <Textarea data-testid="contact-message-input" name="message" required />
+        <Textarea data-testid="contact-message-input" name="message" required autoComplete="off" />
       </label>
-      {success && <div data-testid="toast-success" className="rounded-[1.1rem] bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
-      {error && <div data-testid="toast-error" className="rounded-[1.1rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
+      {success && <div data-testid="toast-success" role="status" aria-live="polite" className="rounded-[1.1rem] bg-mint p-3 text-sm font-semibold text-leaf">{success}</div>}
+      {error && <div data-testid="toast-error" role="alert" aria-live="polite" className="rounded-[1.1rem] bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
       <Button data-testid="contact-submit-button" type="submit" className="min-h-11 justify-center sm:w-max" disabled={submitting}>
         {submitting ? 'Đang gửi' : 'Gửi liên hệ'}
       </Button>

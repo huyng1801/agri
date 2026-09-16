@@ -11,6 +11,7 @@ import { fetchPublicCatalog } from '@/lib/public-catalog';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 import { AgripassportAboutPage } from './agripassport-about-page';
+import { PassportAboutPage } from './passport-about-page';
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
@@ -18,9 +19,9 @@ export async function generateMetadata() {
   const isAgripassport = siteKey === 'agripassport' || siteKey === 'local';
 
   return buildPublicMetadata({
-    title: isPassport ? 'Về Hộ Chiếu Nông Nghiệp' : isAgripassport ? 'Về Agripassport' : 'Về HTXONLINE',
+    title: isPassport ? 'Về hộ chiếu nông nghiệp' : isAgripassport ? 'Về Agripassport' : 'Về HTXONLINE',
     description: isPassport
-      ? 'Hộ Chiếu Nông Nghiệp là giải pháp định danh số, hồ sơ xuất xứ và truy xuất nguồn gốc QR cho nông sản Việt.'
+      ? 'Hộ chiếu nông nghiệp là giải pháp định danh số, hồ sơ xuất xứ và truy xuất nguồn gốc QR cho nông sản Việt.'
       : isAgripassport
       ? 'Agripassport giúp số hóa nông sản, chuẩn hóa dữ liệu sản phẩm và minh bạch nguồn gốc bằng QR.'
       : 'HTXONLINE mang đến lớp quản trị nội bộ, QR truy xuất và quy trình vận hành số cho hợp tác xã Việt Nam.',
@@ -93,7 +94,11 @@ export default async function AboutUsPage() {
   const siteKey = await getRequestPublicSiteKey();
   const [catalog, siteProfile] = await Promise.all([fetchPublicCatalog(100), getPublicSiteProfile(siteKey)]);
 
-  if (siteKey === 'agripassport' || siteKey === 'local' || siteKey === 'passport') {
+  if (siteKey === 'passport') {
+    return <PassportAboutPage siteProfile={siteProfile} />;
+  }
+
+  if (siteKey === 'agripassport' || siteKey === 'local') {
     return <AgripassportAboutPage siteProfile={siteProfile} />;
   }
 

@@ -42,72 +42,72 @@ export interface HeroSlide {
 const DEFAULT_SLIDES: HeroSlide[] = [
   {
     id: 'slide-1',
-    eyebrow: 'Định danh & Truy xuất Nguồn gốc Số',
+    eyebrow: 'Định danh và truy xuất nguồn gốc số',
     eyebrowIcon: QrCode,
-    title: 'Quét QR tra cứu nguồn gốc nông sản',
-    titleHighlight: 'Minh bạch từng công đoạn',
+    title: 'Hộ chiếu nông nghiệp giúp tra cứu QR',
+    titleHighlight: 'Rõ ràng hơn trên điện thoại',
     description:
-      'Chỉ với một thao tác quét QR trên điện thoại, người tiêu dùng và đối tác thương mại dễ dàng đối chiếu vùng trồng, lịch sử chăm bón, thu hoạch và chứng nhận chất lượng.',
+      'Mở nhanh hồ sơ số để xem vùng trồng, lịch sử canh tác, thu hoạch và những thông tin đã được phép công khai.',
     primaryCta: {
       label: 'Tra cứu Nông sản có QR',
-      href: '/san-pham?hasQr=true',
+      href: '/truy-xuat',
       icon: QrCode
     },
     secondaryCta: {
       label: 'Khám phá Nông sản',
-      href: '/san-pham',
+      href: '/san-pham?hasQr=true',
       icon: ArrowRight
     },
     image: '/news/field-qr.webp',
     imageAlt: 'Quét mã QR tra cứu hồ sơ nông sản trên thiết bị di động',
-    badgeTitle: '100% Minh bạch',
-    badgeSubtitle: 'Đối chiếu dữ liệu thực tế từ HTX'
+    badgeTitle: 'Dữ liệu công khai',
+    badgeSubtitle: 'Tra cứu miễn phí trên điện thoại'
   },
   {
     id: 'slide-2',
-    eyebrow: 'Giải pháp Số hóa Hợp tác xã',
+    eyebrow: 'Số hóa cho hợp tác xã',
     eyebrowIcon: Sprout,
-    title: 'Từ cánh đồng & Hợp tác xã đến',
-    titleHighlight: 'Hộ Chiếu Nông Nghiệp Số',
+    title: 'Từ vùng trồng đến hồ sơ số',
+    titleHighlight: 'Mỗi dữ liệu đều có nguồn',
     description:
-      'Chuẩn hóa toàn diện dữ liệu vùng canh tác, sổ nhật ký nông hộ theo tiêu chuẩn VietGAP, GlobalGAP và OCOP thành hồ sơ điện tử có giá trị pháp lý và thương mại.',
+      'Hỗ trợ hợp tác xã chuẩn hóa dữ liệu vùng trồng và nhật ký sản xuất để tạo hồ sơ rõ ràng, dễ kiểm tra.',
     primaryCta: {
-      label: 'Dành cho Hợp tác xã',
+      label: 'Dành cho hợp tác xã',
       href: '/lien-he',
       icon: Sprout
     },
     secondaryCta: {
-      label: 'Tìm hiểu Quy trình',
+      label: 'Xem quy trình',
       href: '/gioi-thieu',
       icon: ArrowRight
     },
-    image: '/hero/htx-farmer-hero-v2.png',
+    image: '/hero/htx-farmer-hero-v2.webp',
     imageAlt: 'Nông dân thành viên hợp tác xã chuẩn bị nông sản đạt tiêu chuẩn minh bạch',
-    badgeTitle: 'Đồng hành cùng HTX',
-    badgeSubtitle: 'Tự động hóa số hóa hồ sơ canh tác'
+    badgeTitle: 'Đồng hành cùng hợp tác xã',
+    badgeSubtitle: 'Chuẩn hóa dữ liệu từ thực địa'
   },
   {
     id: 'slide-3',
-    eyebrow: 'Kết nối Thị trường & Xuất khẩu',
+    eyebrow: 'Kết nối thị trường',
     eyebrowIcon: ShieldCheck,
-    title: 'Nông sản đạt chuẩn chất lượng,',
-    titleHighlight: 'Vững bước vào chuỗi cung ứng',
+    title: 'Nông sản rõ nguồn gốc',
+    titleHighlight: 'Tự tin đến tay người mua',
     description:
-      'Chứng thư số Hộ Chiếu Nông Nghiệp giúp nâng tầm uy tín nông sản Việt, đáp ứng tiêu chuẩn khắt khe của hệ thống siêu thị, sàn phân phối lớn và đối tác xuất khẩu.',
+      'Hồ sơ truy xuất rõ ràng giúp đối tác và người mua hiểu sản phẩm, vùng trồng và quá trình tạo ra sản phẩm.',
     primaryCta: {
-      label: 'Xem Nông sản đạt chuẩn',
+      label: 'Xem sản phẩm có QR',
       href: '/san-pham?hasQr=true',
       icon: ShieldCheck
     },
     secondaryCta: {
-      label: 'Liên hệ Hợp tác',
+      label: 'Liên hệ hợp tác',
       href: '/lien-he',
       icon: ArrowRight
     },
     image: '/news/produce-label.webp',
-    imageAlt: 'Nông sản đóng gói đạt chuẩn xuất khẩu có tem Hộ Chiếu Nông Nghiệp',
-    badgeTitle: 'Tiêu chuẩn xuất khẩu',
-    badgeSubtitle: 'Bảo chứng nguồn gốc minh bạch'
+    imageAlt: 'Nông sản đóng gói có thông tin truy xuất nguồn gốc',
+    badgeTitle: 'Nguồn gốc rõ ràng',
+    badgeSubtitle: 'Bảo chứng bằng dữ liệu'
   }
 ];
 
@@ -120,6 +120,7 @@ export function HomeHeroSlider({
 }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
 
@@ -136,12 +137,22 @@ export function HomeHeroSlider({
   };
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || prefersReducedMotion || slides.length < 2) return;
     const timer = setInterval(() => {
       nextSlide();
     }, autoplayInterval);
     return () => clearInterval(timer);
-  }, [isPaused, nextSlide, autoplayInterval]);
+  }, [isPaused, prefersReducedMotion, nextSlide, autoplayInterval, slides.length]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches);
+    updatePreference();
+    mediaQuery.addEventListener?.('change', updatePreference);
+    return () => mediaQuery.removeEventListener?.('change', updatePreference);
+  }, []);
+
+  const autoplayPaused = isPaused || prefersReducedMotion;
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.targetTouches[0].clientX;
@@ -173,11 +184,15 @@ export function HomeHeroSlider({
 
   return (
     <section
-      className="relative overflow-hidden bg-[radial-gradient(ellipse_60%_50%_at_80%_35%,rgba(13,122,40,0.06),transparent_70%),linear-gradient(180deg,#f5faf4_0%,#ffffff_100%)] border-b border-slate-200/80 touch-action-manipulation"
+      className="relative overflow-hidden bg-[#fbfdf9] border-b border-slate-200/80 touch-action-manipulation"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      onFocus={() => setIsPaused(true)}
-      onBlur={() => setIsPaused(false)}
+      onFocus={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(true);
+      }}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setIsPaused(false);
+      }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -185,8 +200,10 @@ export function HomeHeroSlider({
       tabIndex={0}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Khám phá Hộ Chiếu Nông Nghiệp"
+      aria-label="Khám phá hộ chiếu nông nghiệp"
+      aria-live={autoplayPaused ? 'polite' : 'off'}
     >
+      <h1 className="sr-only">Hộ chiếu nông nghiệp</h1>
       <div className="mx-auto w-full max-w-[var(--container-max,1280px)] px-4 sm:px-6 lg:px-8 pt-5 pb-6 sm:pt-7 sm:pb-8 lg:pt-8 lg:pb-9">
         {/* =========================================================================
             DESKTOP LAYOUT (lg:block) — Pixel-perfect from Round 3
@@ -195,7 +212,6 @@ export function HomeHeroSlider({
           <div className="relative min-h-[410px]">
             {slides.map((slide, index) => {
               const isActive = index === currentIndex;
-              const EyebrowIcon = slide.eyebrowIcon;
               const PrimaryIcon = slide.primaryCta.icon;
 
               return (
@@ -217,21 +233,18 @@ export function HomeHeroSlider({
                     <div className="col-span-7 flex flex-col justify-center space-y-4">
                       {/* Eyebrow Label */}
                       <div>
-                        <div className="inline-flex h-[34px] items-center gap-2 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/06 px-3.5 text-xs font-semibold text-[#0d7a28]">
-                          <EyebrowIcon size={14} className="shrink-0 text-[#0d7a28]" />
-                          <span>{slide.eyebrow}</span>
-                        </div>
+                        <p className="text-sm font-semibold text-[#0d7a28]">{slide.eyebrow}</p>
                       </div>
 
-                      {/* Headline Hierarchy: Dominant Main H1 + Lighter Accent */}
-                      <h1 className="text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
+                      {/* Headline hierarchy: dominant slide heading + lighter accent */}
+                      <h2 className="text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
                         <span className="block text-3xl lg:text-[40px] xl:text-[46px] 2xl:text-[50px] font-extrabold leading-[1.14]">
                           {slide.title}
                         </span>
-                        <span className="block mt-1 sm:mt-1.5 text-2xl lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold leading-[1.2] bg-gradient-to-r from-[#0d7a28] via-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
+                        <span className="block mt-1 sm:mt-1.5 text-2xl lg:text-[32px] xl:text-[36px] 2xl:text-[40px] font-bold leading-[1.2] text-[#0d7a28]">
                           {slide.titleHighlight}
                         </span>
-                      </h1>
+                      </h2>
 
                       {/* Description: High-density, 2-3 lines desktop */}
                       <p className="text-[16px] lg:text-[17px] xl:text-[18px] text-slate-600 leading-[1.65] max-w-[620px]">
@@ -244,7 +257,7 @@ export function HomeHeroSlider({
                           href={slide.primaryCta.href}
                           className="inline-flex h-[52px] items-center justify-center gap-2.5 rounded-xl bg-[#0d7a28] px-6 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a6120] hover:shadow-md active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28] focus-visible:ring-offset-2"
                         >
-                          {PrimaryIcon && <PrimaryIcon size={17} />}
+                          {PrimaryIcon && <PrimaryIcon size={17} aria-hidden="true" />}
                           <span>{slide.primaryCta.label}</span>
                         </Link>
 
@@ -253,7 +266,7 @@ export function HomeHeroSlider({
                           className="group inline-flex h-[52px] items-center justify-center gap-2 px-3 text-sm font-semibold text-[#131935] transition hover:text-[#0d7a28] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
                         >
                           <span>{slide.secondaryCta.label}</span>
-                          <ArrowRight size={16} className="text-[#0d7a28] transition-transform group-hover:translate-x-1" />
+                          <ArrowRight size={16} aria-hidden="true" className="text-[#0d7a28] transition-transform group-hover:translate-x-1" />
                         </Link>
                       </div>
                     </div>
@@ -261,9 +274,6 @@ export function HomeHeroSlider({
                     {/* Right Column: Hero Media (5 cols) */}
                     <div className="col-span-5">
                       <div className="relative mx-auto w-full">
-                        {/* Subtle Ambient Glow behind Image */}
-                        <div className="absolute -inset-3 rounded-3xl bg-gradient-to-tr from-[#0d7a28]/10 via-[#106f8a]/08 to-transparent blur-2xl -z-10 pointer-events-none" />
-
                         {/* Image Card Frame: 6px padding, 22px outer radius, diffuse shadow */}
                         <div className="overflow-hidden rounded-[22px] border border-slate-200/80 bg-white p-[6px] shadow-[0_16px_40px_-16px_rgba(16,24,40,0.12)]">
                           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[16px] bg-slate-100">
@@ -306,14 +316,14 @@ export function HomeHeroSlider({
                       aria-selected={isActive}
                       aria-label={`Chuyển đến slide ${index + 1}`}
                       className={cn(
-                        'group relative h-[18px] flex items-center justify-center transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28] rounded-full',
+                        'group relative min-h-11 min-w-11 flex items-center justify-center transition-[width,background-color,box-shadow] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28] rounded-full',
                         isActive ? 'w-[44px]' : 'w-[26px]'
                       )}
                     >
                       <span
                         className={cn(
-                          'h-[3px] w-full rounded-full transition-all overflow-hidden block',
-                          isActive ? 'bg-[#0d7a28]/20' : 'bg-slate-300 group-hover:bg-slate-400'
+                          'h-[3px] rounded-full transition-[width,background-color] overflow-hidden block',
+                          isActive ? 'w-[44px] bg-[#0d7a28]/20' : 'w-[26px] bg-slate-300 group-hover:bg-slate-400'
                         )}
                       >
                         {isActive && (
@@ -325,7 +335,7 @@ export function HomeHeroSlider({
                               animationDuration: `${autoplayInterval}ms`,
                               animationTimingFunction: 'linear',
                               animationFillMode: 'forwards',
-                              animationPlayState: isPaused ? 'paused' : 'running'
+                               animationPlayState: autoplayPaused ? 'paused' : 'running'
                             }}
                           />
                         )}
@@ -339,14 +349,14 @@ export function HomeHeroSlider({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={prevSlide}
-                  className="grid h-[42px] w-[42px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                  className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
                   aria-label="Slide trước đó"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={nextSlide}
-                  className="grid h-[42px] w-[42px] place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                  className="grid h-11 w-11 place-items-center rounded-xl border border-slate-200/80 bg-white text-slate-700 shadow-xs transition hover:border-[#0d7a28]/40 hover:text-[#0d7a28] hover:bg-[#0d7a28]/04 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
                   aria-label="Slide tiếp theo"
                 >
                   <ChevronRight size={18} />
@@ -406,14 +416,14 @@ export function HomeHeroSlider({
                   onClick={() => goToSlide(dotIndex)}
                   aria-label={`Chuyển đến slide ${dotIndex + 1}`}
                   className={cn(
-                    'group relative h-[18px] flex items-center justify-center transition-all cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]',
+                    'group relative min-h-11 min-w-11 flex items-center justify-center transition-[width,background-color,box-shadow] cursor-pointer rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]',
                     isDotActive ? 'w-[42px]' : 'w-[24px]'
                   )}
                 >
                   <span
                     className={cn(
-                      'h-[3px] w-full rounded-full transition-all overflow-hidden block',
-                      isDotActive ? 'bg-[#0d7a28]/20' : 'bg-slate-300'
+                      'h-[3px] rounded-full transition-[width,background-color] overflow-hidden block',
+                      isDotActive ? 'w-[42px] bg-[#0d7a28]/20' : 'w-[24px] bg-slate-300'
                     )}
                   >
                     {isDotActive && (
@@ -425,21 +435,20 @@ export function HomeHeroSlider({
                           animationDuration: `${autoplayInterval}ms`,
                           animationTimingFunction: 'linear',
                           animationFillMode: 'forwards',
-                          animationPlayState: isPaused ? 'paused' : 'running'
+                           animationPlayState: autoplayPaused ? 'paused' : 'running'
                         }}
                       />
                     )}
                   </span>
                 </button>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
 
           {/* 3. Text & Actions Stage */}
           <div className="relative">
             {slides.map((slide, index) => {
               const isActive = index === currentIndex;
-              const EyebrowIcon = slide.eyebrowIcon;
               const PrimaryIcon = slide.primaryCta.icon;
 
               return (
@@ -458,21 +467,18 @@ export function HomeHeroSlider({
                 >
                   {/* Eyebrow Badge */}
                   <div className="pt-0.5">
-                    <div className="inline-flex h-[30px] items-center gap-1.5 rounded-full border border-[#0d7a28]/20 bg-[#0d7a28]/06 px-3 text-[12px] font-semibold text-[#0d7a28]">
-                      <EyebrowIcon size={13} className="shrink-0 text-[#0d7a28]" />
-                      <span>{slide.eyebrow}</span>
-                    </div>
+                    <p className="text-xs font-semibold text-[#0d7a28]">{slide.eyebrow}</p>
                   </div>
 
                   {/* Headline Hierarchy (Balanced, no orphans) */}
-                  <h1 className="mt-2.5 text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
+                  <h2 className="mt-2.5 text-[#131935] font-extrabold tracking-tight [text-wrap:balance]">
                     <span className="block text-[27px] sm:text-[32px] font-extrabold leading-[1.12]">
                       {slide.title}
                     </span>
-                    <span className="block mt-1 text-[23px] sm:text-[27px] font-bold leading-[1.18] bg-gradient-to-r from-[#0d7a28] via-[#0d7a28] to-[#106f8a] bg-clip-text text-transparent">
+                    <span className="block mt-1 text-[23px] sm:text-[27px] font-bold leading-[1.18] text-[#0d7a28]">
                       {slide.titleHighlight}
                     </span>
-                  </h1>
+                  </h2>
 
                   {/* Short Description (max 3 lines) */}
                   <p className="mt-2 text-[14.5px] sm:text-[15.5px] text-slate-600 leading-[1.58] line-clamp-3">
@@ -485,16 +491,16 @@ export function HomeHeroSlider({
                       href={slide.primaryCta.href}
                       className="flex h-[52px] w-full items-center justify-center gap-2.5 rounded-xl bg-[#0d7a28] px-5 text-sm font-bold text-white shadow-sm transition active:scale-[0.98] hover:bg-[#0a6120]"
                     >
-                      {PrimaryIcon && <PrimaryIcon size={17} />}
+                      {PrimaryIcon && <PrimaryIcon size={17} aria-hidden="true" />}
                       <span>{slide.primaryCta.label}</span>
                     </Link>
 
                     <Link
                       href={slide.secondaryCta.href}
-                      className="flex h-[42px] w-full items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition active:text-[#0d7a28]"
+                      className="flex min-h-11 w-full items-center justify-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700 transition active:text-[#0d7a28]"
                     >
                       <span>{slide.secondaryCta.label}</span>
-                      <ArrowRight size={15} className="text-[#0d7a28]" />
+                      <ArrowRight size={15} aria-hidden="true" className="text-[#0d7a28]" />
                     </Link>
                   </div>
                 </div>
@@ -506,19 +512,21 @@ export function HomeHeroSlider({
         {/* =========================================================================
             UNIFIED TRUST MICROCOPY — Rendered once outside the carousel (Section 11)
            ========================================================================= */}
-        <div className="mt-4 sm:mt-5 pt-3 border-t border-slate-200/60 flex flex-wrap items-center justify-between gap-x-4 gap-y-2 text-xs font-medium text-slate-600">
-          <span className="inline-flex items-center gap-1.5">
-            <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
-            Không cần cài đặt ứng dụng
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
-            Tra cứu miễn phí trên điện thoại
-          </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Check size={14} className="text-[#0d7a28] shrink-0" strokeWidth={2.5} />
-            Dữ liệu xác thực từ HTX
-          </span>
+        <div
+          className="mt-5 grid overflow-hidden rounded-2xl border border-slate-200/80 bg-white/90 shadow-[0_10px_28px_-22px_rgba(15,23,42,0.35)] divide-y divide-slate-200/80 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
+          role="list"
+          aria-label="Lợi ích của Hộ chiếu nông nghiệp"
+        >
+          {[
+            'Không cần cài đặt ứng dụng',
+            'Tra cứu miễn phí trên điện thoại',
+            'Dữ liệu xác thực từ hợp tác xã'
+          ].map((benefit) => (
+            <div key={benefit} role="listitem" className="flex min-h-[72px] items-center gap-3 px-4 py-4 sm:px-5">
+              <Check size={16} strokeWidth={2.5} aria-hidden="true" className="shrink-0 text-[#0d7a28]" />
+              <span className="text-[13px] font-semibold leading-5 text-slate-700 sm:text-sm">{benefit}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

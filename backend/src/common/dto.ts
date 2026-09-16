@@ -5,6 +5,7 @@ import {
   IsDate,
   IsEmail,
   IsEnum,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -46,6 +47,7 @@ import {
   UserStatus,
   ZoneStatus
 } from '@prisma/client';
+import { AUTH_PORTALS, AuthPortal } from './portal';
 
 export class LoginDto {
   @IsEmail()
@@ -54,6 +56,9 @@ export class LoginDto {
   @IsString()
   @MinLength(8)
   password!: string;
+
+  @IsIn(AUTH_PORTALS)
+  portal!: AuthPortal;
 }
 
 export class RegisterDto extends LoginDto {
@@ -75,9 +80,10 @@ export class RegisterDto extends LoginDto {
 }
 
 export class RefreshTokenDto {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
-  refreshToken!: string;
+  refreshToken?: string;
 }
 
 export class ForgotPasswordDto {
@@ -108,7 +114,30 @@ export class ChangePasswordDto {
   newPassword!: string;
 }
 
-export class CreateUserDto extends RegisterDto {
+export class CreateUserDto {
+  @IsEmail()
+  email!: string;
+
+  @IsString()
+  @MinLength(8)
+  password!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  fullName!: string;
+
+  @IsOptional()
+  @IsPhoneNumber('VN')
+  phone?: string;
+
+  @IsOptional()
+  @IsEnum(RoleSlug)
+  role?: RoleSlug;
+
+  @IsOptional()
+  @IsUUID()
+  cooperativeId?: string;
+
   @IsOptional()
   @IsEnum(UserStatus)
   status?: UserStatus;

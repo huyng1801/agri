@@ -26,6 +26,8 @@ import { DEFAULT_COOPERATIVE_IMAGE, DEFAULT_PRODUCT_IMAGE, PublicImage } from '.
 import { formatDate } from '@/lib/format';
 import { MobileBottomSheet } from './mobile-bottom-sheet';
 import { cn } from './ui';
+import type { PublicSiteKey } from '@/lib/domain';
+import { publicDisplayCopy } from '@/lib/public-copy';
 
 import {
   FARMING_ACTIVITY_MAP,
@@ -61,11 +63,13 @@ function formatPhoneDisplay(phone?: string | null) {
 export function ProductPassportClient({
   product,
   passportTargetUrl,
-  qrImageUrl
+  qrImageUrl,
+  siteKey
 }: {
   product: PublicProduct;
   passportTargetUrl: string | null;
   qrImageUrl?: string;
+  siteKey?: PublicSiteKey;
 }) {
   const [activeTab, setActiveTab] = useState<'overview' | 'origin' | 'logs' | 'certs' | 'coop'>('overview');
   const [allLogsSheetOpen, setAllLogsSheetOpen] = useState(false);
@@ -82,6 +86,7 @@ export function ProductPassportClient({
   const allCertifications = useMemo(() => product.certifications ?? [], [product.certifications]);
   const uniqueCertifications = useMemo(() => deduplicateCertifications(allCertifications), [allCertifications]);
   const publicLogs = useMemo(() => product.farmingLogs ?? [], [product.farmingLogs]);
+  const cooperativeName = product.cooperative ? publicDisplayCopy(product.cooperative.name, siteKey) : '';
 
   // Display initial 6 certifications
   const initialCertifications = useMemo(() => uniqueCertifications.slice(0, 6), [uniqueCertifications]);
@@ -107,21 +112,28 @@ export function ProductPassportClient({
   // Preview 5 logs initial (Section 29)
   const previewLogs = useMemo(() => publicLogs.slice(0, 5), [publicLogs]);
 
-  // Observer for sticky bottom action bar (Section 31)
+  // Show the contextual bottom action only after the original hero CTA has
+  // moved above the viewport. A scroll-position check is more deterministic
+  // than treating a below-the-fold CTA as an intersection miss on first load.
   useEffect(() => {
     const heroCtaEl = heroCtaRef.current;
     if (!heroCtaEl) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // When hero CTA is scrolled out of view, show sticky bottom action
-        setShowStickyBottom(!entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
+    const updateStickyVisibility = () => {
+      const heroBottom = heroCtaEl.getBoundingClientRect().bottom + window.scrollY;
+      const footer = document.querySelector('footer');
+      const footerVisible = Boolean(footer && footer.getBoundingClientRect().top < window.innerHeight);
+      const bottomGap = document.documentElement.scrollHeight - (window.scrollY + window.innerHeight);
+      setShowStickyBottom(window.scrollY > heroBottom && !footerVisible && bottomGap > 96);
+    };
 
-    observer.observe(heroCtaEl);
-    return () => observer.disconnect();
+    updateStickyVisibility();
+    window.addEventListener('scroll', updateStickyVisibility, { passive: true });
+    window.addEventListener('resize', updateStickyVisibility);
+    return () => {
+      window.removeEventListener('scroll', updateStickyVisibility);
+      window.removeEventListener('resize', updateStickyVisibility);
+    };
   }, []);
 
   // Scroll spy for sticky section navigation (Section 27)
@@ -164,7 +176,7 @@ export function ProductPassportClient({
       try {
         await navigator.share({
           title: product.name,
-          text: `Tra cứu nguồn gốc nông sản ${product.name} trên Hộ Chiếu Nông Nghiệp`,
+          text: `Tra cứu nguồn gốc nông sản ${product.name} trên Hộ chiếu nông nghiệp`,
           url: window.location.href
         });
       } catch {
@@ -177,7 +189,7 @@ export function ProductPassportClient({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 lg:space-y-12 pb-24 lg:pb-8">
+    <div className="public-product-passport space-y-6 pb-24 sm:space-y-8 lg:space-y-12 lg:pb-8">
       {/* =========================================================================
           CONTEXTUAL MOBILE TOP BAR (Section 24)
          ========================================================================= */}
@@ -192,21 +204,21 @@ export function ProductPassportClient({
             }
           }}
           aria-label="Quay lại danh mục sản phẩm"
-          className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 shadow-xs active:scale-95 transition touch-action-manipulation"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-800 shadow-xs active:scale-95 transition touch-action-manipulation"
         >
           <ChevronLeft size={16} />
           <span>Danh mục</span>
         </button>
 
-        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-          Hộ Chiếu Nông Sản
+        <span className="text-[11px] font-bold tracking-wider text-slate-500">
+              Hộ chiếu nông sản
         </span>
 
         <button
           type="button"
           onClick={handleShare}
           aria-label="Chia sẻ hồ sơ sản phẩm"
-          className="grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs active:scale-95 transition touch-action-manipulation"
+          className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs active:scale-95 transition touch-action-manipulation"
         >
           <Share2 size={16} />
         </button>
@@ -239,7 +251,7 @@ export function ProductPassportClient({
             {/* Quick Tech Specs Strip below image */}
             <div className="grid grid-cols-2 divide-x divide-slate-100 border-t border-slate-100 bg-slate-50/70 p-2.5 text-xs">
               <div className="px-2">
-                <span className="block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                <span className="block text-[10px] font-medium tracking-wider text-slate-400">
                   Mã định danh
                 </span>
                 <span className="mt-0.5 block truncate font-mono font-bold text-slate-800">
@@ -247,7 +259,7 @@ export function ProductPassportClient({
                 </span>
               </div>
               <div className="px-2">
-                <span className="block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+                <span className="block text-[10px] font-medium tracking-wider text-slate-400">
                   Quy cách đóng gói
                 </span>
                 <span className="mt-0.5 block font-bold text-slate-800">
@@ -263,7 +275,7 @@ export function ProductPassportClient({
               <div className="flex items-start gap-3">
                 {qrImageUrl ? (
                   <div className="h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-xl border border-[#0d7a28]/20 bg-white p-1 shadow-xs">
-                    <img src={qrImageUrl} alt={`Mã QR ${passport.passportCode}`} className="h-full w-full object-contain" />
+                    <img src={qrImageUrl} alt={`Mã QR ${passport.passportCode}`} width={256} height={256} className="h-full w-full object-contain" />
                   </div>
                 ) : (
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#0d7a28] text-white shadow-xs">
@@ -272,8 +284,8 @@ export function ProductPassportClient({
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d7a28]">
-                      Hộ Chiếu Nông Nghiệp
+                    <span className="text-[10px] font-bold tracking-wider text-[#0d7a28]">
+                      Hộ chiếu nông nghiệp
                     </span>
                     <span className="inline-flex items-center gap-0.5 rounded-full bg-[#0d7a28]/15 px-2 py-0.2 text-[9px] font-bold text-[#0d7a28]">
                       <CheckCircle2 size={10} /> Đã chứng thực
@@ -283,7 +295,7 @@ export function ProductPassportClient({
                     Mã hồ sơ: {passport.passportCode}
                   </p>
                   <p className="mt-0.5 text-xs text-slate-600 line-clamp-2">
-                    Đối chiếu dữ liệu vùng trồng và nhật ký canh tác điện tử của HTX.
+                    Đối chiếu dữ liệu vùng trồng và nhật ký canh tác điện tử của hợp tác xã.
                   </p>
                 </div>
               </div>
@@ -313,29 +325,29 @@ export function ProductPassportClient({
               {product.name}
             </h1>
 
-            {/* Producer / HTX profile box */}
+            {/* Producer profile box */}
             {product.cooperative && (
               <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 sm:p-4 shadow-xs">
                 <div className="flex items-center gap-3 min-w-0">
                   <PublicImage
                     src={product.cooperative.avatarUrl}
-                    alt={product.cooperative.name}
+                    alt={cooperativeName}
                     fallback={DEFAULT_COOPERATIVE_IMAGE}
                     wrapperClassName="h-11 w-11 sm:h-12 sm:w-12 shrink-0 rounded-xl overflow-hidden border border-slate-200 bg-slate-100"
                     className="h-full w-full object-cover"
                   />
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d7a28]">Đơn vị sản xuất</span>
+                      <span className="text-[10px] font-bold tracking-wider text-[#0d7a28]">Đơn vị sản xuất</span>
                       <span className="rounded bg-[#0d7a28]/10 px-1.5 py-0.2 text-[9px] font-bold text-[#0d7a28]">
                         Đã xác thực
                       </span>
                     </div>
                     <Link
                       href={`/htx/${product.cooperative.code}`}
-                      className="text-xs sm:text-sm font-bold text-slate-900 hover:text-[#0d7a28] transition truncate block mt-0.5"
+                      className="inline-flex min-h-11 items-center text-xs sm:text-sm font-bold text-slate-900 hover:text-[#0d7a28] transition truncate mt-0.5"
                     >
-                      {product.cooperative.name}
+                      {cooperativeName}
                     </Link>
                     <p className="text-[11px] sm:text-xs text-slate-500 flex items-center gap-1 mt-0.5">
                       <MapPin size={11} />
@@ -348,7 +360,7 @@ export function ProductPassportClient({
                   href={`/htx/${product.cooperative.code}`}
                   className="hidden sm:inline-flex h-9 shrink-0 items-center rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-800 hover:border-[#0d7a28] hover:text-[#0d7a28] transition"
                 >
-                  Xem HTX
+                  Xem hợp tác xã
                 </Link>
               </div>
             )}
@@ -357,7 +369,7 @@ export function ProductPassportClient({
             <div className="rounded-xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-xs">
               <div className="flex items-baseline justify-between">
                 <div>
-                  <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Giá niêm yết tham chiếu</span>
+                  <span className="text-[11px] font-semibold text-slate-400 tracking-wider">Giá niêm yết tham chiếu</span>
                   <div className="mt-0.5 flex items-baseline gap-1.5">
                     <span className="text-2xl sm:text-3xl font-extrabold text-[#131935]">
                       {formatPrice(product.price)}
@@ -366,7 +378,7 @@ export function ProductPassportClient({
                   </div>
                 </div>
                 <span className="text-xs font-semibold text-[#0d7a28] bg-[#0d7a28]/10 px-2.5 py-1 rounded-md">
-                  Giá từ HTX
+                  Giá từ hợp tác xã
                 </span>
               </div>
             </div>
@@ -380,7 +392,7 @@ export function ProductPassportClient({
           </div>
 
           {/* Primary Action Buttons (Observed by heroCtaRef for sticky bottom bar) */}
-          <div ref={heroCtaRef} className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
+          <div ref={heroCtaRef} data-testid="product-hero-actions" className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2.5">
             {passportTargetUrl && (
               <a
                 href={passportTargetUrl}
@@ -399,7 +411,7 @@ export function ProductPassportClient({
               >
                 <Phone size={17} className="text-[#0d7a28]" />
                 <span className="hidden sm:inline">Liên hệ ({formatPhoneDisplay(product.cooperative.phone)})</span>
-                <span className="sm:hidden">Gọi HTX</span>
+                <span className="sm:hidden">Gọi hợp tác xã</span>
               </a>
             )}
           </div>
@@ -411,28 +423,28 @@ export function ProductPassportClient({
          ========================================================================= */}
       <section className="grid grid-cols-2 gap-2.5 sm:grid-cols-4" aria-label="Thông số nhanh">
         <div className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Vùng canh tác</span>
+          <span className="text-[10px] font-bold tracking-wider text-slate-400 block">Vùng canh tác</span>
           <span className="text-xs sm:text-sm font-bold text-slate-800 truncate block mt-0.5" title={product.zone?.name || 'Đã chuẩn hóa'}>
             {product.zone?.name || 'Đã chuẩn hóa'}
           </span>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Hồ sơ QR</span>
+          <span className="text-[10px] font-bold tracking-wider text-slate-400 block">Hồ sơ QR</span>
           <span className="text-xs sm:text-sm font-bold text-[#0d7a28] block mt-0.5">
             {passport ? 'Đã kích hoạt' : 'Đang xử lý'}
           </span>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Nhật ký canh tác</span>
+          <span className="text-[10px] font-bold tracking-wider text-slate-400 block">Nhật ký canh tác</span>
           <span className="text-xs sm:text-sm font-bold text-slate-800 block mt-0.5">
             {publicLogs.length} sự kiện
           </span>
         </div>
 
         <div className="rounded-xl border border-slate-200 bg-white p-3 text-center shadow-xs">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Chứng nhận</span>
+          <span className="text-[10px] font-bold tracking-wider text-slate-400 block">Chứng nhận</span>
           <span className="text-xs sm:text-sm font-bold text-[#106f8a] block mt-0.5">
             {uniqueCertifications.length} tiêu chuẩn
           </span>
@@ -453,14 +465,14 @@ export function ProductPassportClient({
             { key: 'origin', label: 'Nguồn gốc', id: 'section-origin' },
             { key: 'logs', label: `Nhật ký (${publicLogs.length})`, id: 'section-logs' },
             { key: 'certs', label: `Chứng nhận (${uniqueCertifications.length})`, id: 'section-certs' },
-            { key: 'coop', label: 'Đơn vị HTX', id: 'section-coop' }
+            { key: 'coop', label: 'Đơn vị hợp tác xã', id: 'section-coop' }
           ].map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => scrollToSection(tab.id, tab.key as any)}
               className={cn(
-                'whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 active:scale-95 touch-action-manipulation',
+                'min-h-11 whitespace-nowrap rounded-lg px-3.5 py-2 text-xs font-bold transition shrink-0 active:scale-95 touch-action-manipulation',
                 activeTab === tab.key
                   ? 'bg-[#0d7a28] text-white shadow-xs'
                   : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
@@ -508,7 +520,7 @@ export function ProductPassportClient({
               <div className="rounded-xl border border-slate-200 bg-slate-50/70 p-4 space-y-2.5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0d7a28]">Khu vực sản xuất</span>
+                    <span className="text-[10px] font-bold tracking-wider text-[#0d7a28]">Khu vực sản xuất</span>
                     <h3 className="text-sm font-bold text-slate-900 mt-0.5">{product.zone.name}</h3>
                   </div>
                   {product.zone.areaM2 ? (
@@ -524,12 +536,12 @@ export function ProductPassportClient({
                   </p>
                 )}
                 <div className="pt-1 text-[11px] text-slate-400">
-                  ✓ Dữ liệu tọa độ vùng trồng được định danh và đối chiếu trên hệ thống Hộ Chiếu Nông Nghiệp.
+                  ✓ Dữ liệu tọa độ vùng trồng được định danh và đối chiếu trên hệ thống Hộ chiếu nông nghiệp.
                 </div>
               </div>
             ) : (
               <p className="text-xs text-slate-400 italic">
-                Thông tin vùng canh tác đang được hoàn thiện đồng bộ từ hồ sơ HTX.
+                Thông tin vùng canh tác đang được hoàn thiện đồng bộ từ hồ sơ hợp tác xã.
               </p>
             )}
           </section>
@@ -543,10 +555,10 @@ export function ProductPassportClient({
                 </span>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold text-[#131935]">
-                    Nhật ký Canh tác & Quá trình Sản xuất
+                    Nhật ký canh tác và quá trình sản xuất
                   </h2>
                   <p className="text-[11px] text-slate-400">
-                    Ghi nhận từ nhật ký điện tử cơ sở của HTX
+                    Ghi nhận từ nhật ký điện tử cơ sở của hợp tác xã
                   </p>
                 </div>
               </div>
@@ -612,7 +624,7 @@ export function ProductPassportClient({
                 </span>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold text-[#131935]">
-                    Chứng nhận & Tiêu chuẩn Chất lượng
+                    Chứng nhận và tiêu chuẩn chất lượng
                   </h2>
                   <p className="text-[11px] text-slate-400">
                     Đã chuẩn hóa và đối chiếu tài liệu thẩm định
@@ -654,7 +666,7 @@ export function ProductPassportClient({
                             href={cert.file.publicUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex h-8 w-full items-center justify-center gap-1 rounded-lg bg-slate-100 px-3 text-[11px] font-bold text-slate-700 hover:bg-[#0d7a28] hover:text-white transition"
+                            className="inline-flex min-h-11 w-full items-center justify-center gap-1 rounded-lg bg-slate-100 px-3 text-[11px] font-bold text-slate-700 hover:bg-[#0d7a28] hover:text-white transition"
                           >
                             <FileCheck size={12} />
                             <span>Xem tài liệu thẩm định</span>
@@ -682,19 +694,19 @@ export function ProductPassportClient({
               </div>
             ) : (
               <p className="text-xs text-slate-400 italic">
-                Sản phẩm đang trong quá trình cập nhật tài liệu chứng nhận từ cơ sở HTX.
+                Sản phẩm đang trong quá trình cập nhật tài liệu chứng nhận từ cơ sở hợp tác xã.
               </p>
             )}
           </section>
 
-          {/* Section 5: HTX Producer Info */}
+          {/* Section 5: producer info */}
           <section id="section-coop" className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-7 shadow-xs">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3 mb-4">
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#0d7a28]/10 text-[#0d7a28]">
                 <Store size={18} />
               </span>
               <h2 className="text-base sm:text-lg font-bold text-[#131935]">
-                Hồ sơ Hợp tác xã Sản xuất
+                Hồ sơ hợp tác xã sản xuất
               </h2>
             </div>
 
@@ -703,14 +715,14 @@ export function ProductPassportClient({
                 <div className="flex items-start gap-3.5">
                   <PublicImage
                     src={product.cooperative.avatarUrl}
-                    alt={product.cooperative.name}
+                    alt={cooperativeName}
                     fallback={DEFAULT_COOPERATIVE_IMAGE}
                     wrapperClassName="h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100"
                     className="h-full w-full object-cover"
                   />
                   <div className="min-w-0 flex-1">
                     <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-                      {product.cooperative.name}
+                      {cooperativeName}
                     </h3>
                     <p className="mt-1 text-xs text-slate-500 flex items-center gap-1">
                       <MapPin size={12} className="text-[#0d7a28] shrink-0" />
@@ -719,7 +731,7 @@ export function ProductPassportClient({
                     {product.cooperative.phone && (
                       <p className="mt-1 text-xs text-slate-500 flex items-center gap-1">
                         <Phone size={12} className="text-[#0d7a28] shrink-0" />
-                        <a href={`tel:${product.cooperative.phone}`} className="hover:underline text-slate-800 font-semibold">
+                        <a href={`tel:${product.cooperative.phone}`} className="inline-flex min-h-11 items-center hover:underline text-slate-800 font-semibold">
                           {formatPhoneDisplay(product.cooperative.phone)}
                         </a>
                       </p>
@@ -732,14 +744,14 @@ export function ProductPassportClient({
                     href={`/htx/${product.cooperative.code}`}
                     className="inline-flex h-11 w-full sm:w-auto items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 text-xs font-bold text-slate-800 shadow-xs hover:border-[#0d7a28] hover:text-[#0d7a28] transition active:scale-95 touch-action-manipulation"
                   >
-                    <span>Xem đầy đủ hồ sơ & các sản phẩm khác của HTX</span>
+                    <span>Xem đầy đủ hồ sơ và các sản phẩm khác của hợp tác xã</span>
                     <ChevronRight size={14} />
                   </Link>
                 </div>
               </div>
             ) : (
               <p className="text-xs text-slate-400 italic">
-                Thông tin Hợp tác xã quản trị đang được hoàn tất.
+                Thông tin hợp tác xã quản trị đang được hoàn tất.
               </p>
             )}
           </section>
@@ -776,7 +788,7 @@ export function ProductPassportClient({
         isOpen={allLogsSheetOpen}
         onClose={() => setAllLogsSheetOpen(false)}
         title={`Toàn bộ Nhật ký Canh tác (${publicLogs.length} sự kiện)`}
-        description={`Sản phẩm ${product.name} - Đồng bộ từ cơ sở dữ liệu HTX`}
+        description={`Sản phẩm ${product.name} - Đồng bộ từ cơ sở dữ liệu hợp tác xã`}
         triggerRef={logsSheetTriggerRef}
       >
         <div className="relative border-l-2 border-[#0d7a28]/25 pl-4 sm:pl-6 ml-2 space-y-4 py-2">
@@ -823,7 +835,7 @@ export function ProductPassportClient({
                 setCertSearch(e.target.value);
                 setCertPage(1);
               }}
-              placeholder="Tìm theo tên chứng nhận, cơ quan cấp..."
+              placeholder="Tìm theo tên chứng nhận, cơ quan cấp…"
               className="h-11 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-base font-medium text-slate-900 outline-none focus:border-[#0d7a28] focus:bg-white placeholder:text-sm"
             />
           </div>
@@ -854,7 +866,7 @@ export function ProductPassportClient({
                         href={cert.file.publicUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex h-8 items-center gap-1 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs"
+                        className="inline-flex min-h-11 items-center gap-1 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs"
                       >
                         <FileCheck size={12} />
                         <span>Xem văn bản thẩm định</span>
@@ -882,7 +894,7 @@ export function ProductPassportClient({
                   type="button"
                   disabled={certPage <= 1}
                   onClick={() => setCertPage((p) => Math.max(1, p - 1))}
-                  className="h-8 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 disabled:opacity-30"
+                  className="min-h-11 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 disabled:opacity-30"
                 >
                   Trước
                 </button>
@@ -890,7 +902,7 @@ export function ProductPassportClient({
                   type="button"
                   disabled={certPage >= totalCertPages}
                   onClick={() => setCertPage((p) => Math.min(totalCertPages, p + 1))}
-                  className="h-8 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 disabled:opacity-30"
+                  className="min-h-11 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 disabled:opacity-30"
                 >
                   Sau
                 </button>
@@ -906,6 +918,7 @@ export function ProductPassportClient({
          ========================================================================= */}
       {showStickyBottom && (
         <div
+          data-testid="product-sticky-actions"
           className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 p-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-md lg:hidden animate-in slide-in-from-bottom duration-200"
           style={{ paddingBottom: 'max(0.75rem, var(--safe-bottom, 0px))' }}
         >
@@ -925,10 +938,10 @@ export function ProductPassportClient({
               <a
                 href={`tel:${product.cooperative.phone.replace(/\s+/g, '')}`}
                 className="flex h-12 px-4 shrink-0 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-bold shadow-xs active:scale-95 touch-action-manipulation"
-                aria-label="Gọi điện cho HTX"
+                aria-label="Gọi điện cho hợp tác xã"
               >
                 <Phone size={15} className="text-[#0d7a28]" />
-                <span>Gọi HTX</span>
+                <span>Gọi hợp tác xã</span>
               </a>
             )}
           </div>

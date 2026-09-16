@@ -40,7 +40,7 @@ const ecosystemMembers = [
   { label: 'Nhà phân phối', icon: Truck }
 ] as const;
 
-const agripassportAppShowcaseUrl = '/hero/agripassport-app-showcase.png';
+const agripassportAppShowcaseUrl = '/hero/agripassport-app-showcase.webp';
 
 export function AgripassportAboutPage({ siteProfile }: AgripassportAboutPageProps) {
   return (

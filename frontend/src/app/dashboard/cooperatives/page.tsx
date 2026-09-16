@@ -2,11 +2,10 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Building2, ExternalLink, Pencil, Plus, RefreshCcw, ShieldCheck, Trash2, UserCog, WalletCards } from 'lucide-react';
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency, formatDate, statusTone } from '@/lib/format';
-import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
+import { Badge, Button, Input, LinkButton, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type CooperativeStatus = 'ACTIVE' | 'INACTIVE' | 'SUSPENDED' | 'ARCHIVED';
 type SubscriptionStatus = 'ACTIVE' | 'TRIAL' | 'EXPIRED' | 'CANCELLED' | 'SUSPENDED';
@@ -672,11 +671,7 @@ function CooperativeCard({
             )}
             {statsData && <p className="mt-1 text-slate-600">Hóa đơn chưa thanh toán: {statsData.unpaidInvoices}</p>}
           </div>
-          {!canManagePlatform && (
-            <Link href="/dashboard/invoices">
-              <Button type="button" variant="ghost">Xem hóa đơn SaaS</Button>
-            </Link>
-          )}
+          {!canManagePlatform && <LinkButton href="/dashboard/invoices" variant="ghost">Xem hóa đơn SaaS</LinkButton>}
         </div>
       )}
 
@@ -693,12 +688,10 @@ function CooperativeCard({
             Gói/HĐ
           </Button>
         )}
-        <Link href={`/htx/${cooperative.code}`} target="_blank">
-          <Button type="button" variant="ghost">
-            <ExternalLink size={16} aria-hidden="true" />
-            Trang công khai
-          </Button>
-        </Link>
+        <LinkButton href={`/htx/${cooperative.code}`} target="_blank" variant="ghost">
+          <ExternalLink size={16} aria-hidden="true" />
+          Trang công khai
+        </LinkButton>
         {canManagePlatform && cooperative.status !== 'ARCHIVED' && (
           <Button type="button" variant="danger" onClick={onArchive} disabled={archivePending}>
             <Trash2 size={16} aria-hidden="true" />

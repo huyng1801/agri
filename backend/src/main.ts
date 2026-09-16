@@ -28,7 +28,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.enableCors({
     origin: corsOrigins,
-    credentials: true
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Client-Portal']
   });
   app.use(helmet());
   app.use(compression());

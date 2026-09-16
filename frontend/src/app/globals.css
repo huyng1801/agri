@@ -217,6 +217,10 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+:where(a, button) {
+  touch-action: manipulation;
+}
+
 :where(a, button, input, select, textarea):focus-visible {
   outline: 3px solid var(--brand-primary-ring);
   outline-offset: 3px;
@@ -298,7 +302,7 @@ button {
 /* Keep the public site visibly mobile-first instead of carrying desktop scale into narrow screens. */
 @media (max-width: 640px) {
   .public-app-shell {
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   .public-app-shell .type-display {
@@ -372,23 +376,23 @@ button {
 
   .public-app-shell .type-body,
   .public-app-shell .public-prose {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.72;
   }
 
   .public-app-shell .type-body-large {
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    font-size: 1.0625rem;
+    line-height: 1.72;
   }
 
   .public-app-shell p.text-base {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.72;
   }
 
   .public-app-shell p[class*="text-[1rem]"] {
-    font-size: 0.875rem;
-    line-height: 1.65;
+    font-size: 1rem;
+    line-height: 1.72;
   }
 
   .public-app-shell div[class*="text-[1rem]"],
@@ -396,8 +400,468 @@ button {
   .public-app-shell p.text-xl,
   .public-app-shell p[class*="text-[1.18rem]"],
   .public-app-shell p[class*="text-[1.1rem]"] {
-    font-size: 0.9375rem;
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.68;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Admin Material UX system
+ * --------------------------------------------------------------------------
+ * The public sites keep their own visual language. Everything below is
+ * scoped to the dashboard shell so admin pages can share one predictable
+ * Material-inspired surface, type, spacing and interaction vocabulary.
+ */
+.admin-app-shell,
+.admin-state-screen {
+  --background: #f6f8fc;
+  --surface: #ffffff;
+  --surface-muted: #f1f4f9;
+  --surface-elevated: #ffffff;
+  --foreground: #17213c;
+  --foreground-muted: #5e6b82;
+  --border: #dfe5ee;
+  --border-strong: #c7d1df;
+  --primary: #1b2450;
+  --primary-hover: #11183b;
+  --primary-subtle: #eef0fa;
+  --brand-primary: #1b2450;
+  --brand-primary-hover: #11183b;
+  --brand-primary-strong: #11183b;
+  --brand-primary-subtle: #eef0fa;
+  --brand-primary-ring: rgba(27, 36, 80, 0.24);
+  --brand-on-primary: #ffffff;
+  --brand-gradient: linear-gradient(135deg, #10183c 0%, #1b2450 52%, #2d3c7b 100%);
+  --success: #157347;
+  --warning: #9a6700;
+  --danger: #b42318;
+  --public-radius-control: 0.75rem;
+  --public-radius-card: 1rem;
+  --public-radius-surface: 1.25rem;
+  --public-shadow-card: 0 1px 2px rgba(23, 33, 60, 0.05), 0 6px 18px rgba(23, 33, 60, 0.035);
+  --public-shadow-hover: 0 8px 24px rgba(23, 33, 60, 0.1);
+  --shadow-soft: 0 2px 8px rgba(23, 33, 60, 0.06);
+  --shadow-card: var(--public-shadow-card);
+  --admin-secondary: #167487;
+  --admin-secondary-subtle: #e8f5f7;
+  --admin-on-secondary: #ffffff;
+  --admin-nav-width: 17.5rem;
+  background: var(--background);
+  color: var(--foreground);
+  color-scheme: light;
+}
+
+.admin-app-shell .text-leaf,
+.admin-app-shell .text-leaf\/80 {
+  color: var(--admin-secondary) !important;
+}
+
+.admin-app-shell .bg-leaf {
+  background-color: var(--admin-secondary) !important;
+}
+
+.admin-app-shell .bg-mint {
+  background-color: var(--admin-secondary-subtle) !important;
+}
+
+.admin-app-shell .border-leaf {
+  border-color: var(--admin-secondary) !important;
+}
+
+.admin-skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+  transform: translateY(-180%);
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: white;
+  padding: 0.7rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: var(--public-shadow-hover);
+  transition: transform 160ms ease;
+}
+
+.admin-skip-link:focus {
+  transform: translateY(0);
+}
+
+.admin-sidebar {
+  width: var(--admin-nav-width);
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.25rem 0.875rem 1rem;
+  box-shadow: 1px 0 0 rgba(23, 33, 60, 0.02);
+}
+
+.admin-brand-link {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  transition: background-color 160ms ease;
+}
+
+.admin-brand-link:hover {
+  background: var(--surface-muted);
+}
+
+.admin-brand-tile,
+.admin-mobile-brand-tile {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 0.75rem;
+  background: var(--primary);
+  padding: 0.375rem;
+  box-shadow: 0 3px 8px rgba(27, 36, 80, 0.18);
+}
+
+.admin-brand-tile {
+  width: 2.75rem;
+  height: 2.75rem;
+}
+
+.admin-brand-name,
+.admin-mobile-brand > span {
+  display: block;
+  color: var(--foreground);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.admin-brand-user {
+  display: block;
+  margin-top: 0.15rem;
+  overflow: hidden;
+  color: var(--foreground-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-sidebar-nav {
+  flex: 1;
+  min-height: 0;
+  margin-top: 1.25rem;
+  overflow-y: auto;
+  padding: 0 0.125rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.admin-nav-group + .admin-nav-group {
+  margin-top: 1.1rem;
+}
+
+.admin-nav-group-label {
+  margin: 0 0 0.4rem 0.75rem;
+  color: #7a879b;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.admin-nav-item {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  color: #33415e;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 650;
+  transition: background-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+
+.admin-nav-item:hover {
+  background: var(--primary-subtle);
+  color: var(--primary);
+}
+
+.admin-nav-item.is-active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(27, 36, 80, 0.16);
+}
+
+.admin-nav-item svg {
+  flex: 0 0 auto;
+  stroke-width: 1.85;
+}
+
+.admin-logout-button {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  color: var(--danger);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.admin-logout-button:hover {
+  background: #fff1f0;
+}
+
+.admin-main {
+  background: var(--background);
+}
+
+.admin-main-content {
+  min-height: 100%;
+}
+
+.admin-main-content h1 {
+  color: var(--foreground);
+  font-size: clamp(1.55rem, 1.8vw, 2rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+
+.admin-main-content h2 {
+  color: var(--foreground);
+  letter-spacing: -0.025em;
+}
+
+.admin-main-content label {
+  color: var(--foreground);
+}
+
+.admin-main-content input,
+.admin-main-content select,
+.admin-main-content textarea {
+  border-color: var(--border);
+  color: var(--foreground);
+  box-shadow: 0 1px 1px rgba(23, 33, 60, 0.02);
+}
+
+.admin-main-content input:hover,
+.admin-main-content select:hover,
+.admin-main-content textarea:hover {
+  border-color: var(--border-strong);
+}
+
+.admin-main-content input:focus,
+.admin-main-content select:focus,
+.admin-main-content textarea:focus {
+  border-color: var(--primary);
+}
+
+.admin-main-content [class*='rounded-[var(--public-radius-card)]'],
+.admin-main-content [class*='rounded-2xl'][class*='border'],
+.admin-main-content [class*='rounded-xl'][class*='border'] {
+  border-color: var(--border);
+}
+
+.admin-mobile-header {
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  padding: 0.75rem 1rem;
+  backdrop-filter: blur(14px);
+}
+
+.admin-mobile-brand {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.admin-mobile-brand-tile {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.admin-icon-button {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface);
+  color: var(--foreground);
+  box-shadow: 0 1px 2px rgba(23, 33, 60, 0.05);
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.admin-icon-button:hover {
+  border-color: var(--primary);
+  background: var(--primary-subtle);
+  color: var(--primary);
+}
+
+.admin-icon-button-danger {
+  color: var(--danger);
+}
+
+.admin-icon-button-danger:hover {
+  border-color: #f0b6b1;
+  background: #fff1f0;
+  color: var(--danger);
+}
+
+.admin-mobile-bottom-nav {
+  border-top: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  padding: 0.25rem 0.5rem max(0.25rem, var(--safe-bottom));
+  box-shadow: 0 -6px 18px rgba(23, 33, 60, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.admin-mobile-nav-item {
+  display: flex;
+  min-height: 3rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  border-radius: 0.75rem;
+  color: #748198;
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.1;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+
+.admin-mobile-nav-item:hover,
+.admin-mobile-nav-item.is-active {
+  background: var(--primary-subtle);
+  color: var(--primary);
+}
+
+.admin-mobile-sheet {
+  background: rgba(10, 16, 36, 0.46);
+  overscroll-behavior: contain;
+}
+
+.admin-mobile-sheet-panel {
+  margin-top: 4.5rem;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--surface);
+  padding: 1.25rem 1rem max(1.5rem, var(--safe-bottom));
+  box-shadow: 0 -12px 32px rgba(23, 33, 60, 0.18);
+}
+
+.admin-mobile-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.875rem;
+}
+
+.admin-mobile-sheet-header > div > span {
+  color: var(--foreground);
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.admin-mobile-sheet-groups {
+  display: grid;
+  gap: 1.25rem;
+  padding-top: 1rem;
+}
+
+.admin-mobile-sheet-group h2 {
+  margin: 0 0 0.5rem;
+  color: #7a879b;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-mobile-sheet-item {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-muted);
+  color: #33415e;
+  padding: 0.7rem;
+  font-size: 0.78rem;
+  font-weight: 750;
+  transition: border-color 160ms ease, background-color 160ms ease, color 160ms ease;
+}
+
+.admin-mobile-sheet-item:hover,
+.admin-mobile-sheet-item.is-active {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.admin-state-screen {
+  background: var(--background);
+}
+
+.admin-state-card {
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  padding: 1.75rem;
+  box-shadow: var(--public-shadow-card);
+}
+
+.admin-state-icon {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  place-items: center;
+  border-radius: 0.875rem;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(27, 36, 80, 0.16);
+}
+
+.admin-state-card p {
+  color: var(--foreground-muted);
+}
+
+.admin-state-action {
+  border-radius: 0.75rem;
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 3px 8px rgba(27, 36, 80, 0.14);
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.admin-state-action:hover {
+  background: var(--primary-hover);
+}
+
+.admin-app-shell :where(button, a, input, select, textarea):focus-visible,
+.admin-state-screen :where(button, a, input, select, textarea):focus-visible {
+  outline: 3px solid var(--brand-primary-ring);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1023px) {
+  .admin-main-content {
+    padding-bottom: 1.25rem;
+  }
+
+  .admin-main-content h1 {
+    font-size: 1.55rem;
   }
 }
 
@@ -550,8 +1014,304 @@ button {
 }
 
 .public-app-shell {
-  background: var(--surface-elevated);
+  background: var(--background);
   color: var(--text-primary);
+}
+
+/* Shared public composition: one quiet canvas, one set of readable surfaces.
+ * Page-specific components can still create a stronger hero, but they no
+ * longer need to invent their own spacing, focus and empty-state language. */
+.public-app-shell [data-public-main] {
+  position: relative;
+}
+
+.public-app-shell [data-public-main] > :where(section, article, [data-public-static-page]) {
+  min-width: 0;
+}
+
+.public-static-page {
+  border: 1px solid var(--border);
+  border-radius: var(--public-radius-surface);
+  background: var(--surface-elevated);
+  box-shadow: var(--public-shadow-card);
+}
+
+.public-static-hero {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--surface-muted);
+}
+
+.public-static-hero--compact {
+  min-height: 16rem;
+  isolation: isolate;
+  background-image:
+    radial-gradient(circle at 86% 18%, color-mix(in srgb, var(--brand-primary) 13%, transparent), transparent 22%),
+    radial-gradient(circle at 70% 110%, color-mix(in srgb, var(--brand-primary) 10%, transparent), transparent 34%),
+    linear-gradient(135deg, var(--surface-elevated) 0%, var(--surface-muted) 100%);
+}
+
+.public-static-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.public-static-hero--compact .public-static-hero-content {
+  width: min(100%, 52rem);
+  border-color: color-mix(in srgb, var(--brand-primary) 14%, var(--border));
+  background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+}
+
+.public-static-hero-art {
+  position: absolute;
+  z-index: 1;
+  right: 8%;
+  top: 50%;
+  width: clamp(12rem, 25vw, 20rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 24%, transparent);
+  border-radius: 42% 58% 55% 45%;
+  background: color-mix(in srgb, var(--brand-primary) 8%, transparent);
+  opacity: 0.72;
+}
+
+.public-static-hero-art::before,
+.public-static-hero-art::after,
+.public-static-hero-art span {
+  position: absolute;
+  display: block;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 25%, transparent);
+  border-radius: 999px;
+  content: '';
+}
+
+.public-static-hero-art::before {
+  inset: 14%;
+}
+
+.public-static-hero-art::after {
+  inset: 28%;
+  background: color-mix(in srgb, var(--brand-primary) 13%, transparent);
+}
+
+.public-static-hero-art span:nth-child(1) {
+  left: 46%;
+  top: 8%;
+  height: 84%;
+  border-width: 0 1px;
+  transform: rotate(42deg);
+}
+
+.public-static-hero-art span:nth-child(2) {
+  left: 8%;
+  top: 46%;
+  width: 84%;
+  border-width: 1px 0;
+  transform: rotate(-42deg);
+}
+
+.public-static-hero-art span:nth-child(3) {
+  left: 44%;
+  top: 44%;
+  width: 12%;
+  aspect-ratio: 1;
+  background: var(--brand-primary);
+  box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--brand-primary) 12%, transparent);
+}
+
+.public-policy-layout {
+  display: grid;
+  gap: 1rem;
+}
+
+.public-policy-nav {
+  min-width: 0;
+}
+
+.public-policy-content {
+  min-width: 0;
+  padding-block: 1.25rem;
+}
+
+.public-policy-section {
+  padding: 0 0.25rem;
+}
+
+.public-policy-section + .public-policy-section {
+  margin-top: 2rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.public-policy-section .public-prose {
+  font-size: 1rem;
+  line-height: 1.8;
+}
+
+.public-policy-section .public-prose ul {
+  padding-left: 1.35rem;
+}
+
+.public-empty-state {
+  display: grid;
+  min-height: 15rem;
+  align-content: center;
+  justify-items: center;
+}
+
+.public-empty-detail .public-empty-state {
+  min-height: 20rem;
+}
+
+.public-product-detail,
+.public-cooperative-detail {
+  min-width: 0;
+}
+
+.public-product-detail > nav,
+.public-cooperative-detail > nav {
+  max-width: 100%;
+}
+
+.public-cooperative-hero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--surface-elevated) 0%, color-mix(in srgb, var(--brand-primary-subtle) 34%, white) 100%);
+}
+
+.public-detail-section {
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+
+.public-news-page .public-empty-state {
+  margin-top: 1rem;
+}
+
+.public-news-detail .news-body {
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.public-news-detail .news-toc {
+  border-left: 3px solid var(--brand-primary);
+}
+
+.public-careers-hero {
+  isolation: isolate;
+}
+
+.public-careers-card {
+  min-width: 0;
+}
+
+.public-auth-shell {
+  color: var(--text-primary);
+}
+
+.public-auth-header {
+  position: relative;
+  z-index: 2;
+}
+
+.public-auth-main {
+  min-height: calc(100dvh - 8.5rem);
+}
+
+.public-auth-form {
+  width: 100%;
+}
+
+.public-auth-card {
+  border-color: color-mix(in srgb, var(--brand-primary) 13%, var(--border));
+  background: color-mix(in srgb, var(--surface-elevated) 94%, transparent);
+  padding: 1.25rem;
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--brand-primary) 11%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.public-auth-footer {
+  position: relative;
+  z-index: 2;
+}
+
+@media (min-width: 900px) {
+  .public-policy-layout {
+    grid-template-columns: 15rem minmax(0, 1fr);
+    align-items: start;
+    gap: 1.25rem;
+  }
+
+  .public-policy-nav {
+    position: sticky;
+    top: calc(var(--public-header-height, 4.25rem) + 1rem);
+  }
+
+  .public-policy-nav nav {
+    display: grid;
+    overflow: visible;
+  }
+
+  .public-policy-nav nav a {
+    justify-content: flex-start;
+  }
+
+  .public-policy-content {
+    padding: 1.75rem;
+  }
+
+  .public-policy-section {
+    padding-inline: 0.25rem;
+  }
+
+  .public-policy-section + .public-policy-section {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .public-static-hero--compact {
+    min-height: 0;
+  }
+
+  .public-static-hero-art {
+    right: -5rem;
+    top: 12%;
+    width: 13rem;
+    opacity: 0.4;
+  }
+
+  .public-static-hero--compact .public-static-hero-content {
+    width: 100%;
+  }
+
+  .public-policy-content {
+    padding: 1.1rem;
+  }
+
+  .public-policy-section .public-prose {
+    font-size: 1rem;
+    line-height: 1.78;
+  }
+
+  .public-empty-state {
+    min-height: 14rem;
+    padding-inline: 1.25rem;
+  }
+
+  .public-empty-detail .public-empty-state {
+    min-height: 16rem;
+  }
+
+  .public-auth-main {
+    min-height: calc(100dvh - 8rem);
+  }
+
+  .public-auth-card {
+    padding: 1.1rem;
+  }
 }
 
 .public-card-surface {
@@ -820,4 +1580,232 @@ button {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* News editor workbench: keep the writing path prominent and the diagnostics
+ * available without making the author scroll through dashboards first. */
+.admin-app-shell .news-editor-page {
+  --news-editor-inset: clamp(1rem, 2vw, 1.5rem);
+}
+
+.admin-app-shell .news-editor-commandbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+.admin-app-shell .news-editor-site-picker {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--public-radius-control);
+  background: var(--surface-elevated);
+  padding: 0.25rem 0.5rem 0.25rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.admin-app-shell .news-editor-site-picker select {
+  border: 0;
+  background: transparent;
+  padding-block: 0.35rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: none;
+}
+
+.admin-app-shell .news-editor-site-picker select:focus {
+  outline: 2px solid var(--brand-primary-ring);
+  outline-offset: 2px;
+}
+
+.admin-app-shell .news-editor-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+  border: 1px solid var(--border);
+  border-radius: var(--public-radius-control);
+  background: var(--surface-elevated);
+  padding: 0.2rem;
+}
+
+.admin-app-shell .news-editor-mode-switch button {
+  min-height: 2.75rem;
+  border-radius: calc(var(--public-radius-control) - 0.2rem);
+  padding: 0.5rem 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+
+.admin-app-shell .news-editor-mode-switch button:hover {
+  color: var(--text-primary);
+}
+
+.admin-app-shell .news-editor-mode-switch button:focus-visible {
+  outline: 2px solid var(--brand-primary-ring);
+  outline-offset: 2px;
+}
+
+.admin-app-shell .news-editor-mode-switch button.is-active {
+  background: var(--admin-secondary);
+  color: var(--admin-on-secondary);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.12);
+}
+
+.admin-app-shell .news-editor-mode-switch button.is-active.is-advanced {
+  background: var(--text-primary);
+}
+
+.admin-app-shell .news-editor-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--admin-secondary-subtle);
+  border-radius: var(--public-radius-card);
+  background: color-mix(in srgb, var(--admin-secondary-subtle) 68%, white);
+  padding: 0.8rem 1rem;
+}
+
+.admin-app-shell .news-editor-progress-chip {
+  display: inline-flex;
+  min-height: 1.8rem;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface-elevated);
+  padding: 0.3rem 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.admin-app-shell .news-editor-progress-chip.is-ready {
+  border-color: color-mix(in srgb, var(--admin-secondary) 32%, white);
+  background: color-mix(in srgb, var(--admin-secondary-subtle) 72%, white);
+  color: var(--admin-secondary);
+}
+
+.admin-app-shell .news-editor-autosave {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.admin-app-shell .news-editor-publish-bar {
+  box-shadow: 0 14px 30px rgb(15 23 42 / 0.12);
+}
+
+.admin-app-shell .news-editor-layout {
+  align-items: start;
+}
+
+.admin-app-shell .news-editor-sidebar {
+  position: sticky;
+  top: 1.25rem;
+}
+
+.admin-app-shell .news-editor-section-heading {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+
+.admin-app-shell .news-editor-step {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--admin-secondary-subtle);
+  color: var(--admin-secondary);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.admin-app-shell .news-editor-page-simple [data-testid='news-content-editor'] {
+  min-height: min(42rem, calc(100vh - 18rem));
+  padding: 1rem var(--news-editor-inset);
+  line-height: 1.8;
+}
+
+.admin-app-shell .news-editor-page-simple [data-testid='news-content-editor']:empty {
+  min-height: 14rem;
+}
+
+.admin-app-shell .news-editor-page-simple [data-testid='news-content-editor'] img {
+  max-width: 100%;
+  height: auto;
+}
+
+.admin-app-shell .news-editor-page-simple .news-editor-overview + .news-editor-section-heading {
+  margin-top: 0;
+}
+
+@media (max-width: 1279px) {
+  .admin-app-shell .news-editor-sidebar {
+    position: static;
+  }
+}
+
+@media (max-width: 900px) {
+  .admin-app-shell .news-editor-commandbar,
+  .admin-app-shell .news-editor-progress {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-app-shell .news-editor-commandbar > :last-child,
+  .admin-app-shell .news-editor-progress > :last-child {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 639px) {
+  .admin-app-shell .news-editor-page-simple form {
+    padding-bottom: 0 !important;
+  }
+
+  .admin-app-shell .news-editor-site-picker {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .admin-app-shell .news-editor-site-picker select {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .admin-app-shell .news-editor-mode-switch {
+    flex: 1;
+  }
+
+  .admin-app-shell .news-editor-mode-switch button {
+    flex: 1;
+  }
+
+  .admin-app-shell .news-editor-progress {
+    padding: 0.75rem;
+  }
+
+  .admin-app-shell .news-editor-page-simple [data-testid='news-content-editor'] {
+    min-height: 18rem;
+    padding-inline: 0.875rem;
+  }
+
+  .admin-app-shell .news-editor-section-heading {
+    align-items: flex-start;
+  }
 }

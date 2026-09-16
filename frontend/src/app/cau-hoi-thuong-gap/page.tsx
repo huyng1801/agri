@@ -11,10 +11,10 @@ export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
-  const siteName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   return buildPublicMetadata({
     title: `Câu hỏi thường gặp - ${siteName}`,
-    description: `Giải đáp chi tiết về định danh nông sản, quét mã QR truy xuất nguồn gốc, dữ liệu nhật ký canh tác và quy trình cấp Hộ chiếu Nông nghiệp.`,
+    description: `Giải đáp chi tiết về định danh nông sản, quét mã QR truy xuất nguồn gốc, dữ liệu nhật ký canh tác và quy trình cấp hộ chiếu nông nghiệp.`,
     path: '/cau-hoi-thuong-gap',
     keywords: ['FAQ Hộ chiếu Nông nghiệp', 'QR truy xuất nguồn gốc', 'hồ sơ nông sản số', 'hợp tác xã', 'VietGAP', 'OCOP']
   });
@@ -34,7 +34,16 @@ export default async function FaqPage() {
     getRequestAbsoluteUrl('/cau-hoi-thuong-gap')
   ]);
   const siteProfile = await getPublicSiteProfile(siteKey);
-  const siteName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
+  const displayCopy = (value: string) =>
+    siteKey === 'passport'
+      ? value
+          .replace(/HỘ CHIẾU NÔNG NGHIỆP/gi, 'Hộ chiếu nông nghiệp')
+          .replace(/Hộ Chiếu Nông Nghiệp/gi, 'Hộ chiếu nông nghiệp')
+          .replace(/Hộ Chiếu Nông nghiệp/gi, 'Hộ chiếu nông nghiệp')
+          .replace(/\bHTX\b/g, 'hợp tác xã')
+          .replace(/\s*&\s*/g, ' và ')
+      : value;
 
   const categories: FaqCategory[] = [
     {
@@ -125,8 +134,8 @@ export default async function FaqPage() {
     '@type': 'FAQPage',
     mainEntity: allFaqs.map((faq) => ({
       '@type': 'Question',
-      name: faq.question,
-      acceptedAnswer: { '@type': 'Answer', text: faq.answer }
+      name: displayCopy(faq.question),
+      acceptedAnswer: { '@type': 'Answer', text: displayCopy(faq.answer) }
     }))
   };
 
@@ -137,10 +146,10 @@ export default async function FaqPage() {
         <PublicBreadcrumbTrail current="Câu hỏi thường gặp" path="/cau-hoi-thuong-gap" homeUrl={homeUrl} currentUrl={currentUrl} />
 
         <header className="max-w-3xl">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hỗ trợ & Giải đáp</p>
+          <p className="text-xs font-bold tracking-[0.18em] text-[var(--brand-primary)]">Hỗ trợ và giải đáp</p>
           <h1 className="type-h1 mt-3 text-3xl sm:text-5xl">Câu hỏi thường gặp</h1>
           <p className="mt-4 text-base leading-7 text-[var(--text-secondary)]">
-            Giải đáp chi tiết về nền tảng Hộ Chiếu Nông Nghiệp, cách quét mã QR truy xuất nguồn gốc, quy trình dành cho hợp tác xã và cam kết minh bạch dữ liệu.
+            {displayCopy('Giải đáp chi tiết về nền tảng Hộ Chiếu Nông Nghiệp, cách quét mã QR truy xuất nguồn gốc, quy trình dành cho hợp tác xã và cam kết minh bạch dữ liệu.')}
           </p>
         </header>
 
@@ -154,8 +163,8 @@ export default async function FaqPage() {
                     <Icon size={22} aria-hidden="true" />
                   </span>
                   <div>
-                    <h2 className="text-xl font-bold text-[var(--text-primary)] sm:text-2xl">{cat.title}</h2>
-                    <p className="mt-1 text-sm text-[var(--text-secondary)]">{cat.description}</p>
+                      <h2 className="text-xl font-bold text-[var(--text-primary)] sm:text-2xl">{displayCopy(cat.title)}</h2>
+                    <p className="mt-1 text-sm text-[var(--text-secondary)]">{displayCopy(cat.description)}</p>
                   </div>
                 </div>
 
@@ -163,8 +172,8 @@ export default async function FaqPage() {
                   {cat.items.map((faq, faqIdx) => (
                     <PublicFaqItem
                       key={faq.question}
-                      question={faq.question}
-                      answer={faq.answer}
+                      question={displayCopy(faq.question)}
+                      answer={displayCopy(faq.answer)}
                       defaultOpen={catIdx === 0 && faqIdx === 0}
                     />
                   ))}

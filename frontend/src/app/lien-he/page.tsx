@@ -13,12 +13,12 @@ import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-si
 
 export async function generateMetadata() {
   const siteKey = await getRequestPublicSiteKey();
-  const appName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
+  const appName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
   return buildPublicMetadata({
     title: `Liên hệ ${appName}`,
     description:
       siteKey === 'passport'
-        ? 'Liên hệ Hộ chiếu Nông nghiệp để tìm hiểu thông tin định danh, QR truy xuất nguồn gốc nông sản và kết nối HTX.'
+        ? 'Liên hệ Hộ chiếu nông nghiệp để tìm hiểu thông tin định danh, QR truy xuất nguồn gốc nông sản và kết nối hợp tác xã.'
         : siteKey === 'htxonline'
         ? 'Liên hệ HTXONLINE để được tư vấn quản trị và vận hành hợp tác xã.'
         : 'Liên hệ Agripassport để tìm hiểu sản phẩm, QR truy xuất và kết nối với hợp tác xã.',
@@ -41,7 +41,7 @@ export default async function ContactPage() {
   const contactDescription = isHtxonline
     ? siteProfile.pageContent.contactDescription
     : isPassport
-    ? 'Tìm hiểu định danh nông sản, cấp mã QR truy xuất nguồn gốc hoặc hợp tác triển khai giải pháp Hộ chiếu Nông nghiệp.'
+    ? 'Tìm hiểu định danh nông sản, cấp mã QR truy xuất nguồn gốc hoặc hợp tác triển khai giải pháp Hộ chiếu nông nghiệp.'
     : 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.';
   const faqs = !isHtxonline
     ? siteProfile.faqs.filter((faq) => !/COD|đơn hàng/i.test(`${faq.question} ${faq.answer}`))
@@ -57,7 +57,7 @@ export default async function ContactPage() {
             <article className="relative overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[linear-gradient(145deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] p-5 text-[var(--text-primary)] shadow-[0_22px_52px_rgba(15,23,42,0.08)] sm:p-6">
               <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[var(--brand-primary-subtle)] blur-2xl" aria-hidden="true" />
               <div className="relative z-10">
-                <p className="inline-flex min-h-8 items-center rounded-full border border-[var(--border-strong)] bg-white/70 px-3 text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-[var(--brand-primary)]">
+                <p className={cn('inline-flex min-h-8 items-center rounded-full border border-[var(--border-strong)] bg-white/70 px-3 text-[0.7rem] font-semibold tracking-[0.16em] text-[var(--brand-primary)]', !isPassport && 'uppercase')}>
                   Liên hệ {siteProfile.appName}
                 </p>
                 <h1 className="type-h1 mt-4 max-w-[18ch] text-[2rem] sm:max-w-[14ch] sm:text-[2.75rem]">
@@ -99,7 +99,7 @@ export default async function ContactPage() {
                         <item.icon size={20} aria-hidden="true" />
                       </span>
                       <span className="min-w-0">
-                      <span className="block text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-[var(--brand-primary)]">{item.label}</span>
+                      <span className={cn('block text-[0.68rem] font-semibold tracking-[0.16em] text-[var(--brand-primary)]', !isPassport && 'uppercase')}>{item.label}</span>
                         <span className="mt-1 block break-words text-sm font-semibold leading-5 text-ink sm:text-[0.95rem]">{item.value}</span>
                       </span>
                     </a>
@@ -126,11 +126,11 @@ export default async function ContactPage() {
             </article>
 
             {siteKey === 'passport' ? (
-              <figure className="overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.08)]">
+              <figure className="overflow-hidden rounded-[1.75rem]">
                 <PublicImage
                   src={siteProfile.pageContent.contactImageUrl}
                   alt={siteProfile.pageContent.contactImageAlt}
-                  wrapperClassName="aspect-[16/10] rounded-[1.35rem]"
+                  wrapperClassName="aspect-[4/3]"
                   className="h-full w-full object-cover"
                   priority
                 />
@@ -153,13 +153,13 @@ export default async function ContactPage() {
               ) : null}
 
               <article className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-[0_18px_38px_rgba(15,23,42,0.05)]">
-                <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary-strong)]">Nhịp phản hồi</p>
+                <p className={cn('text-[0.72rem] font-semibold tracking-[0.18em] text-[var(--brand-primary-strong)]', !isPassport && 'uppercase')}>Nhịp phản hồi</p>
                 <h2 className="type-h2 mt-2 text-[1.35rem]">
                   {isHtxonline ? 'Hỗ trợ rõ luồng nội bộ, công khai và QR.' : 'Chúng tôi luôn sẵn sàng hỗ trợ bạn.'}
                 </h2>
                 <div className="mt-4 space-y-3">
                   <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3">
-                    <p className="text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-slate-500">Giờ hỗ trợ</p>
+                    <p className={cn('text-[0.7rem] font-semibold tracking-[0.16em] text-slate-500', !isPassport && 'uppercase')}>Giờ hỗ trợ</p>
                     <p className="mt-1 inline-flex items-center gap-2 text-sm font-semibold text-[var(--text-primary)]">
                       <Clock3 size={15} aria-hidden="true" />
                       08:00 - 17:30, thứ Hai đến thứ Bảy
@@ -167,35 +167,35 @@ export default async function ContactPage() {
                   </div>
                   <div className="rounded-[1.1rem] border border-[var(--border)] bg-[var(--surface-elevated)] px-4 py-3 text-sm leading-6 text-[var(--text-secondary)]">
                     {isHtxonline
-                      ? 'Điền form nếu bạn cần tư vấn triển khai theo mô hình HTX, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'
-                      : 'Gửi câu hỏi về sản phẩm, mã QR truy xuất, nguồn gốc nông sản hoặc kết nối HTX; đội ngũ sẽ phản hồi nhanh chóng.'}
+                      ? 'Điền form nếu bạn cần tư vấn triển khai theo mô hình hợp tác xã, phân quyền nội bộ hoặc kết nối dữ liệu sang lớp công khai.'
+                      : 'Gửi câu hỏi về sản phẩm, mã QR truy xuất, nguồn gốc nông sản hoặc kết nối hợp tác xã; đội ngũ sẽ phản hồi nhanh chóng.'}
                   </div>
                 </div>
               </article>
             </div>
           </div>
 
-          <PublicContactForm sourcePath="/lien-he" variant="contact" audience={isHtxonline ? 'operator' : 'public'} />
+          <PublicContactForm sourcePath="/lien-he" variant="contact" audience={isHtxonline ? 'operator' : 'public'} siteKey={siteKey} />
         </section>
 
         <section className="mt-6">
           <div className="grid gap-4 lg:grid-cols-2">
             <article className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Thông tin pháp lý đối chiếu</p>
+              <p className={cn('text-[0.78rem] font-semibold tracking-[0.18em] text-[var(--brand-primary)]', !isPassport && 'uppercase')}>Thông tin pháp lý đối chiếu</p>
               <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[2.1rem]">{legalEntityProfile.organizationName}</h2>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-[1.2rem] bg-[var(--surface-muted)] p-4">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Mã số tổ hợp tác</p>
+                  <p className={cn('text-[0.68rem] font-semibold tracking-[0.18em] text-slate-500', !isPassport && 'uppercase')}>Mã số tổ hợp tác</p>
                   <p className="mt-2 text-2xl font-extrabold tracking-[-0.03em] text-[var(--text-primary)]">{legalEntityProfile.registrationNumber}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
                 </div>
                 <div className="rounded-[1.2rem] bg-[var(--surface-muted)] p-4">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Người đại diện</p>
+                  <p className={cn('text-[0.68rem] font-semibold tracking-[0.18em] text-slate-500', !isPassport && 'uppercase')}>Người đại diện</p>
                   <p className="mt-2 text-lg font-bold text-[var(--text-primary)]">{legalEntityProfile.representative}</p>
                   <p className="mt-2 text-sm leading-6 text-slate-600">{legalEntityProfile.authority}</p>
                 </div>
                 <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4 sm:col-span-2">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Địa chỉ và liên hệ theo hồ sơ</p>
+                  <p className={cn('text-[0.68rem] font-semibold tracking-[0.18em] text-slate-500', !isPassport && 'uppercase')}>Địa chỉ và liên hệ theo hồ sơ</p>
                   <p className="mt-2 text-[0.98rem] font-semibold leading-7 text-[var(--text-primary)]">{legalEntityProfile.legalAddress}</p>
                   <p className="mt-3 text-sm leading-6 text-slate-600">Điện thoại: {legalEntityProfile.legalPhone}</p>
                   <p className="text-sm leading-6 text-slate-600">Email: {legalEntityProfile.legalEmail}</p>
@@ -204,25 +204,25 @@ export default async function ContactPage() {
             </article>
 
             <article className="rounded-[1.8rem] border border-[var(--border)] bg-[var(--surface-muted)] p-5 shadow-sm sm:p-6">
-              <p className="text-[0.78rem] font-semibold uppercase tracking-[0.18em] text-[var(--brand-primary)]">Hướng dẫn liên hệ</p>
+              <p className={cn('text-[0.78rem] font-semibold tracking-[0.18em] text-[var(--brand-primary)]', !isPassport && 'uppercase')}>Hướng dẫn liên hệ</p>
               <h2 className="mt-3 text-[1.7rem] font-extrabold leading-tight text-[var(--text-primary)] sm:text-[2.1rem]">
                 {isHtxonline ? 'Quy trình tiếp nhận và xử lý yêu cầu' : 'Tiếp nhận yêu cầu theo từng nhóm đối tượng'}
               </h2>
               <div className="mt-5 space-y-3">
                 <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Hợp tác xã & Nông hộ</p>
+                  <p className="text-xs font-bold tracking-wider text-[var(--brand-primary)]">Hợp tác xã và nông hộ</p>
                   <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
-                    Cần hướng dẫn tạo tài khoản, đăng ký vùng trồng hoặc số hóa quy trình cấp mã QR Hộ Chiếu Nông Nghiệp, vui lòng điền form yêu cầu hỗ trợ chuyển đổi số.
+                    Cần hướng dẫn tạo tài khoản, đăng ký vùng trồng hoặc số hóa quy trình cấp mã QR Hộ chiếu nông nghiệp, vui lòng điền form yêu cầu hỗ trợ chuyển đổi số.
                   </p>
                 </div>
                 <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Doanh nghiệp & Người tiêu dùng</p>
+                  <p className="text-xs font-bold tracking-wider text-[var(--brand-primary)]">Doanh nghiệp và người tiêu dùng</p>
                   <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
                     Cần kết nối tiêu thụ nông sản số lượng lớn, đối chiếu hồ sơ kiểm định hoặc phản hồi thông tin sản phẩm, đội ngũ sẽ hỗ trợ xác minh trong 24 giờ.
                   </p>
                 </div>
                 <div className="rounded-[1.2rem] border border-[var(--border)] bg-[var(--surface-elevated)] p-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[var(--brand-primary)]">Cam kết phản hồi</p>
+                  <p className={cn('text-xs font-bold tracking-wider text-[var(--brand-primary)]', !isPassport && 'uppercase')}>Cam kết phản hồi</p>
                   <p className="mt-1 text-sm leading-relaxed text-[var(--text-secondary)]">
                     Tất cả thư điện tử và thông tin liên hệ được bảo mật theo quy định, phản hồi đúng thẩm quyền và lưu vết trong hệ thống tiếp nhận.
                   </p>

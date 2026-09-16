@@ -54,6 +54,28 @@ describe('ProductCard', () => {
 
     expect(screen.getByTestId('product-card-image')).toHaveAttribute('src', 'https://cdn.htxonline.vn/coop/gao-thom.webp');
   });
+
+  it('uses a distinct semantic visual instead of repeating a shared editorial cover', () => {
+    const product: PublicProduct = {
+      id: 'product-2',
+      code: 'SP002',
+      name: 'Xoài Cát Chu',
+      slug: 'xoai-cat-chu',
+      price: 65000,
+      unit: 'kg',
+      category: { name: 'Trái cây tươi', slug: 'trai-cay-tuoi' },
+      thumbnail: {
+        id: 'file-2',
+        publicUrl: 'https://agripassport.com/news/market-data.webp'
+      }
+    };
+
+    render(<ProductCard product={product} />);
+
+    expect(screen.getByTestId('product-card-image')).toHaveAttribute('role', 'img');
+    expect(screen.getByRole('img', { name: 'Xoài Cát Chu' })).toBeInTheDocument();
+    expect(screen.queryByTestId('product-card-image')?.querySelector('img')).toBeNull();
+  });
 });
 
 describe('AppShell role navigation', () => {
@@ -181,7 +203,7 @@ describe('CooperativeDetailPage', () => {
     render(await CooperativeDetailPage({ params: Promise.resolve({ code: 'HTX-CAO-LANH' }) }));
 
     expect(screen.getByRole('heading', { name: 'HTX Cao Lanh' })).toBeInTheDocument();
-    expect(screen.getByText('Sản phẩm công khai của HTX')).toBeInTheDocument();
+    expect(screen.getByText('Sản phẩm công khai của hợp tác xã')).toBeInTheDocument();
     expect(screen.getByText('Vùng trồng công khai')).toBeInTheDocument();
     expect(screen.getByText('Vung xoai huu co')).toBeInTheDocument();
     expect(screen.getByText('Xoai Cat Chu')).toBeInTheDocument();

@@ -2,7 +2,6 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
-  Bold,
   Code2,
   ChevronUp,
   ChevronDown,
@@ -26,10 +25,11 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react';
-import { API_URL, apiFetch } from '@/lib/api';
-import { marketplaceUrl } from '@/lib/domain';
+import { apiFetch } from '@/lib/api';
+import { marketplaceUrl, publicOriginForSite } from '@/lib/domain';
 import { formatDate } from '@/lib/format';
 import type { NewsArticle, NewsCategory, NewsList, NewsSiteKey } from '@/lib/news';
+import { PASSPORT_NEWS_PLAN } from '@/lib/passport-news-plan';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type NewsForm = {
@@ -63,19 +63,18 @@ type NewsForm = {
   scheduledAt: string;
 };
 
-type UploadPlan = {
-  bucket: string;
-  objectKey: string;
-  uploadUrl: string;
-  method: string;
-  headers: Record<string, string>;
-  publicUrl?: string;
-};
-
 type FileAsset = {
   id: string;
   publicUrl?: string | null;
   objectKey: string;
+};
+
+type UploadPlan = {
+  objectKey: string;
+  uploadUrl: string;
+  method?: string;
+  headers?: Record<string, string>;
+  publicUrl?: string;
 };
 
 type SeoCheck = {
@@ -193,6 +192,8 @@ type EditorMode = 'visual' | 'html';
 type AuthorMode = 'simple' | 'advanced';
 type EditorAssistKind = 'pasted-image' | 'pasted-content' | 'optimized-content' | 'prepared-publish';
 type SuggestedCover = { url: string; alt: string; sourceLabel: string };
+type UploadTarget = 'cover' | 'body';
+type UploadRetry = { file: File; target: UploadTarget };
 
 type LocalDraftPayload = {
   savedAt: string;
@@ -231,15 +232,14 @@ const emptyForm: NewsForm = {
   scheduledAt: ''
 };
 
-const editorSnippets: Array<[LucideIcon, string]> = [
-  [Heading2, '<h2>Tiêu đề H2</h2>'],
-  [Heading3, '<h3>Tiêu đề H3</h3>'],
-  [Bold, '<strong>chữ đậm</strong>'],
-  [Italic, '<em>chữ nghiêng</em>'],
-  [LinkIcon, '<a href="https://agripassport.com">liên kết</a>'],
-  [List, '<ul><li>Mục</li></ul>'],
-  [ListOrdered, '<ol><li>Mục</li></ol>'],
-  [Quote, '<blockquote>Trích dẫn</blockquote>']
+const editorSnippets: Array<[LucideIcon, string, string]> = [
+  [Heading2, '<h2>Tiêu đề H2</h2>', 'Chèn tiêu đề H2'],
+  [Heading3, '<h3>Tiêu đề H3</h3>', 'Chèn tiêu đề H3'],
+  [Italic, '<em>chữ nghiêng</em>', 'Chữ nghiêng'],
+  [LinkIcon, '<a href="https://agripassport.com">liên kết</a>', 'Chèn liên kết'],
+  [List, '<ul><li>Mục</li></ul>', 'Danh sách không thứ tự'],
+  [ListOrdered, '<ol><li>Mục</li></ol>', 'Danh sách có thứ tự'],
+  [Quote, '<blockquote>Trích dẫn</blockquote>', 'Chèn trích dẫn']
 ];
 
 const articleTemplates = [
@@ -317,8 +317,9 @@ const defaultInternalLinkSuggestions: InternalLinkSuggestion[] = [
   { label: 'Tin tức Agripassport', href: '/tin-tuc', description: 'Dùng để liên kết lại hub nội dung chính.' }
 ];
 
-function buildPublicNewsUrl(slug: string) {
-  return marketplaceUrl(`/tin-tuc/${slug}`);
+function buildPublicNewsUrl(slug: string, siteKey: NewsSiteKey = 'AGRIPASSPORT') {
+  const site = siteKey === 'PASSPORT' ? 'passport' : siteKey === 'HTXONLINE' ? 'htxonline' : 'agripassport';
+  return `${publicOriginForSite(site)}/tin-tuc/${slug}`;
 }
 
 function buildPreparedNewsForm(form: NewsForm): NewsForm {
@@ -344,7 +345,7 @@ function buildPreparedNewsForm(form: NewsForm): NewsForm {
     focusKeyword: form.focusKeyword || form.title.trim(),
     seoTitle: form.seoTitle || seoTitle,
     seoDescription: form.seoDescription || fallbackDescription,
-    canonicalUrl: form.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
+    canonicalUrl: form.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug, form.siteKey) : ''),
     ogTitle: form.ogTitle || socialTitle,
     ogDescription: form.ogDescription || form.seoDescription || fallbackDescription,
     ogImageUrl: form.ogImageUrl || form.coverImageUrl,
@@ -363,10 +364,10 @@ export default function NewsDashboardPage() {
   const visualEditorRef = useRef<HTMLDivElement | null>(null);
   const coverDropzoneRef = useRef<HTMLDivElement | null>(null);
   const coverFileInputRef = useRef<HTMLInputElement | null>(null);
-  const simpleSeoSectionRef = useRef<HTMLDivElement | null>(null);
   const simplePreviewSectionRef = useRef<HTMLDivElement | null>(null);
   const skipAutosaveRef = useRef(false);
   const [search, setSearch] = useState('');
+  const [siteFilter, setSiteFilter] = useState<NewsSiteKey>('AGRIPASSPORT');
   const [form, setForm] = useState<NewsForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [preview, setPreview] = useState(false);
@@ -375,32 +376,35 @@ export default function NewsDashboardPage() {
   const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [bodyImage, setBodyImage] = useState({ url: '', alt: '', caption: '' });
   const [uploading, setUploading] = useState('');
+  const [uploadError, setUploadError] = useState('');
+  const [uploadRetry, setUploadRetry] = useState<UploadRetry | null>(null);
   const [draftSavedAt, setDraftSavedAt] = useState('');
   const [localDraft, setLocalDraft] = useState<LocalDraftPayload | null>(null);
   const [draggingEditor, setDraggingEditor] = useState(false);
   const [editorAssist, setEditorAssist] = useState<{ kind: EditorAssistKind; title: string; detail: string } | null>(null);
   const [suggestedCover, setSuggestedCover] = useState<SuggestedCover | null>(null);
-  const [simpleActionsExpanded, setSimpleActionsExpanded] = useState(false);
-  const [simpleEditorToolsExpanded, setSimpleEditorToolsExpanded] = useState(false);
-  const [simplePermalinkToolsExpanded, setSimplePermalinkToolsExpanded] = useState(false);
+  const [simpleEditorToolsExpanded, setSimpleEditorToolsExpanded] = useState(true);
+  const [simpleMetaExpanded, setSimpleMetaExpanded] = useState(false);
+  const [coverPanelExpanded, setCoverPanelExpanded] = useState(false);
+  const [seoAdvancedExpanded, setSeoAdvancedExpanded] = useState(false);
 
   const articles = useQuery({
-    queryKey: ['news', search],
-    queryFn: () => apiFetch<NewsList>(`/news?limit=50${search ? `&search=${encodeURIComponent(search)}` : ''}`)
+    queryKey: ['news', siteFilter, search],
+    queryFn: () => apiFetch<NewsList>(`/news?siteKey=${siteFilter}&limit=50${search ? `&search=${encodeURIComponent(search)}` : ''}`)
   });
   const categories = useQuery({
-    queryKey: ['news-categories'],
-    queryFn: () => apiFetch<NewsCategory[]>('/news/categories')
+    queryKey: ['news-categories', siteFilter],
+    queryFn: () => apiFetch<NewsCategory[]>(`/news/categories?siteKey=${siteFilter}`)
   });
 
   const seo = useMemo(() => clientSeoScore(form), [form]);
   const articleItems = articles.data?.data.data ?? [];
   const categoryItems = categories.data?.data ?? [];
-  const permalink = form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug');
+  const permalink = form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug', form.siteKey);
   const excerptLength = form.excerpt.trim().length;
   const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
   const publishReadiness = useMemo(() => buildPublishReadiness(form, seo), [form, seo]);
-  const localDraftStorageKey = useMemo(() => `htxonline-news-draft:${editingId || 'new'}`, [editingId]);
+  const localDraftStorageKey = useMemo(() => buildLocalDraftStorageKey(siteFilter, editingId), [editingId, siteFilter]);
   const internalLinkSuggestions = useMemo(() => buildInternalLinkSuggestions(form), [form]);
   const focusKeywordSuggestions = useMemo(() => suggestFocusKeywords(form), [form]);
   const nextStepSuggestions = useMemo(() => buildNextStepSuggestions(form, seo), [form, seo]);
@@ -413,10 +417,8 @@ export default function NewsDashboardPage() {
   const seoSignals = useMemo(() => buildSeoSignals(form, seo), [form, seo]);
   const needsImportedOptimization = useMemo(() => detectImportedFormatting(form.bodyHtml), [form.bodyHtml]);
   const corePublishItems = useMemo(() => buildCorePublishItems(form), [form]);
-  const simpleTemplateShortcuts = articleTemplates.slice(0, 3);
   const seoGreenCount = seoSignals.filter((item) => item.ok).length;
-  const simpleSeoMustFixes = seoSignals.filter((item) => !item.ok && item.priority === 'must').slice(0, 3);
-  const simpleSeoShouldFixes = seoSignals.filter((item) => !item.ok && item.priority === 'should').slice(0, 3);
+  const simpleSeoIssues = seoSignals.filter((item) => !item.ok).slice(0, 4);
   const corePublishReady = corePublishItems.filter((item) => item.ok).length;
   const missingCoreItems = corePublishItems.filter((item) => !item.ok);
   const canQuickPublish = corePublishItems.every((item) => item.ok);
@@ -432,7 +434,8 @@ export default function NewsDashboardPage() {
       form.seoDescription.trim() ||
       form.canonicalUrl.trim() ||
       form.robotsNoIndex ||
-      form.robotsNoFollow
+      form.robotsNoFollow ||
+      seoAdvancedExpanded
   );
   const socialAdvancedOpen = Boolean(
     form.ogTitle.trim() ||
@@ -448,28 +451,19 @@ export default function NewsDashboardPage() {
   const seoMustFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'must').length;
   const seoShouldFixCount = seoSignals.filter((item) => !item.ok && item.priority === 'should').length;
   const isBodyEmpty = stripHtml(form.bodyHtml).trim().length === 0;
-  const detailHelpersOpen = isAdvancedMode;
-  const publishChecklistOpen = isAdvancedMode;
-  const seoReviewOpen = isAdvancedMode;
-  const outlineReviewOpen = isAdvancedMode;
-  const articleLibraryOpen = isAdvancedMode || Boolean(search.trim());
+  const publishBlockers = corePublishItems.filter((item) => {
+    if (item.id === 'title') return !form.title.trim();
+    if (item.id === 'content') return isBodyEmpty;
+    return false;
+  });
+  const canPublish = publishBlockers.length === 0;
+  const outlineReviewOpen = false;
+  const articleLibraryOpen = Boolean(search.trim());
   const bodyUploadActive = uploading === 'body';
   const coverUploadActive = uploading === 'cover';
-  const preparePreviewOpen = isAdvancedMode;
-  const autofillPlanOpen = isAdvancedMode;
-  const simpleSeoBoardOpen = isAdvancedMode;
-  const templateLibraryOpen = isAdvancedMode;
-  const editorTipsOpen = isAdvancedMode || needsImportedOptimization || bodyUploadActive || draggingEditor;
-  const quickStartGuideOpen = isAdvancedMode;
-  const editorToolsOpen = isAdvancedMode || needsImportedOptimization || editorMode === 'html';
-  const coverPanelOpen = isAdvancedMode || coverUploadActive;
-  const simpleMetaOpen = Boolean(
-    form.slug.trim() ||
-      form.excerpt.trim() ||
-      form.categoryId ||
-      form.status !== 'DRAFT' ||
-      draftSavedAt
-  );
+  const editorTipsOpen = bodyUploadActive || draggingEditor;
+  const editorToolsOpen = isAdvancedMode || isSimpleMode || needsImportedOptimization || editorMode === 'html';
+  const coverPanelOpen = coverUploadActive || coverPanelExpanded;
 
   useEffect(() => {
     const editor = visualEditorRef.current;
@@ -524,13 +518,19 @@ export default function NewsDashboardPage() {
 
   const saveArticle = useMutation({
     mutationFn: (statusOverride?: NewsForm['status']) => {
-      const payload = formPayload({ ...form, status: statusOverride ?? form.status });
+      const status = statusOverride ?? form.status;
+      const payload = formPayload({
+        ...form,
+        status,
+        ...(status === 'PUBLISHED' ? { publicVerified: true } : {})
+      });
       return editingId
-        ? apiFetch<NewsArticle>(`/news/${editingId}`, { method: 'PATCH', body: JSON.stringify(payload) })
+        ? apiFetch<NewsArticle>(`/news/${editingId}?siteKey=${form.siteKey}`, { method: 'PATCH', body: JSON.stringify(payload) })
         : apiFetch<NewsArticle>('/news', { method: 'POST', body: JSON.stringify(payload) });
     },
     onSuccess: (result) => {
       setEditingId(result.data.id);
+      setSiteFilter(result.data.siteKey ?? siteFilter);
       setForm(fromArticle(result.data));
       clearLocalDraft();
       queryClient.invalidateQueries({ queryKey: ['news'] });
@@ -539,22 +539,34 @@ export default function NewsDashboardPage() {
 
   const quickPublishArticle = useMutation({
     mutationFn: () => {
-      const prepared = buildPreparedNewsForm({ ...form, status: 'PUBLISHED' });
+      const prepared = buildPreparedNewsForm({ ...form, status: 'PUBLISHED', publicVerified: true });
       const payload = formPayload(prepared);
       return editingId
-        ? apiFetch<NewsArticle>(`/news/${editingId}`, { method: 'PATCH', body: JSON.stringify(payload) })
+        ? apiFetch<NewsArticle>(`/news/${editingId}?siteKey=${prepared.siteKey}`, { method: 'PATCH', body: JSON.stringify(payload) })
         : apiFetch<NewsArticle>('/news', { method: 'POST', body: JSON.stringify(payload) });
     },
     onSuccess: (result) => {
       setEditingId(result.data.id);
+      setSiteFilter(result.data.siteKey ?? siteFilter);
       setForm(fromArticle(result.data));
       clearLocalDraft();
       queryClient.invalidateQueries({ queryKey: ['news'] });
     }
   });
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    function handleSaveShortcut(event: KeyboardEvent) {
+      if (!(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== 's') return;
+      event.preventDefault();
+      if (!saveArticle.isPending) saveArticle.mutate('DRAFT');
+    }
+    window.addEventListener('keydown', handleSaveShortcut);
+    return () => window.removeEventListener('keydown', handleSaveShortcut);
+  }, [saveArticle]);
+
   const archiveArticle = useMutation({
-    mutationFn: (id: string) => apiFetch<NewsArticle>(`/news/${id}`, { method: 'DELETE' }),
+    mutationFn: ({ id, siteKey }: { id: string; siteKey: NewsSiteKey }) => apiFetch<NewsArticle>(`/news/${id}?siteKey=${siteKey}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['news'] })
   });
 
@@ -579,6 +591,34 @@ export default function NewsDashboardPage() {
       [key]: value,
       ...(key === 'title' && !current.slug ? { slug: slugifyLocal(String(value)) } : {})
     }));
+  }
+
+  function changeSite(value: NewsSiteKey) {
+    if (editingId || value === form.siteKey) return;
+    applySiteChange(value);
+  }
+
+  function applySiteChange(value: NewsSiteKey) {
+    if (typeof window !== 'undefined' && !editingId && hasMeaningfulDraft(form)) {
+      const payload: LocalDraftPayload = {
+        savedAt: new Date().toISOString(),
+        form,
+        editingId: null
+      };
+      window.localStorage.setItem(buildLocalDraftStorageKey(form.siteKey, null), JSON.stringify(payload));
+    }
+    setSiteFilter(value);
+    setForm({ ...emptyForm, siteKey: value });
+    setSuggestedCover(null);
+    setCoverPanelExpanded(false);
+    setSimpleMetaExpanded(false);
+    setPreview(false);
+    setBodyImage({ url: '', alt: '', caption: '' });
+    setEditorAssist(null);
+    setUploadError('');
+    setUploadRetry(null);
+    setDraftSavedAt('');
+    setLocalDraft(null);
   }
 
   function updateVisualEditorHtml(nextHtml: string) {
@@ -614,11 +654,16 @@ export default function NewsDashboardPage() {
   }
 
   function jumpToCover() {
-    focusAndReveal(coverDropzoneRef.current);
+    setCoverPanelExpanded(true);
+    window.requestAnimationFrame(() => focusAndReveal(coverDropzoneRef.current));
   }
 
   function jumpToSimpleSeo() {
-    scrollToSection(simpleSeoSectionRef.current);
+    setAuthorMode('advanced');
+    setSeoAdvancedExpanded(true);
+    window.requestAnimationFrame(() => {
+      focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]'));
+    });
   }
 
   function jumpToSimplePreview() {
@@ -627,26 +672,36 @@ export default function NewsDashboardPage() {
 
   function edit(article: NewsArticle) {
     setEditingId(article.id);
+    setSiteFilter(article.siteKey ?? 'AGRIPASSPORT');
     setForm(fromArticle(article));
     setSuggestedCover(null);
+    setCoverPanelExpanded(false);
+    setSimpleMetaExpanded(false);
     setPreview(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   function reset() {
     setEditingId(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, siteKey: siteFilter });
     setSuggestedCover(null);
+    setCoverPanelExpanded(false);
+    setSimpleMetaExpanded(false);
     setPreview(false);
   }
 
   function restoreLocalDraft() {
     if (!localDraft) return;
+    if (!editingId && localDraft.form.siteKey !== siteFilter) {
+      setLocalDraft(null);
+      return;
+    }
     skipAutosaveRef.current = true;
     setEditingId(localDraft.editingId);
     setForm(localDraft.form);
     setSuggestedCover(null);
     setDraftSavedAt(localDraft.savedAt);
+    setLocalDraft(null);
     setPreview(false);
     window.requestAnimationFrame(() => {
       if (editorMode === 'visual') focusVisualEditor();
@@ -684,35 +739,119 @@ export default function NewsDashboardPage() {
     });
   }
 
-  function insertHtmlIntoVisualEditor(html: string) {
-    focusVisualEditor();
+  function captureVisualSelection() {
+    const editor = visualEditorRef.current;
+    const selection = window.getSelection();
+    if (!editor || !selection?.rangeCount || !selection.anchorNode || !editor.contains(selection.anchorNode)) return null;
+    return selection.getRangeAt(0).cloneRange();
+  }
+
+  function insertHtmlIntoVisualEditor(html: string, savedRange?: Range | null) {
+    const editor = visualEditorRef.current;
+    if (!editor) return;
+    editor.focus();
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      if (savedRange && editor.contains(savedRange.commonAncestorContainer)) selection.addRange(savedRange);
+      else {
+        const range = document.createRange();
+        range.selectNodeContents(editor);
+        range.collapse(false);
+        selection.addRange(range);
+      }
+    }
     document.execCommand('insertHTML', false, html);
+    syncVisualEditor();
+  }
+
+  function prepareVisualSelection() {
+    const editor = visualEditorRef.current;
+    if (!editor) return null;
+    const selection = window.getSelection();
+    if (!selection) return null;
+
+    if (!selection.rangeCount || !selection.anchorNode || !editor.contains(selection.anchorNode)) {
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      range.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+
+    return { editor, selection, range: selection.getRangeAt(0) };
+  }
+
+  function moveVisualCursorTo(node: Node, atStart = true) {
+    const selection = window.getSelection();
+    if (!selection) return;
+    const range = document.createRange();
+    range.selectNodeContents(node);
+    range.collapse(atStart);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function insertVisualBlock(tagName: 'h2' | 'h3' | 'blockquote') {
+    focusVisualEditor();
+    const prepared = prepareVisualSelection();
+    if (!prepared) return;
+
+    document.execCommand('formatBlock', false, tagName);
+    const activeNode = prepared.selection.anchorNode;
+    const activeElement = activeNode instanceof Element ? activeNode : activeNode?.parentElement;
+    const block = activeElement?.closest(tagName);
+    if (block && prepared.editor.contains(block)) {
+      let nextBlock = block.nextElementSibling;
+      if (!nextBlock || nextBlock.tagName.toLowerCase() === tagName) {
+        nextBlock = document.createElement('p');
+        nextBlock.innerHTML = '<br />';
+        block.after(nextBlock);
+      }
+      moveVisualCursorTo(nextBlock, true);
+    }
+    syncVisualEditor();
+  }
+
+  function insertVisualInline(text: string) {
+    focusVisualEditor();
+    const prepared = prepareVisualSelection();
+    if (!prepared) return;
+
+    if (prepared.range.collapsed) {
+      const safeText = escapeHtml(text);
+      document.execCommand('insertHTML', false, `<em>${safeText}</em>&nbsp;`);
+    } else {
+      document.execCommand('italic');
+    }
+    syncVisualEditor();
+  }
+
+  function insertVisualList(command: 'insertUnorderedList' | 'insertOrderedList', text: string) {
+    focusVisualEditor();
+    const prepared = prepareVisualSelection();
+    if (!prepared) return;
+
+    if (prepared.range.collapsed) {
+      const listTag = command === 'insertOrderedList' ? 'ol' : 'ul';
+      document.execCommand('insertHTML', false, `<${listTag}><li>${escapeHtml(text)}</li></${listTag}><p><br /></p>`);
+    } else {
+      document.execCommand(command);
+    }
     syncVisualEditor();
   }
 
   function insertVisualSnippet(snippet: string) {
     if (snippet.startsWith('<h2')) {
-      focusVisualEditor();
-      document.execCommand('formatBlock', false, 'h2');
-      syncVisualEditor();
+      insertVisualBlock('h2');
       return;
     }
     if (snippet.startsWith('<h3')) {
-      focusVisualEditor();
-      document.execCommand('formatBlock', false, 'h3');
-      syncVisualEditor();
-      return;
-    }
-    if (snippet.startsWith('<strong')) {
-      focusVisualEditor();
-      document.execCommand('bold');
-      syncVisualEditor();
+      insertVisualBlock('h3');
       return;
     }
     if (snippet.startsWith('<em')) {
-      focusVisualEditor();
-      document.execCommand('italic');
-      syncVisualEditor();
+      insertVisualInline('chữ nghiêng');
       return;
     }
     if (snippet.startsWith('<a ')) {
@@ -724,57 +863,56 @@ export default function NewsDashboardPage() {
       return;
     }
     if (snippet.startsWith('<ul')) {
-      focusVisualEditor();
-      document.execCommand('insertUnorderedList');
-      syncVisualEditor();
+      insertVisualList('insertUnorderedList', 'Mục mới');
       return;
     }
     if (snippet.startsWith('<ol')) {
-      focusVisualEditor();
-      document.execCommand('insertOrderedList');
-      syncVisualEditor();
+      insertVisualList('insertOrderedList', 'Mục mới');
       return;
     }
     if (snippet.startsWith('<blockquote')) {
-      focusVisualEditor();
-      document.execCommand('formatBlock', false, 'blockquote');
-      syncVisualEditor();
+      insertVisualBlock('blockquote');
       return;
     }
     insertHtmlIntoVisualEditor(snippet);
   }
 
-  async function uploadFile(file: File, target: 'cover' | 'body'): Promise<string | null> {
+  async function uploadFile(file: File, target: UploadTarget): Promise<string | null> {
     setUploading(target);
+    setUploadError('');
+    setUploadRetry(null);
     try {
+      const fileName = file.name || `clipboard-${Date.now()}.png`;
+      const mimeType = file.type || (fileName.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/png');
       const plan = await apiFetch<UploadPlan>('/files/presign-upload', {
         method: 'POST',
         body: JSON.stringify({
-          fileName: file.name,
-          mimeType: file.type,
+          fileName,
+          mimeType,
           sizeBytes: file.size,
           visibility: 'PUBLIC'
         })
       });
+      if (!plan.data.publicUrl) throw new Error('Chưa cấu hình địa chỉ ảnh public trên máy chủ.');
       const uploadResponse = await fetch(plan.data.uploadUrl, {
         method: plan.data.method || 'PUT',
         headers: plan.data.headers,
         body: file
       });
-      if (!uploadResponse.ok) throw new Error('Không upload được ảnh lên R2');
-      const publicUrl = plan.data.publicUrl || `${API_URL.replace(/\/api\/v1$/, '')}/files/${plan.data.objectKey}`;
+      if (!uploadResponse.ok) throw new Error(`Kho ảnh từ chối upload (HTTP ${uploadResponse.status}).`);
       const confirmed = await apiFetch<FileAsset>('/files/confirm-upload', {
         method: 'POST',
         body: JSON.stringify({
-          fileName: file.name,
-          mimeType: file.type,
+          fileName,
+          mimeType,
           sizeBytes: file.size,
           objectKey: plan.data.objectKey,
-          publicUrl,
+          publicUrl: plan.data.publicUrl,
           visibility: 'PUBLIC'
         })
       });
-      const url = confirmed.data.publicUrl || publicUrl;
+      const url = confirmed.data.publicUrl || plan.data.publicUrl;
+      if (!url) throw new Error('Ảnh đã upload nhưng chưa nhận được đường dẫn công khai.');
       if (target === 'cover') {
         update('coverImageUrl', url);
         if (!form.ogImageUrl) update('ogImageUrl', url);
@@ -785,7 +923,8 @@ export default function NewsDashboardPage() {
       }
       return url;
     } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Upload thất bại');
+      setUploadError(error instanceof Error ? error.message : 'Không thể tải ảnh lên. Vui lòng thử lại.');
+      setUploadRetry({ file, target });
       return null;
     } finally {
       setUploading('');
@@ -824,6 +963,26 @@ export default function NewsDashboardPage() {
     });
   }
 
+  function insertUploadedBodyImage(url: string, fileName: string, sourceLabel: string) {
+    const fallbackAlt = form.coverImageAlt || form.focusKeyword || form.title || fileName.replace(/\.[^.]+$/, '');
+    const alt = escapeHtml(fallbackAlt || 'Ảnh minh họa');
+    const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
+    rememberSuggestedCover(url, fallbackAlt, sourceLabel);
+    if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
+    else insertHtml(imageHtml);
+    setEditorAssist({
+      kind: 'pasted-image',
+      title: 'Ảnh vừa được chèn vào thân bài',
+      detail: 'Ảnh đã được upload và chèn vào nội dung. Bạn có thể tiếp tục viết hoặc dùng ảnh này làm cover nếu bài chưa có ảnh bìa.'
+    });
+  }
+
+  async function handleBodyFile(file: File) {
+    const url = await uploadFile(file, 'body');
+    if (!url) return;
+    insertUploadedBodyImage(url, file.name, 'Ảnh vừa tải từ máy');
+  }
+
   async function handleBodyPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
     const items = Array.from(event.clipboardData?.items ?? []);
     const imageItem = items.find((item) => item.type.startsWith('image/'));
@@ -856,15 +1015,18 @@ export default function NewsDashboardPage() {
       if (!file) return;
 
       event.preventDefault();
+      const savedRange = captureVisualSelection();
       const url = await uploadFile(file, 'body');
       if (!url) return;
-      const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-      rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa paste vào editor');
-      insertHtmlIntoVisualEditor(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`);
+      const fallbackAlt = form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, '');
+      const alt = escapeHtml(fallbackAlt || 'Ảnh minh họa');
+      const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
+      rememberSuggestedCover(url, fallbackAlt, 'Ảnh vừa paste vào editor');
+      insertHtmlIntoVisualEditor(imageHtml, savedRange);
       setEditorAssist({
         kind: 'pasted-image',
-        title: 'Ảnh vừa được chèn vào editor',
-        detail: 'Hệ thống đã upload ảnh lên bài viết. Nếu bài chưa có cover, bạn có thể dùng ngay ảnh này làm ảnh bìa để preview chia sẻ đẹp hơn.'
+        title: 'Ảnh vừa được chèn vào bài',
+        detail: 'Ảnh đã được upload và giữ đúng vị trí con trỏ. Bạn có thể dùng ảnh này làm cover nếu bài chưa có ảnh bìa.'
       });
       return;
     }
@@ -891,16 +1053,7 @@ export default function NewsDashboardPage() {
     if (!file) return;
     const url = await uploadFile(file, 'body');
     if (!url) return;
-    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa thả vào bài');
-    const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
-    if (editorMode === 'visual') insertHtmlIntoVisualEditor(imageHtml);
-    else insertHtml(imageHtml);
-    setEditorAssist({
-      kind: 'pasted-image',
-      title: 'Ảnh vừa được thả vào bài',
-      detail: 'Ảnh đã được upload và chèn vào nội dung. Nếu cover đang trống, bạn có thể dùng ngay ảnh này làm ảnh bìa.'
-    });
+    insertUploadedBodyImage(url, file.name, 'Ảnh vừa thả vào bài');
   }
 
   async function handleCoverFiles(fileList: FileList | null) {
@@ -910,7 +1063,8 @@ export default function NewsDashboardPage() {
   }
 
   async function handleCoverFile(file: File) {
-    await uploadFile(file, 'cover');
+    const url = await uploadFile(file, 'cover');
+    if (!url) return;
     setForm((current) => ({
       ...current,
       coverImageAlt: current.coverImageAlt || current.focusKeyword || current.title || file.name.replace(/\.[^.]+$/, '')
@@ -958,7 +1112,7 @@ export default function NewsDashboardPage() {
         focusKeyword: current.focusKeyword || current.title.trim(),
         seoTitle: current.seoTitle || title,
         seoDescription: current.seoDescription || fallbackDescription,
-        canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
+        canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug, current.siteKey) : ''),
         ogTitle: current.ogTitle || title,
         ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
         ogImageUrl: current.ogImageUrl || current.coverImageUrl,
@@ -994,6 +1148,28 @@ export default function NewsDashboardPage() {
     });
   }
 
+  function applyPassportPlan(slug: string) {
+    const topic = PASSPORT_NEWS_PLAN.find((item) => item.slug === slug);
+    if (!topic) return;
+    const category = categoryItems.find((item) => item.slug === topic.categorySlug);
+    setEditingId(null);
+    setPreview(false);
+    setForm((current) => ({
+      ...current,
+      siteKey: 'PASSPORT',
+      categoryId: category?.id ?? current.categoryId,
+      title: topic.title,
+      slug: topic.slug,
+      focusKeyword: topic.title.replace(/[?!:]/g, '').trim(),
+      seoTitle: topic.title,
+      status: 'DRAFT'
+    }));
+    window.requestAnimationFrame(() => {
+      if (editorMode === 'visual') focusVisualEditor();
+      else bodyRef.current?.focus();
+    });
+  }
+
   function fillSeoDefaults() {
     const bodyText = stripHtml(form.bodyHtml);
     const canonicalSlug = form.slug || slugifyLocal(form.title);
@@ -1007,7 +1183,7 @@ export default function NewsDashboardPage() {
       focusKeyword: current.focusKeyword || current.title.trim(),
       seoTitle,
       seoDescription: current.seoDescription || fallbackDescription,
-      canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug) : ''),
+      canonicalUrl: current.canonicalUrl || (canonicalSlug ? buildPublicNewsUrl(canonicalSlug, current.siteKey) : ''),
       ogTitle: current.ogTitle || socialTitle,
       ogDescription: current.ogDescription || current.seoDescription || fallbackDescription,
       ogImageUrl: current.ogImageUrl || current.coverImageUrl,
@@ -1073,7 +1249,7 @@ export default function NewsDashboardPage() {
     const bodyText = stripHtml(form.bodyHtml).toLowerCase();
     if (bodyText.slice(0, 180).includes(keyword.toLowerCase())) return;
 
-    const introParagraph = `<p><strong>${escapeHtml(keyword)}</strong> là nội dung trọng tâm của bài viết này. Dưới đây là những thông tin quan trọng để người đọc và Google hiểu nhanh chủ đề bạn đang đăng.</p>`;
+    const introParagraph = `<p>${escapeHtml(keyword)} là nội dung trọng tâm của bài viết này. Dưới đây là những thông tin quan trọng để người đọc và Google hiểu nhanh chủ đề bạn đang đăng.</p>`;
     if (editorMode === 'visual') {
       update('bodyHtml', `${introParagraph}${form.bodyHtml}`);
       window.requestAnimationFrame(() => {
@@ -1147,6 +1323,7 @@ export default function NewsDashboardPage() {
       return;
     }
     if (stepId === 'excerpt') {
+      setSimpleMetaExpanded(true);
       fillExcerptFromBody();
       return;
     }
@@ -1165,16 +1342,17 @@ export default function NewsDashboardPage() {
       return;
     }
     if (winId === 'excerpt') {
+      setSimpleMetaExpanded(true);
       fillExcerptFromBody();
       return;
     }
     if (winId === 'keyword') {
       if (focusKeywordSuggestions[0]) {
         applyFocusKeywordSuggestion(focusKeywordSuggestions[0]);
-        jumpToSimpleSeo();
         return;
       }
-      jumpToSimpleSeo();
+      setAuthorMode('advanced');
+      setSeoAdvancedExpanded(true);
       window.requestAnimationFrame(() => {
         focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]'));
       });
@@ -1185,6 +1363,7 @@ export default function NewsDashboardPage() {
       return;
     }
     if (winId === 'cover-alt') {
+      setCoverPanelExpanded(true);
       update('coverImageAlt', form.coverImageAlt || form.focusKeyword || form.title);
       return;
     }
@@ -1208,7 +1387,8 @@ export default function NewsDashboardPage() {
       return;
     }
     if (actionId === 'focus-keyword') {
-      jumpToSimpleSeo();
+      setAuthorMode('advanced');
+      setSeoAdvancedExpanded(true);
       window.requestAnimationFrame(() => {
         focusAndReveal(document.querySelector<HTMLInputElement>('[data-testid="news-focus-keyword-input"]'));
       });
@@ -1241,42 +1421,83 @@ export default function NewsDashboardPage() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 data-testid="page-title" className="text-2xl font-bold text-ink">Tin tức</h1>
-          <p className="text-sm text-slate-600">Đăng bài công khai cho agripassport.com/tin-tuc theo kiểu nhanh, rõ và dễ dùng.</p>
+    <div data-news-editor className={cn('news-editor-page space-y-5', isSimpleMode && 'news-editor-page-simple')}>
+      <header className="news-editor-commandbar">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
+            <span>Trình soạn tin</span>
+            <span aria-hidden="true">/</span>
+            <span className="text-leaf">{editingId ? 'Đang chỉnh sửa' : 'Bài viết mới'}</span>
+          </div>
+          <h1 data-testid="page-title" className="mt-1 text-2xl font-bold tracking-tight text-ink">Tin tức</h1>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-600">
+            Nhập tiêu đề, dán nội dung rồi đăng. Các thiết lập nâng cao chỉ mở khi bạn cần.
+          </p>
+          <p data-testid="news-quick-guide" className="mt-2 text-xs font-semibold leading-5 text-leaf/90">
+            Luồng nhanh: tiêu đề + nội dung → xem trước → đăng. Ảnh bìa và SEO có thể bổ sung sau.
+          </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <div className="inline-flex rounded-xl border border-slate-200 bg-white p-1">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <label className="news-editor-site-picker">
+            <span>Đăng lên</span>
+            <Select data-testid="news-site-filter" className="h-10 min-w-44" value={siteFilter} disabled={Boolean(editingId)} onChange={(event) => changeSite(event.target.value as NewsSiteKey)}>
+              <option value="AGRIPASSPORT">AGRIPASSPORT</option>
+              <option value="PASSPORT">HỘ CHIẾU NÔNG NGHIỆP</option>
+              <option value="HTXONLINE">HTXONLINE</option>
+            </Select>
+          </label>
+          <div className="news-editor-mode-switch" aria-label="Mức độ hiển thị của trình soạn tin">
             <button
               type="button"
-              onClick={() => setAuthorMode('simple')}
-              className={cn(
-                'rounded-lg px-3 py-2 text-sm font-semibold transition',
-                !isAdvancedMode ? 'bg-leaf text-white shadow-sm' : 'text-slate-600 hover:text-ink'
-              )}
+              aria-pressed={!isAdvancedMode}
+              onClick={() => {
+                setAuthorMode('simple');
+                setEditorMode('visual');
+              }}
+              className={cn(!isAdvancedMode && 'is-active')}
             >
-              Chế độ đơn giản
+              Cơ bản
             </button>
             <button
               type="button"
+              aria-label="Nâng cao"
+              aria-pressed={isAdvancedMode}
               onClick={() => setAuthorMode('advanced')}
-              className={cn(
-                'rounded-lg px-3 py-2 text-sm font-semibold transition',
-                isAdvancedMode ? 'bg-ink text-white shadow-sm' : 'text-slate-600 hover:text-ink'
-              )}
+              className={cn(isAdvancedMode && 'is-active is-advanced')}
             >
               Nâng cao
             </button>
           </div>
-          <Button type="button" variant="ghost" onClick={() => articles.refetch()} aria-label="Tải lại">
-            <RefreshCcw size={18} aria-hidden="true" />
-          </Button>
-          <Button type="button" onClick={reset}>
-            <Plus size={18} aria-hidden="true" />
-            Tạo bài
-          </Button>
+          {isAdvancedMode && (
+            <Button type="button" variant="ghost" onClick={() => articles.refetch()} aria-label="Tải lại danh sách bài viết">
+              <RefreshCcw size={18} aria-hidden="true" />
+            </Button>
+          )}
+          {editingId && (
+            <Button type="button" onClick={reset}>
+              <Plus size={18} aria-hidden="true" />
+              Tạo bài mới
+            </Button>
+          )}
+        </div>
+      </header>
+
+      <div className="news-editor-progress" aria-live="polite">
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-ink">{canPublish ? 'Sẵn sàng đăng' : `Còn thiếu ${publishBlockers.length} mục bắt buộc`}</p>
+          <p className="mt-0.5 text-xs leading-5 text-slate-600">
+            {canPublish ? 'Ảnh bìa và SEO là khuyến nghị; bạn có thể bổ sung sau.' : `Bổ sung: ${publishBlockers.map((item) => item.label.toLowerCase()).join(', ')}.`}
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {corePublishItems.map((item) => (
+            <span key={`progress-${item.id}`} className={cn('news-editor-progress-chip', item.ok && 'is-ready')}>
+              {item.ok ? '✓' : '•'} {item.id === 'cover' ? 'Ảnh bìa · nên có' : item.label}
+            </span>
+          ))}
+          <span className="news-editor-autosave">
+            {draftSavedAt ? `Tự lưu ${formatDateTime(draftSavedAt)}` : 'Ctrl/Cmd+S để lưu nháp'}
+          </span>
         </div>
       </div>
 
@@ -1305,16 +1526,73 @@ export default function NewsDashboardPage() {
         </Panel>
       )}
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
+      {siteFilter === 'PASSPORT' && !editingId && (
+        <Panel data-testid="news-passport-topic-library" className="border-leaf/20 bg-[linear-gradient(135deg,#f7fbf8_0%,#eef8f1_100%)]">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Đề cương Hộ chiếu Nông nghiệp</p>
+              <h2 className="mt-1 text-base font-bold text-ink">Chọn chủ đề từ file “Tin tức - Agripassport”</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-600">Chọn một đề tài để tự điền tiêu đề, đường dẫn và từ khóa. Sau đó dán nội dung từ Word, thêm ảnh bìa rồi đăng bài.</p>
+            </div>
+            <Select
+              data-testid="news-passport-topic-select"
+              className="min-h-11 min-w-0 sm:w-[27rem]"
+              value=""
+              onChange={(event) => applyPassportPlan(event.target.value)}
+            >
+              <option value="">Chọn chủ đề cần đăng…</option>
+              {Array.from(new Set(PASSPORT_NEWS_PLAN.map((item) => item.category))).map((category) => (
+                <optgroup key={category} label={category}>
+                  {PASSPORT_NEWS_PLAN.filter((item) => item.category === category).map((item) => (
+                    <option key={item.slug} value={item.slug}>{item.title}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </Select>
+          </div>
+        </Panel>
+      )}
+
+      {isSimpleMode && (
+        <Panel data-testid="news-simple-seo-summary" className="news-simple-seo-summary border-slate-200 bg-white px-3.5 py-3 sm:px-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className={cn('flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl', seoScoreClass(seo.score))} aria-live="polite">
+                <span className="text-base font-bold leading-none">{seo.score}</span>
+                <span className="mt-0.5 text-[10px] font-semibold">SEO</span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-ink">{seoScoreLabel(seo.score)}</p>
+                <p className="mt-0.5 truncate text-xs text-slate-600">
+                  {simpleSeoIssues.length > 0 ? `${simpleSeoIssues.length} gợi ý cần xem · không chặn đăng.` : 'Các tín hiệu chính đang ổn.'}
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+              <span className="rounded-full bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600">Dễ đọc {seo.readability}/100</span>
+              <span className="rounded-full bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-600">{seoGreenCount}/{seoSignals.length} đạt</span>
+              <Button type="button" variant="ghost" onClick={jumpToSimpleSeo} className="min-h-9 px-3 text-sm">
+                <Target size={16} aria-hidden="true" />
+                Xem SEO
+              </Button>
+            </div>
+          </div>
+          <div className="mt-2 h-1 overflow-hidden rounded-full bg-slate-100" aria-label={`Mức SEO ${seo.score} trên 100`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={seo.score}>
+            <div className={cn('h-full rounded-full transition-[width]', seoScoreBarClass(seo.score))} style={{ width: `${Math.max(seo.score, 4)}%` }} />
+          </div>
+        </Panel>
+      )}
+
+      <div className={cn('news-editor-layout grid items-start gap-5', isAdvancedMode ? 'xl:grid-cols-[minmax(0,1fr)_360px]' : 'grid-cols-1')}>
         <form
-          className={cn('space-y-4', !isAdvancedMode && 'pb-36 sm:pb-40 xl:pb-0')}
+          className={cn('space-y-4', !isAdvancedMode && hasMeaningfulDraft(form) && 'pb-36 sm:pb-40 xl:pb-0')}
           onSubmit={(event) => {
             event.preventDefault();
             saveArticle.mutate(undefined);
           }}
         >
           <Panel className="space-y-4">
-            <div className="rounded-2xl border border-leaf/20 bg-[linear-gradient(135deg,#f7fbf8_0%,#eef8f1_100%)] p-3.5">
+            <div className={cn('news-editor-overview rounded-2xl border border-leaf/20 bg-[linear-gradient(135deg,#f7fbf8_0%,#eef8f1_100%)] p-3.5', isSimpleMode && 'hidden')}>
               <div className="flex flex-col gap-2.5 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-2xl">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Đăng bài cực nhanh</p>
@@ -1336,220 +1614,10 @@ export default function NewsDashboardPage() {
                     <Save size={18} aria-hidden="true" />
                     {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm'}
                   </Button>
-                  {isAdvancedMode && (
-                    <>
-                      <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
-                        <Sparkles size={18} aria-hidden="true" />
-                        Tối ưu bài vừa dán
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                        <Target size={18} aria-hidden="true" />
-                        Vá SEO nhanh
-                      </Button>
-                    </>
-                  )}
                 </div>) : null}
               </div>
-              <div className="mt-3 rounded-2xl border border-white/80 bg-white/92 p-2 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2.5">
-                  <div>
-                    <p className="text-sm font-bold text-ink">{isAdvancedMode ? 'Mức tối thiểu để bấm Đăng 1 chạm' : '3 mục cần có để đăng nhanh'}</p>
-                    {isAdvancedMode ? (
-                      <p className="mt-1 text-xs leading-5 text-slate-600">Chỉ cần đủ 3 mục. Các thẻ SEO có thể để hệ thống xử lý sau.</p>
-                    ) : (
-                      <p className="mt-0.5 text-[10px] leading-4 text-slate-500">Tiêu đề, nội dung, ảnh bìa.</p>
-                    )}
-                  </div>
-                  <span
-                    className={cn(
-                      isAdvancedMode ? 'rounded-full px-3 py-1 text-xs font-bold' : 'rounded-full px-2.5 py-1 text-[11px] font-bold',
-                      canQuickPublish ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900'
-                    )}
-                  >
-                    {corePublishReady}/3 sẵn sàng
-                  </span>
-                </div>
-                {isAdvancedMode ? (
-                  <div className="mt-2.5 grid gap-2 md:grid-cols-3">
-                    {corePublishItems.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
-                        className={cn(
-                          'rounded-xl border p-2.5 text-left transition',
-                          item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-900' : 'border-amber-200 bg-amber-50 text-amber-950 hover:border-leaf'
-                        )}
-                      >
-                        <p className="text-xs font-bold uppercase tracking-[0.14em]">{item.ok ? 'Đã xong' : 'Cần bổ sung'}</p>
-                        <p className="mt-1 text-sm font-bold">{item.label}</p>
-                        <p className="mt-1 text-xs leading-5 opacity-90">{item.hint}</p>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="mt-2 space-y-1.5">
-                    <div className="grid grid-cols-3 gap-1.5 text-[11px] font-semibold text-slate-700">
-                      {corePublishItems.map((item) => (
-                        <button
-                          key={item.id}
-                          type="button"
-                          onClick={() => runNextStepSuggestion(item.id === 'content' ? 'content' : item.id === 'cover' ? 'cover' : 'title')}
-                          className={cn(
-                            'rounded-2xl border px-2 py-2 text-center transition',
-                            item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900 hover:border-leaf'
-                          )}
-                        >
-                          {item.label}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="grid grid-cols-[1fr_1fr_auto] gap-1.5">
-                      <Button type="button" variant="ghost" onClick={jumpToEditor} className="min-h-8 px-2 text-sm">
-                        <FileText size={18} aria-hidden="true" />
-                        Nhập bài
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={jumpToCover} className="min-h-8 px-2 text-sm">
-                        <Image size={18} aria-hidden="true" />
-                        Ảnh bìa
-                      </Button>
-                      <span className={cn('inline-flex items-center justify-center rounded-full px-2 text-[11px] font-bold', seoScoreClass(seo.score))}>
-                        SEO {seo.score}
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {!isAdvancedMode && (
-                <div className="mt-4 hidden rounded-2xl border border-slate-200 bg-[linear-gradient(135deg,#ffffff_0%,#f5faf7_100%)] p-3 shadow-sm lg:block">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng điều khiển đăng bài dạng WordPress</p>
-                      <p className="mt-1 text-sm font-bold text-ink">Nhập bài theo cách đơn giản, nhưng vẫn có điểm SEO, độ dễ đọc và preview trước khi đăng.</p>
-                    </div>
-                    <span className={cn('rounded-full px-3 py-1 text-xs font-bold', seoScoreClass(seo.score))}>{seoScoreLabel(seo.score)}</span>
-                  </div>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Đăng nhanh</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{corePublishReady}/3</p>
-                      <p className="mt-1 text-sm leading-5 text-slate-600">Chỉ cần tiêu đề, nội dung và ảnh bìa.</p>
-                    </div>
-                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">SEO</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{seo.score}/100</p>
-                      <p className="mt-1 text-sm leading-5 text-slate-600">{seoGreenCount}/{seoSignals.length} tín hiệu xanh.</p>
-                    </div>
-                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Dễ đọc trên mobile</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{seo.readability}/100</p>
-                      <p className="mt-1 text-sm leading-5 text-slate-600">{readabilityLabel(seo.readability)}</p>
-                    </div>
-                    <div className="rounded-xl border border-white/90 bg-white/92 p-3">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước</p>
-                      <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
-                      <p className="mt-1 text-sm leading-5 text-slate-600">{publishReadiness.label}</p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button type="button" variant="ghost" onClick={jumpToEditor}>
-                      <FileText size={18} aria-hidden="true" />
-                      Nhập bài ngay
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToCover}>
-                      <Image size={18} aria-hidden="true" />
-                      Dán ảnh bìa
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToSimpleSeo}>
-                      <Target size={18} aria-hidden="true" />
-                      Xem điểm SEO
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={jumpToSimplePreview}>
-                      <Eye size={18} aria-hidden="true" />
-                      Xem trước
-                    </Button>
-                  </div>
-                  {nextStepSuggestions.length > 0 && (
-                    <div className="mt-3 rounded-2xl border border-white/90 bg-white/92 p-3">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Việc nên làm tiếp</p>
-                          <p className="mt-1 text-sm font-bold text-ink">Hệ thống gợi ý theo tình trạng bài hiện tại, không cần tự đoán bước tiếp theo.</p>
-                        </div>
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700">{nextStepSuggestions.length} gợi ý</span>
-                      </div>
-                      <div className="mt-3 grid gap-2">
-                        {nextStepSuggestions.slice(0, 3).map((step) => (
-                          <div key={`simple-next-${step.id}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div className="max-w-xl">
-                                <p className="text-sm font-bold text-ink">{step.title}</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-600">{step.detail}</p>
-                              </div>
-                              <Button type="button" variant="ghost" onClick={() => runNextStepSuggestion(step.id)}>
-                                {step.actionLabel}
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-              {!isAdvancedMode && (
-                <details className="mt-2 rounded-2xl border border-white/80 bg-white/92 p-1.5 shadow-sm">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Mẫu bài và tác vụ phụ</p>
-                      <p className="mt-0.5 truncate text-[10px] text-slate-500">Chỉ mở khi cần bố cục sẵn hoặc dọn bài paste.</p>
-                    </div>
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleTemplateShortcuts.length} mẫu</span>
-                  </summary>
-                  <div className="mt-1.5 flex flex-wrap gap-1.5">
-                    {simpleTemplateShortcuts.map((template) => (
-                      <button
-                        key={`hero-simple-template-${template.id}`}
-                        type="button"
-                        className="rounded-full border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-ink shadow-sm transition hover:border-leaf hover:bg-mint/30"
-                        onClick={() => applyTemplate(template.id)}
-                      >
-                        {template.label}
-                      </button>
-                    ))}
-                  </div>
-                  <div className="mt-1.5 grid grid-cols-2 gap-1.5">
-                    <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-8 px-2.5 text-sm">
-                      <FileText size={18} aria-hidden="true" />
-                        Tạo mô tả
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => setSimpleEditorToolsExpanded((value) => !value)}
-                      className="min-h-8 px-2.5 text-sm"
-                      aria-expanded={simpleEditorToolsExpanded}
-                    >
-                      {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                      Thêm tác vụ
-                    </Button>
-                  </div>
-                  {simpleEditorToolsExpanded && (
-                    <div className="mt-2 grid gap-2">
-                      <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10">
-                        <Sparkles size={18} aria-hidden="true" />
-                        Sửa nhanh SEO
-                      </Button>
-                      <Button type="button" variant="ghost" onClick={needsImportedOptimization ? optimizeImportedArticle : cleanPastedContent} className="min-h-10">
-                        {needsImportedOptimization ? <Sparkles size={18} aria-hidden="true" /> : <RefreshCcw size={18} aria-hidden="true" />}
-                        {needsImportedOptimization ? 'Tối ưu bài dán' : 'Làm sạch nội dung'}
-                      </Button>
-                    </div>
-                  )}
-                </details>
-              )}
               {isAdvancedMode ? (
-                <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 shadow-sm" open={quickStartGuideOpen}>
+                <details className="mt-4 rounded-2xl border border-white/80 bg-white/92 shadow-sm">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                     <div>
                       <p className="text-sm font-bold text-ink">Hướng dẫn 4 bước đăng nhanh</p>
@@ -1575,11 +1643,22 @@ export default function NewsDashboardPage() {
                 ) : null}
             </div>
 
-            <div className={cn('grid gap-3', isAdvancedMode && 'md:grid-cols-2')}>
+            {!isAdvancedMode && (
+              <div className="news-editor-section-heading">
+                <span className="news-editor-step">1</span>
+                <div>
+                  <p className="text-sm font-bold text-ink">Thông tin bài viết</p>
+                  <p className="text-xs leading-5 text-slate-500">Nhập tiêu đề. Website đang chọn ở đầu trang.</p>
+                </div>
+              </div>
+            )}
+            <div className={cn('grid gap-3', isAdvancedMode ? 'md:grid-cols-2' : 'grid-cols-1')}>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Tiêu đề</span>
                 <Input
                   data-testid="news-title-input"
+                  name="title"
+                  autoComplete="off"
                   className="text-[15px] font-medium placeholder:text-[13px] placeholder:font-medium placeholder:text-slate-300 sm:text-base sm:font-normal sm:placeholder:text-base"
                   value={form.title}
                   onChange={(event) => update('title', event.target.value)}
@@ -1590,15 +1669,19 @@ export default function NewsDashboardPage() {
                   {titleLength ? `${titleLength} ký tự. Nên gọn trong khoảng 35-70 ký tự.` : 'Viết rõ ý chính để hệ thống gợi ý đường dẫn và SEO tốt hơn.'}
                 </span>
               </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Website xuất bản</span>
-                <Select data-testid="news-site-select" value={form.siteKey} onChange={(event) => update('siteKey', event.target.value as NewsSiteKey)}>
-                  <option value="AGRIPASSPORT">AGRIPASSPORT</option>
-                  <option value="PASSPORT">HỘ CHIẾU NÔNG NGHIỆP</option>
-                  <option value="HTXONLINE">HTXONLINE</option>
-                </Select>
-                <span className="text-xs font-normal text-slate-500">Bài viết chỉ hiển thị trên đúng website được chọn.</span>
-              </label>
+              {isAdvancedMode && (
+                <label className="space-y-1 text-sm font-semibold">
+                  <span>Website xuất bản</span>
+                  <Select data-testid="news-site-select" value={form.siteKey} disabled={Boolean(editingId)} onChange={(event) => changeSite(event.target.value as NewsSiteKey)}>
+                    <option value="AGRIPASSPORT">AGRIPASSPORT</option>
+                    <option value="PASSPORT">HỘ CHIẾU NÔNG NGHIỆP</option>
+                    <option value="HTXONLINE">HTXONLINE</option>
+                  </Select>
+                  <span className="text-xs font-normal text-slate-500">
+                    Website của bài đã lưu bị khóa để không thể chuyển nhầm cổng.
+                  </span>
+                </label>
+              )}
               {isAdvancedMode && <>
               <label className="space-y-1 text-sm font-semibold">
                 <span>Đường dẫn</span>
@@ -1652,147 +1735,16 @@ export default function NewsDashboardPage() {
               </label>
               </>}
             </div>
-            {!isAdvancedMode && (
-              <div ref={simpleSeoSectionRef} className="rounded-2xl border border-slate-200 bg-white/92 p-2 shadow-sm">
-                <div className="flex flex-wrap items-start justify-between gap-2.5">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink và SEO nhanh</p>
-                    <p className="mt-0.5 text-sm font-bold text-ink">Từ khóa, link, điểm SEO.</p>
+            {isAdvancedMode && (
+              <details className="rounded-2xl border border-slate-200 bg-slate-50">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5">
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-ink">SEO nhanh và permalink</p>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">{permalink}</p>
                   </div>
-                  <span className={cn('rounded-full px-2.5 py-1 text-[11px] font-bold', seoScoreClass(seo.score))}>SEO {seo.score}/100</span>
-                </div>
-                <div className="mt-1.5 grid gap-1.5">
-                  <label className="space-y-1 text-sm font-semibold">
-                    <span className="text-[13px]">Từ khóa chính</span>
-                    <Input
-                      data-testid="news-focus-keyword-input"
-                      className="h-11 placeholder:text-[13px] placeholder:text-slate-300"
-                      value={form.focusKeyword}
-                      onChange={(event) => update('focusKeyword', event.target.value)}
-                      placeholder="Ví dụ: xoài Mỹ Xương"
-                    />
-                  </label>
-                  {focusKeywordSuggestions.length > 0 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => applyFocusKeywordSuggestion(focusKeywordSuggestions[0]!)}
-                      className="min-h-8 w-fit px-2.5 text-[11px]"
-                    >
-                      Dung: {focusKeywordSuggestions[0]}
-                    </Button>
-                  )}
-                  <details className="rounded-2xl border border-slate-200 bg-white p-2">
-                    <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng đèn SEO dạng plugin</p>
-                        <p className="mt-1 text-sm font-bold text-ink">
-                          {simpleSeoMustFixes.length > 0
-                            ? `${simpleSeoMustFixes.length} mục cần làm ngay.`
-                            : simpleSeoShouldFixes.length > 0
-                              ? `${simpleSeoShouldFixes.length} mục nên bổ sung.`
-                              : 'Tín hiệu SEO cốt lõi đang ổn.'}
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-1.5">
-                        <span className={cn('rounded-full px-2.5 py-1 text-[11px] font-bold', seoScoreClass(seo.score))}>SEO {seo.score}</span>
-                        <span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800">{seoGreenCount}/{seoSignals.length} xanh</span>
-                      </div>
-                    </summary>
-                    {simpleSeoMustFixes.length > 0 ? (
-                      <div className="mt-2.5 space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-900">Cần làm ngay</p>
-                        {simpleSeoMustFixes.map((signal) => (
-                          <div key={`simple-must-${signal.id}`} className="rounded-xl border border-amber-200 bg-amber-50/90 p-3">
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div>
-                                <p className="text-sm font-bold text-ink">{signal.label}</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-700">{signal.detail}</p>
-                              </div>
-                              {signal.actionId && signal.actionLabel && (
-                                <Button type="button" variant="ghost" onClick={() => runSeoSignalAction(signal.actionId)}>
-                                  {signal.actionLabel}
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="mt-3 rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-sm leading-6 text-emerald-900">
-                        Các tín hiệu SEO cốt lõi đang ổn. Bạn có thể đăng ngay hoặc tối ưu thêm phần gợi ý bên dưới.
-                      </div>
-                    )}
-                    {simpleSeoShouldFixes.length > 0 && (
-                      <div className="mt-3 space-y-2">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Nên bổ sung thêm</p>
-                        {simpleSeoShouldFixes.map((signal) => (
-                          <div key={`simple-should-${signal.id}`} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                            <div className="flex flex-wrap items-start justify-between gap-3">
-                              <div>
-                                <p className="text-sm font-bold text-ink">{signal.label}</p>
-                                <p className="mt-1 text-sm leading-6 text-slate-700">{signal.detail}</p>
-                              </div>
-                              {signal.actionId && signal.actionLabel && (
-                                <Button type="button" variant="ghost" onClick={() => runSeoSignalAction(signal.actionId)}>
-                                  {signal.actionLabel}
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </details>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-2">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
-                    <div className="mt-1 rounded-xl border border-white/90 bg-white px-2.5 py-2">
-                      <p className="truncate text-sm font-semibold text-emerald-700">{permalink}</p>
-                    </div>
-                    <div className="mt-2 grid grid-cols-[1fr_auto] gap-2">
-                      <Button type="button" variant="ghost" onClick={() => void copyPermalink()} className="min-h-8 px-2.5 justify-center text-sm">
-                        <LinkIcon size={18} aria-hidden="true" />
-                        Copy
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        onClick={() => setSimplePermalinkToolsExpanded((value) => !value)}
-                        className="min-h-8 px-2.5 justify-center text-sm"
-                        aria-expanded={simplePermalinkToolsExpanded}
-                      >
-                        {simplePermalinkToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                        Thêm
-                      </Button>
-                    </div>
-                    {simplePermalinkToolsExpanded && (
-                      <div className="mt-2 grid gap-1.5 sm:grid-cols-2">
-                        <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-9 text-sm">
-                          <Sparkles size={18} aria-hidden="true" />
-                          Sửa nhanh SEO
-                        </Button>
-                        <Button type="button" variant="ghost" onClick={fillExcerptFromBody} className="min-h-9 text-sm">
-                          <FileText size={18} aria-hidden="true" />
-                          Tạo mô tả
-                        </Button>
-                        {needsImportedOptimization ? (
-                          <Button type="button" variant="ghost" onClick={optimizeImportedArticle} className="min-h-9 text-sm sm:col-span-2">
-                            <Sparkles size={18} aria-hidden="true" />
-                            Tối ưu bài dán
-                          </Button>
-                        ) : (
-                          <Button type="button" variant="ghost" onClick={cleanPastedContent} className="min-h-9 text-sm sm:col-span-2">
-                            <RefreshCcw size={18} aria-hidden="true" />
-                            Làm sạch nội dung
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            {isAdvancedMode && <div className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 lg:grid-cols-[1.2fr_0.8fr]">
+                  <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">Mở khi cần</span>
+                </summary>
+                <div className="grid gap-3 border-t border-slate-200 p-3 lg:grid-cols-[1.2fr_0.8fr]">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Permalink bài viết</p>
                 <p className="mt-1 break-all text-sm font-semibold text-emerald-700">{permalink}</p>
@@ -1815,7 +1767,7 @@ export default function NewsDashboardPage() {
                   </Button>
                 </div>
                 {isAdvancedMode && autofillPlan.length > 0 && (
-                  <details className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90" open={autofillPlanOpen}>
+                  <details className="mt-3 rounded-2xl border border-dashed border-emerald-200 bg-white/90">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-800">Đăng 1 chạm sẽ tự bổ sung</p>
@@ -1833,7 +1785,7 @@ export default function NewsDashboardPage() {
                   </details>
                 )}
                 {isAdvancedMode && preparedDiffs.length > 0 && (
-                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={preparePreviewOpen}>
+                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước sau khi chuẩn bị đăng</p>
@@ -1847,11 +1799,11 @@ export default function NewsDashboardPage() {
                           <p className="text-sm font-semibold text-ink">{item.label}</p>
                           <div className="mt-2 grid gap-2 md:grid-cols-2">
                             <div>
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Hien tai</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">Hiện tại</p>
                               <p className="mt-1 text-sm leading-6 text-slate-600">{item.before}</p>
                             </div>
                             <div>
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">Sau khi tu bo sung</p>
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">Sau khi tự bổ sung</p>
                               <p className="mt-1 text-sm leading-6 text-emerald-800">{item.after}</p>
                             </div>
                           </div>
@@ -1861,11 +1813,11 @@ export default function NewsDashboardPage() {
                   </details>
                 )}
                 {isAdvancedMode && (
-                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white" open={simpleSeoBoardOpen}>
+                  <details className="mt-3 rounded-2xl border border-slate-200 bg-white">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bảng đèn SEO dạng WordPress</p>
-                        <p className="mt-1 text-sm font-bold text-ink">Xanh là ổn, vàng là còn việc nên xử lý trước khi đăng.</p>
+                        <p className="mt-1 text-sm font-bold text-ink">Xanh là ổn, vàng là việc nên ưu tiên; không chặn đăng.</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800">
@@ -1938,33 +1890,40 @@ export default function NewsDashboardPage() {
                 <p className="mt-1 text-lg font-bold text-ink">{publishReadiness.completed}/{publishReadiness.total}</p>
               </div>
             </div>
-          </div>}
-          {draftSavedAt && (
-            <p className="text-xs font-semibold text-slate-500">Tự lưu nháp cục bộ lần cuối: {formatDateTime(draftSavedAt)}</p>
-          )}
+          </div>
+              </details>
+            )}
         </Panel>
 
           <Panel className="space-y-4">
-            {false && !isAdvancedMode && (
-              <div className="rounded-2xl border border-dashed border-leaf/30 bg-mint/35 p-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-sm font-bold text-ink">Mẫu bài nhanh</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">Cần bố cục có sẵn thì mở chế độ nâng cao, cần luồng đơn giản cứ thế viết và đăng ngay.</p>
-                  </div>
-                  <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-slate-700">{articleTemplates.length} mẫu</span>
+            {uploadError && (
+              <div data-testid="news-upload-error" role="alert" className="flex flex-col gap-3 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-950 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-bold">Không tải được ảnh</p>
+                  <p className="mt-1 leading-5">{uploadError}. Bài viết vẫn được giữ nguyên, bạn có thể thử lại mà không mất nội dung.</p>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Button type="button" variant="ghost" onClick={() => applyTemplate(articleTemplates[0].id)}>
-                    Dùng mẫu nhanh
-                  </Button>
-                  <Button type="button" onClick={() => setAuthorMode('advanced')}>
-                    Mở nâng cao
+                <div className="flex shrink-0 gap-2">
+                  {uploadRetry && (
+                    <Button type="button" variant="ghost" onClick={() => void uploadFile(uploadRetry.file, uploadRetry.target)} className="min-h-9 px-3 text-sm">
+                      <RefreshCcw size={16} aria-hidden="true" />
+                      Thử lại
+                    </Button>
+                  )}
+                  <Button type="button" variant="ghost" onClick={() => { setUploadError(''); setUploadRetry(null); }} className="min-h-9 px-3 text-sm">
+                    Đóng
                   </Button>
                 </div>
               </div>
             )}
-            <details className={cn('group rounded-2xl border border-dashed border-leaf/30 bg-mint/40', !isAdvancedMode && 'hidden')} open={templateLibraryOpen}>
+            <div className="news-editor-section-heading">
+              <span className="news-editor-step">2</span>
+              <div>
+                <p className="text-sm font-bold text-ink">Nội dung bài viết</p>
+                <p className="text-xs leading-5 text-slate-500">Gõ như Word, paste nội dung hoặc kéo ảnh vào khung soạn thảo.</p>
+              </div>
+              <span className="ml-auto rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">{readingMinutes} phút đọc</span>
+            </div>
+            <details className={cn('group rounded-2xl border border-dashed border-leaf/30 bg-mint/40', !isAdvancedMode && 'hidden')}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-3">
                 <div className="flex items-start gap-3">
                   <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-leaf shadow-sm">
@@ -2010,7 +1969,7 @@ export default function NewsDashboardPage() {
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 2</p>
                     <p className="mt-1 text-sm font-bold text-ink">Soạn trực quan như WordPress</p>
-                    <p className="mt-1 text-sm leading-6 text-slate-600">Chế độ trực quan là mặc định. Có thể dán ảnh trực tiếp, bôi đậm, tạo heading và chèn link ngay trên editor.</p>
+                    <p className="mt-1 text-sm leading-6 text-slate-600">Chế độ trực quan là mặc định. Có thể dán ảnh trực tiếp, tạo heading, danh sách và chèn link ngay trên editor.</p>
                   </div>
                   <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Bước 3</p>
@@ -2024,53 +1983,109 @@ export default function NewsDashboardPage() {
             {!isAdvancedMode && editorToolsOpen && (
               <div className="space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
-                    <FileText size={18} aria-hidden="true" />
-                    Soan truc quan
-                  </Button>
-                  <Button type="button" variant={editorMode === 'html' ? 'primary' : 'ghost'} onClick={() => setEditorMode('html')}>
-                    <Code2 size={18} aria-hidden="true" />
-                    HTML
-                  </Button>
+                  <label
+                    data-testid="news-body-upload-direct"
+                    className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-ink transition hover:bg-mint"
+                  >
+                    <Upload size={18} aria-hidden="true" />
+                    {bodyUploadActive ? 'Đang tải ảnh...' : 'Tải ảnh thân bài'}
+                    <input
+                      className="sr-only"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      disabled={bodyUploadActive}
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        event.currentTarget.value = '';
+                        if (file) void handleBodyFile(file);
+                      }}
+                    />
+                  </label>
                   <Button
                     type="button"
                     variant="ghost"
                     onClick={() => setSimpleEditorToolsExpanded((value) => !value)}
                     aria-expanded={simpleEditorToolsExpanded}
+                    title="Mở xem trước, SEO nhanh và công cụ định dạng"
                   >
                     {simpleEditorToolsExpanded ? <ChevronUp size={18} aria-hidden="true" /> : <ChevronDown size={18} aria-hidden="true" />}
-                    Cong cu
+                    Công cụ
                   </Button>
                 </div>
                 {simpleEditorToolsExpanded && (
-                <div className="flex flex-wrap gap-2">
-                  <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)} className="min-h-10 px-3">
-                    <Eye size={18} aria-hidden="true" />
-                    Xem trước
-                  </Button>
+                <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-3">
+                  <span className="mr-1 text-xs font-semibold text-slate-500">Định dạng và công cụ thêm</span>
                   <Button type="button" variant="ghost" onClick={applyQuickSeoFixes} className="min-h-10 px-3">
                     <Target size={18} aria-hidden="true" />
                     Vá SEO nhanh
                   </Button>
+                  {editorSnippets.map(([Icon, snippet, label]) => (
+                    <button
+                      key={`simple-${snippet}`}
+                      type="button"
+                      className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
+                      onClick={() => insertHtml(snippet)}
+                      aria-label={label}
+                      title={label}
+                    >
+                      <Icon size={18} aria-hidden="true" />
+                    </button>
+                  ))}
+                  {needsImportedOptimization && (
+                    <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
+                      <Sparkles size={18} aria-hidden="true" />
+                      Tối ưu bài vừa dán
+                    </Button>
+                  )}
                 </div>
                 )}
-                <details className="rounded-xl border border-slate-200 bg-slate-50" open={editorToolsOpen && simpleEditorToolsExpanded}>
-                  <summary className="cursor-pointer list-none px-3 py-3 text-sm font-semibold text-ink">Định dạng và công cụ thêm</summary>
-                  <div className="flex flex-wrap items-center gap-2 border-t border-slate-200 px-3 py-3">
-                    {editorSnippets.map(([Icon, snippet]) => (
-                      <button
-                        key={`simple-${snippet}`}
-                        type="button"
-                        className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
-                        onClick={() => insertHtml(snippet)}
-                        title="Chèn định dạng"
-                      >
-                        <Icon size={18} aria-hidden="true" />
-                      </button>
-                    ))}
+              </div>
+            )}
+
+            {isAdvancedMode && (
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  {editorSnippets.map(([Icon, snippet, label]) => (
+                    <button
+                      key={snippet}
+                      type="button"
+                      className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
+                      onClick={() => insertHtml(snippet)}
+                      aria-label={label}
+                      title={label}
+                    >
+                      <Icon size={18} aria-hidden="true" />
+                    </button>
+                  ))}
+                  <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
+                    <FileText size={18} aria-hidden="true" />
+                    Soạn trực quan
+                  </Button>
+                  <Button type="button" variant={editorMode === 'html' ? 'primary' : 'ghost'} onClick={() => setEditorMode('html')}>
+                    <Code2 size={18} aria-hidden="true" />
+                    HTML
+                  </Button>
+                  <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
+                    <Eye size={18} aria-hidden="true" />
+                    {preview ? 'Ẩn xem trước' : 'Xem trước'}
+                  </Button>
+                </div>
+                <details className="rounded-xl border border-slate-200 bg-slate-50">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5">
+                    <div>
+                      <p className="text-sm font-semibold text-ink">Công cụ hỗ trợ</p>
+                      <p className="mt-0.5 text-xs text-slate-500">Tự điền SEO, dọn nội dung paste và đồng bộ chia sẻ.</p>
+                    </div>
+                    <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">Mở khi cần</span>
+                  </summary>
+                  <div className="flex flex-wrap gap-2 border-t border-slate-200 px-3 py-3">
                     <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
                       <Sparkles size={18} aria-hidden="true" />
                       Tự điền SEO
+                    </Button>
+                    <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
+                      <Target size={18} aria-hidden="true" />
+                      Vá lỗi SEO nhanh
                     </Button>
                     <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
                       <Sparkles size={18} aria-hidden="true" />
@@ -2089,74 +2104,15 @@ export default function NewsDashboardPage() {
               </div>
             )}
 
-            {isAdvancedMode && (
-            <div className="flex flex-wrap items-center gap-2">
-              {editorSnippets.map(([Icon, snippet]) => (
-                <button
-                  key={snippet}
-                  type="button"
-                  className="grid h-10 w-10 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
-                  onClick={() => insertHtml(snippet)}
-                  title="Chèn định dạng"
-                >
-                  <Icon size={18} aria-hidden="true" />
-                </button>
-              ))}
-              <Button type="button" variant={editorMode === 'visual' ? 'primary' : 'ghost'} onClick={() => setEditorMode('visual')}>
-                <FileText size={18} aria-hidden="true" />
-                Soạn trực quan
-              </Button>
-              <Button type="button" variant={editorMode === 'html' ? 'primary' : 'ghost'} onClick={() => setEditorMode('html')}>
-                <Code2 size={18} aria-hidden="true" />
-                HTML
-              </Button>
-              <Button type="button" variant="ghost" onClick={fillSeoDefaults}>
-                <Sparkles size={18} aria-hidden="true" />
-                Tự điền SEO
-              </Button>
-              <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                <Target size={18} aria-hidden="true" />
-                Vá lỗi SEO nhanh
-              </Button>
-              <Button type="button" variant="ghost" onClick={optimizeImportedArticle}>
-                <Sparkles size={18} aria-hidden="true" />
-                Tối ưu bài vừa dán
-              </Button>
-              <Button type="button" variant="ghost" onClick={syncSocialFromSeo}>
-                <Target size={18} aria-hidden="true" />
-                Đồng bộ social
-              </Button>
-              <Button type="button" variant="ghost" onClick={cleanPastedContent}>
-                <RefreshCcw size={18} aria-hidden="true" />
-                Làm sạch nội dung dán
-              </Button>
-              <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
-                <Eye size={18} aria-hidden="true" />
-                Xem trước
-              </Button>
-            </div>
-            )}
-
             {editorMode === 'visual' ? (
               <div className="space-y-2">
-                {(isAdvancedMode || needsImportedOptimization || bodyUploadActive) && <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
+                {!isAdvancedMode && (needsImportedOptimization || bodyUploadActive) && <div className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs font-semibold text-slate-600">
                   <span className="rounded-full bg-white px-3 py-1 text-leaf">Chế độ dễ dùng</span>
                   <span>Dán ảnh từ clipboard: `Ctrl+V`</span>
                   <span>Dán nội dung từ Word/Docs: hệ thống tự làm sạch</span>
                   <span>Bấm toolbar để tạo H2, H3, danh sách, link</span>
                   <span>Chỉ dùng HTML khi cần tinh chỉnh sâu</span>
                 </div>}
-                {isAdvancedMode && (
-                <p className="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-900">
-                  Đăng nhanh: chỉ cần tiêu đề, nội dung, ảnh và bấm &quot;Đăng 1 chạm&quot;. Các mục SEO, social và lịch đăng chỉ cần mở khi thật sự cần và có thể bổ sung sau.
-                </p>
-                )}
-                {isAdvancedMode && (
-                <div className="rounded-xl border border-dashed border-leaf/30 bg-white/90 px-3 py-3 text-sm text-slate-700">
-                  <p className="font-bold text-ink">Nếu bạn vừa paste bài từ Word hoặc Google Docs</p>
-                  <p className="mt-1 leading-6">Bấm &quot;Tối ưu bài vừa dán&quot; để hệ thống làm sạch HTML, bổ sung mở bài có từ khóa, heading cơ bản, internal link, meta và social preview trong một lần.</p>
-                </div>
-                )}
                 {needsImportedOptimization && (
                   <div className="rounded-xl border border-amber-200 bg-amber-50 px-3 py-3 text-sm text-amber-950">
                     <div className="flex flex-wrap items-start justify-between gap-3">
@@ -2228,10 +2184,13 @@ export default function NewsDashboardPage() {
                       </div>
                     </div>
                   )}
-                  <div
+              <div
                     ref={visualEditorRef}
                     data-testid="news-content-editor"
                     contentEditable
+                    role="textbox"
+                    aria-label="Nội dung bài viết"
+                    aria-multiline="true"
                     suppressContentEditableWarning
                     onDragEnter={(event) => {
                       event.preventDefault();
@@ -2255,7 +2214,7 @@ export default function NewsDashboardPage() {
                     onBlur={syncVisualEditor}
                     onPaste={(event) => void handleVisualPaste(event)}
                     className={cn(
-                      'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                      'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_blockquote]:block [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:block [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:block [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
                       isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[136px] pt-[4.9rem]' : 'min-h-[136px]',
                       draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
                     )}
@@ -2270,9 +2229,11 @@ export default function NewsDashboardPage() {
             ) : (
               <label className="block space-y-1 text-sm font-semibold">
                 <span>Nội dung HTML</span>
-                <Textarea
+                  <Textarea
                   ref={bodyRef}
                   data-testid="news-content-editor"
+                  name="bodyHtml"
+                  autoComplete="off"
                   value={form.bodyHtml}
                   onChange={(event) => update('bodyHtml', event.target.value)}
                   onPaste={(event) => void handleBodyPaste(event)}
@@ -2310,10 +2271,10 @@ export default function NewsDashboardPage() {
           </Panel>
 
           <Panel className="p-0">
-            <details className="group" open={coverPanelOpen}>
+            <details className="group" open={coverPanelOpen} onToggle={(event) => setCoverPanelExpanded(event.currentTarget.open)}>
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
                 <div>
-                  <p className="text-sm font-bold text-ink">Ảnh đại diện</p>
+                  <p className="text-sm font-bold text-ink">Ảnh bìa</p>
                   <p className="text-sm text-slate-600">
                     {form.coverImageUrl
                       ? 'Đã có ảnh bìa. Mở ra để đổi nhanh nếu cần.'
@@ -2327,9 +2288,9 @@ export default function NewsDashboardPage() {
                       form.coverImageUrl ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900'
                     )}
                   >
-                    {form.coverImageUrl ? 'Đã có cover' : 'Thiếu cover'}
+                    {form.coverImageUrl ? 'Đã có ảnh' : 'Ảnh khuyến nghị'}
                   </span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">{coverPanelOpen ? 'Đóng' : 'Mở'}</span>
                 </div>
               </summary>
                 <div className="space-y-2.5 border-t border-slate-100 px-4 pb-4 pt-4">
@@ -2432,15 +2393,15 @@ export default function NewsDashboardPage() {
 
           {!isAdvancedMode && (
             <Panel className="p-0">
-              <details className="group" open={simpleMetaOpen}>
+              <details className="group" open={simpleMetaExpanded} onToggle={(event) => setSimpleMetaExpanded(event.currentTarget.open)}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
                   <div>
                     <p className="text-sm font-bold text-ink">Đường dẫn, mô tả ngắn và danh mục</p>
                     <p className="text-sm text-slate-600">Chỉ sửa khi cần. Để trống vẫn đăng nhanh được.</p>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleMetaOpen ? 'Đã mở' : 'Có thể bỏ qua'}</span>
-                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">Mở</span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-700">{simpleMetaExpanded ? 'Đang mở' : 'Có thể bỏ qua'}</span>
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-400 transition group-open:rotate-180">{simpleMetaExpanded ? 'Đóng' : 'Mở'}</span>
                   </div>
                 </summary>
                 <div className="space-y-3 border-t border-slate-100 px-4 pb-4 pt-4">
@@ -2542,32 +2503,43 @@ export default function NewsDashboardPage() {
           )}
 
           {isAdvancedMode && (
-          <Panel className="space-y-3">
-            <div className="grid gap-3 md:grid-cols-3">
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Ảnh body URL</span>
-                <Input data-testid="news-content-image-input" value={bodyImage.url} onChange={(event) => setBodyImage((current) => ({ ...current, url: event.target.value }))} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Alt text</span>
-                <Input value={bodyImage.alt} onChange={(event) => setBodyImage((current) => ({ ...current, alt: event.target.value }))} />
-              </label>
-              <label className="space-y-1 text-sm font-semibold">
-                <span>Caption</span>
-                <Input value={bodyImage.caption} onChange={(event) => setBodyImage((current) => ({ ...current, caption: event.target.value }))} />
-              </label>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button data-testid="news-content-image-button" type="button" variant="ghost" onClick={insertBodyImage}>
-                <Image size={18} aria-hidden="true" />
-                Chèn ảnh
-              </Button>
-              <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
-                <Upload size={18} aria-hidden="true" />
-                {uploading === 'body' ? 'Đang tải ảnh lên' : 'Tải ảnh nội dung'}
-                <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'body')} />
-              </label>
-            </div>
+          <Panel className="p-0">
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Chèn ảnh trong bài</p>
+                  <p className="text-sm text-slate-600">Dùng khi muốn chèn ảnh bằng URL hoặc upload riêng.</p>
+                </div>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">Tùy chọn</span>
+              </summary>
+              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
+                <div className="grid gap-3 md:grid-cols-3">
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Ảnh body URL</span>
+                    <Input data-testid="news-content-image-input" value={bodyImage.url} onChange={(event) => setBodyImage((current) => ({ ...current, url: event.target.value }))} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Alt text</span>
+                    <Input value={bodyImage.alt} onChange={(event) => setBodyImage((current) => ({ ...current, alt: event.target.value }))} />
+                  </label>
+                  <label className="space-y-1 text-sm font-semibold">
+                    <span>Caption</span>
+                    <Input value={bodyImage.caption} onChange={(event) => setBodyImage((current) => ({ ...current, caption: event.target.value }))} />
+                  </label>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button data-testid="news-content-image-button" type="button" variant="ghost" onClick={insertBodyImage}>
+                    <Image size={18} aria-hidden="true" />
+                    Chèn ảnh
+                  </Button>
+                  <label className="inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
+                    <Upload size={18} aria-hidden="true" />
+                    {uploading === 'body' ? 'Đang tải ảnh lên' : 'Tải ảnh nội dung'}
+                    <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && void uploadFile(event.target.files[0], 'body')} />
+                  </label>
+                </div>
+              </div>
+            </details>
           </Panel>
           )}
 
@@ -2813,49 +2785,23 @@ export default function NewsDashboardPage() {
             </details>
           </Panel>
             </>
-          ) : (
+          ) : preview ? (
             <Panel className="border-slate-200 bg-slate-50/90">
               <div ref={simplePreviewSectionRef} className="space-y-3">
-                <p className="text-sm font-bold text-ink">Chế độ đơn giản đang bật</p>
-                <p className="text-xs leading-5 text-slate-600">
-                  Các mục SEO và social nâng cao đang được ẩn bớt để bạn thao tác nhanh hơn.
-                </p>
-                <div className="rounded-2xl border border-slate-200 bg-white p-3">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-bold text-ink">Xem trước</p>
+                    <p className="mt-1 text-xs leading-5 text-slate-600">Kiểm tra nhanh cách bài sẽ xuất hiện trên Google và mạng xã hội.</p>
+                  </div>
+                  <Button type="button" variant="ghost" onClick={() => setPreview(false)} className="min-h-9 px-3 text-sm">
+                    Ẩn xem trước
+                  </Button>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Trước khi bấm Đăng 1 chạm</p>
-                      <p className="mt-1 text-sm font-semibold text-ink">
-                        {canQuickPublish
-                          ? 'Bạn đã đủ 3 mục cốt lõi. Có thể đăng ngay, rồi bổ sung SEO sau nếu muốn.'
-                          : `Mới cần xong ${corePublishReady}/3 mục cốt lõi. Chỉ cần title, nội dung và ảnh bìa là đủ để đăng nhanh.`}
-                      </p>
-                    </div>
-                    <span className={cn('rounded-full px-3 py-1 text-xs font-bold', canQuickPublish ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900')}>
-                      {corePublishReady}/3 sẵn sàng
-                    </span>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {corePublishItems.map((item) => (
-                      <span
-                        key={`simple-publish-${item.id}`}
-                        className={cn(
-                          'rounded-full border px-3 py-1 text-xs font-semibold',
-                          item.ok ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-amber-200 bg-amber-50 text-amber-900'
-                        )}
-                      >
-                        {item.label}
-                      </span>
-                    ))}
-                  </div>
-                  <p className="mt-2 text-[11px] font-semibold leading-5 text-slate-500">
-                    {autofillPlan.length > 0
-                          ? `Sau khi đăng, editor có thể tự bổ sung thêm: ${autofillPlan.slice(0, 4).map((item) => item.label).join(', ')}.`
-                      : 'Đường dẫn, mô tả ngắn và các thẻ SEO cơ bản đang khá đầy đủ hoặc sẵn sàng tự tạo.'}
-                  </p>
-                  <div className="mt-3 grid gap-2">
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước Google</p>
+                        <p className="text-xs font-semibold text-slate-500">Google</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
                           {(resolvedMetaPreview.title || '').trim().length || 0} ký tự title
                         </span>
@@ -2866,7 +2812,7 @@ export default function NewsDashboardPage() {
                     </div>
                     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Xem trước chia sẻ</p>
+                        <p className="text-xs font-semibold text-slate-500">Mạng xã hội</p>
                         <span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-600">
                           {resolvedMetaPreview.ogImage && resolvedMetaPreview.ogImage !== 'Ảnh bìa công khai' ? 'Có ảnh' : 'Chưa có ảnh'}
                         </span>
@@ -2879,31 +2825,9 @@ export default function NewsDashboardPage() {
                     </div>
                   </div>
                 </div>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
-                    <Sparkles size={18} aria-hidden="true" />
-                    {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm'}
-                  </Button>
-                  <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
-                    <Save size={18} aria-hidden="true" />
-                    {saveArticle.isPending ? 'Đang lưu' : 'Lưu nháp'}
-                  </Button>
-                  <Button type="button" variant="ghost" onClick={preparePostForPublish}>
-                    <Sparkles size={18} aria-hidden="true" />
-                    Chuẩn bị đăng
-                  </Button>
-                  <Button type="button" variant="ghost" onClick={applyQuickSeoFixes}>
-                    <Sparkles size={18} aria-hidden="true" />
-                    Tự điền SEO cơ bản
-                  </Button>
-                  <Button type="button" onClick={() => setAuthorMode('advanced')}>
-                    <Target size={18} aria-hidden="true" />
-                    Mở chế độ nâng cao
-                  </Button>
-                </div>
               </div>
             </Panel>
-          )}
+          ) : null}
 
           {(saveArticle.isError || archiveArticle.isError || quickPublishArticle.isError) && (
             <Panel data-testid="toast-error" className="text-sm font-semibold text-rose-700">
@@ -2911,89 +2835,40 @@ export default function NewsDashboardPage() {
             </Panel>
           )}
 
-          {isAdvancedMode ? (
-          <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
-            <Button type="button" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending || !canQuickPublish}>
-              <Sparkles size={18} aria-hidden="true" />
-              {quickPublishArticle.isPending ? 'Đang đăng 1 chạm' : 'Đăng 1 chạm (khuyên dùng)'}
-            </Button>
-            <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending}>
-              <Save size={18} aria-hidden="true" />
-              Lưu nháp
-            </Button>
-            <Button data-testid="news-publish-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('PUBLISHED')} disabled={saveArticle.isPending}>
-              <Save size={18} aria-hidden="true" />
-              Đăng ngay
-            </Button>
-            <Button type="button" variant="ghost" onClick={() => quickPublishArticle.mutate()} disabled={quickPublishArticle.isPending}>
-              <Sparkles size={18} aria-hidden="true" />
-              Đăng 1 chạm
-            </Button>
-            <Button type="submit" disabled={saveArticle.isPending}>
-              {saveArticle.isPending ? 'Đang lưu' : 'Lưu'}
-            </Button>
-          </div>
-          ) : (
-            <div className="fixed inset-x-0 bottom-[4.35rem] z-30 px-3 xl:hidden">
-              <div className="mx-auto max-w-3xl rounded-[1.2rem] border border-slate-200 bg-white/95 p-1.5 shadow-[0_10px_24px_rgba(15,23,42,0.12)] backdrop-blur">
-                <div className="flex items-center gap-2">
-                  <div className="min-w-0 flex-1 rounded-xl bg-slate-50 px-3 py-1.5">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Đăng nhanh</p>
-                    <p className="truncate text-[13px] font-bold text-ink">
-                      {canQuickPublish ? 'Sẵn sàng đăng' : `${corePublishReady}/3 sẵn sàng`}
-                    </p>
-                    {!canQuickPublish && (
-                      <p className="mt-0.5 truncate text-[10px] text-slate-500">
-                        {`Còn thiếu ${missingCoreItems.length} mục`}
-                      </p>
-                    )}
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    onClick={() => setSimpleActionsExpanded((value) => !value)}
-                    className="min-h-10 px-3"
-                    aria-expanded={simpleActionsExpanded}
-                    aria-label={simpleActionsExpanded ? 'Ẩn tác vụ phụ' : 'Mở tác vụ phụ'}
-                  >
-                    <ChevronUp size={18} aria-hidden="true" className={cn('transition', !simpleActionsExpanded && 'rotate-180')} />
-                  </Button>
-                  <Button
-                    data-testid="news-quick-publish-floating-button"
-                    type="button"
-                    onClick={() => quickPublishArticle.mutate()}
-                    disabled={quickPublishArticle.isPending || !canQuickPublish}
-                    className="min-h-10 px-3"
-                  >
-                    <Sparkles size={18} aria-hidden="true" />
-                    <span>{quickPublishArticle.isPending ? 'Đang đăng' : 'Đăng 1 chạm'}</span>
-                  </Button>
-                </div>
-                {simpleActionsExpanded && (
-                  <div className="mt-2 grid grid-cols-2 gap-2">
-                    <Button
-                      data-testid="news-save-draft-floating-button"
-                      type="button"
-                      variant="ghost"
-                      onClick={() => saveArticle.mutate('DRAFT')}
-                      disabled={saveArticle.isPending}
-                      className="min-h-10"
-                    >
-                      <Save size={18} aria-hidden="true" />
-                      {saveArticle.isPending ? 'Đang lưu' : 'Lưu nháp'}
-                    </Button>
-                    <Button type="button" variant="ghost" onClick={preparePostForPublish} className="min-h-10">
-                      <Sparkles size={18} aria-hidden="true" />
-                      Chuẩn bị
-                    </Button>
-                  </div>
-                )}
-              </div>
+          <div className={cn(
+            'news-editor-publish-bar z-20 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white/95 p-3 shadow-soft backdrop-blur sm:flex-row sm:items-center sm:justify-between',
+            hasMeaningfulDraft(form) ? 'sticky bottom-20 lg:bottom-4' : 'relative'
+          )}>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-slate-500">Xuất bản</p>
+              <p className="mt-0.5 truncate text-sm font-bold text-ink">
+                {canPublish ? 'Bài đã sẵn sàng để đăng công khai' : `Còn thiếu ${publishBlockers.map((item) => item.label.toLowerCase()).join(', ')}`}
+              </p>
             </div>
-          )}
+            <div className="flex flex-wrap gap-2 sm:justify-end">
+              <Button type="button" variant="ghost" onClick={() => setPreview((value) => !value)}>
+                <Eye size={18} aria-hidden="true" />
+                {preview ? 'Ẩn xem trước' : 'Xem trước'}
+              </Button>
+              <Button data-testid="news-save-draft-button" type="button" variant="ghost" onClick={() => saveArticle.mutate('DRAFT')} disabled={saveArticle.isPending || quickPublishArticle.isPending}>
+                <Save size={18} aria-hidden="true" />
+                {saveArticle.isPending ? 'Đang lưu' : 'Lưu nháp'}
+              </Button>
+              <Button
+                data-testid="news-publish-button"
+                type="button"
+                onClick={() => quickPublishArticle.mutate()}
+                disabled={quickPublishArticle.isPending || !canPublish}
+                title={!canPublish ? `Còn thiếu ${publishBlockers.map((item) => item.label.toLowerCase()).join(', ')}` : undefined}
+              >
+                <Sparkles size={18} aria-hidden="true" />
+                {quickPublishArticle.isPending ? 'Đang đăng…' : 'Đăng bài'}
+              </Button>
+            </div>
+          </div>
         </form>
 
-        <aside className={cn('space-y-4', !isAdvancedMode && 'hidden xl:block')}>
+        <aside className={cn('news-editor-sidebar space-y-4', !isAdvancedMode && 'hidden')}>
           <Panel className="space-y-3">
             {isAdvancedMode ? (
               <div className="rounded-2xl border border-sky-200 bg-sky/40 px-4 py-3">
@@ -3040,7 +2915,7 @@ export default function NewsDashboardPage() {
                 </div>
               </div>
             )}
-            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={detailHelpersOpen}>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
                   <p className="text-sm font-bold text-ink">Trợ lý thao tác nhanh</p>
@@ -3079,7 +2954,7 @@ export default function NewsDashboardPage() {
                             <p className="mt-1 text-xs leading-5 text-slate-600">{item.actionLabel}</p>
                           </div>
                           <Button type="button" variant="ghost" onClick={() => runQuickWin(item.id)}>
-                            Lam ngay
+                            Làm ngay
                           </Button>
                         </div>
                       )}
@@ -3154,19 +3029,19 @@ export default function NewsDashboardPage() {
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-700">
                   {publishChecklistIssues > 0
-                    ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi đăng công khai.`
-                    : 'Đã đủ khung cơ bản để tiếp tục xuất bản.'}
+                    ? `Còn ${publishChecklistIssues} gợi ý nên bổ sung để bài đẹp hơn.`
+                    : 'Đã đủ các mục khuyến nghị để tiếp tục xuất bản.'}
                 </p>
               </div>
             )}
-            <details className="group rounded-2xl border border-slate-200 bg-white/95" open={publishChecklistOpen}>
+            <details className="group rounded-2xl border border-slate-200 bg-white/95">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
                   <p className="text-sm font-bold text-ink">Checklist xuất bản</p>
                   <p className="text-sm text-slate-600">
                     {publishChecklistIssues > 0
-                      ? `Còn ${publishChecklistIssues} mục cần bổ sung trước khi đăng.`
-                      : 'Đã đủ các mục cốt lõi để có thể đăng.'}
+                      ? `Còn ${publishChecklistIssues} gợi ý nên bổ sung thêm.`
+                      : 'Đã đủ các mục khuyến nghị để có thể đăng.'}
                   </p>
                 </div>
                 <span
@@ -3219,7 +3094,7 @@ export default function NewsDashboardPage() {
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
                   <div
-                    className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
+                    className={cn('h-full rounded-full transition-[width]', seoScoreBarClass(seo.score))}
                     style={{ width: `${Math.max(seo.score, 6)}%` }}
                   />
                 </div>
@@ -3257,13 +3132,13 @@ export default function NewsDashboardPage() {
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
                   <div
-                    className={cn('h-full rounded-full transition-all', seoScoreBarClass(seo.score))}
+                    className={cn('h-full rounded-full transition-[width]', seoScoreBarClass(seo.score))}
                     style={{ width: `${Math.max(seo.score, 6)}%` }}
                   />
                 </div>
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {seoMustFixCount > 0
-                    ? `Bài còn ${seoMustFixCount} mục SEO quan trọng nên vá trước khi đăng.`
+                    ? `Bài còn ${seoMustFixCount} mục SEO quan trọng nên vá thêm.`
                     : seoShouldFixCount > 0
                       ? `Còn ${seoShouldFixCount} mục nên tối ưu thêm để bài đẹp hơn.`
                       : 'Điểm SEO đang ổn để tiếp tục hoàn thiện và xuất bản.'}
@@ -3277,13 +3152,13 @@ export default function NewsDashboardPage() {
               </div>
             )}
 
-            <details className="mt-4 rounded-2xl border border-slate-200 bg-white/95" open={seoReviewOpen}>
+            <details className="mt-4 rounded-2xl border border-slate-200 bg-white/95">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
                   <p className="text-sm font-bold text-ink">Xem checklist và preview SEO</p>
                   <p className="text-sm text-slate-600">
                     {seoMustFixCount > 0
-                      ? `${seoMustFixCount} mục cần xử lý trước và ${seoShouldFixCount} mục nên tối ưu thêm.`
+                      ? `${seoMustFixCount} mục nên ưu tiên và ${seoShouldFixCount} mục nên tối ưu thêm.`
                       : seoShouldFixCount > 0
                         ? `${seoShouldFixCount} mục nên tối ưu thêm để đẹp hơn.`
                         : 'Điểm số và preview đang ở trạng thái ổn để xuất bản.'}
@@ -3319,7 +3194,7 @@ export default function NewsDashboardPage() {
 
             <div data-testid="news-preview-google" className="mt-4 rounded-md border border-slate-200 p-3">
               <p className="truncate text-lg text-blue-700">{form.seoTitle || form.title || 'Tiêu đề SEO'}</p>
-              <p className="truncate text-sm text-emerald-700">{form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug')}</p>
+              <p className="truncate text-sm text-emerald-700">{form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug', form.siteKey)}</p>
               <p className="mt-1 text-sm text-slate-600">{form.seoDescription || form.excerpt || 'Meta description'}</p>
             </div>
 
@@ -3434,18 +3309,23 @@ export default function NewsDashboardPage() {
             </details>
           </Panel>
           {isAdvancedMode && (
-          <Panel className="space-y-3">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-ink">Gợi ý internal link</h2>
-                <p className="text-sm text-slate-600">Một cú bấm để chèn link nội bộ, tăng điều hướng và hỗ trợ SEO on-page.</p>
-              </div>
-              <Button type="button" variant="ghost" onClick={() => insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0])}>
-                <LinkIcon size={18} aria-hidden="true" />
-                Chèn nhanh
-              </Button>
-            </div>
-            <div className="space-y-2">
+          <Panel className="p-0">
+            <details className="group rounded-2xl">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Gợi ý internal link</p>
+                  <p className="text-sm text-slate-600">Mở khi cần chèn link nội bộ vào bài.</p>
+                </div>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{internalLinkSuggestions.length} gợi ý</span>
+              </summary>
+              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
+                <div className="flex justify-end">
+                  <Button type="button" variant="ghost" onClick={() => insertInternalLink(internalLinkSuggestions[0] ?? defaultInternalLinkSuggestions[0])}>
+                    <LinkIcon size={18} aria-hidden="true" />
+                    Chèn nhanh
+                  </Button>
+                </div>
+                <div className="space-y-2">
               {internalLinkSuggestions.map((suggestion) => (
                 <div key={`${suggestion.href}-${suggestion.label}`} className="rounded-xl border border-slate-200 bg-white p-3">
                   <div className="flex items-start justify-between gap-3">
@@ -3460,24 +3340,36 @@ export default function NewsDashboardPage() {
                   </div>
                 </div>
               ))}
-            </div>
+                </div>
+              </div>
+            </details>
           </Panel>
           )}
 
           {isAdvancedMode && (
-          <Panel className="space-y-3">
-            <h2 className="text-lg font-bold">Danh mục</h2>
-            <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
-            <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="Đường dẫn danh mục" />
-            <Button type="button" onClick={() => createCategory.mutate()} disabled={!categoryDraft.name || createCategory.isPending}>
-              <Plus size={18} aria-hidden="true" />
-              Thêm danh mục
-            </Button>
-            <div className="flex flex-wrap gap-2">
-              {categoryItems.map((category) => (
-                <Badge key={category.id} className="bg-slate-100 text-slate-700">{category.name}</Badge>
-              ))}
-            </div>
+          <Panel className="p-0">
+            <details className="group rounded-2xl">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                <div>
+                  <p className="text-sm font-bold text-ink">Danh mục</p>
+                  <p className="text-sm text-slate-600">Tạo danh mục mới khi danh sách hiện tại chưa đủ.</p>
+                </div>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{categoryItems.length} danh mục</span>
+              </summary>
+              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
+                <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
+                <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="Đường dẫn danh mục" />
+                <Button type="button" onClick={() => createCategory.mutate()} disabled={!categoryDraft.name || createCategory.isPending}>
+                  <Plus size={18} aria-hidden="true" />
+                  Thêm danh mục
+                </Button>
+                <div className="flex flex-wrap gap-2">
+                  {categoryItems.map((category) => (
+                    <Badge key={category.id} className="bg-slate-100 text-slate-700">{category.name}</Badge>
+                  ))}
+                </div>
+              </div>
+            </details>
           </Panel>
           )}
 
@@ -3516,7 +3408,7 @@ export default function NewsDashboardPage() {
                       </div>
                       <div className="mt-2 flex gap-2">
                         <Button type="button" variant="ghost" onClick={() => edit(article)}>Sửa</Button>
-                        <Button type="button" variant="danger" onClick={() => archiveArticle.mutate(article.id)}>Ẩn</Button>
+                        <Button type="button" variant="danger" onClick={() => archiveArticle.mutate({ id: article.id, siteKey: article.siteKey ?? siteFilter })}>Ẩn</Button>
                       </div>
                     </div>
                   ))}
@@ -3766,7 +3658,7 @@ function seoScoreBarClass(score: number) {
 function seoScoreLabel(score: number) {
   if (score >= 80) return 'Tốt, có thể tự tin đăng';
   if (score >= 60) return 'Khá ổn, nên rà thêm vài mục';
-  return 'Cần bổ sung trước khi đăng';
+  return 'Nên bổ sung thêm';
 }
 
 function readabilityClass(score: number) {
@@ -3805,7 +3697,7 @@ function buildPreparedBodyHtml(form: NewsForm) {
   const stripped = stripHtml(bodyHtml);
 
   if (keyword && !stripped.slice(0, 180).toLowerCase().includes(keyword.toLowerCase())) {
-    const introParagraph = `<p><strong>${escapeHtml(keyword)}</strong> là nội dung trọng tâm của bài viết này. Dưới đây là những thông tin quan trọng để người đọc và Google hiểu nhanh chủ đề bạn đang đăng.</p>`;
+    const introParagraph = `<p>${escapeHtml(keyword)} là nội dung trọng tâm của bài viết này. Dưới đây là những thông tin quan trọng để người đọc và Google hiểu nhanh chủ đề bạn đang đăng.</p>`;
     bodyHtml = `${introParagraph}${bodyHtml}`;
   }
 
@@ -3849,6 +3741,10 @@ function errorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'Không thể xử lý yêu cầu';
 }
 
+function buildLocalDraftStorageKey(siteKey: NewsSiteKey, editingId: string | null) {
+  return `htxonline-news-draft:${editingId || `new:${siteKey}`}`;
+}
+
 function hasMeaningfulDraft(form: NewsForm) {
   return Boolean(
     form.title.trim() ||
@@ -3869,24 +3765,35 @@ function formatDateTime(value?: string) {
 
 function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
   const items = [
-    { label: 'Tiêu đề', ok: Boolean(form.title.trim()) },
-    { label: 'Mô tả ngắn', ok: form.excerpt.trim().length >= 80 },
-    { label: 'Ảnh đại diện', ok: Boolean(form.coverImageUrl.trim()) },
-    { label: 'Từ khóa', ok: Boolean(form.focusKeyword.trim()) },
-    { label: 'Nội dung', ok: seo.stats.words >= 180 },
-    { label: 'Đường dẫn', ok: Boolean(form.slug.trim()) }
+    { label: 'Tiêu đề', ok: Boolean(form.title.trim()), required: true },
+    { label: 'Mô tả ngắn', ok: form.excerpt.trim().length >= 80, required: false },
+    { label: 'Ảnh bìa', ok: Boolean(form.coverImageUrl.trim()), required: false },
+    { label: 'Từ khóa', ok: Boolean(form.focusKeyword.trim()), required: false },
+    { label: 'Nội dung', ok: seo.stats.words > 0, required: true },
+    { label: 'Đường dẫn', ok: Boolean(form.slug.trim()), required: false }
   ];
   const completed = items.filter((item) => item.ok).length;
   const total = items.length;
   const ratio = completed / total;
+  const coreReady = items.filter((item) => item.required).every((item) => item.ok);
+  if (!coreReady) {
+    return {
+      items,
+      completed,
+      total,
+      ratio,
+      label: 'Thiếu phần cốt lõi',
+      detail: 'Cần có tiêu đề và nội dung để lưu hoặc đăng bài. Các mục còn lại là khuyến nghị.'
+    };
+  }
   if (ratio === 1) {
     return {
       items,
       completed,
       total,
       ratio,
-      label: 'Có thể đăng ngay',
-      detail: 'Bài viết đã đủ các thành phần cốt lõi để lên trang công khai và tiếp tục tối ưu SEO chi tiết.'
+       label: 'Có thể đăng ngay',
+       detail: 'Bài viết đã đủ nội dung để lên trang công khai. Bạn có thể tiếp tục tối ưu SEO chi tiết nếu muốn.'
     };
   }
   if (ratio >= 0.67) {
@@ -3895,8 +3802,8 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
       completed,
       total,
       ratio,
-      label: 'Gần sẵn sàng',
-      detail: 'Khung bài đã khá đầy đủ. Chỉ cần bổ sung vài trường còn thiếu trước khi đăng.'
+       label: 'Có thể đăng ngay',
+       detail: 'Bài viết đã có tiêu đề và nội dung. Các trường còn thiếu chỉ là khuyến nghị để bài đẹp hơn.'
     };
   }
   return {
@@ -3904,8 +3811,8 @@ function buildPublishReadiness(form: NewsForm, seo: SeoScoreResult) {
     completed,
     total,
     ratio,
-    label: 'Cần bổ sung thêm',
-    detail: 'Nên hoàn thiện tiêu đề, mô tả, ảnh và nội dung trước khi đưa bài viết lên trang công khai.'
+     label: 'Có thể đăng ngay',
+     detail: 'Bài viết đã có tiêu đề và nội dung. Bạn có thể bổ sung ảnh, mô tả và SEO sau khi lưu nháp.'
   };
 }
 
@@ -4103,7 +4010,7 @@ function buildPreparedDiffs(form: NewsForm, prepared: NewsForm): PreparedDiffIte
 }
 
 function buildResolvedMetaPreview(form: NewsForm): ResolvedMetaPreview {
-  const canonical = form.canonicalUrl.trim() || buildPublicNewsUrl(form.slug || 'slug');
+  const canonical = form.canonicalUrl.trim() || buildPublicNewsUrl(form.slug || 'slug', form.siteKey);
   const title = (form.seoTitle || form.title || 'Tiêu đề SEO').trim();
   const description = (form.seoDescription || form.excerpt || stripHtml(form.bodyHtml).slice(0, 160) || 'Mô tả SEO').trim();
   const ogTitle = (form.ogTitle || title).trim();
@@ -4293,13 +4200,13 @@ function buildCorePublishItems(form: NewsForm): CorePublishItem[] {
       {
         id: 'title',
         label: 'Tiêu đề',
-        ok: form.title.trim().length >= 12,
+        ok: Boolean(form.title.trim()),
         hint: form.title.trim() ? 'Đã có tiêu đề, có thể bấm để xem lại nếu cần.' : 'Nhập tiêu đề để hệ thống tạo đường dẫn, từ khóa và phần xem trước SEO.'
       },
       {
         id: 'content',
         label: 'Nội dung',
-        ok: stripHtml(form.bodyHtml).trim().length >= 80,
+        ok: Boolean(stripHtml(form.bodyHtml).trim()),
         hint: stripHtml(form.bodyHtml).trim() ? 'Đã có nội dung, có thể bổ sung thêm H2 hoặc ảnh nếu muốn.' : 'Dán nội dung hoặc gõ trực tiếp vào editor như soạn Word.'
       },
     {

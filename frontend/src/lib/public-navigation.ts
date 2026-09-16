@@ -33,18 +33,24 @@ const internalNavigation = [
 ] as const satisfies readonly PublicNavigationEntry[];
 
 const passportNavigation = [
-  { kind: 'link', href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' },
+  { kind: 'link', href: '/', label: 'Trang chủ' },
   { kind: 'link', href: '/gioi-thieu', label: 'Giới thiệu' },
   {
     kind: 'dropdown',
-    href: '/cay',
-    label: 'Hộ chiếu cây',
+    href: '/truy-xuat',
+    label: 'Tra cứu',
     items: [
       {
         href: '/truy-xuat',
-        label: 'Truy xuất',
+        label: 'Tra cứu sản phẩm',
         description: 'Tra cứu thông tin nguồn gốc',
         icon: Scan
+      },
+      {
+        href: '/cay',
+        label: 'Hộ chiếu cây',
+        description: 'Mở hồ sơ từng cá thể cây',
+        icon: QrCode
       },
       {
         href: '/san-pham?hasQr=true',
@@ -59,8 +65,25 @@ const passportNavigation = [
   { kind: 'link', href: '/lien-he', label: 'Liên hệ' }
 ] as const satisfies readonly PublicNavigationEntry[];
 
+const mobileMarketplaceNavigation = marketplaceNavigation.filter((entry) => !['/ve-chung-toi', '/htx'].includes(entry.href));
+const mobileInternalNavigation = internalNavigation.filter((entry) => entry.href !== '/gioi-thieu');
+const mobilePassportNavigation = [
+  { kind: 'link', href: '/', label: 'Trang chủ' },
+  { kind: 'link', href: '/san-pham', label: 'Sản phẩm' },
+  { kind: 'link', href: '/truy-xuat', label: 'Truy xuất QR' },
+  { kind: 'link', href: '/tin-tuc', label: 'Tin tức' },
+  { kind: 'link', href: '/lien-he', label: 'Liên hệ' }
+] as const satisfies readonly PublicNavigationEntry[];
+
 export function getPublicNavigation(siteKey: PublicSiteKey): readonly PublicNavigationEntry[] {
   if (siteKey === 'passport') return passportNavigation;
   if (siteKey === 'htxonline') return internalNavigation;
   return marketplaceNavigation;
+}
+
+/** Keep the persistent mobile bar focused on the five highest-value destinations. */
+export function getPublicMobileNavigation(siteKey: PublicSiteKey): readonly PublicNavigationEntry[] {
+  if (siteKey === 'passport') return mobilePassportNavigation;
+  if (siteKey === 'htxonline') return mobileInternalNavigation;
+  return mobileMarketplaceNavigation;
 }

@@ -3,7 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Database, Download, RefreshCcw, RotateCcw } from 'lucide-react';
 import { useState } from 'react';
-import { API_URL, apiFetch } from '@/lib/api';
+import { API_URL, apiFetch, authRequestHeaders } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { Button, Input, Panel } from '@/components/ui';
 
@@ -130,9 +130,8 @@ export default function BackupsPage() {
 }
 
 async function downloadBackup(fileName: string) {
-  const token = window.localStorage.getItem('agri_access_token');
   const response = await fetch(`${API_URL}/backups/${encodeURIComponent(fileName)}/download`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    headers: authRequestHeaders(),
     credentials: 'include'
   });
   if (!response.ok) {

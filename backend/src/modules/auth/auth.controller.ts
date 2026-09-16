@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpCode, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import {
   ChangePasswordDto,
   ForgotPasswordDto,
@@ -35,16 +35,17 @@ export class AuthController {
   @Public()
   @HttpCode(200)
   @Post('refresh')
-  refresh(@Body() dto: RefreshTokenDto, @Res({ passthrough: true }) response: Response) {
-    return this.withCookies(response, this.auth.refresh(dto));
+  refresh(@Body() dto: RefreshTokenDto, @Req() request: Request, @Res({ passthrough: true }) response: Response) {
+    return this.withCookies(response, this.auth.refresh(dto, request.cookies?.refresh_token));
   }
 
   @ApiBearerAuth()
   @HttpCode(200)
   @Post('logout')
   async logout(@CurrentUser() user: AuthUser, @Res({ passthrough: true }) response: Response) {
-    response.clearCookie('access_token');
-    response.clearCookie('refresh_token');
+    const options = this.cookieOptions();
+    response.clearCookie('access_token', options);
+    response.clearCookie('refresh_token', options);
     return this.auth.logout(user);
   }
 
@@ -77,23 +78,29 @@ export class AuthController {
 
   private async withCookies(response: Response, resultPromise: Promise<unknown>) {
     const result = (await resultPromise) as { accessToken?: string; refreshToken?: string };
-    const secure = process.env.NODE_ENV === 'production';
+    const options = this.cookieOptions();
     if (result.accessToken) {
       response.cookie('access_token', result.accessToken, {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure,
+        ...options,
         maxAge: 1000 * 60 * 15
       });
     }
     if (result.refreshToken) {
       response.cookie('refresh_token', result.refreshToken, {
-        httpOnly: true,
-        sameSite: 'lax',
-        secure,
+        ...options,
         maxAge: 1000 * 60 * 60 * 24 * 30
       });
     }
     return result;
+  }
+
+  private cookieOptions() {
+    const domain = process.env.AUTH_COOKIE_DOMAIN || (process.env.NODE_ENV === 'production' ? '.htxonline.vn' : undefined);
+    return {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? ('none' as const) : ('lax' as const),
+      secure: process.env.NODE_ENV === 'production',
+      ...(domain ? { domain } : {})
+    };
   }
 }

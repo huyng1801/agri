@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Boxes, Sparkles } from 'lucide-react';
+import { ArrowRight, Boxes, QrCode } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
+import { STANDARD_PRODUCTS } from '@/lib/public-catalog';
 import { EmptyPublicState, ProductCard, PublicProduct, publicListItems } from '@/components/public-marketplace';
 import { PublicPageMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
+import { PublicPagination } from '@/components/public-pagination';
 import { buildPublicMetadata } from '@/lib/page-metadata';
+import { getRequestPublicSiteKey } from '@/lib/request-site';
 import { ProductFilterBar, ProductFilterValues } from '@/components/product-filter-drawer';
 
 type ProductFilters = ProductFilterValues & {
@@ -17,15 +20,21 @@ type ProductsPageProps = {
 };
 
 export async function generateMetadata({ searchParams }: ProductsPageProps): Promise<Metadata> {
+  const siteKey = await getRequestPublicSiteKey();
+  const isPassport = siteKey === 'passport';
   const filters = (await searchParams) ?? {};
   const page = parseInt(filters.page || '1', 10);
   const path = page > 1 ? `/san-pham?page=${page}` : '/san-pham';
   return buildPublicMetadata({
-    title: page > 1 ? `Danh mục Nông sản - Trang ${page}` : 'Danh mục Sản phẩm Nông sản',
-    description: 'Tra cứu nông sản hợp tác xã, đặc sản vùng miền, tiêu chuẩn chất lượng và hồ sơ mã QR Hộ Chiếu Nông Nghiệp.',
+    title: page > 1 ? `Danh mục nông sản - Trang ${page}` : 'Danh mục sản phẩm nông sản',
+    description: isPassport
+      ? 'Tra cứu nông sản hợp tác xã, đặc sản vùng miền, tiêu chuẩn chất lượng và hồ sơ mã QR Hộ chiếu nông nghiệp.'
+      : 'Tra cứu nông sản hợp tác xã, đặc sản vùng miền, tiêu chuẩn chất lượng và hồ sơ mã QR Agripassport.',
     path,
-    openGraphTitle: 'Danh mục Nông sản Chuẩn hóa - AGRIPASSPORT',
-    openGraphDescription: 'Tìm kiếm sản phẩm nông nghiệp từ các hợp tác xã xác thực, lọc theo giá, địa phương và mã QR Passport.'
+    openGraphTitle: isPassport ? 'Danh mục nông sản có hồ sơ truy xuất' : 'Danh mục nông sản chuẩn hóa - AGRIPASSPORT',
+    openGraphDescription: isPassport
+      ? 'Tìm kiếm sản phẩm nông nghiệp từ các hợp tác xã xác thực, lọc theo giá, địa phương và mã QR hộ chiếu số.'
+      : 'Tìm kiếm sản phẩm nông nghiệp từ các hợp tác xã xác thực, lọc theo giá, địa phương và mã QR Passport.'
   });
 }
 
@@ -40,6 +49,23 @@ type GetProductsResult = {
   currentPage: number;
 };
 
+const emptyProductsResult = (page: number): GetProductsResult => ({ products: [], total: 0, totalPages: 1, currentPage: page });
+
+function localPreviewProducts(filters: ProductFilters, page: number, limit: number): GetProductsResult {
+  if (process.env.NODE_ENV === 'production') return emptyProductsResult(page);
+  const query = String(filters.search || '').trim().toLowerCase();
+  const products = query
+    ? STANDARD_PRODUCTS.filter((product) => `${product.name} ${product.description || ''}`.toLowerCase().includes(query))
+    : STANDARD_PRODUCTS;
+  const start = (page - 1) * limit;
+  return {
+    products: products.slice(start, start + limit),
+    total: products.length,
+    totalPages: Math.max(1, Math.ceil(products.length / limit)),
+    currentPage: page
+  };
+}
+
 async function getProducts(filters: ProductFilters, page: number = 1, limit: number = 12): Promise<GetProductsResult> {
   const params = new URLSearchParams({
     limit: String(limit),
@@ -51,7 +77,7 @@ async function getProducts(filters: ProductFilters, page: number = 1, limit: num
 
   try {
     const response = await fetch(`${API_URL}/products/public?${params.toString()}`, { cache: 'no-store' });
-    if (!response.ok) return { products: [], total: 0, totalPages: 1, currentPage: page };
+    if (!response.ok) return localPreviewProducts(filters, page, limit);
     const body = (await response.json()) as ApiEnvelope<ProductList | PublicProduct[]> & {
       meta?: { total?: number; totalPages?: number; page?: number; limit?: number };
     };
@@ -65,7 +91,7 @@ async function getProducts(filters: ProductFilters, page: number = 1, limit: num
       currentPage: page
     };
   } catch {
-    return { products: [], total: 0, totalPages: 1, currentPage: page };
+    return localPreviewProducts(filters, page, limit);
   }
 }
 
@@ -95,6 +121,8 @@ function buildPageUrl(filters: ProductFilters, newPage: number) {
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const filters = (await searchParams) ?? {};
+  const siteKey = await getRequestPublicSiteKey();
+  const isPassport = siteKey === 'passport';
   const currentPage = Math.max(1, parseInt(filters.page || '1', 10));
   const [productsData, categoriesData] = await Promise.all([
     getProducts(filters, currentPage, 12),
@@ -117,92 +145,59 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
   return (
     <PublicShell>
-      <PublicPageMain className="py-8 sm:py-12">
+      <PublicPageMain className="public-product-directory py-8 sm:py-12">
         {/* Page Header */}
-        <div className="border-b border-[var(--border)] pb-6 mb-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#0d7a28]">
-                <Sparkles size={13} />
-                <span>Nền tảng Hộ Chiếu Nông Nghiệp & Dữ liệu Nông sản Minh bạch</span>
-              </div>
+        <div className="public-directory-heading border-b border-[var(--border)] pb-6 mb-8">
+          <div className="flex flex-col gap-4">
+            <div>
+              <p className={`text-sm font-semibold text-[#0d7a28] ${!isPassport ? 'uppercase tracking-[0.12em]' : ''}`}>
+                {isPassport ? 'Hồ sơ hộ chiếu nông nghiệp và dữ liệu nông sản minh bạch' : 'Nền tảng dữ liệu nông sản minh bạch'}
+              </p>
               <h1 className="mt-2 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[var(--text-primary)]">
-                Danh mục Nông sản Hợp tác xã
+                Danh mục nông sản hợp tác xã
               </h1>
-              <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
-                Tra cứu thông tin nông sản chuẩn hóa từ các hợp tác xã uy tín. Dữ liệu công khai bao gồm quy cách đóng gói, vùng canh tác, chứng nhận an toàn và mã QR Hộ Chiếu Nông Nghiệp.
+              <p className="mt-2 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base lg:max-w-none lg:whitespace-nowrap lg:text-[0.8125rem] xl:text-sm">
+                Tra cứu thông tin nông sản chuẩn hóa từ các hợp tác xã uy tín. Dữ liệu công khai bao gồm quy cách đóng gói, vùng canh tác, chứng nhận an toàn và mã QR {isPassport ? 'Hộ chiếu nông nghiệp' : 'Agripassport'}.
               </p>
             </div>
 
-            {/* Live Data Summary Pills */}
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <span className="rounded-xl border border-[var(--border)] bg-white px-3.5 py-2 font-semibold text-[var(--text-primary)] shadow-xs">
-                Tổng cộng <strong className="text-[#106f8a] font-bold">{total}</strong> sản phẩm
-              </span>
-              <span className="rounded-xl border border-[var(--border)] bg-white px-3.5 py-2 font-semibold text-[var(--text-primary)] shadow-xs">
-                Trang <strong className="text-[#131935] font-bold">{currentPage}</strong> / {totalPages}
-              </span>
-              <span className="rounded-xl border border-[#0d7a28]/30 bg-[#0d7a28]/10 px-3.5 py-2 font-semibold text-[#0d7a28]">
-                Hiển thị <strong className="font-bold">{products.length}</strong> sản phẩm / trang
-              </span>
+            {/* Compact data summary: metadata, not promotional badges */}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--text-secondary)]">
+              <span><strong className="font-bold text-[var(--text-primary)]">{total}</strong> sản phẩm</span>
+              <span className="text-[var(--border-strong)]" aria-hidden="true">/</span>
+              <span>Trang <strong className="font-bold text-[var(--text-primary)]">{currentPage}</strong> / {totalPages}</span>
+              <span className="text-[var(--border-strong)]" aria-hidden="true">/</span>
+              <span>{products.length} sản phẩm mỗi trang</span>
             </div>
           </div>
         </div>
 
         {/* Search & Filter Bar (Mobile Drawer + Desktop Row) */}
-        <ProductFilterBar initialFilters={filters} categoryOptions={categoryOptions} />
+        <div className="public-directory-filter"><ProductFilterBar initialFilters={filters} categoryOptions={categoryOptions} /></div>
 
         {/* 4-Column Product Grid */}
         {products.length ? (
           <div className="space-y-10">
-            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
+            <div className="public-directory-grid grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product, index) => (
-                <ProductCard key={product.id} product={product} priority={index < 4} />
+                <ProductCard key={product.id} product={product} priority={index < 4} siteKey={siteKey} />
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-              <nav aria-label="Phân trang sản phẩm" className="flex items-center justify-center gap-2 pt-6 border-t border-[var(--border)]">
-                {currentPage > 1 && (
-                  <Link
-                    href={buildPageUrl(filters, currentPage - 1)}
-                    className="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--border)] bg-white px-4 text-xs font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28]"
-                  >
-                    Trang trước
-                  </Link>
-                )}
-
-                <div className="flex items-center gap-1.5">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
-                    const isCurrent = p === currentPage;
-                    return (
-                      <Link
-                        key={p}
-                        href={buildPageUrl(filters, p)}
-                        aria-current={isCurrent ? 'page' : undefined}
-                        className={`grid h-10 w-10 place-items-center rounded-xl text-xs font-bold transition ${
-                          isCurrent
-                            ? 'bg-[#0d7a28] text-white shadow-xs'
-                            : 'border border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[#0d7a28] hover:text-[#0d7a28]'
-                        }`}
-                      >
-                        {p}
-                      </Link>
-                    );
-                  })}
-                </div>
-
-                {currentPage < totalPages && (
-                  <Link
-                    href={buildPageUrl(filters, currentPage + 1)}
-                    className="inline-flex h-10 items-center justify-center rounded-xl border border-[var(--border)] bg-white px-4 text-xs font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[#0d7a28] hover:text-[#0d7a28]"
-                  >
-                    Trang sau
-                  </Link>
-                )}
-              </nav>
-            )}
+            <PublicPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              hrefForPage={(page) => buildPageUrl(filters, page)}
+              ariaLabel="Phân trang sản phẩm"
+            />
+            <div className="public-directory-callout flex flex-col gap-4 rounded-[var(--public-radius-card)] border border-[var(--brand-primary)]/20 bg-[var(--brand-primary-subtle)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+              <div>
+                <div className="flex items-center gap-2 text-[var(--brand-primary)]"><QrCode size={18} aria-hidden="true" /><p className="text-xs font-bold tracking-[0.1em]">Đã có mã trên tem?</p></div>
+                <h2 className="mt-2 text-lg font-extrabold text-[var(--text-primary)]">Mở thẳng hồ sơ nguồn gốc của sản phẩm.</h2>
+                <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">Nhập mã QR để xem vùng trồng, nhật ký và chứng nhận khi hồ sơ đã được công khai.</p>
+              </div>
+              <Link href="/truy-xuat" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--brand-primary)] px-4 text-sm font-bold text-white transition hover:bg-[var(--brand-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)]">Tra cứu mã QR <ArrowRight size={16} aria-hidden="true" /></Link>
+            </div>
           </div>
         ) : (
           <div className="rounded-2xl border border-[var(--border)] bg-white p-8 sm:p-12 text-center shadow-xs">

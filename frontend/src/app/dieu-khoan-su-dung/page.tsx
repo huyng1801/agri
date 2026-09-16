@@ -31,7 +31,7 @@ export default async function TermsPage() {
       title: '2. Quyền và nghĩa vụ của người dùng',
       paragraphs: [`Người dùng có quyền sử dụng các chức năng của ${platformName} theo đúng phạm vi được cấp và đồng thời phải chịu trách nhiệm với toàn bộ nội dung mình cung cấp lên hệ thống.`],
       bullets: [
-        'Truy cập, sử dụng, đăng tải và quản lý thông tin sản phẩm, vùng trồng, thông tin HTX theo quy định của nền tảng.',
+        'Truy cập, sử dụng, đăng tải và quản lý thông tin sản phẩm, vùng trồng, thông tin hợp tác xã theo quy định của nền tảng.',
         'Sử dụng các tính năng QR và truy xuất nguồn gốc nếu được kích hoạt.',
         'Được hỗ trợ kỹ thuật và yêu cầu cập nhật thông tin tài khoản theo quy định.',
         'Cung cấp thông tin chính xác, đầy đủ và cập nhật.',
@@ -62,10 +62,10 @@ export default async function TermsPage() {
       paragraphs: [`${platformName} không đảm bảo hệ thống sẽ hoạt động liên tục hoặc hoàn toàn không xảy ra lỗi kỹ thuật và không chịu trách nhiệm đối với một số rủi ro nằm ngoài phạm vi kiểm soát trực tiếp.`],
       bullets: [
         'Thiệt hại phát sinh từ việc người dùng sử dụng sai mục đích.',
-        'Thông tin do HTX hoặc người bán tự đăng tải.',
+        'Thông tin do hợp tác xã hoặc người bán tự đăng tải.',
         'Sai lệch về chất lượng sản phẩm thực tế so với nội dung do đơn vị bán cung cấp.',
         'Thiệt hại phát sinh từ sự cố Internet, thiên tai, tấn công mạng hoặc các sự kiện bất khả kháng.',
-        'Các giao dịch giữa người mua và HTX ngoài phạm vi hỗ trợ của nền tảng.',
+        'Các giao dịch giữa người mua và hợp tác xã ngoài phạm vi hỗ trợ của nền tảng.',
         `Trách nhiệm bồi thường tối đa của ${platformName}, nếu có, sẽ không vượt quá tổng giá trị phí dịch vụ mà người dùng đã thanh toán trong vòng 03 tháng gần nhất trước thời điểm phát sinh khiếu nại.`
       ]
     },
@@ -73,7 +73,7 @@ export default async function TermsPage() {
       title: '6. Bảo mật và thông tin cá nhân',
       paragraphs: [
         `${platformName} cam kết bảo vệ thông tin cá nhân của người dùng theo quy định pháp luật Việt Nam.`,
-        'Thông tin có thể được thu thập bao gồm họ tên, số điện thoại, email, thông tin HTX, thông tin sản phẩm, dữ liệu vùng trồng và dữ liệu truy xuất nguồn gốc.',
+        'Thông tin có thể được thu thập bao gồm họ tên, số điện thoại, email, thông tin hợp tác xã, thông tin sản phẩm, dữ liệu vùng trồng và dữ liệu truy xuất nguồn gốc.',
         'Dữ liệu được sử dụng để vận hành nền tảng, hỗ trợ khách hàng, cải thiện chất lượng dịch vụ và thực hiện các nghĩa vụ theo quy định pháp luật.'
       ],
       bullets: [`${platformName} không bán hoặc chia sẻ dữ liệu cá nhân cho bên thứ ba, trừ trường hợp có sự đồng ý của người dùng, theo yêu cầu của cơ quan nhà nước có thẩm quyền hoặc theo quy định của pháp luật.`]

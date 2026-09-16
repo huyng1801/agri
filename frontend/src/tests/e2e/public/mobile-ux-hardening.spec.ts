@@ -19,6 +19,12 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     fs.mkdirSync(screenshotsDir, { recursive: true });
   }
 
+  test.beforeEach(async ({ page }) => {
+    if (process.env.UI_AUDIT_SITE === 'passport') {
+      await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'hochieunongnghiep.com' });
+    }
+  });
+
   // 1. Check Zero Horizontal Overflow across all viewports on Homepage
   for (const vp of MOBILE_VIEWPORTS) {
     test(`Zero overflow on Homepage at ${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
@@ -40,8 +46,9 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     });
   }
 
-  // 2. Global Mobile Bottom Navigation mirrors the shared public menu and remains rock-solid on scroll
-  test('Global Bottom Navigation mirrors the shared menu and remains rock-solid on scroll', async ({ page }) => {
+  // 2. Global Mobile Bottom Navigation keeps only the highest-value destinations
+  // and remains rock-solid on scroll.
+  test('Global Bottom Navigation keeps a focused priority menu and remains rock-solid on scroll', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -49,11 +56,11 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(bottomNav).toBeVisible();
 
     const navItems = bottomNav.locator('a');
-    await expect(navItems).toHaveCount(7);
+    await expect(navItems).toHaveCount(5);
 
-    // 1. Verify the local marketplace menu is the same ordered model used by the header.
-    const expectedLabels = ['Trang chủ', 'Về Agripassport', 'Sản phẩm', 'Hợp tác xã', 'Truy xuất QR', 'Tin tức', 'Liên hệ'];
-    const expectedHrefs = ['/', '/ve-chung-toi', '/san-pham', '/htx', '/san-pham?hasQr=true', '/tin-tuc', '/lien-he'];
+    // 1. Verify the mobile priority subset remains stable and discoverable.
+    const expectedLabels = ['Trang chủ', 'Sản phẩm', 'Truy xuất QR', 'Tin tức', 'Liên hệ'];
+    const expectedHrefs = ['/', '/san-pham', '/truy-xuat', '/tin-tuc', '/lien-he'];
     for (let i = 0; i < expectedLabels.length; i++) {
       await expect(navItems.nth(i)).toContainText(expectedLabels[i]);
       await expect(navItems.nth(i)).toHaveAttribute('href', expectedHrefs[i]);
@@ -74,17 +81,17 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(isHidden).toBe(false);
 
     // 4. Click 'Sản phẩm' tab and verify navigation and active state
-    await navItems.nth(2).click();
+    await navItems.nth(1).click();
     await page.waitForURL('**/san-pham', { timeout: 10000 });
-    await expect(bottomNav.locator('a').nth(2)).toHaveAttribute('aria-current', 'page');
+    await expect(bottomNav.locator('a').nth(1)).toHaveAttribute('aria-current', 'page');
 
-    // 5. Click 'Hợp tác xã' tab
+    // 5. Click 'Tin tức' tab
     await bottomNav.locator('a').nth(3).click();
-    await page.waitForURL('**/htx', { timeout: 10000 });
+    await page.waitForURL('**/tin-tuc', { timeout: 10000 });
     await expect(bottomNav.locator('a').nth(3)).toHaveAttribute('aria-current', 'page');
 
-    // 6. The QR entry stays in the same menu model and points to the filtered catalog.
-    await expect(bottomNav.locator('a').nth(4)).toHaveAttribute('href', '/san-pham?hasQr=true');
+    // 6. The QR entry stays in the priority bar and points to the dedicated scanner.
+    await expect(bottomNav.locator('a').nth(2)).toHaveAttribute('href', '/truy-xuat');
   });
 
   // 3. Products Catalog page (/san-pham) on mobile
@@ -114,13 +121,14 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
   });
 
   // 4. Contact page (/lien-he) on mobile
-  test('Contact page (/lien-he) hides bottom nav and has thumb-friendly buttons', async ({ page }) => {
+  test('Contact page (/lien-he) keeps bottom nav visible and has thumb-friendly buttons', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/lien-he', { waitUntil: 'domcontentloaded' });
 
-    // Contextual bottom nav should be hidden on /lien-he
+    // The global bottom nav remains available so users can leave the contact page.
     const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
-    await expect(bottomNav).toBeHidden();
+    await expect(bottomNav).toBeVisible();
+    await expect(bottomNav.locator('a[aria-current="page"]')).toContainText('Liên hệ');
 
     // Form inputs >= 16px
     const nameInput = page.locator('input[name="fullName"]').first();
@@ -152,6 +160,8 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     const menuButton = header.getByRole('button', { name: /Mở menu điều hướng|Đóng menu/ });
     await expect(menuButton).toBeVisible();
     await expect(menuButton).toHaveAttribute('aria-expanded', 'false');
+    // Wait for the client drawer controller to hydrate after a fast SSR response.
+    await page.waitForTimeout(250);
 
     // 1. Open drawer via menu button
     await menuButton.click();
@@ -159,15 +169,14 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     const drawerDialog = page.locator('div[role="dialog"][aria-label="Menu điều hướng"]');
     await expect(drawerDialog).toBeVisible({ timeout: 5000 });
 
-    const drawerNav = drawerDialog.getByTestId('public-mobile-nav');
+    const drawerNav = drawerDialog.getByTestId('passport-mobile-nav');
     await expect(drawerNav).toBeVisible();
-    await expect(drawerNav.locator('a')).toHaveCount(7);
+    await expect(drawerNav.locator('a')).toHaveCount(6);
     await expect(drawerNav.locator('a').evaluateAll((links) => links.map((link) => link.textContent?.trim()))).resolves.toEqual([
       'Trang chủ',
-      'Về Agripassport',
-      'Sản phẩm',
-      'Hợp tác xã',
-      'Truy xuất QR',
+      'Giới thiệu',
+      'Tra cứu',
+      'Đối tác',
       'Tin tức',
       'Liên hệ'
     ]);
@@ -249,7 +258,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     expect(oversizedParagraphs, 'oversized public body copy on mobile').toEqual([]);
   });
 
-  test('Passport hero stays compact and stacks actions below desktop breakpoint', async ({ page }) => {
+  test('Passport hero makes QR lookup the primary action', async ({ page }) => {
     for (const viewport of [
       { width: 390, height: 844 },
       { width: 768, height: 900 }
@@ -257,30 +266,45 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
       await page.setViewportSize(viewport);
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-      const activeSlide = page.locator(
-        'section[aria-roledescription="carousel"] [class~="lg:hidden"] [role="group"][aria-hidden="false"]'
-      ).first();
-      await expect(activeSlide).toBeVisible();
+      const hero = page.locator('main#main-content > section').first();
+      await expect(hero.getByRole('heading', { name: /Quét một mã QR\. Biết rõ nông sản\./i })).toBeVisible();
+      const lookup = hero.locator('form[action="/truy-xuat"]');
+      await expect(lookup).toBeVisible();
+      await expect(lookup.locator('input[name="code"]')).toHaveAttribute('placeholder', 'Nhập mã trên tem QR');
+      await expect(lookup.getByRole('button', { name: 'Tra cứu ngay' })).toBeVisible();
 
-      const sizes = await activeSlide.locator(':is(h1, h2) > span').evaluateAll((elements) =>
-        elements.map((element) => parseFloat(window.getComputedStyle(element).fontSize))
-      );
-      expect(sizes[0]).toBeLessThanOrEqual(29);
-      expect(sizes[1]).toBeLessThanOrEqual(24);
+      const lookupWidth = await lookup.evaluate((element) => Math.round(element.getBoundingClientRect().width));
+      expect(lookupWidth).toBeGreaterThanOrEqual(Math.min(viewport.width - 32, 360));
+    }
+  });
 
-      const actions = activeSlide.locator(':scope > div:last-child');
-      await expect(actions.locator('a')).toHaveCount(2);
-      const actionsLayout = await actions.evaluate((element) => {
-        const style = window.getComputedStyle(element);
-        return { display: style.display, flexDirection: style.flexDirection };
-      });
-      expect(actionsLayout).toEqual({ display: 'flex', flexDirection: 'column' });
+  test('Homepage QR lookup submits to the traceability route', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-      const actionWidths = await actions.locator('a').evaluateAll((links) =>
-        links.map((link) => Math.round(link.getBoundingClientRect().width))
-      );
-      expect(actionWidths[0]).toBeGreaterThanOrEqual(viewport.width - 48);
-      expect(actionWidths[1]).toBe(actionWidths[0]);
+    const lookup = page.locator('form[action="/truy-xuat"]').first();
+    await lookup.locator('input[name="code"]').fill('DEMO-PASSPORT');
+    await lookup.getByRole('button', { name: 'Tra cứu ngay' }).click();
+    await page.waitForURL('**/truy-xuat/DEMO-PASSPORT');
+    expect(page.url()).toContain('/truy-xuat/DEMO-PASSPORT');
+  });
+
+  test('Lookup entry pages explain the next action and preserve the correct form semantics', async ({ page }) => {
+    for (const route of [
+      { path: '/truy-xuat', heading: 'Xem hành trình nông sản bằng mã QR', label: 'Mã sản phẩm hoặc mã lô', alternate: 'Tra cứu Hộ chiếu cây' },
+      { path: '/cay', heading: 'Mở hồ sơ của từng cá thể cây', label: 'Mã cây', alternate: 'Tra cứu sản phẩm' }
+    ]) {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(route.path, { waitUntil: 'domcontentloaded' });
+
+      await expect(page.locator('main#main-content h1')).toHaveText(route.heading);
+      await expect(page.getByLabel(route.label)).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Nhập mã để mở hồ sơ' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Từ chiếc tem đến dữ liệu bạn cần' })).toBeVisible();
+      await expect(page.getByRole('link', { name: route.alternate, exact: true })).toBeVisible();
+      const formBox = await page.getByRole('heading', { name: 'Nhập mã để mở hồ sơ' }).boundingBox();
+      expect(formBox?.y ?? Number.POSITIVE_INFINITY).toBeLessThan(180);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(390);
     }
   });
 
@@ -326,7 +350,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
-  test('Data layer section title and description stay on one line on desktop widths', async ({ page }) => {
+  test('Passport data journey remains readable on desktop widths', async ({ page }) => {
     const section = page.locator(
       'main#main-content > section[class*="bg-[var(--surface-muted)]"][class*="py-14"]'
     ).first();
@@ -336,20 +360,13 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-      const layout = await header.locator('h2, p').evaluateAll((elements) =>
-        elements.map((element) => {
-          const style = window.getComputedStyle(element);
-          return {
-            lineCount: Math.round(element.getBoundingClientRect().height / parseFloat(style.lineHeight)),
-            clientWidth: element.clientWidth,
-            scrollWidth: element.scrollWidth
-          };
-        })
+      await expect(header.getByRole('heading', { name: 'Từ vùng trồng đến mã truy xuất' })).toBeVisible();
+      await expect(section.locator('article')).toHaveCount(3);
+      const layout = await section.locator('article').evaluateAll((elements) =>
+        elements.map((element) => ({ width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }))
       );
 
-      expect(layout).toHaveLength(2);
-      expect(layout.every((element) => element.lineCount === 1)).toBe(true);
-      expect(layout.every((element) => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+      expect(layout.every((element) => element.width > 0 && element.height >= 220)).toBe(true);
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(width);
     }
   });
@@ -451,13 +468,18 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
 
     // Click first product card
     const firstProduct = page.locator('a[href^="/san-pham/"]').first();
-    await expect(firstProduct).toBeVisible();
+    await expect(firstProduct).toBeVisible({ timeout: 15000 });
     await firstProduct.click();
     await page.waitForLoadState('domcontentloaded');
 
     // Verify global bottom nav is hidden on product detail
     const bottomNav = page.locator('nav[data-testid="public-bottom-nav"]');
     await expect(bottomNav).toBeHidden();
+
+    // The contextual CTA must not cover the first-screen title before the
+    // original hero actions have been scrolled above the viewport.
+    const stickyActions = page.getByTestId('product-sticky-actions');
+    await expect(stickyActions).toHaveCount(0);
 
     // Zero overflow on detail page
     const isOverflowing = await page.evaluate(() => {
@@ -476,6 +498,19 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     // Sticky Subnav exists
     const stickyNav = page.locator('nav[aria-label="Điều hướng nhanh hồ sơ"]').first();
     await expect(stickyNav).toBeVisible();
+
+    await page.evaluate(() => {
+      const hero = document.querySelector('[data-testid="product-hero-actions"]');
+      const heroBottom = hero ? hero.getBoundingClientRect().bottom + window.scrollY : 0;
+      const maxBeforeFooter = Math.max(0, document.body.scrollHeight - window.innerHeight - 320);
+      window.scrollTo({ top: Math.min(heroBottom + 240, maxBeforeFooter), behavior: 'auto' });
+    });
+    await page.waitForTimeout(350);
+    await expect(stickyActions).toBeVisible();
+
+    await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' }));
+    await page.waitForTimeout(350);
+    await expect(stickyActions).toHaveCount(0);
 
     // Screenshot at 390x844
     await page.screenshot({

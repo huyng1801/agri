@@ -51,7 +51,7 @@ export function PublicMetricCarousel({
         type="button"
         aria-label="Mục trước"
         className={cn(
-          'absolute left-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
+          'absolute left-3 top-1/2 grid h-11 w-11 min-h-11 min-w-11 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
           demeterVariant && 'left-3 top-[42%] h-11 w-11 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:left-3 sm:top-1/2 sm:h-10 sm:w-10'
         )}
         onClick={() => setIndex((value) => value - 1)}
@@ -63,7 +63,7 @@ export function PublicMetricCarousel({
         type="button"
         aria-label="Mục tiếp theo"
         className={cn(
-          'absolute right-3 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
+          'absolute right-3 top-1/2 grid h-11 w-11 min-h-11 min-w-11 -translate-y-1/2 place-items-center rounded-[0.95rem] bg-[rgba(228,228,228,0.84)] text-slate-500 shadow-sm backdrop-blur transition hover:bg-[rgba(214,214,214,0.94)] hover:text-[#1f2233]',
           demeterVariant && 'right-3 top-[42%] h-11 w-11 rounded-[1rem] bg-[rgba(225,225,225,0.92)] text-slate-500 shadow-[0_12px_24px_rgba(15,23,42,0.08)] sm:right-3 sm:top-1/2 sm:h-10 sm:w-10'
         )}
         onClick={() => setIndex((value) => value + 1)}

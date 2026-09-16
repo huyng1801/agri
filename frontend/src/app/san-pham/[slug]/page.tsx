@@ -5,6 +5,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { API_URL, ApiEnvelope } from '@/lib/api';
+import { STANDARD_PRODUCTS } from '@/lib/public-catalog';
 import { PublicProduct } from '@/components/public-marketplace';
 import { PublicDetailMain } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
@@ -17,11 +18,13 @@ import { deduplicateCertifications, translateActivityType, sanitizeLogDescriptio
 async function getProduct(slug: string) {
   try {
     const response = await fetch(`${API_URL}/products/public/${encodeURIComponent(slug)}`, { cache: 'no-store' });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      return process.env.NODE_ENV === 'production' ? null : STANDARD_PRODUCTS.find((product) => product.slug === slug) || null;
+    }
     const body = (await response.json()) as ApiEnvelope<PublicProduct>;
     return body.data;
   } catch {
-    return null;
+    return process.env.NODE_ENV === 'production' ? null : STANDARD_PRODUCTS.find((product) => product.slug === slug) || null;
   }
 }
 
@@ -31,24 +34,25 @@ type ProductDetailPageProps = {
 
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
+  const siteKey = await getRequestPublicSiteKey();
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   const product = await getProduct(slug);
   if (!product) return { title: 'Không tìm thấy sản phẩm' };
-  const siteKey = await getRequestPublicSiteKey();
   const canonical = await getRequestAbsoluteUrl(`/san-pham/${product.slug}`);
   const description = brandizeSiteText(
-    product.description || `Xem ${product.name} từ ${product.cooperative?.name ?? 'HTX'} trên nền tảng công khai.`,
+    product.description || `Xem ${product.name} từ ${product.cooperative?.name ?? 'hợp tác xã'} trên nền tảng công khai.`,
     siteKey
   );
   const image = product.thumbnail?.publicUrl || (await getRequestAbsoluteUrl('/public-media-placeholder.svg'));
   return {
-    title: `${product.name} · Dữ liệu Nông sản & QR Passport`,
+    title: `${product.name} · ${siteName}`,
     description,
     alternates: { canonical },
     openGraph: {
-      title: `${product.name} - AGRIPASSPORT`,
+      title: `${product.name} · ${siteName}`,
       description,
       url: canonical,
-      siteName: 'AGRIPASSPORT',
+      siteName,
       locale: 'vi_VN',
       type: 'website',
       images: [{ url: image, alt: product.name }]
@@ -68,6 +72,8 @@ function safeJsonLd(value: unknown) {
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { slug } = await params;
+  const siteKey = await getRequestPublicSiteKey();
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   const product = await getProduct(slug);
 
   if (!product) {
@@ -75,16 +81,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       <PublicShell>
         <PublicDetailMain className="max-w-3xl py-16 text-center">
           <div className="rounded-2xl border border-[var(--border)] bg-white p-8 sm:p-12 shadow-sm">
-            <h1 className="text-2xl font-bold text-[var(--text-primary)]">Không tìm thấy sản phẩm</h1>
+            <h1 className="text-2xl font-extrabold text-[var(--text-primary)]">Không tìm thấy hồ sơ nông sản</h1>
             <p className="mt-2 text-sm text-[var(--text-secondary)]">
-              Sản phẩm bạn đang tìm kiếm có thể đã được gỡ xuống hoặc chưa mở phạm vi công khai.
+              Hồ sơ bạn đang tìm kiếm có thể đã được gỡ xuống hoặc chưa mở phạm vi công khai trên {siteName}.
             </p>
             <Link
-              className="mt-6 inline-flex h-10 items-center justify-center rounded-lg bg-[#106f8a] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0d596e]"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[var(--brand-primary)] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[var(--brand-primary-hover)]"
               href="/san-pham"
             >
               <ArrowLeft size={16} className="mr-2" />
-              Quay lại danh mục sản phẩm
+              Xem danh mục nông sản
             </Link>
           </div>
         </PublicDetailMain>
@@ -103,7 +109,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     description: product.description || undefined,
     image: [product.thumbnail?.publicUrl || placeholderUrl],
     sku: product.code,
-    brand: { '@type': 'Brand', name: 'Agripassport' },
+    brand: { '@type': 'Brand', name: siteName },
     offers: {
       '@type': 'Offer',
       priceCurrency: 'VND',
@@ -120,7 +126,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     <PublicShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(productJsonLd) }} />
 
-      <PublicDetailMain className="py-6 sm:py-10">
+      <PublicDetailMain className="public-product-detail py-6 sm:py-10">
         {/* Institutional Breadcrumbs */}
         <nav aria-label="Điều hướng liên kết" className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[var(--text-tertiary)]">
           <Link href="/" className="transition hover:text-[var(--brand-primary)]">Trang chủ</Link>
@@ -150,6 +156,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             }))
           }}
           passportTargetUrl={passportTargetUrl}
+          siteKey={siteKey}
         />
       </PublicDetailMain>
     </PublicShell>

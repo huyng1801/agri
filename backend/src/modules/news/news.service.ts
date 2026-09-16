@@ -83,7 +83,7 @@ export class NewsService {
 
   async list(query: Record<string, unknown>) {
     const { page, limit, skip, take } = parsePagination(query);
-    const where: Prisma.NewsArticleWhereInput = {};
+    const where: Prisma.NewsArticleWhereInput = { siteKey: normalizeNewsSite(query.siteKey, true) };
     if (query.search) {
       const search = String(query.search);
       where.OR = [
@@ -135,9 +135,9 @@ export class NewsService {
     return paginated(data, total, page, limit);
   }
 
-  async get(id: string) {
-    const article = await this.prisma.newsArticle.findUnique({
-      where: { id },
+  async get(id: string, siteKey: unknown) {
+    const article = await this.prisma.newsArticle.findFirst({
+      where: { id, siteKey: normalizeNewsSite(siteKey, true) },
       include: this.articleIncludes()
     });
     if (!article) throw new NotFoundException('Không tìm thấy bài viết');
@@ -179,9 +179,13 @@ export class NewsService {
     return created;
   }
 
-  async update(user: AuthUser, id: string, dto: UpdateNewsArticleDto) {
-    const existing = await this.prisma.newsArticle.findUnique({ where: { id } });
+  async update(user: AuthUser, id: string, dto: UpdateNewsArticleDto, siteKey: unknown) {
+    const requestedSiteKey = normalizeNewsSite(siteKey, true);
+    const existing = await this.prisma.newsArticle.findFirst({ where: { id, siteKey: requestedSiteKey } });
     if (!existing) throw new NotFoundException('Không tìm thấy bài viết');
+    if (dto.siteKey && dto.siteKey !== requestedSiteKey) {
+      throw new BadRequestException('Không thể đổi website của bài viết trong lúc cập nhật');
+    }
     await this.assertCategory(dto.categoryId);
     const normalized = this.normalizeArticle(dto, existing);
     const updated = await this.prisma.newsArticle.update({
@@ -202,8 +206,8 @@ export class NewsService {
     return updated;
   }
 
-  async archive(user: AuthUser, id: string) {
-    const existing = await this.prisma.newsArticle.findUnique({ where: { id } });
+  async archive(user: AuthUser, id: string, siteKey: unknown) {
+    const existing = await this.prisma.newsArticle.findFirst({ where: { id, siteKey: normalizeNewsSite(siteKey, true) } });
     if (!existing) throw new NotFoundException('Không tìm thấy bài viết');
     const updated = await this.prisma.newsArticle.update({
       where: { id },
@@ -244,7 +248,7 @@ export class NewsService {
 
     const data = {
       categoryId: dto.categoryId,
-      siteKey: dto.siteKey ?? existing?.siteKey ?? NewsSite.AGRIPASSPORT,
+      siteKey: normalizeNewsSite(dto.siteKey ?? existing?.siteKey, true),
       title,
       excerpt: dto.excerpt,
       bodyHtml,
@@ -384,8 +388,11 @@ export class NewsService {
   }
 }
 
-function normalizeNewsSite(value: unknown): NewsSite {
-  if (value === undefined || value === null || value === '') return NewsSite.AGRIPASSPORT;
+function normalizeNewsSite(value: unknown, required = false): NewsSite {
+  if (value === undefined || value === null || value === '') {
+    if (required) throw new BadRequestException('Cần chọn website tin tức');
+    return NewsSite.AGRIPASSPORT;
+  }
   if (Object.values(NewsSite).includes(String(value) as NewsSite)) return String(value) as NewsSite;
   throw new BadRequestException('Website tin tức không hợp lệ');
 }

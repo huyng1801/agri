@@ -31,7 +31,7 @@ export default async function ReturnPolicyPage() {
     ? [
         {
           title: '1. Mục đích',
-          paragraphs: [`Chính sách này hướng dẫn người dùng phản ánh thông tin sản phẩm, HTX hoặc hồ sơ QR chưa chính xác trên ${platformName}.`]
+          paragraphs: [`Chính sách này hướng dẫn người dùng phản ánh thông tin sản phẩm, hợp tác xã hoặc hồ sơ QR chưa chính xác trên ${platformName}.`]
         },
         {
           title: '2. Phạm vi tiếp nhận',

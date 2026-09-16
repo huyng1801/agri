@@ -12,7 +12,9 @@ const DESKTOP_VIEWPORTS = [
   { width: 1920, height: 1080, name: '1920x1080' },
 ];
 
-test.describe('Desktop Hero Polish — Round 3 QA Suite', () => {
+const passportAuditEnabled = process.env.UI_AUDIT_SITE !== 'agripassport' && process.env.UI_AUDIT_SITE !== 'htxonline';
+
+test.describe('Passport Desktop Hero QA Suite', () => {
   const screenshotsDir = path.resolve(process.cwd(), 'output', 'desktop-hero');
   if (!fs.existsSync(screenshotsDir)) {
     fs.mkdirSync(screenshotsDir, { recursive: true });
@@ -20,11 +22,16 @@ test.describe('Desktop Hero Polish — Round 3 QA Suite', () => {
 
   for (const vp of DESKTOP_VIEWPORTS) {
     test(`QA Hero at ${vp.name} (${vp.width}x${vp.height})`, async ({ page }) => {
+      test.skip(!passportAuditEnabled, 'This carousel contract belongs to the Passport site.');
+      await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'hochieunongnghiep.com' });
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
       const hero = page.locator('section[aria-roledescription="carousel"]');
       await expect(hero).toBeVisible();
+      await expect(page.locator('main h1')).toHaveCount(1);
+      // Pause the built-in autoplay before asserting deterministic slide transitions.
+      await hero.hover();
 
       // 1. Zero horizontal scrollbar / overflow
       const isOverflowing = await page.evaluate(() => {
@@ -66,9 +73,9 @@ test.describe('Desktop Hero Polish — Round 3 QA Suite', () => {
 
       // 4. Headline hierarchy: main headline font size > accent line font size
       const headlineSizes = await page.evaluate(() => {
-        const h1 = document.querySelector('section[aria-roledescription="carousel"] h1');
-        if (!h1) return null;
-        const spans = h1.querySelectorAll('span');
+        const headline = document.querySelector('section[aria-roledescription="carousel"] h2');
+        if (!headline) return null;
+        const spans = headline.querySelectorAll('span');
         if (spans.length < 2) return null;
         const main = parseFloat(window.getComputedStyle(spans[0]).fontSize);
         const accent = parseFloat(window.getComputedStyle(spans[1]).fontSize);

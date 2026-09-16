@@ -1,78 +1,8 @@
-'use client';
+import LoginForm from './login-form';
+import { authPortalFromHost, publicSiteKeyFromHost } from '@/lib/domain';
+import { getRequestHostname } from '@/lib/request-site';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { LogIn } from 'lucide-react';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button, Input, Panel } from '@/components/ui';
-import { PublicAuthShell } from '@/components/public-auth-shell';
-import { PublicLogo } from '@/components/public-logo';
-import { login } from '@/lib/api';
-import { dashboardUrlForRoles } from '@/lib/domain';
-import { loginSchema } from '@/schemas/forms';
-
-type LoginValues = z.infer<typeof loginSchema>;
-
-export default function LoginPage() {
-  const router = useRouter();
-  const [error, setError] = useState('');
-  const form = useForm<LoginValues>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' }
-  });
-
-  async function onSubmit(values: LoginValues) {
-    setError('');
-    try {
-      const result = await login(values.email, values.password);
-      const nextUrl = dashboardUrlForRoles(result.user.roles, window.location.origin);
-      if (nextUrl.startsWith('http')) {
-        window.location.assign(nextUrl);
-      } else {
-        router.replace(nextUrl);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Đăng nhập thất bại');
-    }
-  }
-
-  return (
-    <PublicAuthShell>
-      <Panel className="w-full max-w-md">
-        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="space-y-2 text-center">
-            <PublicLogo size={56} variant="agri" className="mx-auto ring-1 ring-slate-200 lg:hidden" />
-            <h1 className="text-2xl font-bold">Đăng nhập</h1>
-            <p className="text-sm text-slate-600">AGRIPASSPORT — Nền tảng dữ liệu sản phẩm nông nghiệp</p>
-          </div>
-          <label className="block space-y-1 text-sm font-semibold">
-            <span>Email</span>
-            <Input data-testid="login-email-input" type="email" autoComplete="email" {...form.register('email')} />
-            {form.formState.errors.email && <span className="text-rose-600">{form.formState.errors.email.message}</span>}
-          </label>
-          <label className="block space-y-1 text-sm font-semibold">
-            <span>Mật khẩu</span>
-            <Input data-testid="login-password-input" type="password" autoComplete="current-password" {...form.register('password')} />
-            {form.formState.errors.password && <span className="text-rose-600">{form.formState.errors.password.message}</span>}
-          </label>
-          {error && <div className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{error}</div>}
-          <Button data-testid="login-submit-button" type="submit" className="w-full" disabled={form.formState.isSubmitting}>
-            <LogIn size={18} aria-hidden="true" />
-            {form.formState.isSubmitting ? 'Đang đăng nhập' : 'Đăng nhập'}
-          </Button>
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 font-semibold text-leaf transition hover:border-leaf hover:bg-mint" href="/register">
-              Tạo tài khoản
-            </Link>
-            <Link className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 font-semibold text-leaf transition hover:border-leaf hover:bg-mint" href="/">
-              Trang chủ
-            </Link>
-          </div>
-        </form>
-      </Panel>
-    </PublicAuthShell>
-  );
+export default async function LoginPage() {
+  const hostname = await getRequestHostname();
+  return <LoginForm initialPortal={authPortalFromHost(hostname)} siteKey={publicSiteKeyFromHost(hostname)} />;
 }

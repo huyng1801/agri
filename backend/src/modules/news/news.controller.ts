@@ -71,8 +71,8 @@ export class NewsController {
   @Get(':id')
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('news.read')
-  get(@Param('id') id: string) {
-    return this.news.get(id);
+  get(@Param('id') id: string, @Query() query: Record<string, unknown>) {
+    return this.news.get(id, query.siteKey);
   }
 
   @Post()
@@ -85,14 +85,14 @@ export class NewsController {
   @Patch(':id')
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('news.update')
-  update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateNewsArticleDto) {
-    return this.news.update(user, id, dto);
+  update(@CurrentUser() user: AuthUser, @Param('id') id: string, @Body() dto: UpdateNewsArticleDto, @Query() query: Record<string, unknown>) {
+    return this.news.update(user, id, dto, query.siteKey ?? dto.siteKey);
   }
 
   @Delete(':id')
   @Roles(RoleSlug.SUPER_ADMIN)
   @Permissions('news.delete')
-  archive(@CurrentUser() user: AuthUser, @Param('id') id: string) {
-    return this.news.archive(user, id);
+  archive(@CurrentUser() user: AuthUser, @Param('id') id: string, @Query() query: Record<string, unknown>) {
+    return this.news.archive(user, id, query.siteKey);
   }
 }

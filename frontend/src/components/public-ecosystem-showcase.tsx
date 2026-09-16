@@ -167,7 +167,7 @@ export function PublicEcosystemShowcase({
             <article
               key={p.num}
               className={cn(
-                'relative flex flex-col justify-between rounded-xl border bg-white transition-all duration-200',
+                'relative flex flex-col justify-between rounded-xl border bg-white transition-[border-color,box-shadow] duration-200',
                 isCurrent
                   ? 'border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]/20 shadow-md'
                   : 'border-[var(--border)] hover:border-[var(--border-strong)] hover:shadow-md'
@@ -211,12 +211,10 @@ export function PublicEcosystemShowcase({
                   >
                     <IconComponent size={22} aria-hidden="true" />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <h3 className="text-xl font-bold tracking-tight text-[var(--text-primary)]">
                       {p.name}
                     </h3>
-                    <p className="text-xs font-medium text-[var(--text-muted)]">
-                    </p>
                   </div>
                 </div>
 

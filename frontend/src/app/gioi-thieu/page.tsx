@@ -9,11 +9,16 @@ import { Button, cn } from '@/components/ui';
 import { buildPublicMetadata } from '@/lib/page-metadata';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { getRequestAbsoluteUrl, getRequestPublicSiteKey } from '@/lib/request-site';
+import { PassportIntroPage } from './passport-intro-page';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const siteKey = await getRequestPublicSiteKey();
+  const isPassport = siteKey === 'passport';
   return buildPublicMetadata({
-    title: 'Cách Agripassport hoạt động',
-    description: 'Tìm hiểu cách Agripassport tổ chức dữ liệu sản phẩm, kết nối hợp tác xã và mở hồ sơ QR truy xuất.',
+    title: isPassport ? 'Cách hộ chiếu nông nghiệp hoạt động' : 'Cách Agripassport hoạt động',
+    description: isPassport
+      ? 'Tìm hiểu cách hộ chiếu nông nghiệp kết nối cây, vùng trồng, nhật ký, thu hoạch và mã truy xuất.'
+      : 'Tìm hiểu cách Agripassport tổ chức dữ liệu sản phẩm, kết nối hợp tác xã và mở hồ sơ QR truy xuất.',
     path: '/gioi-thieu',
     keywords: ['cách Agripassport hoạt động', 'dữ liệu sản phẩm', 'QR truy xuất', 'hợp tác xã']
   });
@@ -55,6 +60,10 @@ export default async function AboutPage() {
         </PublicPageMain>
       </PublicShell>
     );
+  }
+
+  if (isPassport && siteProfile) {
+    return <PassportIntroPage siteProfile={siteProfile} />;
   }
 
   return (

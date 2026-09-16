@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatCurrency } from '@/lib/format';
-import { Button, Panel } from '@/components/ui';
+import { LinkButton, Panel } from '@/components/ui';
 
 type Overview = {
   metrics: Array<{ key: string; label: string; value: number; isCurrency?: boolean }>;
@@ -126,6 +126,29 @@ export default function DashboardPage() {
     '/dashboard/products': Package
   };
 
+  const dashboardQuickActions = quickActions.filter(([, label]) => !(isSuperAdmin && label === 'Quản lý HTX'));
+  const primaryQuickActions = dashboardQuickActions.slice(0, 4);
+  const secondaryQuickActions = dashboardQuickActions.slice(4);
+  const renderQuickAction = ([href, label, desc]: string[]) => {
+    const Icon = quickActionIcons[href] ?? ClipboardList;
+    return (
+      <Link key={`${href}-${label}`} href={href} className="group block h-full">
+        <div className="flex h-full min-h-20 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 shadow-xs transition duration-150 hover:-translate-y-0.5 hover:border-[#131935] hover:bg-[#f8faff]">
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef0fa] text-[#131935] transition group-hover:bg-[#131935] group-hover:text-white">
+              <Icon size={19} aria-hidden="true" />
+            </span>
+            <div className="min-w-0">
+              <span className="block truncate text-sm font-bold text-slate-900 group-hover:text-[#131935]">{label}</span>
+              <span className="mt-0.5 block truncate text-xs text-slate-400">{desc}</span>
+            </div>
+          </div>
+          <ArrowUpRight className="shrink-0 text-slate-400 transition group-hover:text-[#131935]" size={18} aria-hidden="true" />
+        </div>
+      </Link>
+    );
+  };
+
   const revenueValue = metricValue(overview, 'revenue') ?? (isSuperAdmin ? 128500000 : 34200000);
 
   return (
@@ -148,14 +171,9 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center gap-2.5">
-          <Link href={isSuperAdmin ? '/dashboard/cooperatives' : '/dashboard/products'}>
-            <button
-              type="button"
-              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#131935] px-4 text-xs font-bold text-white shadow-sm transition hover:bg-[#090d1d]"
-            >
-              {isSuperAdmin ? 'Quản lý HTX' : 'Thêm sản phẩm mới'}
-            </button>
-          </Link>
+          <LinkButton href={isSuperAdmin ? '/dashboard/cooperatives' : '/dashboard/products'} className="min-h-10 px-4 text-xs font-bold">
+            {isSuperAdmin ? 'Quản lý HTX' : 'Thêm sản phẩm mới'}
+          </LinkButton>
         </div>
       </div>
 
@@ -203,29 +221,22 @@ export default function DashboardPage() {
       {/* Task & Quick Actions Section */}
       <div>
         <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-3">
-          Phím tắt tác vụ nhanh
+          Tác vụ thường dùng
         </h2>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {quickActions.map(([href, label, desc]) => {
-            const Icon = quickActionIcons[href] ?? ClipboardList;
-            return (
-              <Link key={`${href}-${label}`} href={href} className="group block h-full">
-                <div className="flex h-full min-h-20 items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 transition duration-150 hover:-translate-y-0.5 hover:border-[#131935] hover:bg-[#f8faff] shadow-xs">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#eef0fa] text-[#131935] transition group-hover:bg-[#131935] group-hover:text-white">
-                      <Icon size={19} aria-hidden="true" />
-                    </span>
-                    <div className="min-w-0">
-                      <span className="block truncate text-sm font-bold text-slate-900 group-hover:text-[#131935]">{label}</span>
-                      <span className="block truncate text-xs text-slate-400 mt-0.5">{desc}</span>
-                    </div>
-                  </div>
-                  <ArrowUpRight className="shrink-0 text-slate-400 transition group-hover:text-[#131935]" size={18} aria-hidden="true" />
-                </div>
-              </Link>
-            );
-          })}
+          {primaryQuickActions.map(renderQuickAction)}
         </div>
+        {secondaryQuickActions.length > 0 && (
+          <details className="mt-3 rounded-xl border border-slate-200 bg-white">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-slate-700">
+              <span>Xem thêm chức năng</span>
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600">{secondaryQuickActions.length}</span>
+            </summary>
+            <div className="grid gap-3 border-t border-slate-100 px-3 py-3 sm:grid-cols-2 lg:grid-cols-3">
+              {secondaryQuickActions.map(renderQuickAction)}
+            </div>
+          </details>
+        )}
       </div>
     </div>
   );

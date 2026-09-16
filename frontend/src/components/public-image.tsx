@@ -99,6 +99,8 @@ export function PublicImage({
         ref={imgRef}
         data-testid={testId}
         src={currentSrc}
+        width={1600}
+        height={1000}
         alt={decorative ? '' : alt}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}

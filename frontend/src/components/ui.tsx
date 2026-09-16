@@ -1,4 +1,5 @@
 import { clsx } from 'clsx';
+import Link from 'next/link';
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
@@ -6,29 +7,37 @@ export function cn(...inputs: Array<string | false | null | undefined>) {
   return twMerge(clsx(inputs));
 }
 
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'inverse' | 'inverse-ghost';
+
+export function buttonClass(variant: ButtonVariant = 'primary', className?: string) {
+  return cn(
+    'touch-target inline-flex items-center justify-center gap-2 rounded-[var(--public-radius-control)] px-4 py-2.5 text-sm font-semibold transition duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)] focus-visible:ring-offset-2',
+    variant === 'primary' && 'bg-[var(--brand-primary)] text-white shadow-sm hover:bg-[var(--brand-primary-hover)]',
+    variant === 'secondary' && 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-white',
+    variant === 'outline' && 'border border-[var(--border-strong)] bg-white text-[var(--text-primary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]',
+    variant === 'ghost' && 'border border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]',
+    variant === 'danger' && 'bg-[var(--danger)] text-white hover:opacity-90',
+    variant === 'inverse' && 'bg-white text-[var(--brand-primary)] shadow-sm hover:bg-slate-50',
+    variant === 'inverse-ghost' && 'border border-white/25 bg-white/10 text-white hover:bg-white/20',
+    className
+  );
+}
+
 export function Button({
   className,
   variant = 'primary',
+  type = 'button',
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'outline' | 'danger' | 'inverse' | 'inverse-ghost';
+  variant?: ButtonVariant;
 }) {
   return (
-    <button
-      className={cn(
-        'touch-target inline-flex items-center justify-center gap-2 rounded-[var(--public-radius-control)] px-4 py-2.5 text-sm font-semibold transition duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)] focus-visible:ring-offset-2',
-        variant === 'primary' && 'bg-[var(--brand-primary)] text-white shadow-sm hover:bg-[var(--brand-primary-hover)]',
-        variant === 'secondary' && 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-white',
-        variant === 'outline' && 'border border-[var(--border-strong)] bg-white text-[var(--text-primary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]',
-        variant === 'ghost' && 'border border-transparent bg-transparent text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]',
-        variant === 'danger' && 'bg-[var(--danger)] text-white hover:opacity-90',
-        variant === 'inverse' && 'bg-white text-[var(--brand-primary)] shadow-sm hover:bg-slate-50',
-        variant === 'inverse-ghost' && 'border border-white/25 bg-white/10 text-white hover:bg-white/20',
-        className
-      )}
-      {...props}
-    />
+    <button type={type} className={buttonClass(variant, className)} {...props} />
   );
+}
+
+export function LinkButton({ className, variant = 'primary', ...props }: React.ComponentProps<typeof Link> & { variant?: ButtonVariant; className?: string }) {
+  return <Link className={buttonClass(variant, className)} {...props} />;
 }
 
 export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInputElement>) {

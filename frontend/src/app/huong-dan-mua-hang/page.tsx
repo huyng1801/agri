@@ -4,11 +4,12 @@ import { Search, QrCode, ShieldCheck, Handshake, ArrowRight, PhoneCall } from 'l
 import { PublicStaticPage } from '@/components/public-static-page';
 import { Panel } from '@/components/ui';
 import { buildPublicMetadata } from '@/lib/page-metadata';
+import { publicDisplayCopy } from '@/lib/public-copy';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 
 export async function generateMetadata(): Promise<Metadata> {
   const siteKey = await getRequestPublicSiteKey();
-  const siteName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
   return buildPublicMetadata({
     title: `Hướng dẫn tra cứu & kết nối - ${siteName}`,
     description: `Hướng dẫn tìm kiếm sản phẩm, quét mã QR truy xuất nguồn gốc và kết nối trực tiếp với Hợp tác xã trên ${siteName}.`,
@@ -38,14 +39,14 @@ const guideSteps = [
   {
     step: '04',
     icon: Handshake,
-    title: 'Kết nối giao thương trực tiếp với HTX',
-    description: 'Tại trang chi tiết sản phẩm hoặc trang HTX, bấm "Liên hệ Hợp tác xã" để nhận số hotline, Zalo hoặc gửi yêu cầu kết nối cung cầu số lượng lớn trực tiếp tới ban quản trị HTX mà không qua trung gian.'
+    title: 'Kết nối giao thương trực tiếp với hợp tác xã',
+    description: 'Tại trang chi tiết sản phẩm hoặc trang hợp tác xã, bấm "Liên hệ hợp tác xã" để nhận số hotline, Zalo hoặc gửi yêu cầu kết nối cung cầu số lượng lớn trực tiếp tới ban quản trị hợp tác xã mà không qua trung gian.'
   }
 ];
 
 export default async function BuyingGuidePage() {
   const siteKey = await getRequestPublicSiteKey();
-  const siteName = siteKey === 'passport' ? 'Hộ chiếu Nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
+  const siteName = siteKey === 'passport' ? 'Hộ chiếu nông nghiệp' : siteKey === 'htxonline' ? 'HTXONLINE' : 'Agripassport';
 
   return (
     <PublicStaticPage
@@ -59,7 +60,7 @@ export default async function BuyingGuidePage() {
             return (
               <div
                 key={step.step}
-                className="group relative flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-white p-5 shadow-xs transition hover:border-[#106f8a]/40 hover:shadow-md sm:p-6"
+                className="group relative flex flex-col justify-between rounded-2xl border border-[var(--border)] bg-white p-5 shadow-xs transition hover:border-[var(--brand-primary)]/40 hover:shadow-md sm:p-6"
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -70,15 +71,15 @@ export default async function BuyingGuidePage() {
                       {step.step}
                     </span>
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-[var(--text-primary)]">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{step.description}</p>
+                  <h3 className="mt-4 text-lg font-bold text-[var(--text-primary)]">{publicDisplayCopy(step.title, siteKey)}</h3>
+                  <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{publicDisplayCopy(step.description, siteKey)}</p>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <Panel className="border-slate-200 bg-gradient-to-r from-slate-50 to-emerald-50/50 p-6">
+        <Panel className="border-[var(--border)] bg-[var(--brand-primary-subtle)] p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h3 className="text-base font-bold text-slate-900">Cần hỗ trợ tra cứu hoặc kết nối trực tiếp?</h3>
@@ -87,13 +88,13 @@ export default async function BuyingGuidePage() {
             <div className="flex flex-wrap gap-2.5 shrink-0">
               <Link
                 href="/san-pham"
-                className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[#106f8a] px-4 text-xs sm:text-sm font-bold text-white shadow-xs transition hover:bg-[#0d596e]"
+                className="inline-flex min-h-10 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-xs font-bold text-white shadow-xs transition hover:bg-[var(--brand-primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary-ring)] sm:text-sm"
               >
                 Khám phá sản phẩm
               </Link>
               <Link
                 href="/lien-he"
-                className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-xs sm:text-sm font-bold text-slate-700 shadow-xs transition hover:bg-slate-50"
+                className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[var(--border)] bg-white px-4 text-xs font-bold text-[var(--text-primary)] shadow-xs transition hover:border-[var(--brand-primary)] hover:bg-[var(--brand-primary-subtle)] sm:text-sm"
               >
                 Liên hệ hỗ trợ
               </Link>

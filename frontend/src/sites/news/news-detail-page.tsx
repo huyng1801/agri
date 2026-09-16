@@ -1,0 +1,169 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ArrowRight, Calendar, Clock3, Eye } from 'lucide-react';
+import { EmptyPublicState, NewsCard } from '@/components/public-marketplace';
+import { DEFAULT_NEWS_IMAGE, PublicImage } from '@/components/public-image';
+import { PublicBreadcrumb, PublicDetailMain } from '@/components/public-layout';
+import { PublicShell } from '@/components/public-shell';
+import { articleDescription, articleImage, articleTitle, fetchPublicNews, fetchPublicNewsDetail, publicNewsCategoryLabel, type NewsArticle } from '@/lib/news';
+import { formatDate } from '@/lib/format';
+import { getPublicSiteProfile } from '@/lib/public-site';
+import { brandizeSiteText } from '@/lib/page-metadata';
+import { getRequestAbsoluteUrl } from '@/lib/request-site';
+import { Badge, Panel } from '@/components/ui';
+import type { SiteNewsConfig } from './news-page';
+
+type SiteNewsDetailPageProps = {
+  params: Promise<{ slug: string }>;
+  config: SiteNewsConfig;
+};
+
+export async function generateSiteNewsMetadata(slug: string, config: SiteNewsConfig): Promise<Metadata> {
+  const article = await fetchPublicNewsDetail(slug, config.siteKey);
+  if (!article) return { title: 'Không tìm thấy bài viết', robots: { index: false, follow: true } };
+
+  const title = articleTitle(article);
+  const description = articleDescription(article);
+  const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
+  const image = articleImage(article);
+  const keywords = article.tagsJson?.length
+    ? article.tagsJson
+    : [article.focusKeyword, article.category?.name, config.siteName].filter((value): value is string => Boolean(value));
+
+  return {
+    title,
+    description,
+    keywords,
+    alternates: { canonical },
+    robots: { index: !article.robotsNoIndex, follow: !article.robotsNoFollow },
+    openGraph: {
+      title: article.ogTitle || title,
+      description: article.ogDescription || description,
+      url: canonical,
+      siteName: config.siteName,
+      locale: 'vi_VN',
+      type: 'article',
+      publishedTime: article.publishedAt ?? undefined,
+      modifiedTime: article.updatedAt,
+      authors: article.author?.fullName && !/^super\s*admin$/i.test(article.author.fullName) ? [article.author.fullName] : undefined,
+      images: [{ url: article.ogImageUrl || image, alt: article.coverImageAlt || article.title }]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.twitterTitle || article.ogTitle || title,
+      description: article.twitterDescription || article.ogDescription || description,
+      images: [article.twitterImageUrl || article.ogImageUrl || image]
+    },
+    category: publicNewsCategoryLabel(article.category) || undefined
+  };
+}
+
+export async function SiteNewsDetailPage({ params, config }: SiteNewsDetailPageProps) {
+  const { slug } = await params;
+  const article = await fetchPublicNewsDetail(slug, config.siteKey);
+  const siteProfile = await getPublicSiteProfile(config.siteKey);
+
+  if (!article) {
+    return (
+      <PublicShell>
+        <PublicDetailMain className="max-w-3xl">
+          <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
+          <div className="public-empty-detail space-y-4">
+            <EmptyPublicState headingLevel="h1" title="Không tìm thấy bài viết" description="Bài viết chưa được đăng công khai hoặc đã bị ẩn khỏi trang công khai." />
+            <Panel className="text-center">
+              <h2 className="text-lg font-bold text-ink">Tiếp tục khám phá nội dung công khai</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">Bạn có thể quay về danh sách tin tức hoặc xem thêm sản phẩm đang hiển thị trên nền tảng công khai.</p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                <Link href="/tin-tuc" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white">Xem tin tức mới</Link>
+                <Link href="/san-pham" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-ink">Xem sản phẩm công khai</Link>
+              </div>
+            </Panel>
+          </div>
+        </PublicDetailMain>
+      </PublicShell>
+    );
+  }
+
+  const related = await getRelatedArticles(article, config);
+  const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
+  const logoUrl = await getRequestAbsoluteUrl('/logo.png');
+  const image = articleImage(article);
+  const preparedBody = prepareNewsBody(withoutContactBlock(article.bodyHtml));
+  const authorName = article.author?.fullName && !/^super\s*admin$/i.test(article.author.fullName) ? article.author.fullName : siteProfile.appName;
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': article.schemaType || 'NewsArticle',
+    headline: article.title,
+    description: articleDescription(article),
+    image: [image],
+    keywords: article.tagsJson?.join(', ') || article.focusKeyword || undefined,
+    articleSection: publicNewsCategoryLabel(article.category) || undefined,
+    datePublished: article.publishedAt || article.createdAt,
+    dateModified: article.updatedAt,
+    mainEntityOfPage: canonical,
+    author: { '@type': 'Person', name: authorName },
+    publisher: { '@type': 'Organization', name: siteProfile.appName, logo: { '@type': 'ImageObject', url: logoUrl } }
+  };
+
+  return (
+    <PublicShell>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }} />
+      <PublicDetailMain className="max-w-6xl">
+        <PublicBreadcrumb href="/tin-tuc" label="Quay lại tin tức" />
+        <article className="public-news-detail overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface-elevated)] shadow-[0_22px_55px_rgba(15,23,42,0.08)]">
+          <header className="mx-auto max-w-4xl px-4 pb-5 pt-2 text-center sm:px-8 sm:pb-7">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-slate-500">
+              {publicNewsCategoryLabel(article.category) && <Badge className="bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">{publicNewsCategoryLabel(article.category)}</Badge>}
+              <span className="inline-flex items-center gap-1 tracking-normal"><Calendar size={14} />{formatDate(article.publishedAt || article.createdAt)}</span>
+              <span className="inline-flex items-center gap-1 tracking-normal"><Clock3 size={14} />{readingTime(article.bodyHtml)} phút đọc</span>
+              <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
+            </div>
+            <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
+            <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || brandizeSiteText(config.cardDescription, config.siteKey)}</p>
+            <p className="mt-3 text-sm font-medium text-slate-500">{authorName}</p>
+          </header>
+          <div className="px-2.5 sm:px-4"><PublicImage src={article.coverImageUrl || image} alt={article.coverImageAlt || article.title} fallback={DEFAULT_NEWS_IMAGE} wrapperClassName="aspect-[16/9] w-full rounded-[1.45rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] sm:aspect-[2.1/1]" className="h-full w-full object-cover" /></div>
+          <div className="mx-auto max-w-3xl px-4 py-7 sm:px-8 sm:py-10">
+            {preparedBody.headings.length > 1 && <nav className="news-toc mb-8 rounded-[1.25rem] border border-[var(--border)] bg-[var(--brand-primary-subtle)] p-4 sm:p-5" aria-label="Mục lục bài viết"><p className="text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--brand-primary)]">Mục lục</p><ol className="mt-3 grid gap-2 sm:grid-cols-2">{preparedBody.headings.map((heading) => <li key={heading.id} className={heading.level === 'h3' ? 'pl-4' : undefined}><a href={`#${heading.id}`} className="block text-sm font-semibold leading-6 text-[var(--text-primary)] transition hover:text-[var(--brand-primary)]">{heading.text}</a></li>)}</ol></nav>}
+            <div className="news-body" dangerouslySetInnerHTML={{ __html: preparedBody.html }} />
+            {article.tagsJson?.length ? <div className="mt-8 flex flex-wrap gap-2 border-t border-[var(--border)] pt-5">{article.tagsJson.map((tag) => <Badge key={tag} className="bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">#{tag}</Badge>)}</div> : null}
+          </div>
+        </article>
+        {related.length > 0 && <section className="mt-6 sm:mt-8"><div className="flex items-end justify-between gap-3"><div><p className="text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-leaf">Đọc tiếp</p><h2 className="mt-1 text-2xl font-extrabold tracking-[-0.03em] text-ink">Bài viết liên quan</h2></div><Link href="/tin-tuc" className="hidden min-h-11 items-center gap-1 rounded-full px-3 text-sm font-bold text-leaf transition hover:bg-[var(--brand-primary-subtle)] sm:inline-flex">Tất cả tin tức <ArrowRight size={15} aria-hidden="true" /></Link></div><div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">{related.map((item) => <NewsCard key={item.id} article={item} />)}</div></section>}
+        <Panel className="mt-6 text-center sm:mt-8"><h2 className="text-xl font-bold text-ink">{brandizeSiteText(`Kết nối cùng ${config.siteName}`, config.siteKey)}</h2><p className="mt-2 text-sm leading-6 text-slate-600">{brandizeSiteText(config.description, config.siteKey)}</p><Link href="/san-pham" className="mt-4 inline-flex min-h-11 items-center justify-center rounded-xl bg-[var(--brand-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5">Xem sản phẩm công khai</Link></Panel>
+      </PublicDetailMain>
+    </PublicShell>
+  );
+}
+
+async function getRelatedArticles(article: NewsArticle, config: SiteNewsConfig) {
+  const params = new URLSearchParams({ limit: '4' });
+  if (article.category?.slug) params.set('category', article.category.slug);
+  const related = await fetchPublicNews(`/news/public?${params.toString()}`, config.siteKey);
+  return related.data.filter((item) => item.id !== article.id).slice(0, 3);
+}
+
+function safeJsonLd(value: unknown) { return JSON.stringify(value).replace(/</g, '\\u003c'); }
+function readingTime(html: string) { const words = html.replace(/<[^>]*>/g, ' ').trim().split(/\s+/).filter(Boolean).length; return Math.max(1, Math.ceil(words / 220)); }
+function withoutContactBlock(html: string) { return html.replace(/<section\b[^>]*data-agri-contact[^>]*>[\s\S]*?<\/section>/gi, ''); }
+
+function prepareNewsBody(html: string) {
+  const headings: Array<{ id: string; level: 'h2' | 'h3'; text: string }> = [];
+  const usedIds = new Set<string>();
+  const preparedHtml = html.replace(/<(h2|h3)(\s[^>]*)?>([\s\S]*?)<\/\1>/gi, (_match, level: string, attributes = '', innerHtml: string) => {
+    const text = innerHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    const baseId = `muc-${slugify(text) || headings.length + 1}`;
+    let id = baseId;
+    let suffix = 2;
+    while (usedIds.has(id)) id = `${baseId}-${suffix++}`;
+    usedIds.add(id);
+    headings.push({ id, level: level.toLowerCase() as 'h2' | 'h3', text });
+    const withoutId = attributes.replace(/\s+id\s*=\s*("[^"]*"|'[^']*')/i, '');
+    return `<${level}${withoutId} id="${id}">${innerHtml}</${level}>`;
+  });
+  return { html: preparedHtml, headings };
+}
+
+function slugify(value: string) {
+  return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 72);
+}

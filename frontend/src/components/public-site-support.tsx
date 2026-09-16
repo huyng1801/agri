@@ -25,15 +25,15 @@ export function FooterContactInfo() {
   );
 }
 
-export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
+export function FloatingContactClient({ siteKey = 'agripassport', profile: initialProfile }: { siteKey?: PublicSiteKey; profile?: PublicSiteProfile }) {
   const pathname = usePathname();
-  const siteProfile = usePublicSiteProfile(siteKey);
+  const siteProfile = usePublicSiteProfile(siteKey, initialProfile);
   const [showTop, setShowTop] = useState(false);
   const [showFloating, setShowFloating] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
   const [mobileViewport, setMobileViewport] = useState(false);
-  const isAgri = siteKey === 'agripassport' || siteKey === 'local';
-  const zaloUrl = getPublicZaloUrl(siteProfile, isAgri);
+  const useHotlineZaloFallback = siteKey === 'passport' || siteKey === 'agripassport' || siteKey === 'local';
+  const zaloUrl = getPublicZaloUrl(siteProfile, useHotlineZaloFallback);
   useEffect(() => {
     const onScroll = () => {
       const isMobile = window.innerWidth < 1024;
@@ -126,10 +126,14 @@ export function FloatingContactClient({ siteKey = 'agripassport' }: { siteKey?: 
   );
 }
 
-function usePublicSiteProfile(siteKey: PublicSiteKey = 'agripassport') {
-  const [profile, setProfile] = useState<PublicSiteProfile>(defaultPublicSiteProfileForSite(siteKey));
+function usePublicSiteProfile(siteKey: PublicSiteKey = 'agripassport', initialProfile?: PublicSiteProfile) {
+  const [profile, setProfile] = useState<PublicSiteProfile>(initialProfile ?? defaultPublicSiteProfileForSite(siteKey));
 
   useEffect(() => {
+    if (initialProfile) {
+      setProfile(initialProfile);
+      return;
+    }
     let active = true;
 
     async function load() {
@@ -148,7 +152,7 @@ function usePublicSiteProfile(siteKey: PublicSiteKey = 'agripassport') {
     return () => {
       active = false;
     };
-  }, [siteKey]);
+  }, [siteKey, initialProfile]);
 
   return profile;
 }

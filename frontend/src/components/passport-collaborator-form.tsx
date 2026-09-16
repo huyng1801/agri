@@ -157,7 +157,7 @@ export function PassportCollaboratorForm() {
 
       <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">
         <span>Công việc hiện tại <span className="text-red-600" aria-hidden="true">*</span></span>
-        <Input data-testid="collaborator-work-input" name="currentWork" required placeholder="Ví dụ: kinh doanh, kế toán, quản lý HTX..." />
+          <Input data-testid="collaborator-work-input" name="currentWork" required placeholder="Ví dụ: kinh doanh, kế toán, quản lý HTX…" />
       </label>
 
       <label className="grid gap-1.5 text-sm font-semibold text-[var(--text-primary)]">

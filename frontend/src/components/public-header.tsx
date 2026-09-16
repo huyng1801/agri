@@ -44,6 +44,8 @@ export function PublicHeader({
   const [mobilePassportMenuOpen, setMobilePassportMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const passportMenuRef = useRef<HTMLDivElement>(null);
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
+  const previousPathnameRef = useRef(pathname);
 
   useEffect(() => {
     setMounted(true);
@@ -59,16 +61,19 @@ export function PublicHeader({
     isInternal
       ? { href: '/login', label: 'Quản trị HTX' }
       : isPassport
-        ? { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
+        ? { href: '/truy-xuat', label: 'Tra cứu QR' }
         : { href: '/login', label: 'Đăng nhập' };
 
   const CtaIcon = isInternal ? Briefcase : isPassport ? QrCode : LogIn;
 
   useEffect(() => {
     setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
-    setMobileMenuOpen(false);
-    setPassportMenuOpen(false);
-    setMobilePassportMenuOpen(false);
+    if (previousPathnameRef.current !== pathname) {
+      previousPathnameRef.current = pathname;
+      setMobileMenuOpen(false);
+      setPassportMenuOpen(false);
+      setMobilePassportMenuOpen(false);
+    }
   }, [pathname]);
 
   // Dismiss open navigation layers with Escape.
@@ -118,9 +123,40 @@ export function PublicHeader({
     if (!mobileMenuOpen) setMobilePassportMenuOpen(false);
   }, [mobileMenuOpen]);
 
+  // Keep keyboard focus inside the modal drawer while it is open. This prevents
+  // keyboard users from tabbing into the page behind a visually modal layer.
+  useEffect(() => {
+    if (!mobileMenuOpen || !mounted) return;
+    const drawer = mobileDrawerRef.current;
+    if (!drawer) return;
+
+    const focusableSelector = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    const focusFirst = () => drawer.querySelector<HTMLElement>(focusableSelector)?.focus();
+    const frame = window.requestAnimationFrame(focusFirst);
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const focusable = Array.from(drawer.querySelectorAll<HTMLElement>(focusableSelector));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    drawer.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      drawer.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen, mounted]);
+
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-all pt-[var(--safe-top,0px)]">
+      <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.03)] transition-[background-color,box-shadow,border-color] pt-[var(--safe-top,0px)]">
         <div className={cn(publicContainerClass, 'flex h-[56px] sm:h-[64px] lg:h-[70px] items-center justify-between gap-3')}>
           {/* Brand / Logo */}
           <div className="flex min-w-0 items-center gap-3">
@@ -158,8 +194,21 @@ export function PublicHeader({
               }
 
               return (
-                <div key={entry.href} ref={passportMenuRef} className="relative flex items-center">
-                  <Link href={entry.href} className={cn(linkClass, 'rounded-r-none pr-1.5')} aria-current={active ? 'page' : undefined}>
+                <div
+                  key={entry.href}
+                  ref={passportMenuRef}
+                  className={cn(
+                    'relative flex min-h-9 items-center rounded-lg text-[0.8rem] font-semibold transition duration-150 xl:text-sm',
+                    active || passportMenuOpen
+                      ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]'
+                      : 'text-[var(--text-secondary)] hover:bg-[var(--surface-muted)] hover:text-[var(--text-primary)]'
+                  )}
+                >
+                  <Link
+                    href={entry.href}
+                    className="whitespace-nowrap px-2.5 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-inset xl:px-3"
+                    aria-current={active ? 'page' : undefined}
+                  >
                     {entry.label}
                   </Link>
                   <button
@@ -168,10 +217,7 @@ export function PublicHeader({
                     aria-expanded={passportMenuOpen}
                     aria-haspopup="menu"
                     aria-label={`${passportMenuOpen ? 'Đóng' : 'Mở'} menu ${entry.label}`}
-                    className={cn(
-                      linkClass,
-                      'rounded-l-none pl-1 pr-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-inset'
-                    )}
+                    className="grid h-9 w-8 shrink-0 place-items-center px-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-inset"
                   >
                     <ChevronDown size={14} className={cn('transition-transform', passportMenuOpen && 'rotate-180')} aria-hidden="true" />
                   </button>
@@ -214,7 +260,7 @@ export function PublicHeader({
           </nav>
 
           {/* Desktop Action Buttons */}
-          <div className="hidden sm:flex shrink-0 items-center gap-2 xl:gap-3">
+          <div className="hidden lg:flex shrink-0 items-center gap-2 xl:gap-3">
             {isPassport ? (
               <Link
                 href="/login"
@@ -226,7 +272,7 @@ export function PublicHeader({
             ) : null}
             <Link
               href={navCta.href}
-              className="inline-flex h-9 sm:h-10 max-w-[12rem] items-center gap-2 whitespace-nowrap rounded-lg bg-[#0d7a28] px-3.5 text-[0.75rem] font-bold text-white shadow-sm transition hover:bg-[#0a6120] active:scale-[0.98]"
+              className="inline-flex h-9 sm:h-10 max-w-[12rem] items-center gap-2 whitespace-nowrap rounded-lg bg-[var(--brand-primary)] px-3.5 text-[0.75rem] font-bold text-white shadow-sm transition hover:bg-[var(--brand-primary-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
             >
               <CtaIcon size={15} aria-hidden="true" />
               <span>{navCta.label}</span>
@@ -238,7 +284,7 @@ export function PublicHeader({
             <Link
               href={navCta.href}
               aria-label={navCta.label}
-              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-[#0d7a28] px-3 text-xs font-bold text-white shadow-xs active:scale-95 touch-action-manipulation"
+              className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg bg-[var(--brand-primary)] px-3 text-xs font-bold text-white shadow-xs active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)] focus-visible:ring-offset-2"
             >
               <CtaIcon size={16} aria-hidden="true" />
               <span className="hidden xs:inline">{navCta.label}</span>
@@ -246,10 +292,10 @@ export function PublicHeader({
 
             <button
               type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={() => setMobileMenuOpen((open) => !open)}
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu điều hướng'}
-              className="inline-flex h-11 w-11 min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs transition hover:bg-slate-50 active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+              className="inline-flex h-11 w-11 min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs transition hover:bg-slate-50 active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
             >
               {mobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </button>
@@ -275,6 +321,7 @@ export function PublicHeader({
 
               {/* Drawer Container */}
               <div
+                ref={mobileDrawerRef}
                 className="relative z-[71] flex h-[100dvh] max-h-[100dvh] w-[85vw] max-w-[320px] flex-col bg-white shadow-2xl transition-transform duration-250 ease-out"
                 style={{
                   paddingTop: 'max(0.75rem, var(--safe-top, 0px))',
@@ -313,7 +360,7 @@ export function PublicHeader({
                             className={cn(
                               'flex min-h-[48px] items-center justify-between rounded-xl px-3 text-sm font-semibold transition active:scale-[0.99] touch-action-manipulation',
                               active
-                                ? 'bg-[#0d7a28]/10 text-[#0d7a28] font-bold'
+                                ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)] font-bold'
                                 : 'text-slate-700 hover:bg-slate-50 active:bg-slate-100'
                             )}
                             aria-current={active ? 'page' : undefined}
@@ -329,7 +376,7 @@ export function PublicHeader({
                           <div
                             className={cn(
                               'flex min-h-[48px] items-center rounded-xl px-3 text-sm font-semibold transition',
-                              active ? 'bg-[#0d7a28]/10 text-[#0d7a28]' : 'text-slate-700'
+                              active ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]' : 'text-slate-700'
                             )}
                           >
                             <Link
@@ -346,13 +393,13 @@ export function PublicHeader({
                               aria-expanded={mobilePassportMenuOpen}
                               aria-controls="passport-mobile-submenu"
                               aria-label={`${mobilePassportMenuOpen ? 'Đóng' : 'Mở'} menu ${entry.label}`}
-                              className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-lg text-[#0d7a28] transition hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+                              className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-lg text-[var(--brand-primary)] transition hover:bg-white/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
                             >
                               <ChevronDown size={17} className={cn('transition-transform', mobilePassportMenuOpen && 'rotate-180')} aria-hidden="true" />
                             </button>
                           </div>
                           {mobilePassportMenuOpen ? (
-                            <div id="passport-mobile-submenu" className="ml-3 mt-1 space-y-1 border-l border-[#0d7a28]/20 pl-3">
+                            <div id="passport-mobile-submenu" className="ml-3 mt-1 space-y-1 border-l border-[var(--brand-primary-ring)] pl-3">
                               {entry.items.map((item) => {
                                 const ItemIcon = item.icon;
                                 const itemActive = isNavActive(pathname, hasQrQuery, item.href);
@@ -364,12 +411,12 @@ export function PublicHeader({
                                     className={cn(
                                       'flex min-h-[48px] items-center gap-3 rounded-xl px-3 text-sm transition active:scale-[0.99] touch-action-manipulation',
                                       itemActive
-                                        ? 'bg-[#0d7a28]/10 font-bold text-[#0d7a28]'
+                                        ? 'bg-[var(--brand-primary-subtle)] font-bold text-[var(--brand-primary)]'
                                         : 'font-medium text-slate-700 hover:bg-slate-50 active:bg-slate-100'
                                     )}
                                     aria-current={itemActive ? 'page' : undefined}
                                   >
-                                    <ItemIcon size={17} className={itemActive ? 'text-[#0d7a28]' : 'text-slate-400'} aria-hidden="true" />
+                                    <ItemIcon size={17} className={itemActive ? 'text-[var(--brand-primary)]' : 'text-slate-400'} aria-hidden="true" />
                                     <span>{item.label}</span>
                                   </Link>
                                 );
@@ -387,17 +434,17 @@ export function PublicHeader({
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="flex h-11 min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-800 shadow-xs hover:border-[#0d7a28] transition active:scale-95 touch-action-manipulation"
+                   className="flex h-11 min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-800 shadow-xs transition hover:border-[var(--brand-primary)] active:scale-95 touch-action-manipulation"
                   >
-                    <LogIn size={15} className="text-[#0d7a28]" />
-                    <span>Đăng nhập cổng quản trị hợp tác xã</span>
+                    <LogIn size={15} className="text-[var(--brand-primary)]" aria-hidden="true" />
+                    <span>{isInternal ? 'Đăng nhập cổng quản trị hợp tác xã' : isPassport ? 'Đăng nhập quản trị' : 'Đăng nhập hệ thống'}</span>
                   </Link>
 
                   <div className="pt-1 text-center text-xs text-slate-500">
                     <span>Hỗ trợ kỹ thuật: </span>
                     <a
                       href="tel:0907001200"
-                      className="inline-flex min-h-[36px] items-center font-bold text-[#0d7a28] hover:underline touch-action-manipulation"
+                      className="inline-flex min-h-[36px] items-center font-bold text-[var(--brand-primary)] hover:underline touch-action-manipulation"
                     >
                       0907 001 200
                     </a>

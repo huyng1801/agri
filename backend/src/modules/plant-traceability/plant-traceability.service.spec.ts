@@ -146,12 +146,15 @@ describe('PlantTraceabilityService', () => {
         findFirst: jest.fn().mockResolvedValue({
           id: 'code-1',
           code: 'TREE-XOI-VLM-01-000001',
+          qrDataUrl: 'data:image/png;base64,qr',
           tree: {
             treeCode: 'XOI-VLM-01-000001',
             publicVerified: true,
             status: 'ACTIVE',
             latitude: 10.445812,
             longitude: 105.718921,
+            imagesJson: [{ url: 'https://cdn.example.test/tree.jpg', caption: 'Ảnh cây' }, { url: 'javascript:alert(1)' }],
+            cooperative: { name: 'HTX Nông nghiệp Demo' },
             cropType: { id: 'crop-1', code: 'XOI', name: 'Xoài', sortOrder: 10, isActive: true },
             zone: { name: 'Vườn A', address: 'Đồng Tháp', isPublic: true, latitude: 10.4458, longitude: 105.718 },
             events: [{ id: 'event-1', eventDate: new Date('2026-01-01'), eventType: 'WATERING', description: 'Tưới', inputs: [{ id: 'input-1', eventId: 'event-1', materialName: 'Nước', createdAt: new Date() }] }],
@@ -167,9 +170,12 @@ describe('PlantTraceabilityService', () => {
 
     expect(result.tree).not.toHaveProperty('latitude');
     expect(result.tree).not.toHaveProperty('longitude');
+    expect(result.traceability.qrDataUrl).toBe('data:image/png;base64,qr');
     expect(result.tree.zone).toMatchObject({ latitude: 10.45, longitude: 105.72 });
     expect(result.tree.cropType).toEqual(expect.objectContaining({ code: 'XOI', name: 'Xoài' }));
     expect(result.tree.cropType).not.toHaveProperty('id');
+    expect(result.tree.ownerName).toBe('HTX Nông nghiệp Demo');
+    expect(result.tree.images).toEqual([{ url: 'https://cdn.example.test/tree.jpg', caption: 'Ảnh cây' }]);
     expect(result.tree.events[0].inputs[0]).not.toHaveProperty('id');
   });
 });

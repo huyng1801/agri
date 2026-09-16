@@ -73,6 +73,9 @@ async function getPassport(code: string): Promise<Passport | null> {
     // Fallback below
   }
 
+  // Never render demo catalog data on the live passport origin when the API is unavailable.
+  if (process.env.NODE_ENV === 'production') return null;
+
   const normalizedCode = (code || '').trim().toLowerCase();
   const matched = STANDARD_PRODUCTS.find(
     (product) =>
@@ -88,7 +91,7 @@ async function getPassport(code: string): Promise<Passport | null> {
     viewCount: 142,
     verified: true,
     cooperative: {
-      name: matched.cooperative?.name || 'HTX Nông Nghiệp Tiêu Biểu',
+      name: matched.cooperative?.name || 'Hợp tác xã nông nghiệp tiêu biểu',
       address: matched.zone?.address || 'Việt Nam',
       phone: matched.cooperative?.phone || ''
     },
@@ -113,7 +116,7 @@ async function getPassport(code: string): Promise<Passport | null> {
         activityType: log.activityType,
         description: log.description,
         zone: { name: matched.zone?.name || 'Vùng canh tác' },
-        actor: { fullName: 'Kỹ thuật viên HTX' }
+        actor: { fullName: 'Kỹ thuật viên hợp tác xã' }
       })),
       certifications: (matched.certifications || []).map((cert, index) => ({
         id: cert.id || `cert-${index}`,
@@ -144,21 +147,21 @@ export async function generateMetadata({ params }: PublicPassportPageProps): Pro
   );
   const image = passport.product.thumbnail?.publicUrl || (await getRequestAbsoluteUrl('/public-media-placeholder.svg'));
   return {
-    title: `${passport.product.name} (${passport.passportCode}) · Hộ Chiếu Nông Nghiệp`,
+    title: `${passport.product.name} (${passport.passportCode}) · Hộ chiếu nông nghiệp`,
     description,
     alternates: { canonical },
     openGraph: {
-      title: `${passport.product.name} · Hộ Chiếu Nông Nghiệp`,
+      title: `${passport.product.name} · Hộ chiếu nông nghiệp`,
       description,
       url: canonical,
-      siteName: 'HỘ CHIẾU NÔNG NGHIỆP',
+      siteName: 'Hộ chiếu nông nghiệp',
       locale: 'vi_VN',
       type: 'website',
       images: [{ url: image, alt: passport.product.name }]
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${passport.product.name} · Hộ Chiếu Nông Nghiệp`,
+      title: `${passport.product.name} · Hộ chiếu nông nghiệp`,
       description,
       images: [image]
     }
@@ -167,6 +170,7 @@ export async function generateMetadata({ params }: PublicPassportPageProps): Pro
 
 export default async function PublicPassportPage({ params }: PublicPassportPageProps) {
   const { code } = await params;
+  const siteKey = await getRequestPublicSiteKey();
   const passport = await getPassport(code);
 
   if (!passport) {
@@ -177,13 +181,13 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
             <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-rose-50 text-rose-600">
               <QrCode size={32} aria-hidden="true" />
             </div>
-            <p className="mt-6 text-xs font-bold uppercase tracking-wider text-[#0d7a28]">Truy xuất QR</p>
+            <p className="mt-6 text-xs font-bold tracking-wider text-[#0d7a28]">Truy xuất QR</p>
             <h1 className="mt-2 text-2xl font-bold text-[var(--text-primary)]">Không tìm thấy hồ sơ</h1>
             <p className="mt-3 text-sm text-[var(--text-secondary)] leading-relaxed">
               Mã định danh truy xuất không tồn tại hoặc chưa được mở phạm vi công khai trên hệ thống.
             </p>
             <Link
-              className="mt-6 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#0d7a28] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a6120]"
+              className="mt-6 inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#0d7a28] px-5 text-sm font-bold text-white shadow-sm transition hover:bg-[#0a6120]"
               href="/san-pham"
             >
               <ArrowLeft size={16} />
@@ -195,7 +199,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
     );
   }
 
-  const publicQrUrl = `https://agripassport.com/qr/${encodeURIComponent(passport.passportCode)}`;
+  const publicQrUrl = await getRequestAbsoluteUrl(`/qr/${encodeURIComponent(passport.passportCode)}`);
   const qrImageUrl =
     passport.qrDataUrl ||
     `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(publicQrUrl)}`;
@@ -238,11 +242,11 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
 
   return (
     <PublicShell>
-      <PublicDetailMain className="py-6 sm:py-10">
+      <PublicDetailMain className="public-passport-detail py-6 sm:py-10">
         <nav aria-label="Điều hướng hồ sơ" className="mb-6 flex flex-wrap items-center gap-2 text-xs text-[var(--text-tertiary)]">
-          <Link href="/" className="transition hover:text-[var(--brand-primary)]">Trang chủ</Link>
+          <Link href="/" className="inline-flex min-h-11 items-center transition hover:text-[var(--brand-primary)]">Trang chủ</Link>
           <span aria-hidden="true">/</span>
-          <Link href="/san-pham" className="transition hover:text-[var(--brand-primary)]">Sản phẩm</Link>
+          <Link href="/san-pham" className="inline-flex min-h-11 items-center transition hover:text-[var(--brand-primary)]">Sản phẩm</Link>
           <span aria-hidden="true">/</span>
           <span className="font-semibold text-[var(--text-primary)]">{passport.passportCode}</span>
         </nav>
@@ -251,6 +255,7 @@ export default async function PublicPassportPage({ params }: PublicPassportPageP
           product={publicProduct}
           passportTargetUrl={publicQrUrl}
           qrImageUrl={qrImageUrl}
+          siteKey={siteKey}
         />
       </PublicDetailMain>
     </PublicShell>

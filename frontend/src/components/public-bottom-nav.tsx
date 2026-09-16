@@ -7,7 +7,7 @@ import { BriefcaseBusiness, Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingB
 import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
-import { getPublicNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
+import { getPublicMobileNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
 
 const iconByHref: Record<string, LucideIcon> = {
   '/': Home,
@@ -16,6 +16,7 @@ const iconByHref: Record<string, LucideIcon> = {
   '/cay': Leaf,
   '/san-pham': ShoppingBag,
   '/san-pham?hasQr=true': QrCode,
+  '/truy-xuat': QrCode,
   '/htx': Store,
   '/tin-tuc': Newspaper,
   '/lien-he': Mail,
@@ -49,9 +50,6 @@ function shouldHideBottomNav(pathname: string): boolean {
   // Article deep reading mode
   if (pathname.startsWith('/tin-tuc/') && pathname !== '/tin-tuc') return true;
 
-  // Contact page (avoids virtual keyboard collision)
-  if (pathname === '/lien-he' || pathname.startsWith('/lien-he/')) return true;
-
   // Legal / policy / FAQ pages
   const legalRoutes = [
     '/dieu-khoan-su-dung',
@@ -70,7 +68,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
   const pathname = usePathname();
   const [hasQrQuery, setHasQrQuery] = useState(false);
   const isHiddenContextually = shouldHideBottomNav(pathname);
-  const navigation = getPublicNavigation(siteKey);
+  const navigation = getPublicMobileNavigation(siteKey);
 
   useEffect(() => {
     setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
@@ -83,7 +81,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
       data-testid="public-bottom-nav"
       role="navigation"
       aria-label="Điều hướng chính di động"
-      className="fixed bottom-0 left-0 right-0 z-30 overflow-x-auto border-t border-slate-200/90 bg-white/95 backdrop-blur-md transition-all duration-200 lg:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.04)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="fixed bottom-0 left-0 right-0 z-30 overflow-x-auto border-t border-slate-200/90 bg-white/95 backdrop-blur-md transition-[background-color,border-color,box-shadow] duration-200 lg:hidden shadow-[0_-2px_12px_rgba(0,0,0,0.04)] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={{
         paddingBottom: 'max(0.35rem, var(--safe-bottom, 0px))'
       }}
@@ -103,7 +101,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               {/* Top Accent Indicator */}
               {active && (
                 <span
-                  className="absolute -top-[1px] left-1/2 -translate-x-1/2 h-[2.5px] w-7 rounded-full bg-[var(--brand-primary)] transition-all duration-200"
+                  className="absolute -top-[1px] left-1/2 -translate-x-1/2 h-[2.5px] w-7 rounded-full bg-[var(--brand-primary)] transition-[width,background-color,opacity] duration-200"
                   aria-hidden="true"
                 />
               )}
@@ -111,7 +109,7 @@ export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: Public
               {/* Icon with Native Pill Indicator */}
               <div
                 className={cn(
-                  'grid h-8 w-12 place-items-center rounded-full transition-all duration-200 group-active:scale-95',
+                  'grid h-8 w-12 place-items-center rounded-full transition-[background-color,color,box-shadow,transform] duration-200 group-active:scale-95',
                   active
                     ? 'bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)] shadow-2xs'
                     : 'text-slate-500 group-hover:text-slate-800'

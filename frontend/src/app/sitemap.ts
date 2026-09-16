@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     siteKey === 'htxonline'
       ? ['', '/gioi-thieu', '/ve-chung-toi', '/lien-he', '/dieu-khoan-su-dung', '/chinh-sach-bao-mat', '/chinh-sach-doi-tra', '/chinh-sach-van-hanh']
       : siteKey === 'passport'
-        ? ['', '/gioi-thieu', '/ve-chung-toi', '/tuyen-cong-tac-vien', '/lien-he', '/dieu-khoan-su-dung', '/chinh-sach-bao-mat', '/chinh-sach-doi-tra', '/chinh-sach-van-hanh']
+        ? ['', '/gioi-thieu', '/ve-chung-toi', '/san-pham', '/htx', '/cay', '/truy-xuat', '/tin-tuc', '/cau-hoi-thuong-gap', '/tuyen-cong-tac-vien', '/lien-he', '/dieu-khoan-su-dung', '/chinh-sach-bao-mat', '/chinh-sach-doi-tra', '/chinh-sach-van-hanh']
         : [
             '',
             '/san-pham',
@@ -37,7 +37,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: path === '' ? 1 : 0.7
   }));
 
-  if (siteKey !== 'agripassport' && siteKey !== 'local') {
+  if (siteKey === 'htxonline') {
     return staticPages;
   }
 

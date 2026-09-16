@@ -3,6 +3,11 @@ backend/node_modules
 frontend/node_modules
 backend/dist
 frontend/.next
+frontend/tmp
+frontend/.playwright-cli
+frontend/test-results
+frontend/*.log
+frontend/*.tsbuildinfo
 coverage
 playwright-report
 test-results

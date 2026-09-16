@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BarChart3, Download, FileText, LineChart as LineChartIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { API_URL, apiFetch, currentUser } from '@/lib/api';
+import { API_URL, apiFetch, authRequestHeaders, currentUser } from '@/lib/api';
 import { formatCurrency, formatDate } from '@/lib/format';
 import { Button, Input, Panel, cn } from '@/components/ui';
 
@@ -56,9 +56,9 @@ export default function ReportsPage() {
   const metrics = overview.data?.data.metrics ?? [];
 
   async function downloadExport(type: 'excel' | 'pdf') {
-    const token = window.localStorage.getItem('agri_access_token');
     const response = await fetch(`${API_URL}/reports/export/${type}${querySuffix}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      headers: authRequestHeaders(),
+      credentials: 'include'
     });
     if (!response.ok) throw new Error('Không xuất được báo cáo');
     const blob = await response.blob();

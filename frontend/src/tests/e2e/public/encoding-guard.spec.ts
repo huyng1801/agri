@@ -141,7 +141,8 @@ test.describe('text encoding guard', () => {
   });
 
   test('@dashboard admin shell keeps accents intact', async ({ page }) => {
-    const { adminUrl } = baseUrls();
+    const { publicUrl, adminUrl } = baseUrls();
+    test.skip(adminUrl === publicUrl, 'Set ADMIN_BASE_URL to an authenticated admin host for dashboard shell checks');
 
     await seedAuthenticatedSession(page, superAdminUser);
     await page.route('**/api/v1/reports/overview', async (route) => {
@@ -154,7 +155,8 @@ test.describe('text encoding guard', () => {
   });
 
   test('@dashboard htx shell keeps accents intact', async ({ page }) => {
-    const { htxUrl } = baseUrls();
+    const { publicUrl, htxUrl } = baseUrls();
+    test.skip(htxUrl === publicUrl, 'Set HTX_BASE_URL to an authenticated HTX host for dashboard shell checks');
 
     await seedAuthenticatedSession(page, htxAdminUser);
     await page.route('**/api/v1/reports/overview', async (route) => {

@@ -1,4 +1,5 @@
 import { RoleSlug } from '@prisma/client';
+import type { AuthPortal } from './portal';
 
 export type AuthUser = {
   id: string;
@@ -7,6 +8,7 @@ export type AuthUser = {
   cooperativeId: string | null;
   roles: RoleSlug[];
   permissions: string[];
+  portal?: AuthPortal;
 };
 
 export type PaginatedResult<T> = {

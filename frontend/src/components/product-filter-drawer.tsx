@@ -58,7 +58,7 @@ export function ProductFilterBar({
               href="/san-pham"
               aria-current={!initialFilters.category ? 'page' : undefined}
               className={cn(
-                'inline-flex h-9 items-center rounded-xl px-4 text-xs font-bold transition active:scale-95 touch-action-manipulation',
+                'inline-flex min-h-11 items-center rounded-xl px-4 text-xs font-bold transition active:scale-95 touch-action-manipulation',
                 !initialFilters.category
                   ? 'bg-[#0d7a28] text-white shadow-xs'
                   : 'border border-slate-200 bg-white text-slate-700 hover:border-[#0d7a28] hover:text-[#0d7a28]'
@@ -74,7 +74,7 @@ export function ProductFilterBar({
                   href={`/san-pham?category=${encodeURIComponent(cat.slug)}`}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'inline-flex h-9 items-center rounded-xl px-3.5 text-xs font-bold transition active:scale-95 touch-action-manipulation',
+                    'inline-flex min-h-11 items-center rounded-xl px-3.5 text-xs font-bold transition active:scale-95 touch-action-manipulation',
                     isActive
                       ? 'bg-[#0d7a28] text-white shadow-xs'
                       : 'border border-slate-200 bg-white text-slate-700 hover:border-[#0d7a28] hover:text-[#0d7a28]'
@@ -89,7 +89,7 @@ export function ProductFilterBar({
       )}
 
       {/* Main Search & Filter Component */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-3 sm:p-4 shadow-xs">
+      <div className="border-y border-slate-200 py-2.5 sm:py-3 lg:border-0 lg:py-0">
         <form action="/san-pham" method="GET" className="space-y-3">
           {/* Top Row: Search Input (>=16px font to prevent iOS zoom) + Mobile Filter Button + Desktop Submit */}
           <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export function ProductFilterBar({
               <input
                 name="search"
                 defaultValue={initialFilters.search ?? ''}
-                placeholder="Tìm tên sản phẩm, giống cây, HTX..."
+                placeholder="Tìm tên sản phẩm, giống cây, HTX…"
                 aria-label="Tìm kiếm sản phẩm"
                 className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50/70 pl-10 pr-4 text-base font-medium text-slate-900 outline-none transition focus:border-[#0d7a28] focus:bg-white focus:ring-2 focus:ring-[#0d7a28]/20 placeholder:text-sm placeholder:text-slate-400"
               />
@@ -116,7 +116,7 @@ export function ProductFilterBar({
               aria-label="Mở bộ lọc nông sản"
               className="inline-flex h-12 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 text-xs font-bold text-slate-800 lg:hidden shadow-xs hover:border-[#0d7a28] active:scale-95 touch-action-manipulation"
             >
-              <SlidersHorizontal size={16} className="text-[#0d7a28]" />
+              <SlidersHorizontal size={16} aria-hidden="true" className="text-[#0d7a28]" />
               <span>Lọc</span>
               {activeSecondaryFiltersCount > 0 && (
                 <span className="grid h-5 w-5 place-items-center rounded-full bg-[#0d7a28] text-[10px] font-extrabold text-white">
@@ -144,10 +144,19 @@ export function ProductFilterBar({
             )}
           </div>
 
-          {/* Desktop Filter Row: (hidden on mobile, visible on lg+) */}
-          <div className="hidden lg:grid grid-cols-12 gap-3 pt-2.5 border-t border-slate-100 items-center">
+          {/* Secondary filters stay disclosed only when active, keeping the catalog hierarchy search-first. */}
+          <details open={activeSecondaryFiltersCount > 0} className="hidden border-t border-slate-200 pt-3 lg:block">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 text-xs font-semibold text-slate-600 outline-none transition hover:text-[#0d7a28] focus-visible:ring-2 focus-visible:ring-[#0d7a28]/30 [&::-webkit-details-marker]:hidden">
+              <span>Bộ lọc nâng cao</span>
+              {activeSecondaryFiltersCount > 0 ? (
+                <span className="font-bold text-[#0d7a28]">{activeSecondaryFiltersCount} đang áp dụng</span>
+              ) : (
+                <span className="text-slate-400">Địa phương, giá, sắp xếp, QR</span>
+              )}
+            </summary>
+            <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] items-center gap-3 pt-2">
             {/* Province input */}
-            <div className="col-span-3">
+            <div>
               <input
                 name="province"
                 defaultValue={initialFilters.province ?? ''}
@@ -158,7 +167,7 @@ export function ProductFilterBar({
             </div>
 
             {/* Price min */}
-            <div className="col-span-2">
+            <div>
               <input
                 name="minPrice"
                 defaultValue={initialFilters.minPrice ?? ''}
@@ -170,7 +179,7 @@ export function ProductFilterBar({
             </div>
 
             {/* Price max */}
-            <div className="col-span-2">
+            <div>
               <input
                 name="maxPrice"
                 defaultValue={initialFilters.maxPrice ?? ''}
@@ -182,7 +191,7 @@ export function ProductFilterBar({
             </div>
 
             {/* Sort */}
-            <div className="col-span-2">
+            <div>
               <select
                 name="sort"
                 defaultValue={initialFilters.sort ?? ''}
@@ -196,7 +205,7 @@ export function ProductFilterBar({
             </div>
 
             {/* Has QR Checkbox */}
-            <div className="col-span-3">
+            <div>
               <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
                 <input
                   type="checkbox"
@@ -206,12 +215,13 @@ export function ProductFilterBar({
                   className="h-4 w-4 rounded border-slate-300 text-[#0d7a28] focus:ring-[#0d7a28]"
                 />
                 <span className="flex items-center gap-1">
-                  <QrCode size={13} className="text-[#0d7a28]" />
+                  <QrCode size={13} aria-hidden="true" className="text-[#0d7a28]" />
                   <span>Chỉ có QR Passport</span>
                 </span>
               </label>
             </div>
-          </div>
+            </div>
+          </details>
 
           {/* Hidden inputs to preserve category */}
           {initialFilters.category && (
@@ -247,7 +257,7 @@ export function ProductFilterBar({
             <input
               name="province"
               defaultValue={initialFilters.province ?? ''}
-              placeholder="Ví dụ: Đắk Lắk, Tiền Giang, Sơn La..."
+              placeholder="Ví dụ: Đắk Lắk, Tiền Giang, Sơn La…"
               className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-base font-medium text-slate-900 outline-none focus:border-[#0d7a28] focus:bg-white"
             />
           </div>

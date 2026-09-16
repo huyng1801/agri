@@ -563,7 +563,7 @@ export class PlantTraceabilityService {
     });
     if (!code?.tree) throw new NotFoundException('Hồ sơ cây không tồn tại hoặc chưa được công khai');
     await this.prisma.traceabilityCode.update({ where: { id: code.id }, data: { viewCount: { increment: 1 } } });
-    return { verified: true, traceability: { code: code.code, publicUrl: this.publicUrl(TraceabilityCodeType.TREE, treeCode) }, tree: this.publicTreePayload(code.tree) };
+    return { verified: true, traceability: { code: code.code, publicUrl: this.publicUrl(TraceabilityCodeType.TREE, treeCode), qrDataUrl: code.qrDataUrl }, tree: this.publicTreePayload(code.tree) };
   }
 
   async publicProduct(productCode: string) {
@@ -583,6 +583,7 @@ export class PlantTraceabilityService {
                       include: {
                         cropType: true,
                         zone: true,
+                        cooperative: true,
                         events: { where: { status: TreeEventStatus.PUBLISHED }, orderBy: { eventDate: 'asc' } }
                       }
                     },
@@ -711,6 +712,8 @@ export class PlantTraceabilityService {
       plantedDate: tree.plantedDate,
       status: tree.status,
       publicUrl: this.publicUrl(TraceabilityCodeType.TREE, tree.treeCode),
+      ownerName: tree.cooperative?.name ?? null,
+      images: this.publicImages(tree.imagesJson),
       zone: this.publicZone(tree.zone),
       events: (tree.events ?? []).map((event: any) => ({ id: event.id, eventDate: event.eventDate, eventType: event.eventType, description: event.description, inputs: (event.inputs ?? []).map((input: any) => ({ materialType: input.materialType, materialName: input.materialName, quantity: input.quantity, unit: input.unit, note: input.note })) })),
       harvests: (tree.harvests ?? []).map((harvest: any) => ({ id: harvest.id, harvestDate: harvest.harvestDate, quantity: harvest.quantity, unit: harvest.unit, lots: (harvest.lotTrees ?? []).map((row: any) => ({ lotCode: row.lot?.lotCode, quantity: row.quantity, unit: row.unit })) }))
@@ -725,6 +728,23 @@ export class PlantTraceabilityService {
   private publicCropType(cropType: any) {
     if (!cropType) return null;
     return { code: cropType.code, name: cropType.name, description: cropType.description };
+  }
+
+  private publicImages(imagesJson: unknown) {
+    if (!Array.isArray(imagesJson)) return [];
+    return imagesJson.flatMap((item) => {
+      if (typeof item === 'string') return this.safePublicImage(item) ? [{ url: item }] : [];
+      if (!item || typeof item !== 'object') return [];
+      const value = item as { url?: unknown; publicUrl?: unknown; caption?: unknown; name?: unknown };
+      const url = typeof value.url === 'string' ? value.url : typeof value.publicUrl === 'string' ? value.publicUrl : null;
+      if (!url || !this.safePublicImage(url)) return [];
+      const caption = typeof value.caption === 'string' ? value.caption : typeof value.name === 'string' ? value.name : undefined;
+      return [{ url, ...(caption ? { caption } : {}) }];
+    });
+  }
+
+  private safePublicImage(url: string) {
+    return /^https?:\/\//i.test(url) || url.startsWith('/');
   }
 
   private publicCategory(category: any) {

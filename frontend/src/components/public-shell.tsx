@@ -3,11 +3,11 @@ import { PublicFooter } from './public-footer';
 import { PublicHeader } from './public-header';
 import { FloatingContactClient } from './public-site-support';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
-import { defaultPublicSiteProfileForSite } from '@/lib/public-site';
+import { getPublicSiteProfile } from '@/lib/public-site';
 
 export async function PublicShell({ children }: { children: React.ReactNode }) {
   const siteKey = await getRequestPublicSiteKey();
-  const profile = defaultPublicSiteProfileForSite(siteKey);
+  const profile = await getPublicSiteProfile(siteKey);
 
   return (
     <div id="top" data-public-site={siteKey} className="public-app-shell mobile-app-scroll min-h-screen">
@@ -19,9 +19,9 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
       </a>
       <PublicHeader appName={profile.appName} siteKey={siteKey} />
       {children}
-      <FloatingContactClient siteKey={siteKey} />
+      <FloatingContactClient siteKey={siteKey} profile={profile} />
       <PublicBottomNav siteKey={siteKey} />
-      <PublicFooter siteKey={siteKey} />
+      <PublicFooter siteKey={siteKey} profile={profile} />
     </div>
   );
 }

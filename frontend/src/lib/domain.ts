@@ -1,5 +1,6 @@
 export type SiteArea = 'public' | 'admin' | 'htx' | 'local';
 export type PublicSiteKey = 'htxonline' | 'agripassport' | 'passport' | 'local';
+export type AuthPortal = 'ADMIN' | 'HTX' | 'AGRIPASSPORT' | 'PASSPORT';
 
 export const HTXONLINE_HOST = 'htxonline.vn';
 export const HTXONLINE_WWW_HOST = 'www.htxonline.vn';
@@ -15,6 +16,8 @@ export const MARKETPLACE_ALIAS_WWW_HOST = 'www.ketnoinongnghiep.vn';
 const HTXONLINE_HOSTS = new Set([HTXONLINE_HOST, HTXONLINE_WWW_HOST]);
 const MARKETPLACE_HOSTS = new Set([MARKETPLACE_HOST, MARKETPLACE_WWW_HOST, MARKETPLACE_ALIAS_HOST, MARKETPLACE_ALIAS_WWW_HOST]);
 const PASSPORT_HOSTS = new Set([PASSPORT_HOST, PASSPORT_WWW_HOST]);
+const ADMIN_HOSTS = new Set([ADMIN_HOST]);
+const HTX_HOSTS = new Set([HTX_HOST]);
 const PUBLIC_HOSTS = new Set([...HTXONLINE_HOSTS, ...MARKETPLACE_HOSTS, ...PASSPORT_HOSTS]);
 const MARKETPLACE_ALIAS_HOSTS = new Set([MARKETPLACE_ALIAS_HOST, MARKETPLACE_ALIAS_WWW_HOST]);
 
@@ -32,10 +35,18 @@ export function normalizeHostname(hostname: string) {
 
 export function publicSiteKeyFromHost(hostname: string): PublicSiteKey {
   const host = normalizeHostname(hostname);
-  if (HTXONLINE_HOSTS.has(host)) return 'htxonline';
+  if (HTXONLINE_HOSTS.has(host) || ADMIN_HOSTS.has(host) || HTX_HOSTS.has(host)) return 'htxonline';
   if (MARKETPLACE_HOSTS.has(host)) return 'agripassport';
   if (PASSPORT_HOSTS.has(host)) return 'passport';
   return 'local';
+}
+
+export function authPortalFromHost(hostname: string): AuthPortal {
+  const host = normalizeHostname(hostname);
+  if (ADMIN_HOSTS.has(host)) return 'ADMIN';
+  if (HTX_HOSTS.has(host) || HTXONLINE_HOSTS.has(host)) return 'HTX';
+  if (PASSPORT_HOSTS.has(host)) return 'PASSPORT';
+  return 'AGRIPASSPORT';
 }
 
 export function primaryHostForPublicSite(siteKey: PublicSiteKey) {
@@ -66,13 +77,24 @@ export function siteAreaFromHost(hostname: string): SiteArea {
   return 'local';
 }
 
-export function dashboardUrlForRoles(roles: string[], currentOrigin?: string) {
+export function dashboardUrlForRoles(roles: string[], currentOrigin?: string, portal?: AuthPortal) {
   const origin = currentOrigin ?? (typeof window !== 'undefined' ? window.location.origin : '');
+  if (portal === 'ADMIN') return origin && siteAreaFromHost(new URL(origin).hostname) === 'local' ? '/dashboard' : `https://${ADMIN_HOST}/dashboard`;
+  if (portal === 'HTX') return origin && siteAreaFromHost(new URL(origin).hostname) === 'local' ? '/dashboard' : `https://${HTX_HOST}/dashboard`;
+  if (portal === 'PASSPORT') return origin && siteAreaFromHost(new URL(origin).hostname) === 'local' ? '/' : PASSPORT_ORIGIN;
+  if (portal === 'AGRIPASSPORT') return origin && siteAreaFromHost(new URL(origin).hostname) === 'local' ? '/' : MARKETPLACE_ORIGIN;
   const area = origin ? siteAreaFromHost(new URL(origin).hostname) : 'local';
   if (area === 'local') return '/dashboard';
   if (roles.includes('SUPER_ADMIN')) return `https://${ADMIN_HOST}/dashboard`;
   if (roles.some((role) => ['ADMIN_HTX', 'MEMBER_HTX', 'FARMER'].includes(role))) return `https://${HTX_HOST}/dashboard`;
   return MARKETPLACE_ORIGIN;
+}
+
+export function loginUrlForPortal(portal: AuthPortal) {
+  if (portal === 'ADMIN') return `https://${ADMIN_HOST}/login`;
+  if (portal === 'HTX') return `https://${HTX_HOST}/login`;
+  if (portal === 'PASSPORT') return `${PASSPORT_ORIGIN}/login`;
+  return `${MARKETPLACE_ORIGIN}/login`;
 }
 
 export function loginUrlForArea(area: SiteArea) {

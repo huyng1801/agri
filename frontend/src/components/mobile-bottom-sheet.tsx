@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from './ui';
 
@@ -28,7 +28,7 @@ export function MobileBottomSheet({
   triggerRef
 }: MobileBottomSheetProps) {
   const sheetRef = useRef<HTMLDivElement>(null);
-  const titleId = useRef(`bottom-sheet-title-${Math.random().toString(36).slice(2, 9)}`).current;
+  const titleId = useId();
 
   // Handle ESC key and Body scroll lock
   useEffect(() => {
@@ -120,7 +120,7 @@ export function MobileBottomSheet({
               type="button"
               onClick={onClose}
               aria-label="Đóng bảng điều khiển"
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
+              className="grid h-11 w-11 min-h-11 min-w-11 shrink-0 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900 transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0d7a28]"
             >
               <X size={18} />
             </button>
