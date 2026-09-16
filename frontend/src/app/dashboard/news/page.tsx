@@ -33,12 +33,14 @@ export default function NewsListPage() {
 
   const articles = useQuery({
     queryKey: ['news-list', siteFilter, statusFilter, search, page],
-    queryFn: () => apiFetch<NewsList>(`/news?siteKey=${siteFilter}&limit=20&page=${page}${statusFilter ? `&status=${statusFilter}` : ''}${search.trim() ? `&search=${encodeURIComponent(search.trim())}` : ''}`)
+    queryFn: () => apiFetch<NewsArticle[] | NewsList>(`/news?siteKey=${siteFilter}&limit=20&page=${page}${statusFilter ? `&status=${statusFilter}` : ''}${search.trim() ? `&search=${encodeURIComponent(search.trim())}` : ''}`)
   });
 
-  const articleItems = articles.data?.data.data ?? [];
-  const total = toNumber(articles.data?.data.meta?.total, articleItems.length);
-  const limit = Math.max(1, toNumber(articles.data?.data.meta?.limit, 20));
+  const responseData = articles.data?.data;
+  const articleItems: NewsArticle[] = Array.isArray(responseData) ? responseData : responseData?.data ?? [];
+  const responseMeta = Array.isArray(responseData) ? articles.data?.meta : responseData?.meta;
+  const total = toNumber(responseMeta?.total, articleItems.length);
+  const limit = Math.max(1, toNumber(responseMeta?.limit, 20));
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
   useEffect(() => {
