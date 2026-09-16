@@ -407,9 +407,9 @@ test.describe('admin CRUD forms', () => {
 
   test('@admin @form news pastes a clipboard image through the public upload flow', async ({ page }) => {
     const { adminUrl } = baseUrls();
-    let uploadPlanRequested = false;
+    let uploadRequested = false;
     let uploadedBytes = 0;
-    let confirmBody: Record<string, unknown> | undefined;
+    let uploadContentType = '';
 
     await page.route('**/api/v1/news**', async (route) => {
       const request = route.request();
@@ -420,23 +420,10 @@ test.describe('admin CRUD forms', () => {
       }
       await route.fulfill(jsonEnvelope({ data: [], meta: { page: 1, limit: 50, total: 0 } }));
     });
-    await page.route('**/api/v1/files/presign-upload', async (route) => {
-      uploadPlanRequested = true;
-      await route.fulfill(jsonEnvelope({
-        bucket: 'e2e',
-        objectKey: 'e2e/news-clipboard.png',
-        uploadUrl: `${adminUrl}/e2e-news-upload`,
-        method: 'PUT',
-        headers: { 'Content-Type': 'image/png' },
-        publicUrl: 'https://cdn.example.com/e2e/news-clipboard.png'
-      }));
-    });
-    await page.route(`${adminUrl}/e2e-news-upload`, async (route) => {
+    await page.route('**/api/v1/files/upload', async (route) => {
+      uploadRequested = true;
       uploadedBytes = route.request().postDataBuffer()?.length ?? 0;
-      await route.fulfill({ status: 200, body: '' });
-    });
-    await page.route('**/api/v1/files/confirm-upload', async (route) => {
-      confirmBody = route.request().postDataJSON() as Record<string, unknown>;
+      uploadContentType = route.request().headers()['content-type'] || '';
       await route.fulfill(jsonEnvelope({ id: 'file-news-clipboard', publicUrl: 'https://cdn.example.com/e2e/news-clipboard.png', objectKey: 'e2e/news-clipboard.png' }));
     });
 
@@ -455,15 +442,9 @@ test.describe('admin CRUD forms', () => {
       node.dispatchEvent(event);
     });
 
-    await expect.poll(() => uploadPlanRequested).toBe(true);
+    await expect.poll(() => uploadRequested).toBe(true);
     await expect.poll(() => uploadedBytes).toBeGreaterThan(0);
-    await expect.poll(() => confirmBody).toMatchObject({
-      fileName: 'clipboard.png',
-      mimeType: 'image/png',
-      objectKey: 'e2e/news-clipboard.png',
-      publicUrl: 'https://cdn.example.com/e2e/news-clipboard.png',
-      visibility: 'PUBLIC'
-    });
+    expect(uploadContentType).toMatch(/^multipart\/form-data; boundary=/);
     await expect(editor.locator('img')).toHaveCount(1);
     await expect(page.getByTestId('news-upload-error')).toHaveCount(0);
     await expect(editor.locator('img')).toHaveAttribute('src', 'https://cdn.example.com/e2e/news-clipboard.png');

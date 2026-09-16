@@ -69,14 +69,6 @@ type FileAsset = {
   objectKey: string;
 };
 
-type UploadPlan = {
-  objectKey: string;
-  uploadUrl: string;
-  method?: string;
-  headers?: Record<string, string>;
-  publicUrl?: string;
-};
-
 type SeoCheck = {
   label: string;
   detail: string;
@@ -883,35 +875,17 @@ export default function NewsDashboardPage() {
     setUploadRetry(null);
     try {
       const fileName = file.name || `clipboard-${Date.now()}.png`;
-      const mimeType = file.type || (fileName.toLowerCase().endsWith('.webp') ? 'image/webp' : 'image/png');
-      const plan = await apiFetch<UploadPlan>('/files/presign-upload', {
+      // Upload through our API instead of PUT-ing from the browser to the R2
+      // S3 endpoint. Some browser networks reach a different Cloudflare edge
+      // and get a 403 without CORS headers, which surfaces as "Failed to fetch"
+      // even though the same presigned URL works from the server.
+      const multipart = new FormData();
+      multipart.append('file', file, fileName);
+      const uploaded = await apiFetch<FileAsset>('/files/upload', {
         method: 'POST',
-        body: JSON.stringify({
-          fileName,
-          mimeType,
-          sizeBytes: file.size,
-          visibility: 'PUBLIC'
-        })
+        body: multipart
       });
-      if (!plan.data.publicUrl) throw new Error('Chưa cấu hình địa chỉ ảnh public trên máy chủ.');
-      const uploadResponse = await fetch(plan.data.uploadUrl, {
-        method: plan.data.method || 'PUT',
-        headers: plan.data.headers,
-        body: file
-      });
-      if (!uploadResponse.ok) throw new Error(`Kho ảnh từ chối upload (HTTP ${uploadResponse.status}).`);
-      const confirmed = await apiFetch<FileAsset>('/files/confirm-upload', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName,
-          mimeType,
-          sizeBytes: file.size,
-          objectKey: plan.data.objectKey,
-          publicUrl: plan.data.publicUrl,
-          visibility: 'PUBLIC'
-        })
-      });
-      const url = confirmed.data.publicUrl || plan.data.publicUrl;
+      const url = uploaded.data.publicUrl;
       if (!url) throw new Error('Ảnh đã upload nhưng chưa nhận được đường dẫn công khai.');
       if (target === 'cover') {
         update('coverImageUrl', url);
