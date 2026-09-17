@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, QrCode, Store, Boxes, type LucideIcon } from 'lucide-react';
+import { ArrowDown, ArrowRight, CheckCircle2, QrCode, Store, Boxes, type LucideIcon } from 'lucide-react';
 import { cn } from './ui';
 import { htxonlineUrl, marketplaceUrl, passportUrl, type PublicSiteKey } from '@/lib/domain';
 
@@ -38,7 +38,7 @@ export const ecosystemCards: EcosystemCard[] = [
   },
   {
     key: 'passport',
-    name: 'HỘ CHIẾU NÔNG NGHIỆP',
+    name: 'Hộ chiếu nông nghiệp',
     label: 'Cho truy xuất QR',
     description: 'Tạo hồ sơ số và QR cho từng sản phẩm hoặc lô sản phẩm, giúp người mua truy xuất nguồn gốc, nhật ký canh tác và thông tin công khai rõ ràng.',
     href: passportUrl('/'),
@@ -77,6 +77,117 @@ export function PublicEcosystemShowcase({
 }) {
   const isAgri = siteKey === 'agripassport' || siteKey === 'local';
 
+  const compactPlatforms = [
+    {
+      key: 'htxonline' as const,
+      name: 'HTXONLINE',
+      stage: 'Lớp vận hành',
+      role: 'Quản trị hợp tác xã',
+      description: 'Quản lý hoạt động của hợp tác xã và dữ liệu sản xuất trong phạm vi nội bộ.',
+      href: htxonlineUrl('/'),
+      external: true,
+      color: 'var(--ecosystem-htxonline)',
+      icon: Store,
+      handoff: 'Dữ liệu phù hợp'
+    },
+    {
+      key: 'agripassport' as const,
+      name: 'AGRIPASSPORT',
+      stage: 'Lớp hồ sơ sản phẩm',
+      role: 'Thông tin đơn vị & nông sản',
+      description: 'Tổ chức danh mục sản phẩm, hồ sơ hợp tác xã và kênh kết nối.',
+      href: marketplaceUrl('/'),
+      external: true,
+      color: 'var(--ecosystem-agripassport)',
+      icon: Boxes,
+      handoff: 'Được đơn vị duyệt'
+    },
+    {
+      key: 'passport' as const,
+      name: 'Hộ chiếu nông nghiệp',
+      stage: 'Lớp tra cứu QR',
+      role: 'Hồ sơ công khai',
+      description: 'Mở hồ sơ sản phẩm, lô hàng hoặc cây bằng mã QR; chỉ hiển thị dữ liệu được duyệt.',
+      href: '/truy-xuat',
+      external: false,
+      color: 'var(--ecosystem-passport)',
+      icon: QrCode,
+      handoff: ''
+    }
+  ];
+
+  if (compact) {
+    return (
+      <section className={cn('w-full', className)} aria-label="Các nền tảng trong hệ sinh thái">
+        {showHeading && (
+          <div className="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold tracking-[0.12em] text-[var(--brand-primary)]">Luồng dữ liệu theo vai trò</p>
+              <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl">
+                Từ vận hành hợp tác xã đến hồ sơ QR
+              </h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--text-secondary)] sm:text-base">
+                Ba nền tảng đảm nhiệm ba lớp công việc. Chỉ thông tin được đơn vị chọn và cho phép công khai mới xuất hiện trên Hộ chiếu.
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="grid gap-x-3 gap-y-2 lg:grid-cols-[minmax(0,1fr)_5rem_minmax(0,1fr)_5rem_minmax(0,1fr)] lg:items-stretch lg:gap-y-0">
+          {compactPlatforms.map((platform, index) => {
+            const isCurrent = platform.key === siteKey;
+            const Icon = platform.icon;
+            const content = (
+              <div className="flex h-full flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white" style={{ backgroundColor: platform.color }}>
+                    <Icon size={19} aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-[0.68rem] font-bold tracking-[0.08em] text-[var(--text-tertiary)]">{platform.stage}</span>
+                    <span className="mt-0.5 block text-xs font-semibold text-[var(--text-secondary)]">{platform.role}</span>
+                  </span>
+                </div>
+                <span className="block text-base font-extrabold leading-6 text-[var(--text-primary)] [overflow-wrap:anywhere]">{platform.name}</span>
+                <span className="block text-sm leading-6 text-[var(--text-secondary)]">{platform.description}</span>
+                <span className="mt-auto inline-flex min-h-10 items-center gap-1.5 pt-1 text-sm font-bold" style={{ color: platform.color }}>
+                  {isCurrent ? 'Tra cứu QR' : `Mở ${platform.name}`}
+                  <ArrowRight size={15} aria-hidden="true" />
+                </span>
+              </div>
+            );
+
+            return (
+              <React.Fragment key={platform.key}>
+                <article className={cn(
+                  'min-w-0 rounded-[1.25rem] border bg-[var(--surface-elevated)] p-4 transition-[border-color,box-shadow] sm:p-5',
+                  isCurrent ? 'border-[var(--brand-primary)] ring-1 ring-[var(--brand-primary)]/20' : 'border-[var(--border)] hover:border-[var(--border-strong)]'
+                )}>
+                  {platform.external ? (
+                    <a href={platform.href} target="_blank" rel="noopener noreferrer" className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]" aria-label={`${platform.name} — ${platform.role} (mở tab mới)`}>
+                      {content}
+                    </a>
+                  ) : (
+                    <Link href={platform.href} aria-current={isCurrent ? 'page' : undefined} className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]" aria-label={`${platform.name} — ${platform.role}`}>
+                      {content}
+                    </Link>
+                  )}
+                </article>
+                {index < compactPlatforms.length - 1 && (
+                  <div className="flex min-h-8 items-center justify-center gap-2 text-center text-[11px] font-semibold leading-4 text-[var(--text-secondary)] lg:min-h-0 lg:flex-col lg:px-1">
+                    <ArrowDown size={15} className="shrink-0 lg:hidden" aria-hidden="true" />
+                    <span>{platform.handoff}</span>
+                    <ArrowRight size={15} className="hidden shrink-0 lg:block" aria-hidden="true" />
+                  </div>
+                )}
+              </React.Fragment>
+            );
+          })}
+        </div>
+      </section>
+    );
+  }
+
   const platforms: PlatformItem[] = [
     {
       num: '01',
@@ -86,10 +197,10 @@ export function PublicEcosystemShowcase({
       desc: 'Hệ sinh thái số hóa nghiệp vụ hợp tác xã, quản lý thành viên, xã viên, sổ sách kế toán, quỹ xã, theo dõi xuất nhập kho và lập kế hoạch sản xuất theo mùa vụ.',
       href: htxonlineUrl('/'),
       isExternal: true,
-      accentColor: '#131935',
-      headerBg: 'bg-[#131935]',
-      badgeClass: 'bg-[#131935]/10 text-[#131935] border-[#131935]/20',
-      buttonClass: 'bg-[#131935] hover:bg-[#1f284f] text-white focus-visible:ring-[#131935]',
+      accentColor: 'var(--ecosystem-htxonline)',
+      headerBg: 'bg-[var(--ecosystem-htxonline)]',
+      badgeClass: 'border-[var(--border)] bg-[var(--ecosystem-htxonline-subtle)] text-[var(--ecosystem-htxonline)]',
+      buttonClass: 'bg-[var(--ecosystem-htxonline)] text-white hover:bg-[var(--ecosystem-htxonline-hover)] focus-visible:ring-[var(--ecosystem-htxonline)]',
       icon: Store,
       capabilities: [
         'Hồ sơ xã viên & dữ liệu đóng góp vốn',
@@ -105,10 +216,10 @@ export function PublicEcosystemShowcase({
       desc: 'Nền tảng chuẩn hóa dữ liệu nông sản, số hóa danh mục hàng hóa, tổ chức thông tin hợp tác xã và mở kênh kết nối minh bạch.',
       href: isAgri ? '/san-pham' : marketplaceUrl('/'),
       isExternal: !isAgri,
-      accentColor: '#106f8a',
-      headerBg: 'bg-[#106f8a]',
-      badgeClass: 'bg-[#106f8a]/10 text-[#106f8a] border-[#106f8a]/20',
-      buttonClass: 'bg-[#106f8a] hover:bg-[#0d596e] text-white focus-visible:ring-[#106f8a]',
+      accentColor: 'var(--ecosystem-agripassport)',
+      headerBg: 'bg-[var(--ecosystem-agripassport)]',
+      badgeClass: 'border-[var(--border)] bg-[var(--ecosystem-agripassport-subtle)] text-[var(--ecosystem-agripassport)]',
+      buttonClass: 'bg-[var(--ecosystem-agripassport)] text-white hover:bg-[var(--ecosystem-agripassport-hover)] focus-visible:ring-[var(--ecosystem-agripassport)]',
       icon: Boxes,
       capabilities: [
         'Chuẩn hóa hồ sơ nông sản & giá tham chiếu',
@@ -119,15 +230,15 @@ export function PublicEcosystemShowcase({
     {
       num: '03',
       key: 'passport',
-      name: 'HỘ CHIẾU NÔNG NGHIỆP',
+      name: 'Hộ chiếu nông nghiệp',
       role: 'Truy xuất nguồn gốc & Nhật ký số',
-      desc: 'Cấp phát chứng thư điện tử và mã QR truy xuất cho từng sản phẩm hoặc lô nông sản, liên kết trực tiếp với vùng canh tác, quy trình phân bón và chứng nhận an toàn.',
+      desc: 'Tạo hồ sơ số và mã QR cho sản phẩm hoặc lô hàng; nội dung vùng trồng, nhật ký và giấy tờ chỉ hiển thị khi được đơn vị công khai.',
       href: passportUrl('/'),
       isExternal: true,
-      accentColor: '#0d7a28',
-      headerBg: 'bg-[#0d7a28]',
-      badgeClass: 'bg-[#0d7a28]/10 text-[#0d7a28] border-[#0d7a28]/20',
-      buttonClass: 'bg-[#0d7a28] hover:bg-[#0a6120] text-white focus-visible:ring-[#0d7a28]',
+      accentColor: 'var(--ecosystem-passport)',
+      headerBg: 'bg-[var(--ecosystem-passport)]',
+      badgeClass: 'border-[var(--border)] bg-[var(--ecosystem-passport-subtle)] text-[var(--ecosystem-passport)]',
+      buttonClass: 'bg-[var(--ecosystem-passport)] text-white hover:bg-[var(--ecosystem-passport-hover)] focus-visible:ring-[var(--ecosystem-passport)]',
       icon: QrCode,
       capabilities: [
         'Cấp mã QR Passport định danh từng lô hàng',
@@ -142,14 +253,14 @@ export function PublicEcosystemShowcase({
       {showHeading && (
         <div className="mb-8 sm:mb-12 text-center max-w-3xl mx-auto px-4">
           <div className="inline-flex items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--surface-subtle)] px-3.5 py-1 text-xs font-semibold text-[var(--text-secondary)]">
-            <span className="h-2 w-2 rounded-full bg-[#106f8a] animate-pulse" />
+            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--brand-primary)]" />
             <span className="tracking-wide uppercase text-[11px] font-bold">Kiến trúc hệ thống</span>
           </div>
-          <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:whitespace-nowrap sm:text-3xl lg:text-4xl">
-            Ba nền tảng chuyên biệt một chuỗi giá trị khép kín
+          <h2 className="mt-3 text-2xl font-bold tracking-tight text-[var(--text-primary)] sm:text-3xl lg:text-4xl">
+            Ba nền tảng, mỗi nơi một vai trò
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-[var(--text-secondary)] sm:text-base">
-            Mỗi hệ thống đảm nhiệm một khâu then chốt trong chu trình số hóa nông nghiệp, đảm bảo tính phân quyền, minh bạch và tính toàn vẹn dữ liệu từ cánh đồng đến tay đối tác.
+            Mỗi nền tảng phục vụ một nhóm công việc riêng; thông tin được chia sẻ theo quyền và phạm vi hiển thị.
           </p>
         </div>
       )}
@@ -187,8 +298,8 @@ export function PublicEcosystemShowcase({
                     PHÂN HỆ {p.num}
                   </span>
                   {isCurrent ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#106f8a]/10 px-2.5 py-0.5 text-xs font-semibold text-[#106f8a] border border-[#106f8a]/20">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#106f8a]" />
+                    <span className="inline-flex items-center gap-1 rounded-full border border-[var(--brand-primary)]/20 bg-[var(--brand-primary-subtle)] px-2.5 py-0.5 text-xs font-semibold text-[var(--brand-primary)]">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[var(--brand-primary)]" />
                       Nền tảng bạn đang xem
                     </span>
                   ) : (

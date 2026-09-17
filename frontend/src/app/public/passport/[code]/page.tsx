@@ -142,12 +142,12 @@ export async function generateMetadata({ params }: PublicPassportPageProps): Pro
   const siteKey = await getRequestPublicSiteKey();
   const canonical = await getRequestAbsoluteUrl(`/passport/${passport.passportCode}`);
   const description = brandizeSiteText(
-    passport.product.description || `Hồ sơ chứng thực số của ${passport.product.name} từ ${passport.cooperative.name}.`,
+    passport.product.description || `Hồ sơ QR công khai của ${passport.product.name} từ ${passport.cooperative.name}.`,
     siteKey
   );
   const image = passport.product.thumbnail?.publicUrl || (await getRequestAbsoluteUrl('/public-media-placeholder.svg'));
   return {
-    title: `${passport.product.name} (${passport.passportCode}) · Hộ chiếu nông nghiệp`,
+    title: `${passport.product.name} (${passport.passportCode})`,
     description,
     alternates: { canonical },
     openGraph: {

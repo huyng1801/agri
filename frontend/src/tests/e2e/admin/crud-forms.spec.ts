@@ -401,12 +401,145 @@ test.describe('admin CRUD forms', () => {
     await expect(editor.locator('h3')).toHaveCount(1);
     await expect(editor.locator('p')).toHaveCount(1);
     await expect(editor.locator('h3')).toHaveText('Nội dung mở đầu');
+    await expect(editor.locator('h3')).toHaveCSS('font-weight', '400');
+
+    await editor.fill('8. Làm thế nào để xây dựng hệ thống truy xuất hiệu quả?');
+    await editor.press('End');
+    await page.getByRole('button', { name: 'Chèn tiêu đề H2' }).click();
+    await expect(editor.locator('h2')).toHaveText('8. Làm thế nào để xây dựng hệ thống truy xuất hiệu quả?');
+    await expect(editor.locator('h2')).toHaveCSS('font-weight', '400');
 
     await editor.fill('Một đoạn văn bình thường');
     await editor.press('End');
     await expect(page.getByRole('button', { name: 'Chữ đậm' })).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Chữ nghiêng' })).toHaveCount(1);
     await expect(editor.locator('strong')).toHaveCount(0);
+    await editor.press('Control+b');
+    await editor.press('End');
+    await editor.press('!');
+    await expect(editor.locator('b, strong')).toHaveCount(0);
+    await expect(editor).toHaveCSS('font-weight', '400');
+  });
+
+  test('@admin @form news strips inherited Word bold and keeps pasted text regular', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+
+    await page.route('**/api/v1/news**', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      await route.fulfill(path.endsWith('/categories')
+        ? jsonEnvelope([newsCategoryFixture()])
+        : jsonEnvelope({ data: [], meta: { page: 1, limit: 50, total: 0 } }));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
+    await page.getByRole('button', { name: 'Nâng cao', exact: true }).click();
+
+    const editor = page.getByTestId('news-content-editor');
+    await editor.evaluate((node) => {
+      node.focus();
+      const clipboard = new DataTransfer();
+      clipboard.setData('text/html', '<html><body><p class="MsoNormal" style="font-weight:700"><b>Đoạn Word bị in đậm</b></p><p><strong>Đoạn nhấn mạnh từ tài liệu</strong></p></body></html>');
+      clipboard.setData('text/plain', 'Đoạn Word bị in đậm\nĐoạn nhấn mạnh từ tài liệu');
+      const event = new Event('paste', { bubbles: true, cancelable: true });
+      Object.defineProperty(event, 'clipboardData', { value: clipboard });
+      node.dispatchEvent(event);
+    });
+
+    await expect(editor).toContainText('Đoạn Word bị in đậm');
+    await expect(editor).toContainText('Đoạn nhấn mạnh từ tài liệu');
+    await expect(editor.locator('b, strong')).toHaveCount(0);
+    await expect(editor).toHaveCSS('font-weight', '400');
+    await editor.press('Control+b');
+    await editor.press('End');
+    await editor.press('!');
+    await expect(editor.locator('b, strong')).toHaveCount(0);
+    await expect(editor.locator('p').nth(1)).toHaveCSS('font-weight', '400');
+  });
+
+  test('@admin @form news restores old drafts without inherited bold formatting', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const legacyDraft = {
+      savedAt: new Date().toISOString(),
+      editingId: null,
+      form: {
+        siteKey: 'PASSPORT',
+        categoryId: '',
+        title: 'Bài nháp cũ',
+        slug: 'bai-nhap-cu',
+        excerpt: '',
+        bodyHtml: '<h2><strong>Tiêu đề mục</strong></h2><p style="font-weight:700"><strong>Đoạn văn cần trở về chữ thường.</strong></p>',
+        coverImageUrl: '',
+        coverImageAlt: '',
+        status: 'DRAFT',
+        publicVerified: false,
+        isFeatured: false,
+        showOnHome: false,
+        focusKeyword: '',
+        seoTitle: '',
+        seoDescription: '',
+        canonicalUrl: '',
+        robotsNoIndex: false,
+        robotsNoFollow: false,
+        schemaType: 'NewsArticle',
+        ogTitle: '',
+        ogDescription: '',
+        ogImageUrl: '',
+        twitterTitle: '',
+        twitterDescription: '',
+        twitterImageUrl: '',
+        tags: '',
+        publishedAt: '',
+        scheduledAt: ''
+      }
+    };
+
+    await page.addInitScript((draft) => {
+      window.localStorage.setItem('htxonline-news-draft:new:PASSPORT', JSON.stringify(draft));
+    }, legacyDraft);
+    await page.route('**/api/v1/news**', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      await route.fulfill(path.endsWith('/categories')
+        ? jsonEnvelope([newsCategoryFixture()])
+        : jsonEnvelope({ data: [], meta: { page: 1, limit: 50, total: 0 } }));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/news/new?siteKey=PASSPORT`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
+    await page.getByRole('button', { name: 'Phục hồi nháp' }).click();
+
+    const editor = page.getByTestId('news-content-editor');
+    await expect(editor).toContainText('Đoạn văn cần trở về chữ thường.');
+    await expect(editor.locator('b, strong')).toHaveCount(0);
+    await expect(editor.locator('p')).toHaveCSS('font-weight', '400');
+    await expect(editor.locator('h2')).toHaveText('Tiêu đề mục');
+  });
+
+  test('@admin @form news opens old articles without inherited bold formatting', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    const article = {
+      ...newsFixture('legacy-bold-article', 'Bài viết cũ'),
+      siteKey: 'PASSPORT',
+      bodyHtml: '<h2><strong>Tiêu đề mục</strong></h2><p style="font-weight:700"><strong>Đoạn văn cần trở về chữ thường.</strong></p>'
+    };
+
+    await page.route('**/api/v1/news/categories*', async (route) => {
+      await route.fulfill(jsonEnvelope([newsCategoryFixture()]));
+    });
+    await page.route('**/api/v1/news/legacy-bold-article*', async (route) => {
+      await route.fulfill(jsonEnvelope(article));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/news/legacy-bold-article?siteKey=PASSPORT`, { waitUntil: 'domcontentloaded' });
+
+    const editor = page.getByTestId('news-content-editor');
+    await expect(editor).toContainText('Đoạn văn cần trở về chữ thường.', { timeout: 45_000 });
+    await expect(editor.locator('b, strong')).toHaveCount(0);
+    await expect(editor.locator('p')).toHaveCSS('font-weight', '400');
+    await expect(editor.locator('h2')).toHaveText('Tiêu đề mục');
   });
 
   test('@admin @form news pastes a clipboard image through the public upload flow', async ({ page }) => {
@@ -452,6 +585,64 @@ test.describe('admin CRUD forms', () => {
     await expect(editor.locator('img')).toHaveCount(1);
     await expect(page.getByTestId('news-upload-error')).toHaveCount(0);
     await expect(editor.locator('img')).toHaveAttribute('src', 'https://cdn.example.com/e2e/news-clipboard.png');
+  });
+
+  test('@admin @form news retries a clipboard image upload without losing article content', async ({ page }) => {
+    const { adminUrl } = baseUrls();
+    let uploadAttempts = 0;
+    let retryUploadBytes = 0;
+
+    await page.route('**/api/v1/news**', async (route) => {
+      const request = route.request();
+      const path = new URL(request.url()).pathname;
+      if (path.endsWith('/categories')) {
+        await route.fulfill(jsonEnvelope([newsCategoryFixture()]));
+        return;
+      }
+      await route.fulfill(jsonEnvelope({ data: [], meta: { page: 1, limit: 50, total: 0 } }));
+    });
+    await page.route('**/api/v1/files/upload', async (route) => {
+      uploadAttempts += 1;
+      if (uploadAttempts === 1) {
+        await route.abort('failed');
+        return;
+      }
+      retryUploadBytes = route.request().postDataBuffer()?.length ?? 0;
+      await route.fulfill(jsonEnvelope({ id: 'file-news-clipboard-retry', publicUrl: 'https://cdn.example.com/e2e/news-clipboard-retry.png', objectKey: 'e2e/news-clipboard-retry.png' }));
+    });
+
+    await seedAuthenticatedSession(page, superAdminUser);
+    await page.goto(`${adminUrl}/dashboard/news/new`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('page-title')).toContainText('Tin tức', { timeout: 45_000 });
+
+    const editor = page.getByTestId('news-content-editor');
+    await editor.fill('Nội dung bài cần được giữ lại sau lỗi mạng.');
+    await editor.evaluate((node) => {
+      node.focus();
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      range.collapse(false);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+
+      const clipboard = new DataTransfer();
+      clipboard.items.add(new File([new Uint8Array([137, 80, 78, 71])], 'clipboard.png', { type: 'image/png' }));
+      const event = new Event('paste', { bubbles: true, cancelable: true });
+      Object.defineProperty(event, 'clipboardData', { value: clipboard });
+      node.dispatchEvent(event);
+    });
+
+    await expect(page.getByTestId('news-upload-error')).toContainText('Failed to fetch');
+    await expect(editor).toContainText('Nội dung bài cần được giữ lại sau lỗi mạng.');
+    await page.getByRole('button', { name: 'Thử lại' }).click();
+
+    await expect.poll(() => uploadAttempts).toBe(2);
+    expect(retryUploadBytes).toBeGreaterThan(0);
+    await expect(page.getByTestId('news-upload-error')).toHaveCount(0);
+    await expect(editor).toContainText('Nội dung bài cần được giữ lại sau lỗi mạng.');
+    await expect(editor.locator('img')).toHaveCount(1);
+    await expect(editor.locator('img')).toHaveAttribute('src', 'https://cdn.example.com/e2e/news-clipboard-retry.png');
   });
 
   test('@admin @form news stays compact and usable on a small viewport', async ({ page }) => {
@@ -573,7 +764,7 @@ test.describe('admin CRUD forms', () => {
       const method = request.method();
       const path = new URL(request.url()).pathname;
       if (path.endsWith('/categories') && method === 'GET') {
-        await route.fulfill(jsonEnvelope([newsCategoryFixture()]));
+        await route.fulfill(jsonEnvelope(newsTopicCategoryFixtures()));
         return;
       }
       if (method === 'GET') {
@@ -597,10 +788,21 @@ test.describe('admin CRUD forms', () => {
     await page.getByRole('button', { name: 'Công cụ' }).click();
     await expect(page.getByRole('button', { name: 'Chèn tiêu đề H2' })).toBeVisible();
     await expect(page.getByTestId('news-site-filter')).toHaveValue('PASSPORT');
-    await page.getByTestId('news-passport-topic-select').selectOption('nhat-ky-san-xuat-dien-tu');
-    await expect(page.getByTestId('news-title-input')).toHaveValue('Nhật ký sản xuất điện tử là gì? Lợi ích cho nông hộ và hợp tác xã');
+    const topicSelect = page.getByTestId('news-passport-topic-select');
+    await expect(topicSelect.locator('option')).toHaveText([
+      'Chọn chủ đề…',
+      'Truy xuất',
+      'Chuyển đổi số',
+      'Hợp tác xã',
+      'Thị trường',
+      'Kiến thức'
+    ]);
+    await topicSelect.selectOption('topic-trace');
+    await expect(page.getByTestId('news-title-input')).toHaveValue('');
+    await expect(page.getByTestId('news-category-select')).toHaveCount(0);
+    await page.getByTestId('news-title-input').fill('Bài Hộ chiếu về truy xuất nguồn gốc');
     await expect(page.getByTestId('news-slug-input')).toBeHidden();
-    await page.locator('details').filter({ hasText: 'Đường dẫn, mô tả ngắn và danh mục' }).locator('summary').click();
+    await page.locator('details').filter({ hasText: 'Đường dẫn và mô tả ngắn' }).locator('summary').click();
     await expect(page.getByTestId('news-slug-input')).toBeVisible();
     await page.getByTestId('news-content-editor').fill('<p>Nội dung bài viết Hộ chiếu Nông nghiệp.</p>');
     await expect(page.getByTestId('news-slug-input')).toBeVisible();
@@ -610,9 +812,10 @@ test.describe('admin CRUD forms', () => {
     await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
     expect(mutations[0].body).toMatchObject({
       siteKey: 'PASSPORT',
+      categoryId: 'topic-trace',
       status: 'PUBLISHED',
       publicVerified: true,
-      title: 'Nhật ký sản xuất điện tử là gì? Lợi ích cho nông hộ và hợp tác xã'
+      title: 'Bài Hộ chiếu về truy xuất nguồn gốc'
     });
   });
 
@@ -1120,6 +1323,16 @@ function cooperativeFixture(id: string, name: string, code: string, status: stri
 
 function newsCategoryFixture() {
   return { id: 'category-e2e', name: 'Tin vận hành', slug: 'tin-van-hanh', description: '', sortOrder: 1, isActive: true };
+}
+
+function newsTopicCategoryFixtures() {
+  return [
+    { id: 'topic-trace', name: 'Truy xuất nguồn gốc', slug: 'truy-xuat-nguon-goc', description: '', sortOrder: 1, isActive: true },
+    { id: 'topic-digital', name: 'Chuyển đổi số', slug: 'chuyen-doi-so', description: '', sortOrder: 2, isActive: true },
+    { id: 'topic-cooperative', name: 'Tin HTX', slug: 'tin-htx', description: '', sortOrder: 3, isActive: true },
+    { id: 'topic-market', name: 'Tin thị trường', slug: 'tin-thi-truong', description: '', sortOrder: 4, isActive: true },
+    { id: 'topic-knowledge', name: 'Kiến thức nông nghiệp', slug: 'kien-thuc-nong-nghiep', description: '', sortOrder: 5, isActive: true }
+  ];
 }
 
 function newsFixture(id: string, title: string) {

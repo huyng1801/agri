@@ -351,16 +351,14 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
   });
 
   test('Passport data journey remains readable on desktop widths', async ({ page }) => {
-    const section = page.locator(
-      'main#main-content > section[class*="bg-[var(--surface-muted)]"][class*="py-14"]'
-    ).first();
+    const section = page.getByTestId('passport-data-journey');
     const header = section.locator(':scope > div > div:first-child');
 
     for (const width of [1024, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-      await expect(header.getByRole('heading', { name: 'Từ vùng trồng đến mã truy xuất' })).toBeVisible();
+      await expect(header.getByRole('heading', { name: 'Từ vùng trồng đến hồ sơ QR' })).toBeVisible();
       await expect(section.locator('article')).toHaveCount(3);
       const layout = await section.locator('article').evaluateAll((elements) =>
         elements.map((element) => ({ width: element.getBoundingClientRect().width, height: element.getBoundingClientRect().height }))
@@ -371,13 +369,13 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     }
   });
 
-  test('HTX desktop call-to-action content stays centered inside its banner', async ({ page }) => {
+  test('AGRIPASSPORT desktop call-to-action content stays centered inside its banner', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'hochieunongnghiep.com' });
+    await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'agripassport.com' });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
-    const banner = page.locator('main#main-content > section').filter({ hasText: 'Nâng tầm giá trị nông sản' }).first();
-    const content = banner.getByRole('heading', { name: /Nâng tầm giá trị nông sản/i }).locator('..');
+    const banner = page.locator('main#main-content > section').filter({ hasText: 'Đưa hợp tác xã & nông sản của bạn lên bản đồ' }).first();
+    const content = banner.getByRole('heading', { name: /Đưa hợp tác xã & nông sản của bạn lên bản đồ/i }).locator('..');
     const actions = content.locator('div.flex').last();
     await expect(content).toBeVisible();
 

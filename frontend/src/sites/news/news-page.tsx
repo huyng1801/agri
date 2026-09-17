@@ -6,7 +6,7 @@ import { PublicPageHeader, PublicPageMain, publicCardClass } from '@/components/
 import { PublicShell } from '@/components/public-shell';
 import { PublicPagination } from '@/components/public-pagination';
 import { cn } from '@/components/ui';
-import { fetchPublicNews, fetchPublicNewsCategories, publicNewsCategoryLabel } from '@/lib/news';
+import { fetchPublicNews, publicNewsCategoryLabel, publicNewsTopicForCategorySlug, PUBLIC_NEWS_TOPICS } from '@/lib/news';
 import type { PublicSiteKey } from '@/lib/domain';
 import { formatDate } from '@/lib/format';
 
@@ -24,14 +24,6 @@ type SiteNewsPageProps = {
   config: SiteNewsConfig;
 };
 
-const publicTopicDefinitions = [
-  { label: 'Truy xuất', slug: 'truy-xuat', slugs: ['truy-xuat', 'truy-xuat-nguon-goc'] },
-  { label: 'Chuyển đổi số', slug: 'chuyen-doi-so', slugs: ['chuyen-doi-so'] },
-  { label: 'Hợp tác xã', slug: 'hop-tac', slugs: ['hop-tac', 'tin-htx'] },
-  { label: 'Thị trường', slug: 'tin-thi-truong', slugs: ['tin-thi-truong', 'thi-truong'] },
-  { label: 'Kiến thức', slug: 'cau-chuyen-san-pham', slugs: ['cau-chuyen-san-pham', 'kien-thuc-nong-nghiep'] }
-] as const;
-
 function buildNewsPageUrl(filters: { search?: string; category?: string; page?: string }, page: number) {
   const params = new URLSearchParams();
   if (filters.search) params.set('search', filters.search);
@@ -44,19 +36,14 @@ function buildNewsPageUrl(filters: { search?: string; category?: string; page?: 
 export async function SiteNewsPage({ searchParams, config }: SiteNewsPageProps) {
   const filters = (await searchParams) ?? {};
   const currentPage = Math.max(1, Number(filters.page) || 1);
+  const selectedTopicSlug = publicNewsTopicForCategorySlug(filters.category)?.slug ?? filters.category;
   const pageSize = 12;
   const params = new URLSearchParams({ limit: String(pageSize), page: String(currentPage) });
   if (filters.search) params.set('search', filters.search);
   if (filters.category) params.set('category', filters.category);
 
-  const [news, categories] = await Promise.all([
-    fetchPublicNews(`/news/public?${params.toString()}`, config.siteKey),
-    fetchPublicNewsCategories(config.siteKey)
-  ]);
-  const publicTopics = publicTopicDefinitions.flatMap((topic) => {
-    const category = categories.find((item) => (topic.slugs as readonly string[]).includes(item.slug));
-    return [{ ...(category ?? { id: topic.slug, slug: topic.slug, sortOrder: 0, isActive: true }), name: topic.label }];
-  });
+  const news = await fetchPublicNews(`/news/public?${params.toString()}`, config.siteKey);
+  const publicTopics = PUBLIC_NEWS_TOPICS;
   const articles = news.data;
   const totalPages = Number(news.meta?.totalPages ?? (articles.length === pageSize ? currentPage + 1 : currentPage));
   const isFirstPage = currentPage === 1 && !filters.search && !filters.category;
@@ -95,7 +82,7 @@ export async function SiteNewsPage({ searchParams, config }: SiteNewsPageProps) 
               <div className="mt-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                 <div className="flex min-w-max items-center gap-2">
                   <Link href="/tin-tuc" className={cn('inline-flex min-h-11 items-center whitespace-nowrap rounded-lg border px-3 text-xs font-bold shadow-xs sm:px-3.5', !filters.category ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]')}>Tất cả</Link>
-                  {publicTopics.map((category) => <Link key={category.id} href={`/tin-tuc?category=${category.slug}`} className={cn('inline-flex min-h-11 items-center whitespace-nowrap rounded-lg border px-3 text-xs font-bold shadow-xs sm:px-3.5', filters.category === category.slug ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]')}>{category.name}</Link>)}
+                  {publicTopics.map((topic) => <Link key={topic.slug} href={`/tin-tuc?category=${topic.slug}`} className={cn('inline-flex min-h-11 items-center whitespace-nowrap rounded-lg border px-3 text-xs font-bold shadow-xs sm:px-3.5', selectedTopicSlug === topic.slug ? 'border-[var(--brand-primary)] bg-[var(--brand-primary)] text-white' : 'border-[var(--border)] bg-white text-[var(--text-secondary)] hover:border-[var(--brand-primary)] hover:text-[var(--brand-primary)]')}>{topic.label}</Link>)}
                 </div>
               </div>
             </details>

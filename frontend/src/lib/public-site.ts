@@ -45,14 +45,14 @@ export type PublicMapLocation = {
 };
 
 export const defaultMapEmbedUrl =
-  'https://www.openstreetmap.org/export/embed.html?bbox=105.668%2C10.3958%2C105.768%2C10.4958&layer=mapnik&marker=10.4458%2C105.718';
+  'https://maps.google.com/maps?q=10.4458%2C105.718&z=14&output=embed';
 
 const publicMediaPlaceholderUrl = '/public-media-placeholder.svg';
 const agripassportAboutIllustrationUrl = '/hero/htx-farmer-hero-v2.webp';
 const passportHomeIllustrationUrl = '/hero/agripassport-app-showcase.webp';
 const passportIntroIllustrationUrl = '/hero/passport-farmer-portrait-bleed.webp';
 const passportAboutIllustrationUrl = '/hero/passport-farmer-journey-banner.webp';
-const passportContactIllustrationUrl = '/hero/passport-pineapple-banner.webp';
+const passportContactIllustrationUrl = '/hero/passport-farmer-portrait-bleed.webp';
 
 export const defaultPublicMapLocation: PublicMapLocation = {
   latitude: 10.4458,

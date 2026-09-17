@@ -18,7 +18,7 @@ const marketplaceNavigation = [
   { kind: 'link', href: '/ve-chung-toi', label: 'Về Agripassport' },
   { kind: 'link', href: '/san-pham', label: 'Sản phẩm' },
   { kind: 'link', href: '/htx', label: 'Hợp tác xã' },
-  { kind: 'link', href: '/san-pham?hasQr=true', label: 'Truy xuất QR' },
+  { kind: 'link', href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
   { kind: 'link', href: '/tin-tuc', label: 'Tin tức' },
   { kind: 'link', href: '/lien-he', label: 'Liên hệ' }
 ] as const satisfies readonly PublicNavigationEntry[];

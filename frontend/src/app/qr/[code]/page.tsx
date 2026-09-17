@@ -1,1 +1,1 @@
-export { default } from '../../public/passport/[code]/page';
+export { default, generateMetadata } from '../../public/passport/[code]/page';

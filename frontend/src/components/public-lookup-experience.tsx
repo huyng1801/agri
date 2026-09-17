@@ -39,9 +39,9 @@ const lookupConfigs: Record<LookupKind, LookupConfig> = {
     eyebrow: 'Tra cứu sản phẩm',
     title: 'Xem hành trình nông sản bằng mã QR',
     description:
-      'Nhập mã in trên tem QR để mở đúng hồ sơ của lô hàng: vùng trồng, nhật ký canh tác, thu hoạch và các chứng nhận đã được công khai.',
+      'Nhập mã in trên tem QR để mở hồ sơ lô hàng. Thông tin vùng trồng, nhật ký, thu hoạch hoặc giấy tờ chỉ xuất hiện khi hồ sơ có dữ liệu được phép công khai.',
     inputLabel: 'Mã sản phẩm hoặc mã lô',
-    placeholder: 'Ví dụ: SP-2026-000123',
+    placeholder: 'Nhập mã trên tem QR',
     action: '/truy-xuat',
     alternateLabel: 'Tra cứu Hộ chiếu cây',
     alternateHref: '/cay',
@@ -54,7 +54,7 @@ const lookupConfigs: Record<LookupKind, LookupConfig> = {
     benefits: [
       { icon: ScanLine, title: 'Quét hoặc nhập mã', description: 'Không cần đăng nhập và không phải cài thêm ứng dụng.' },
       { icon: MapPinned, title: 'Về đúng vùng trồng', description: 'Xem nơi sản xuất và đơn vị đang chịu trách nhiệm hồ sơ.' },
-      { icon: ShieldCheck, title: 'Đối chiếu dữ liệu', description: 'Theo dõi nhật ký, thu hoạch và chứng nhận trong một luồng.' }
+      { icon: ShieldCheck, title: 'Đối chiếu dữ liệu', description: 'Xem nhật ký, thu hoạch hoặc chứng nhận khi hồ sơ có thông tin đã công khai.' }
     ]
   },
   tree: {
@@ -62,9 +62,9 @@ const lookupConfigs: Record<LookupKind, LookupConfig> = {
     eyebrow: 'Tra cứu Hộ chiếu cây',
     title: 'Mở hồ sơ của từng cá thể cây',
     description:
-      'Nhập mã cây trên tem QR để xem vùng sản xuất, giống cây, hình ảnh và các mốc chăm sóc đã được công khai theo thời gian.',
+      'Nhập mã cây trên tem QR để xem thông tin vùng sản xuất, giống cây, hình ảnh hoặc mốc chăm sóc nếu các dữ liệu đó đã được cập nhật và công khai.',
     inputLabel: 'Mã cây',
-    placeholder: 'Ví dụ: XOI-VLM-01-000001',
+    placeholder: 'Nhập mã trên tem cây',
     action: '/cay',
     alternateLabel: 'Tra cứu sản phẩm',
     alternateHref: '/truy-xuat',
@@ -75,7 +75,7 @@ const lookupConfigs: Record<LookupKind, LookupConfig> = {
     supportingDescription:
       'Hộ chiếu cây nối thông tin ngoài thực địa với hồ sơ số để người xem hiểu cây được chăm sóc và tạo ra nông sản như thế nào.',
     benefits: [
-      { icon: ScanLine, title: 'Mã nằm trên tem cây', description: 'Dùng camera điện thoại để quét hoặc nhập mã thủ công.' },
+      { icon: ScanLine, title: 'Mã nằm trên tem cây', description: 'Dùng ứng dụng Camera của điện thoại để quét hoặc nhập mã thủ công.' },
       { icon: MapPinned, title: 'Xem vùng và giống cây', description: 'Biết vị trí, giống cây và đơn vị quản lý hồ sơ.' },
       { icon: History, title: 'Theo dõi dòng thời gian', description: 'Đọc các mốc chăm sóc, thu hoạch và cập nhật liên quan.' }
     ]
@@ -170,7 +170,7 @@ export function PublicLookupExperience({ kind }: { kind: LookupKind }) {
               </Button>
             </div>
             <p id="lookup-form-help" className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">
-              Mã thường nằm ngay dưới hoặc cạnh mã QR trên tem. Bạn có thể quét bằng camera điện thoại hoặc nhập thủ công.
+              Dùng ứng dụng Camera của điện thoại để quét mã. Nếu liên kết không tự mở hồ sơ, hãy nhập chuỗi mã in trên tem.
             </p>
           </form>
 
@@ -203,7 +203,7 @@ export function PublicLookupExperience({ kind }: { kind: LookupKind }) {
           </p>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-3 md:gap-4">
-          <LookupStep number="01" icon={ScanLine} title="Quét tem QR" description="Mở camera và hướng vào mã QR trên bao bì hoặc tem cây." />
+          <LookupStep number="01" icon={ScanLine} title="Quét tem QR" description="Dùng ứng dụng Camera hoặc ứng dụng quét QR có sẵn trên điện thoại." />
           <LookupStep number="02" icon={QrCode} title="Xác nhận mã" description="Nếu không quét được, nhập chuỗi mã in cạnh QR vào ô tra cứu." />
           <LookupStep number="03" icon={ShieldCheck} title="Đọc hồ sơ" description="Kiểm tra vùng trồng, dòng thời gian và các thông tin được phép công khai." />
         </div>

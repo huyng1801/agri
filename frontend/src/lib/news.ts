@@ -12,19 +12,28 @@ export type NewsCategory = {
   isActive: boolean;
 };
 
-const publicCategoryLabels: Record<string, string> = {
-  'cau-chuyen-san-pham': 'Kiến thức',
-  'chuyen-doi-so': 'Chuyển đổi số',
-  'kien-thuc-nong-nghiep': 'Kiến thức',
-  'tin-htx': 'Hợp tác xã',
-  'nong-nghiep': 'Nông nghiệp',
-  'truy-xuat': 'Truy xuất',
-  'truy-xuat-nguon-goc': 'Truy xuất',
-  'hop-tac': 'Hợp tác xã',
-  'san-pham': 'Sản phẩm',
-  'thi-truong': 'Thị trường',
-  'tin-thi-truong': 'Thị trường'
+export const PUBLIC_NEWS_TOPICS = [
+  { label: 'Truy xuất', slug: 'truy-xuat', categorySlugs: ['truy-xuat-nguon-goc', 'truy-xuat'] },
+  { label: 'Chuyển đổi số', slug: 'chuyen-doi-so', categorySlugs: ['chuyen-doi-so'] },
+  { label: 'Hợp tác xã', slug: 'hop-tac-xa', categorySlugs: ['hop-tac-xa', 'tin-htx', 'hop-tac'] },
+  { label: 'Thị trường', slug: 'thi-truong', categorySlugs: ['tin-thi-truong', 'thi-truong'] },
+  {
+    label: 'Kiến thức',
+    slug: 'kien-thuc',
+    categorySlugs: ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']
+  }
+] as const;
+
+export type PublicNewsTopic = (typeof PUBLIC_NEWS_TOPICS)[number];
+
+export type NewsTopicCategoryOption = {
+  topic: PublicNewsTopic;
+  category: NewsCategory;
 };
+
+const topicByCategorySlug = new Map<string, PublicNewsTopic>(
+  PUBLIC_NEWS_TOPICS.flatMap((topic) => topic.categorySlugs.map((slug) => [slug, topic] as const))
+);
 
 export type NewsArticle = {
   id: string;
@@ -98,7 +107,31 @@ export async function fetchPublicNewsCategories(siteKey: PublicSiteKey = 'agripa
 
 export function publicNewsCategoryLabel(category?: Pick<NewsCategory, 'slug' | 'name'> | null) {
   if (!category) return null;
-  return publicCategoryLabels[category.slug] || category.name;
+  return topicByCategorySlug.get(category.slug)?.label ?? null;
+}
+
+export function publicNewsTopicForCategorySlug(slug?: string | null) {
+  return slug ? topicByCategorySlug.get(slug) ?? null : null;
+}
+
+export function newsTopicCategoryOptions(categories: readonly NewsCategory[]): NewsTopicCategoryOption[] {
+  return PUBLIC_NEWS_TOPICS.flatMap((topic) => {
+    const category = topic.categorySlugs
+      .map((slug) => categories.find((item) => item.slug === slug && item.isActive))
+      .find((item): item is NewsCategory => Boolean(item));
+    return category ? [{ topic, category }] : [];
+  });
+}
+
+export function displayedNewsTopicCategoryId(
+  categoryId: string,
+  categories: readonly NewsCategory[],
+  topicOptions: readonly NewsTopicCategoryOption[]
+) {
+  if (!categoryId) return '';
+  const category = categories.find((item) => item.id === categoryId);
+  const topic = publicNewsTopicForCategorySlug(category?.slug);
+  return topicOptions.find((option) => option.topic.slug === topic?.slug)?.category.id ?? '';
 }
 
 export async function fetchPublicNewsDetail(slug: string, siteKey: PublicSiteKey = 'agripassport') {

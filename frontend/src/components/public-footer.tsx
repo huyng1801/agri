@@ -18,7 +18,7 @@ const agripassportFooterSections: FooterSection[] = [
     links: [
       { href: '/san-pham', label: 'Danh mục nông sản' },
       { href: '/htx', label: 'Danh bạ hợp tác xã' },
-      { href: '/san-pham?hasQr=true', label: 'Tra cứu QR' }
+      { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' }
     ]
   },
   {
@@ -44,7 +44,6 @@ const passportFooterSections: FooterSection[] = [
     title: 'Hộ chiếu cây',
     links: [
       { href: '/cay', label: 'Hồ sơ cây' },
-      { href: '/cay', label: 'Bản đồ vùng trồng' },
       { href: '/tuyen-cong-tac-vien', label: 'Cộng tác viên' }
     ]
   },
@@ -284,7 +283,7 @@ export async function PublicFooter({ siteKey = 'agripassport', profile: provided
           <p>{copyrightText}</p>
           <div className="flex items-center gap-2">
             <ShieldCheck size={14} className="text-[#0d7a28]" />
-            <span>Dữ liệu được chuẩn hóa và đối chiếu thực địa trước khi công khai</span>
+              <span>Thông tin hiển thị theo phạm vi đơn vị sản xuất công khai</span>
           </div>
         </div>
       </div>

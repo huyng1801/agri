@@ -61,7 +61,7 @@ export function PublicHeader({
     isInternal
       ? { href: '/login', label: 'Quản trị HTX' }
       : isPassport
-        ? { href: '/truy-xuat', label: 'Tra cứu QR' }
+        ? { href: '/truy-xuat', label: 'Truy xuất QR' }
         : { href: '/login', label: 'Đăng nhập' };
 
   const CtaIcon = isInternal ? Briefcase : isPassport ? QrCode : LogIn;

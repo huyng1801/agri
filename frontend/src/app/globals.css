@@ -1388,19 +1388,35 @@ button {
 .news-body h2,
 .news-body h3 {
   color: var(--text-primary);
-  font-weight: 800;
+  font-weight: 400;
   line-height: 1.25;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.015em;
+}
+
+.news-editor-content h2,
+.news-editor-content h3 {
+  font-weight: 400;
+}
+
+.news-body h2 b,
+.news-body h2 strong,
+.news-body h3 b,
+.news-body h3 strong,
+.news-editor-content h2 b,
+.news-editor-content h2 strong,
+.news-editor-content h3 b,
+.news-editor-content h3 strong {
+  font-weight: 400;
 }
 
 .news-body h2 {
   margin-top: 2rem;
-  font-size: 1.75rem;
+  font-size: 1.35rem;
 }
 
 .news-body h3 {
   margin-top: 1.5rem;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
 }
 
 .news-body h2[id],
@@ -1510,12 +1526,12 @@ button {
 
   .news-body h2 {
     margin-top: 1.55rem;
-    font-size: 1.35rem;
+    font-size: 1.1rem;
   }
 
   .news-body h3 {
     margin-top: 1.25rem;
-    font-size: 1.15rem;
+    font-size: 1rem;
   }
 
   .news-body blockquote {

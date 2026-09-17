@@ -11,6 +11,17 @@ describe('NewsService', () => {
     permissions: ['news.create']
   };
 
+  const topicGroups = [
+    { category: 'truy-xuat', slugs: ['truy-xuat', 'truy-xuat-nguon-goc'] },
+    { category: 'chuyen-doi-so', slugs: ['chuyen-doi-so'] },
+    { category: 'hop-tac-xa', slugs: ['hop-tac-xa', 'hop-tac', 'tin-htx'] },
+    { category: 'thi-truong', slugs: ['thi-truong', 'tin-thi-truong'] },
+    { category: 'kien-thuc', slugs: ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep'] }
+  ] as const;
+  const topicSiteFilters = (['AGRIPASSPORT', 'PASSPORT', 'HTXONLINE'] as const).flatMap((siteKey) =>
+    topicGroups.map((topic) => ({ siteKey, ...topic }))
+  );
+
   it('sanitizes article HTML before saving public content', async () => {
     const create = jest.fn(({ data }) => ({
       id: 'article-1',
@@ -101,6 +112,21 @@ describe('NewsService', () => {
 
     expect(findMany.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.PASSPORT }));
     expect(count.mock.calls[0][0].where).toEqual(expect.objectContaining({ siteKey: NewsSite.PASSPORT }));
+  });
+
+  it.each(topicSiteFilters)('groups legacy category slugs under $category on $siteKey', async ({ siteKey, category, slugs }) => {
+    const findMany = jest.fn().mockResolvedValue([]);
+    const count = jest.fn().mockResolvedValue(0);
+    const service = new NewsService(
+      { newsArticle: { findMany, count } } as never,
+      { record: jest.fn() } as never
+    );
+
+    await service.publicList({ siteKey, category });
+
+    expect(findMany.mock.calls[0][0].where.category).toEqual({ slug: { in: [...slugs] }, isActive: true });
+    expect(findMany.mock.calls[0][0].where.siteKey).toBe(NewsSite[siteKey]);
+    expect(count.mock.calls[0][0].where.category).toEqual({ slug: { in: [...slugs] }, isActive: true });
   });
 
   it('rejects an unknown public website instead of falling back across sites', async () => {

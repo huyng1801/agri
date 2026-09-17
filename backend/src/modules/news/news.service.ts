@@ -10,6 +10,21 @@ import { PrismaService } from '../prisma/prisma.service';
 
 const DEFAULT_SCHEMA_TYPE = 'NewsArticle';
 const ALLOWED_SCHEMA_TYPES = new Set(['Article', 'NewsArticle', 'BlogPosting']);
+const publicNewsTopicCategorySlugs = new Map<string, readonly string[]>([
+  ['truy-xuat', ['truy-xuat', 'truy-xuat-nguon-goc']],
+  ['truy-xuat-nguon-goc', ['truy-xuat', 'truy-xuat-nguon-goc']],
+  ['chuyen-doi-so', ['chuyen-doi-so']],
+  ['hop-tac-xa', ['hop-tac-xa', 'hop-tac', 'tin-htx']],
+  ['hop-tac', ['hop-tac-xa', 'hop-tac', 'tin-htx']],
+  ['tin-htx', ['hop-tac-xa', 'hop-tac', 'tin-htx']],
+  ['thi-truong', ['thi-truong', 'tin-thi-truong']],
+  ['tin-thi-truong', ['thi-truong', 'tin-thi-truong']],
+  ['kien-thuc', ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']],
+  ['kien-thuc-nong-nghiep', ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']],
+  ['cau-chuyen-san-pham', ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']],
+  ['san-pham', ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']],
+  ['nong-nghiep', ['kien-thuc', 'kien-thuc-nong-nghiep', 'cau-chuyen-san-pham', 'san-pham', 'nong-nghiep']]
+]);
 type NormalizedNewsArticleCreate = Omit<Prisma.NewsArticleUncheckedCreateInput, 'slug' | 'authorId'>;
 
 @Injectable()
@@ -118,7 +133,13 @@ export class NewsService {
         { excerpt: { contains: search, mode: 'insensitive' } }
       ];
     }
-    if (query.category) where.category = { slug: String(query.category), isActive: true };
+    if (query.category) {
+      const categorySlug = String(query.category);
+      where.category = {
+        slug: { in: [...(publicNewsTopicCategorySlugs.get(categorySlug) ?? [categorySlug])] },
+        isActive: true
+      };
+    }
     if (query.featured !== undefined) where.isFeatured = String(query.featured) === 'true';
     if (query.home !== undefined) where.showOnHome = String(query.home) === 'true';
 

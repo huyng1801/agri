@@ -162,7 +162,7 @@ export function ProductCard({ product, priority = false, compact = false, siteKe
         )}
 
         {hasQr && (
-          <span className="absolute top-1.5 right-1.5 inline-flex items-center gap-1 rounded-md border border-[#0d7a28]/20 bg-white/95 px-1.5 py-0.5 text-[9px] sm:text-[10px] font-bold text-[#0d7a28] shadow-xs backdrop-blur">
+          <span className="absolute right-1.5 top-1.5 inline-flex items-center gap-1 rounded-md border border-[var(--brand-primary)]/20 bg-white/95 px-1.5 py-1 text-[10px] font-bold text-[var(--brand-primary)] shadow-xs backdrop-blur sm:text-xs">
             <QrCode size={11} aria-hidden="true" />
             <span>Có QR</span>
           </span>
@@ -171,8 +171,8 @@ export function ProductCard({ product, priority = false, compact = false, siteKe
 
       {/* Metadata */}
       <div className="flex flex-1 flex-col pt-2 sm:pt-2.5">
-        <div className="flex items-center justify-between gap-1 text-[10px] sm:text-[11px] font-semibold text-slate-500">
-          <span className={cn('truncate tracking-wider text-[#0d7a28] font-bold', siteKey !== 'passport' && 'uppercase')}>
+        <div className="flex items-center justify-between gap-1 text-[11px] font-semibold text-slate-500 sm:text-xs">
+          <span className={cn('truncate font-bold text-[var(--brand-primary)]', siteKey !== 'passport' && 'uppercase')}>
             {product.category?.name ?? 'Nông sản'}
           </span>
           <span className="truncate text-slate-400">
@@ -180,7 +180,7 @@ export function ProductCard({ product, priority = false, compact = false, siteKe
           </span>
         </div>
 
-        <h3 className="mt-1 line-clamp-2 text-xs sm:text-sm font-bold text-[#131935] group-hover:text-[#0d7a28] transition leading-snug">
+        <h3 className="mt-1 line-clamp-2 text-sm font-bold leading-snug text-[var(--text-primary)] transition group-hover:text-[var(--brand-primary)] sm:text-base">
           {product.name}
         </h3>
 
@@ -193,10 +193,10 @@ export function ProductCard({ product, priority = false, compact = false, siteKe
         {/* Price Row (Without redundant button on mobile) */}
         <div className="mt-auto pt-2 sm:pt-2.5 flex items-end justify-between gap-1.5 border-t border-slate-100">
           <div>
-            <p className="text-xs sm:text-base font-extrabold text-[#131935] leading-none">
+            <p className="text-sm font-extrabold leading-none text-[var(--text-primary)] sm:text-base">
               {formatPrice(product.price)}
             </p>
-            <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5">
+            <p className="mt-1 text-[11px] text-slate-500 sm:text-xs">
               /{product.unit}
             </p>
           </div>
@@ -372,8 +372,8 @@ export function CooperativeCard({ cooperative, priority = false, siteKey, varian
           <span className="mt-1 block truncate font-bold text-[var(--text-primary)]">{cooperative.province || 'Việt Nam'}</span>
         </div>
         <div className="border-l border-[var(--border)] pl-3">
-          <span className="block text-[0.7rem] text-[var(--text-tertiary)]">Nông sản công khai</span>
-          <span className="mt-1 block font-bold text-[#0d7a28]">{cooperative.productCount} sản phẩm</span>
+          <span className="block text-xs text-[var(--text-tertiary)]">Nông sản công khai</span>
+          <span className="mt-1 block font-bold text-[var(--brand-primary)]">{cooperative.productCount} sản phẩm</span>
         </div>
       </div>
 

@@ -32,7 +32,7 @@ describe('separate public site entrypoints', () => {
     const calls = vi.mocked(fetch).mock.calls.map(([url]) => String(url));
     const expectedSiteKey = config.siteKey === 'passport' ? 'PASSPORT' : config.siteKey === 'htxonline' ? 'HTXONLINE' : 'AGRIPASSPORT';
 
-    expect(calls).toHaveLength(2);
+    expect(calls).toHaveLength(1);
     expect(calls.every((url) => url.includes(`siteKey=${expectedSiteKey}`))).toBe(true);
     expect(calls.some((url) => url.includes('siteKey=PASSPORT') && expectedSiteKey !== 'PASSPORT')).toBe(false);
     expect(calls.some((url) => url.includes('siteKey=HTXONLINE') && expectedSiteKey !== 'HTXONLINE')).toBe(false);

@@ -47,6 +47,128 @@ export default async function ContactPage() {
     ? siteProfile.faqs.filter((faq) => !/COD|đơn hàng/i.test(`${faq.question} ${faq.answer}`))
     : siteProfile.faqs;
 
+  if (isPassport) {
+    return (
+      <PublicShell>
+        <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
+          <PublicBreadcrumbTrail current="Liên hệ" path="/lien-he" homeUrl={homeUrl} currentUrl={currentUrl} />
+
+          <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:items-start lg:gap-6">
+            <article className="rounded-3xl border border-[var(--border)] bg-[linear-gradient(145deg,var(--surface-elevated)_0%,var(--brand-primary-subtle)_100%)] p-5 shadow-sm sm:p-7">
+              <p className="inline-flex min-h-8 items-center rounded-full border border-[var(--border-strong)] bg-white/80 px-3 text-xs font-bold text-[var(--brand-primary)]">
+                Kết nối Hộ chiếu nông nghiệp
+              </p>
+              <h1 className="mt-4 max-w-[18ch] text-3xl font-extrabold leading-tight tracking-tight text-[var(--text-primary)] sm:text-4xl">
+                {siteProfile.pageContent.contactTitle}
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-secondary)] sm:text-base sm:leading-7">
+                Hỏi về hồ sơ QR, dữ liệu truy xuất hoặc cách kết nối hợp tác xã.
+              </p>
+
+              <div className="mt-5 grid gap-2 sm:grid-cols-2">
+                {[
+                  { icon: PhoneCall, label: 'Hotline', value: siteProfile.hotlineDisplay, href: telHref(siteProfile.hotline) },
+                  { icon: Mail, label: 'Email', value: siteProfile.supportEmail, href: `mailto:${siteProfile.supportEmail}` },
+                  { icon: MapPinned, label: 'Địa chỉ', value: siteProfile.address, href: mapSearchUrl }
+                ].map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target={item.label === 'Địa chỉ' ? '_blank' : undefined}
+                    rel={item.label === 'Địa chỉ' ? 'noreferrer' : undefined}
+                    className={cn(
+                      'flex min-h-[4.5rem] items-center gap-3 rounded-2xl border border-[var(--border)] bg-white/85 p-3 transition hover:border-[var(--brand-primary)] hover:bg-white',
+                      item.label === 'Địa chỉ' && 'sm:col-span-2'
+                    )}
+                  >
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--brand-primary-subtle)] text-[var(--brand-primary)]">
+                      <item.icon size={18} aria-hidden="true" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-xs font-semibold text-[var(--text-tertiary)]">{item.label}</span>
+                      <span className="mt-0.5 block break-words text-sm font-bold leading-5 text-[var(--text-primary)]">{item.value}</span>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </article>
+
+            <div id="gui-yeu-cau" className="scroll-mt-24">
+              <PublicContactForm sourcePath="/lien-he" variant="contact" audience="public" siteKey={siteKey} />
+            </div>
+          </section>
+
+          <section className="mt-4 grid gap-4 lg:grid-cols-2">
+            <figure className="overflow-hidden rounded-3xl border border-[var(--border)] bg-[var(--surface-muted)]">
+              <PublicImage
+                src={siteProfile.pageContent.contactImageUrl}
+                alt={siteProfile.pageContent.contactImageAlt}
+                wrapperClassName="aspect-[16/10] h-full min-h-56"
+                className="h-full w-full object-cover"
+                priority
+              />
+            </figure>
+            <div className="grid gap-4">
+              {showMapPreview && (
+                <div className="overflow-hidden rounded-3xl border border-[var(--border)] bg-white">
+                  <PublicMapPreview
+                    address={siteProfile.address}
+                    location={mapLocation}
+                    mapSearchUrl={mapSearchUrl}
+                    mapEmbedUrl={siteProfile.mapEmbedUrl}
+                    compact
+                    className="rounded-none"
+                  />
+                </div>
+              )}
+              <article className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-muted)] p-4 sm:p-5">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-white text-[var(--brand-primary)] shadow-sm">
+                  <Clock3 size={20} aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-xs font-semibold text-[var(--text-tertiary)]">Giờ hỗ trợ</p>
+                  <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">08:00–17:30, thứ Hai đến thứ Bảy</p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <details className="mt-4 rounded-2xl border border-[var(--border)] bg-white">
+            <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-sm font-bold text-[var(--text-primary)] marker:hidden sm:px-5">
+              Thông tin đơn vị tiếp nhận
+              <span className="text-xs font-medium text-[var(--text-tertiary)]">Mở khi cần đối chiếu</span>
+            </summary>
+            <div className="grid gap-3 border-t border-[var(--border)] p-4 sm:grid-cols-2 sm:p-5">
+              <div className="rounded-xl bg-[var(--surface-muted)] p-4">
+                <p className="text-xs font-semibold text-[var(--text-tertiary)]">Đơn vị</p>
+                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">{legalEntityProfile.organizationName}</p>
+              </div>
+              <div className="rounded-xl bg-[var(--surface-muted)] p-4">
+                <p className="text-xs font-semibold text-[var(--text-tertiary)]">Mã số đăng ký</p>
+                <p className="mt-1 text-sm font-bold text-[var(--text-primary)]">{legalEntityProfile.registrationNumber}</p>
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">Đăng ký lần đầu ngày {legalEntityProfile.registrationDate}</p>
+              </div>
+              <div className="rounded-xl bg-[var(--surface-muted)] p-4 sm:col-span-2">
+                <p className="text-xs font-semibold text-[var(--text-tertiary)]">Địa chỉ theo hồ sơ</p>
+                <p className="mt-1 text-sm font-bold leading-6 text-[var(--text-primary)]">{legalEntityProfile.legalAddress}</p>
+                <p className="mt-2 text-sm text-[var(--text-secondary)]">Đại diện: {legalEntityProfile.representative} · {legalEntityProfile.authority}</p>
+              </div>
+            </div>
+          </details>
+
+          {faqs.length > 0 && (
+            <section className="pt-6">
+              <h2 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl">Câu hỏi thường gặp</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                {faqs.map((faq) => <PublicFaqItem key={faq.question} question={faq.question} answer={faq.answer} />)}
+              </div>
+            </section>
+          )}
+        </PublicPageMain>
+      </PublicShell>
+    );
+  }
+
   return (
     <PublicShell>
       <PublicPageMain className="pb-8 sm:pb-10 lg:pb-12">
@@ -124,18 +246,6 @@ export default async function ContactPage() {
                 </div>
               </div>
             </article>
-
-            {siteKey === 'passport' ? (
-              <figure className="overflow-hidden rounded-[1.75rem]">
-                <PublicImage
-                  src={siteProfile.pageContent.contactImageUrl}
-                  alt={siteProfile.pageContent.contactImageAlt}
-                  wrapperClassName="aspect-[4/3]"
-                  className="h-full w-full object-cover"
-                  priority
-                />
-              </figure>
-            ) : null}
 
             <div className="grid gap-4 lg:grid-cols-[1.06fr_0.94fr]">
               {showMapPreview ? (

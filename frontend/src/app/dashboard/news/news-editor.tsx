@@ -28,8 +28,14 @@ import { useEffect, useMemo, useRef, useState, type ClipboardEvent } from 'react
 import { useRouter } from 'next/navigation';
 import { apiFetch } from '@/lib/api';
 import { marketplaceUrl, publicOriginForSite } from '@/lib/domain';
-import type { NewsArticle, NewsCategory, NewsSiteKey } from '@/lib/news';
-import { PASSPORT_NEWS_PLAN } from '@/lib/passport-news-plan';
+import {
+  displayedNewsTopicCategoryId,
+  newsTopicCategoryOptions,
+  PUBLIC_NEWS_TOPICS,
+  type NewsArticle,
+  type NewsCategory,
+  type NewsSiteKey
+} from '@/lib/news';
 import { Badge, Button, Input, Panel, Select, Textarea, cn } from '@/components/ui';
 
 type NewsForm = {
@@ -185,7 +191,11 @@ type AuthorMode = 'simple' | 'advanced';
 type EditorAssistKind = 'pasted-image' | 'pasted-content' | 'optimized-content' | 'prepared-publish';
 type SuggestedCover = { url: string; alt: string; sourceLabel: string };
 type UploadTarget = 'cover' | 'body';
-type UploadRetry = { file: File; target: UploadTarget };
+type UploadRetry = {
+  file: File;
+  target: UploadTarget;
+  onRetrySuccess?: (url: string) => void;
+};
 
 type LocalDraftPayload = {
   savedAt: string;
@@ -239,7 +249,7 @@ const articleTemplates = [
     id: 'market-update',
     label: 'Tin thị trường',
     description: 'Dùng cho bài cập nhật giá, nhu cầu mua bán và xu hướng tiêu thụ.',
-    categoryHint: 'Danh mục gợi ý: Tin thị trường',
+    categoryHint: 'Chủ đề gợi ý: Thị trường',
     title: 'Cập nhật thị trường nông sản tuần này',
     excerpt: 'Tóm tắt ngắn 2-3 ý chính để người đọc hiểu ngay điều gì đang thay đổi trên thị trường.',
     schemaType: 'NewsArticle',
@@ -260,7 +270,7 @@ const articleTemplates = [
     id: 'cooperative-story',
     label: 'Giới thiệu HTX',
     description: 'Dùng cho bài kể câu chuyện HTX, vùng trồng, con người và sản phẩm nổi bật.',
-    categoryHint: 'Danh mục gợi ý: Câu chuyện HTX',
+    categoryHint: 'Chủ đề gợi ý: Hợp tác xã',
     title: 'Câu chuyện từ một hợp tác xã đang chuẩn hóa dữ liệu cùng Agripassport',
     excerpt: 'Giới thiệu ngắn về HTX, sản phẩm chủ lực và điều gì khiến đơn vị này khác biệt trên thị trường.',
     schemaType: 'Article',
@@ -282,7 +292,7 @@ const articleTemplates = [
     id: 'buyer-guide',
     label: 'Hướng dẫn mua hàng',
     description: 'Dùng cho bài hướng dẫn thao tác, cách đặt hàng, cách quét QR và xem thông tin công khai.',
-    categoryHint: 'Danh mục gợi ý: Hướng dẫn mua hàng',
+    categoryHint: 'Chủ đề gợi ý: Kiến thức',
     title: 'Cách chọn sản phẩm và đặt hàng nhanh trên Agripassport',
     excerpt: 'Bài hướng dẫn ngắn giúp người mua tìm sản phẩm, kiểm tra QR Passport và gửi đơn hàng thuận tiện.',
     schemaType: 'BlogPosting',
@@ -370,7 +380,6 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   const [preview, setPreview] = useState(false);
   const [editorMode, setEditorMode] = useState<EditorMode>('visual');
   const [authorMode, setAuthorMode] = useState<AuthorMode>('simple');
-  const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [bodyImage, setBodyImage] = useState({ url: '', alt: '', caption: '' });
   const [uploading, setUploading] = useState('');
   const [uploadError, setUploadError] = useState('');
@@ -405,6 +414,18 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
 
   const seo = useMemo(() => clientSeoScore(form), [form]);
   const categoryItems = categories.data?.data ?? [];
+  const topicCategoryItems = useMemo(() => newsTopicCategoryOptions(categoryItems), [categoryItems]);
+  const categoryOptions = useMemo(
+    () => siteFilter === 'PASSPORT'
+      ? topicCategoryItems.map(({ topic, category }) => ({ id: category.id, label: topic.label }))
+      : categoryItems.map((category) => ({ id: category.id, label: category.name })),
+    [categoryItems, siteFilter, topicCategoryItems]
+  );
+  const selectedTopicCategoryId = displayedNewsTopicCategoryId(form.categoryId, categoryItems, topicCategoryItems);
+  const legacyCategorySelection = siteFilter === 'PASSPORT' && Boolean(form.categoryId && !selectedTopicCategoryId);
+  const categorySelectValue = siteFilter === 'PASSPORT'
+    ? selectedTopicCategoryId || (legacyCategorySelection ? form.categoryId : '')
+    : form.categoryId;
   const permalink = form.canonicalUrl || buildPublicNewsUrl(form.slug || 'slug', form.siteKey);
   const excerptLength = form.excerpt.trim().length;
   const readingMinutes = Math.max(1, Math.ceil(seo.stats.words / 220));
@@ -482,16 +503,22 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     try {
       const raw = window.localStorage.getItem(localDraftStorageKey);
       if (!raw) {
+        skipAutosaveRef.current = false;
         setLocalDraft(null);
         return;
       }
       const parsed = JSON.parse(raw) as LocalDraftPayload;
       if (!parsed?.form || !parsed.savedAt) {
+        skipAutosaveRef.current = false;
         setLocalDraft(null);
         return;
       }
+      // Do not let the initial empty form erase a recovered draft before the
+      // user chooses whether to restore it (React Strict Mode also replays effects).
+      skipAutosaveRef.current = true;
       setLocalDraft(parsed);
     } catch {
+      skipAutosaveRef.current = false;
       setLocalDraft(null);
     }
   }, [localDraftStorageKey]);
@@ -568,21 +595,6 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     window.addEventListener('keydown', handleSaveShortcut);
     return () => window.removeEventListener('keydown', handleSaveShortcut);
   }, [saveArticle]);
-
-  const createCategory = useMutation({
-    mutationFn: () =>
-      apiFetch<NewsCategory>('/news/categories', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: categoryDraft.name,
-          slug: categoryDraft.slug || slugifyLocal(categoryDraft.name)
-        })
-      }),
-    onSuccess: () => {
-      setCategoryDraft({ name: '', slug: '' });
-      queryClient.invalidateQueries({ queryKey: ['news-categories'] });
-    }
-  });
 
   function update<K extends keyof NewsForm>(key: K, value: NewsForm[K]) {
     setForm((current) => ({
@@ -698,7 +710,10 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     }
     skipAutosaveRef.current = true;
     setEditingId(localDraft.editingId);
-    setForm(localDraft.form);
+    setForm({
+      ...localDraft.form,
+      bodyHtml: sanitizeImportedHtml(localDraft.form.bodyHtml || '', { stripImportedBold: true }) || '<p></p>'
+    });
     setSuggestedCover(null);
     setDraftSavedAt(localDraft.savedAt);
     setLocalDraft(null);
@@ -819,8 +834,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     if (!prepared) return;
 
     if (prepared.range.collapsed) {
-      const safeText = escapeHtml(text);
-      document.execCommand('insertHTML', false, `<em>${safeText}</em>&nbsp;`);
+      document.execCommand('insertHTML', false, `<em>${escapeHtml(text)}</em>&nbsp;`);
     } else {
       document.execCommand('italic');
     }
@@ -877,7 +891,11 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     insertHtmlIntoVisualEditor(snippet);
   }
 
-  async function uploadFile(file: File, target: UploadTarget): Promise<string | null> {
+  async function uploadFile(
+    file: File,
+    target: UploadTarget,
+    onRetrySuccess?: (url: string) => void
+  ): Promise<string | null> {
     setUploading(target);
     setUploadError('');
     setUploadRetry(null);
@@ -906,7 +924,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
       return url;
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : 'Không thể tải ảnh lên. Vui lòng thử lại.');
-      setUploadRetry({ file, target });
+      setUploadRetry({ file, target, onRetrySuccess });
       return null;
     } finally {
       setUploading('');
@@ -945,6 +963,13 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     });
   }
 
+  async function retryUpload() {
+    if (!uploadRetry) return;
+    const retry = uploadRetry;
+    const url = await uploadFile(retry.file, retry.target, retry.onRetrySuccess);
+    if (url) retry.onRetrySuccess?.(url);
+  }
+
   function insertUploadedBodyImage(url: string, fileName: string, sourceLabel: string) {
     const fallbackAlt = form.coverImageAlt || form.focusKeyword || form.title || fileName.replace(/\.[^.]+$/, '');
     const alt = escapeHtml(fallbackAlt || 'Ảnh minh họa');
@@ -960,9 +985,11 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   }
 
   async function handleBodyFile(file: File) {
-    const url = await uploadFile(file, 'body');
+    const sourceLabel = 'Ảnh vừa tải từ máy';
+    const onRetrySuccess = (url: string) => insertUploadedBodyImage(url, file.name, sourceLabel);
+    const url = await uploadFile(file, 'body', onRetrySuccess);
     if (!url) return;
-    insertUploadedBodyImage(url, file.name, 'Ảnh vừa tải từ máy');
+    insertUploadedBodyImage(url, file.name, sourceLabel);
   }
 
   async function handleBodyPaste(event: ClipboardEvent<HTMLTextAreaElement>) {
@@ -977,16 +1004,19 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
       start: event.currentTarget.selectionStart,
       end: event.currentTarget.selectionEnd
     };
-    const url = await uploadFile(file, 'body');
-    if (!url) return;
-    const alt = escapeHtml(form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''));
-    rememberSuggestedCover(url, form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, ''), 'Ảnh vừa paste vào bài');
-    insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
-    setEditorAssist({
-      kind: 'pasted-image',
-      title: 'Ảnh vừa được chèn vào bài',
-      detail: 'Bạn có thể gõ tiếp nội dung, dùng ngay ảnh này làm cover nếu bài chưa có ảnh bìa, rồi bấm Chuẩn bị đăng hoặc Đăng 1 chạm.'
-    });
+    const fallbackAlt = form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, '');
+    const onUploaded = (url: string) => {
+      const alt = escapeHtml(fallbackAlt);
+      rememberSuggestedCover(url, fallbackAlt, 'Ảnh vừa paste vào bài');
+      insertHtmlAtSelection(`<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`, selection);
+      setEditorAssist({
+        kind: 'pasted-image',
+        title: 'Ảnh vừa được chèn vào bài',
+        detail: 'Bạn có thể gõ tiếp nội dung, dùng ngay ảnh này làm cover nếu bài chưa có ảnh bìa, rồi bấm Chuẩn bị đăng hoặc Đăng 1 chạm.'
+      });
+    };
+    const url = await uploadFile(file, 'body', onUploaded);
+    if (url) onUploaded(url);
   }
 
   async function handleVisualPaste(event: ClipboardEvent<HTMLDivElement>) {
@@ -998,18 +1028,20 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
 
       event.preventDefault();
       const savedRange = captureVisualSelection();
-      const url = await uploadFile(file, 'body');
-      if (!url) return;
       const fallbackAlt = form.coverImageAlt || form.focusKeyword || form.title || file.name.replace(/\.[^.]+$/, '');
-      const alt = escapeHtml(fallbackAlt || 'Ảnh minh họa');
-      const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
-      rememberSuggestedCover(url, fallbackAlt, 'Ảnh vừa paste vào editor');
-      insertHtmlIntoVisualEditor(imageHtml, savedRange);
-      setEditorAssist({
-        kind: 'pasted-image',
-        title: 'Ảnh vừa được chèn vào bài',
-        detail: 'Ảnh đã được upload và giữ đúng vị trí con trỏ. Bạn có thể dùng ảnh này làm cover nếu bài chưa có ảnh bìa.'
-      });
+      const onUploaded = (url: string) => {
+        const alt = escapeHtml(fallbackAlt || 'Ảnh minh họa');
+        const imageHtml = `<figure><img src="${url}" alt="${alt}" loading="lazy" /></figure>`;
+        rememberSuggestedCover(url, fallbackAlt, 'Ảnh vừa paste vào editor');
+        insertHtmlIntoVisualEditor(imageHtml, savedRange);
+        setEditorAssist({
+          kind: 'pasted-image',
+          title: 'Ảnh vừa được chèn vào bài',
+          detail: 'Ảnh đã được upload và giữ đúng vị trí con trỏ. Bạn có thể dùng ảnh này làm cover nếu bài chưa có ảnh bìa.'
+        });
+      };
+      const url = await uploadFile(file, 'body', onUploaded);
+      if (url) onUploaded(url);
       return;
     }
 
@@ -1018,14 +1050,14 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     if (!html && !text.trim()) return;
 
     event.preventDefault();
-    const cleaned = html ? sanitizeImportedHtml(html) : plainTextToEditorHtml(text);
+    const cleaned = html ? sanitizeImportedHtml(html, { stripImportedBold: true }) : plainTextToEditorHtml(text);
     if (!cleaned.trim()) return;
     insertHtmlIntoVisualEditor(cleaned);
     setEditorAssist({
       kind: 'pasted-content',
       title: html ? 'Nội dung đã được dán và làm sạch cơ bản' : 'Nội dung đã được chèn vào editor',
       detail: html
-        ? 'Nếu đây là bài từ Word hoặc Google Docs, bạn nên bấm Tối ưu bài vừa dán để hệ thống dọn bố cục, thêm mở bài và sửa SEO nhanh.'
+        ? 'Đã bỏ định dạng đậm dính từ Word/Docs để nội dung trở về chữ thường. Tiêu đề H2/H3 vẫn giữ đúng kiểu tiêu đề.'
         : 'Bạn có thể xem lại bố cục, thêm ảnh và bấm Chuẩn bị đăng khi đã đủ nội dung.'
     });
   }
@@ -1033,9 +1065,11 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   async function handleDroppedFiles(fileList: FileList | null) {
     const file = Array.from(fileList ?? []).find((item) => item.type.startsWith('image/'));
     if (!file) return;
-    const url = await uploadFile(file, 'body');
+    const sourceLabel = 'Ảnh vừa thả vào bài';
+    const onRetrySuccess = (url: string) => insertUploadedBodyImage(url, file.name, sourceLabel);
+    const url = await uploadFile(file, 'body', onRetrySuccess);
     if (!url) return;
-    insertUploadedBodyImage(url, file.name, 'Ảnh vừa thả vào bài');
+    insertUploadedBodyImage(url, file.name, sourceLabel);
   }
 
   async function handleCoverFiles(fileList: FileList | null) {
@@ -1130,28 +1164,6 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     });
   }
 
-  function applyPassportPlan(slug: string) {
-    const topic = PASSPORT_NEWS_PLAN.find((item) => item.slug === slug);
-    if (!topic) return;
-    const category = categoryItems.find((item) => item.slug === topic.categorySlug);
-    setEditingId(null);
-    setPreview(false);
-    setForm((current) => ({
-      ...current,
-      siteKey: 'PASSPORT',
-      categoryId: category?.id ?? current.categoryId,
-      title: topic.title,
-      slug: topic.slug,
-      focusKeyword: topic.title.replace(/[?!:]/g, '').trim(),
-      seoTitle: topic.title,
-      status: 'DRAFT'
-    }));
-    window.requestAnimationFrame(() => {
-      if (editorMode === 'visual') focusVisualEditor();
-      else bodyRef.current?.focus();
-    });
-  }
-
   function fillSeoDefaults() {
     const bodyText = stripHtml(form.bodyHtml);
     const canonicalSlug = form.slug || slugifyLocal(form.title);
@@ -1189,7 +1201,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   }
 
   function optimizeImportedArticle() {
-    const cleanedBody = sanitizeImportedHtml(form.bodyHtml || '');
+    const cleanedBody = sanitizeImportedHtml(form.bodyHtml || '', { stripImportedBold: true });
     const nextForm = buildPreparedNewsForm({
       ...form,
       bodyHtml: cleanedBody || form.bodyHtml || '<p></p>'
@@ -1261,7 +1273,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   }
 
   function cleanPastedContent() {
-    const cleaned = sanitizeImportedHtml(form.bodyHtml);
+    const cleaned = sanitizeImportedHtml(form.bodyHtml, { stripImportedBold: true });
     if (!cleaned.trim()) return;
     update('bodyHtml', cleaned);
     window.requestAnimationFrame(() => {
@@ -1523,30 +1535,32 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
         </Panel>
       )}
 
-      {siteFilter === 'PASSPORT' && !editingId && (
+      {siteFilter === 'PASSPORT' && (
         <Panel data-testid="news-passport-topic-library" className="border-leaf/20 bg-[linear-gradient(135deg,#f7fbf8_0%,#eef8f1_100%)]">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(15rem,20rem)] sm:items-center">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Đề cương Hộ chiếu Nông nghiệp</p>
-              <h2 className="mt-1 text-base font-bold text-ink">Chọn chủ đề từ file “Tin tức - Agripassport”</h2>
-              <p className="mt-1 text-sm leading-6 text-slate-600">Chọn một đề tài để tự điền tiêu đề, đường dẫn và từ khóa. Sau đó dán nội dung từ Word, thêm ảnh bìa rồi đăng bài.</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-leaf/80">Chủ đề Hộ chiếu Nông nghiệp</p>
+              <h2 className="mt-1 text-base font-bold text-ink">Chọn một trong 5 chủ đề</h2>
+              <p className="mt-1 text-sm leading-6 text-slate-600">Chủ đề chỉ dùng để phân loại bài. Tiêu đề và nội dung bạn tự nhập bên dưới.</p>
             </div>
-            <Select
-              data-testid="news-passport-topic-select"
-              className="min-h-11 min-w-0 sm:w-[27rem]"
-              value=""
-              onChange={(event) => applyPassportPlan(event.target.value)}
-            >
-              <option value="">Chọn chủ đề cần đăng…</option>
-              {Array.from(new Set(PASSPORT_NEWS_PLAN.map((item) => item.category))).map((category) => (
-                <optgroup key={category} label={category}>
-                  {PASSPORT_NEWS_PLAN.filter((item) => item.category === category).map((item) => (
-                    <option key={item.slug} value={item.slug}>{item.title}</option>
-                  ))}
-                </optgroup>
-              ))}
-            </Select>
+            <label className="space-y-1 text-sm font-semibold">
+              <span className="sr-only">Chủ đề bài viết</span>
+              <Select
+                data-testid="news-passport-topic-select"
+                className="min-h-11 w-full"
+                value={selectedTopicCategoryId}
+                onChange={(event) => update('categoryId', event.target.value)}
+              >
+                <option value="">Chọn chủ đề…</option>
+                {topicCategoryItems.map(({ topic, category }) => (
+                  <option key={topic.slug} value={category.id}>{topic.label}</option>
+                ))}
+              </Select>
+            </label>
           </div>
+          {legacyCategorySelection && (
+            <p className="mt-2 text-xs leading-5 text-slate-600">Bài này đang gắn một danh mục cũ ngoài 5 chủ đề. Nếu không chọn lại, danh mục hiện tại vẫn được giữ nguyên.</p>
+          )}
         </Panel>
       )}
 
@@ -1692,15 +1706,16 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                   {slugLength ? 'Đường dẫn nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo đường dẫn từ tiêu đề.'}
                 </span>
               </label>
-              <label className="space-y-1 text-sm font-semibold">
+              {form.siteKey !== 'PASSPORT' && <label className="space-y-1 text-sm font-semibold">
                 <span>Danh mục</span>
-                <Select data-testid="news-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
+                <Select data-testid="news-category-select" value={categorySelectValue} onChange={(event) => update('categoryId', event.target.value)}>
                   <option value="">Không chọn</option>
-                  {categoryItems.map((category) => (
-                    <option key={category.id} value={category.id}>{category.name}</option>
+                  {legacyCategorySelection && <option value={form.categoryId} disabled>Danh mục cũ · đang giữ nguyên</option>}
+                  {categoryOptions.map((category) => (
+                    <option key={category.id} value={category.id}>{category.label}</option>
                   ))}
                 </Select>
-              </label>
+              </label>}
               <label className="space-y-1 text-sm font-semibold">
                 <span>Trạng thái</span>
                 <Select data-testid="news-status-select" value={form.status} onChange={(event) => update('status', event.target.value as NewsForm['status'])}>
@@ -1901,7 +1916,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                 </div>
                 <div className="flex shrink-0 gap-2">
                   {uploadRetry && (
-                    <Button type="button" variant="ghost" onClick={() => void uploadFile(uploadRetry.file, uploadRetry.target)} className="min-h-9 px-3 text-sm">
+                    <Button type="button" variant="ghost" onClick={() => void retryUpload()} className="min-h-9 px-3 text-sm">
                       <RefreshCcw size={16} aria-hidden="true" />
                       Thử lại
                     </Button>
@@ -2209,9 +2224,14 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                     }}
                     onInput={syncVisualEditor}
                     onBlur={syncVisualEditor}
+                    onKeyDown={(event) => {
+                      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'b') {
+                        event.preventDefault();
+                      }
+                    }}
                     onPaste={(event) => void handleVisualPaste(event)}
                     className={cn(
-                      'rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_blockquote]:block [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:block [&_h2]:text-2xl [&_h2]:font-bold [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:block [&_h3]:text-xl [&_h3]:font-bold [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_p]:my-3 [&_ul]:list-disc [&_ol]:list-decimal',
+                      'news-editor-content rounded-xl border border-slate-200 bg-white px-4 py-3 text-base font-normal leading-7 outline-none focus:border-leaf focus:ring-4 focus:ring-mint [&_blockquote]:border-l-4 [&_blockquote]:border-leaf/40 [&_blockquote]:pl-4 [&_blockquote]:block [&_figure]:my-4 [&_h2]:mt-6 [&_h2]:mb-3 [&_h2]:block [&_h2]:text-xl [&_h2]:font-normal [&_h3]:mt-5 [&_h3]:mb-2 [&_h3]:block [&_h3]:text-lg [&_h3]:font-normal [&_img]:rounded-xl [&_img]:shadow-sm [&_li]:ml-5 [&_ul]:list-disc [&_ol]:list-decimal',
                       isAdvancedMode ? 'min-h-[320px]' : isBodyEmpty ? 'min-h-[136px] pt-[4.9rem]' : 'min-h-[136px]',
                       draggingEditor && 'border-leaf bg-mint/40 ring-4 ring-mint'
                     )}
@@ -2263,7 +2283,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
             </details>}
 
             {preview && (
-              <div className="prose max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
+              <div className="news-body max-w-none rounded-md border border-slate-200 bg-slate-50 p-4" dangerouslySetInnerHTML={{ __html: form.bodyHtml }} />
             )}
           </Panel>
 
@@ -2393,7 +2413,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
               <details className="group" open={simpleMetaExpanded} onToggle={(event) => setSimpleMetaExpanded(event.currentTarget.open)}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3.5">
                   <div>
-                    <p className="text-sm font-bold text-ink">Đường dẫn, mô tả ngắn và danh mục</p>
+                    <p className="text-sm font-bold text-ink">{form.siteKey === 'PASSPORT' ? 'Đường dẫn và mô tả ngắn' : 'Đường dẫn, mô tả ngắn và danh mục'}</p>
                     <p className="text-sm text-slate-600">Chỉ sửa khi cần. Để trống vẫn đăng nhanh được.</p>
                   </div>
                   <div className="flex items-center gap-2">
@@ -2416,15 +2436,16 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                         {slugLength ? 'Đường dẫn nên ngắn, không dấu và dễ đọc trên link chia sẻ.' : 'Có thể để trống, hệ thống sẽ tự tạo đường dẫn từ tiêu đề.'}
                       </span>
                     </label>
-                    <label className="space-y-1 text-sm font-semibold">
+                    {form.siteKey !== 'PASSPORT' && <label className="space-y-1 text-sm font-semibold">
                       <span>Danh mục</span>
-                      <Select className="h-11" data-testid="news-category-select" value={form.categoryId} onChange={(event) => update('categoryId', event.target.value)}>
+                      <Select className="h-11" data-testid="news-category-select" value={categorySelectValue} onChange={(event) => update('categoryId', event.target.value)}>
                         <option value="">Không chọn</option>
-                        {categoryItems.map((category) => (
-                          <option key={category.id} value={category.id}>{category.name}</option>
+                        {legacyCategorySelection && <option value={form.categoryId} disabled>Danh mục cũ · đang giữ nguyên</option>}
+                        {categoryOptions.map((category) => (
+                          <option key={category.id} value={category.id}>{category.label}</option>
                         ))}
                       </Select>
-                    </label>
+                    </label>}
                     <label className="space-y-1 text-sm font-semibold">
                       <span>Mô tả ngắn</span>
                       <Textarea
@@ -3348,23 +3369,15 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
             <details className="group rounded-2xl">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
                 <div>
-                  <p className="text-sm font-bold text-ink">Danh mục</p>
-                  <p className="text-sm text-slate-600">Tạo danh mục mới khi danh sách hiện tại chưa đủ.</p>
+                  <p className="text-sm font-bold text-ink">Chủ đề bài viết</p>
+                  <p className="text-sm text-slate-600">Một bộ chủ đề ngắn, thống nhất trên cả ba website.</p>
                 </div>
-                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{categoryItems.length} danh mục</span>
+                <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">{PUBLIC_NEWS_TOPICS.length} chủ đề</span>
               </summary>
-              <div className="space-y-3 border-t border-slate-100 px-4 py-3">
-                <Input value={categoryDraft.name} onChange={(event) => setCategoryDraft((current) => ({ ...current, name: event.target.value, slug: current.slug || slugifyLocal(event.target.value) }))} placeholder="Tên danh mục" />
-                <Input value={categoryDraft.slug} onChange={(event) => setCategoryDraft((current) => ({ ...current, slug: slugifyLocal(event.target.value) }))} placeholder="Đường dẫn danh mục" />
-                <Button type="button" onClick={() => createCategory.mutate()} disabled={!categoryDraft.name || createCategory.isPending}>
-                  <Plus size={18} aria-hidden="true" />
-                  Thêm danh mục
-                </Button>
-                <div className="flex flex-wrap gap-2">
-                  {categoryItems.map((category) => (
-                    <Badge key={category.id} className="bg-slate-100 text-slate-700">{category.name}</Badge>
-                  ))}
-                </div>
+              <div className="flex flex-wrap gap-2 border-t border-slate-100 px-4 py-3">
+                {PUBLIC_NEWS_TOPICS.map((topic) => (
+                  <Badge key={topic.slug} className="bg-slate-100 text-slate-700">{topic.label}</Badge>
+                ))}
               </div>
             </details>
           </Panel>
@@ -3407,7 +3420,7 @@ function fromArticle(article: NewsArticle): NewsForm {
     title: article.title,
     slug: article.slug,
     excerpt: article.excerpt ?? '',
-    bodyHtml: article.bodyHtml,
+    bodyHtml: sanitizeImportedHtml(article.bodyHtml || '', { stripImportedBold: true }) || '<p></p>',
     coverImageUrl: article.coverImageUrl ?? '',
     coverImageAlt: article.coverImageAlt ?? '',
     status: article.status,
@@ -3642,11 +3655,6 @@ function buildPreparedBodyHtml(form: NewsForm) {
   if (stripped.split(/\s+/).filter(Boolean).length >= 120 && !/<h[23][^>]*>/i.test(bodyHtml)) {
     const headingBlock = '<h2>Thông tin chính</h2><p>Bổ sung ý chính quan trọng tại đây.</p><h2>Nội dung cần biết</h2><p>Mở rộng thêm chi tiết, lợi ích hoặc hướng dẫn cụ thể.</p>';
     bodyHtml = `${headingBlock}${bodyHtml}`;
-  }
-
-  if (!/<a[^>]+href="(?:\/|https:\/\/htxonline\.vn)/i.test(bodyHtml)) {
-    const internalLink = suggestPrimaryInternalLink(form);
-    bodyHtml = `${bodyHtml}<p><a href="${internalLink.href}">${escapeHtml(internalLink.label)}</a></p>`;
   }
 
   return bodyHtml;
@@ -4161,7 +4169,7 @@ function detectImportedFormatting(value: string) {
   return /class="?Mso|mso-|font-family:|<span\b|<div\b|style=|<o:p>|<meta\b|<link\b|<xml\b/i.test(value);
 }
 
-function sanitizeImportedHtml(input: string) {
+function sanitizeImportedHtml(input: string, options: { stripImportedBold?: boolean } = {}) {
   if (!input.trim()) return '';
 
   let html = input
@@ -4205,6 +4213,10 @@ function sanitizeImportedHtml(input: string) {
     .replace(/\n+/g, '')
     .replace(/>\s+</g, '><')
     .trim();
+
+  if (options.stripImportedBold) {
+    html = html.replace(/<\/?(?:b|strong)\b[^>]*>/gi, '');
+  }
 
   if (!/<[a-z][\s\S]*>/i.test(html)) {
     return plainTextToEditorHtml(stripHtml(html));
@@ -4262,19 +4274,6 @@ function suggestFocusKeywords(form: NewsForm) {
     .filter((value) => !/^(tin tuc|cap nhat|huong dan|htxonline)$/i.test(slugifyLocal(value)));
 
   return Array.from(new Set(suggested)).slice(0, 4);
-}
-
-function suggestPrimaryInternalLink(form: NewsForm) {
-  if (form.focusKeyword.trim()) {
-    return {
-      label: `Xem thêm sản phẩm liên quan "${form.focusKeyword.trim()}"`,
-      href: `/san-pham?search=${encodeURIComponent(form.focusKeyword.trim())}`
-    };
-  }
-  return {
-    label: 'Khám phá thêm sản phẩm và hợp tác xã trên Agripassport',
-    href: '/san-pham'
-  };
 }
 
 function buildInternalLinkSuggestions(form: NewsForm) {

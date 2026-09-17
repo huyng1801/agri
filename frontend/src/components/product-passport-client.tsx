@@ -288,7 +288,7 @@ export function ProductPassportClient({
                       Hộ chiếu nông nghiệp
                     </span>
                     <span className="inline-flex items-center gap-0.5 rounded-full bg-[#0d7a28]/15 px-2 py-0.2 text-[9px] font-bold text-[#0d7a28]">
-                      <CheckCircle2 size={10} /> Đã chứng thực
+                      <QrCode size={10} /> Hồ sơ QR công khai
                     </span>
                   </div>
                   <p className="mt-0.5 font-mono text-xs sm:text-sm font-extrabold text-slate-900 truncate">
@@ -339,9 +339,6 @@ export function ProductPassportClient({
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
                       <span className="text-[10px] font-bold tracking-wider text-[#0d7a28]">Đơn vị sản xuất</span>
-                      <span className="rounded bg-[#0d7a28]/10 px-1.5 py-0.2 text-[9px] font-bold text-[#0d7a28]">
-                        Đã xác thực
-                      </span>
                     </div>
                     <Link
                       href={`/htx/${product.cooperative.code}`}
@@ -757,26 +754,27 @@ export function ProductPassportClient({
           </section>
         </div>
 
-        {/* Right: Technical Verification Card (Desktop Sidebar) */}
+        {/* Right: A factual summary of the information on this public record. */}
         <aside className="lg:col-span-4 space-y-4">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2.5">
-              Cơ chế Xác thực Nguồn gốc
+          <div className="space-y-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-elevated)] p-5 shadow-xs">
+            <h3 className="border-b border-[var(--border)] pb-2.5 text-sm font-bold text-[var(--text-primary)]">
+              Thông tin trong hồ sơ
             </h3>
-            <div className="space-y-2.5 text-xs text-slate-600 leading-relaxed">
-              <div className="flex items-start gap-2">
-                <CheckCircle2 size={15} className="text-[#0d7a28] mt-0.5 shrink-0" />
-                <span>Mã QR độc bản gắn liền với từng lô sản phẩm</span>
+            <dl className="space-y-3 text-sm">
+              <div className="flex items-center justify-between gap-3">
+                <dt className="flex items-center gap-2 text-[var(--text-secondary)]"><QrCode size={15} className="text-[var(--brand-primary)]" aria-hidden="true" />Hồ sơ QR</dt>
+                <dd className="text-right font-semibold text-[var(--text-primary)]">{passport ? 'Đang công khai' : 'Chưa có mã công khai'}</dd>
               </div>
-              <div className="flex items-start gap-2">
-                <CheckCircle2 size={15} className="text-[#0d7a28] mt-0.5 shrink-0" />
-                <span>Nhật ký canh tác ghi nhận trực tiếp từ nông hộ</span>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="flex items-center gap-2 text-[var(--text-secondary)]"><FileText size={15} className="text-[var(--brand-primary)]" aria-hidden="true" />Nhật ký</dt>
+                <dd className="font-semibold text-[var(--text-primary)]">{publicLogs.length} mốc</dd>
               </div>
-              <div className="flex items-start gap-2">
-                <CheckCircle2 size={15} className="text-[#0d7a28] mt-0.5 shrink-0" />
-                <span>Chứng thư điện tử có thể tra cứu và chia sẻ công khai</span>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="flex items-center gap-2 text-[var(--text-secondary)]"><FileCheck size={15} className="text-[var(--brand-primary)]" aria-hidden="true" />Chứng nhận</dt>
+                <dd className="font-semibold text-[var(--text-primary)]">{uniqueCertifications.length} mục</dd>
               </div>
-            </div>
+            </dl>
+            <p className="text-xs leading-5 text-[var(--text-secondary)]">Mã QR mở hồ sơ thông tin; không thay thế chứng nhận chất lượng hoặc xác nhận của cơ quan chuyên môn.</p>
           </div>
         </aside>
       </div>
