@@ -151,6 +151,113 @@ describe('UsersService', () => {
     });
   });
 
+  it('builds a personal QR from public farmer data only and excludes private or non-public zones', async () => {
+    const farmer = {
+      id: 'farmer-public',
+      email: 'private@example.test',
+      fullName: 'Nông dân công khai',
+      phone: '0900000000',
+      avatarUrl: null,
+      status: 'ACTIVE',
+      cooperativeId: 'coop-1',
+      cooperative: { id: 'coop-1', name: 'HTX Công khai', code: 'HTX-1', status: 'ACTIVE' },
+      roles: [{ role: { slug: RoleSlug.FARMER, permissions: [] } }],
+      farmerProfile: {
+        id: 'profile-1',
+        cooperativeId: 'coop-1',
+        status: 'ACTIVE',
+        zoneAssignments: [{ zoneId: 'public-zone' }, { zoneId: 'private-zone' }]
+      },
+      lastLoginAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    const prisma = {
+      user: { findUnique: jest.fn().mockResolvedValue(farmer) },
+      zone: { findMany: jest.fn().mockResolvedValue([{ id: 'public-zone', areaM2: '12500' }]) },
+      tree: {
+        groupBy: jest.fn().mockResolvedValue([{
+          zoneId: 'public-zone',
+          cropTypeId: 'crop-1',
+          variety: 'Cát Chu',
+          status: 'ACTIVE',
+          _count: { _all: 7 }
+        }])
+      },
+      cropType: { findMany: jest.fn().mockResolvedValue([{ id: 'crop-1', name: 'Xoài' }]) },
+      $queryRaw: jest.fn().mockResolvedValue([{
+        zoneId: 'public-zone',
+        seasonId: 'season-1',
+        seasonName: 'Vụ 2026',
+        seasonStartDate: new Date('2026-01-01T00:00:00.000Z'),
+        unit: 'kg',
+        quantity: 2000,
+        harvestCount: 2
+      }])
+    };
+    const service = new UsersService(prisma as never, { record: jest.fn() } as never, { assertCanCreate: jest.fn() } as never);
+
+    const result = await service.publicFarmer(farmer.id);
+
+    expect(result.publicUrl).toContain('/nong-ho/farmer-public');
+    expect(result.qrDataUrl).toMatch(/^data:image\/png;base64,/);
+    expect(result.farmer).toEqual({
+      fullName: 'Nông dân công khai',
+      cooperative: { name: 'HTX Công khai', code: 'HTX-1' },
+      summary: expect.objectContaining({
+        assignedZoneCount: 1,
+        areaM2: 12500,
+        treeCount: 7,
+        varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 7 }],
+        seasonalProduction: [expect.objectContaining({ recordedMassKg: 2000, harvestCount: 2 })]
+      })
+    });
+    expect(result.farmer).not.toHaveProperty('email');
+    expect(result.farmer).not.toHaveProperty('phone');
+    expect(prisma.zone.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ status: 'ACTIVE', isPublic: true })
+    }));
+    expect(prisma.tree.groupBy).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ publicVerified: true })
+    }));
+  });
+
+  it('does not expose inactive farmer profiles through the personal QR endpoint', async () => {
+    const service = new UsersService(
+      { user: { findUnique: jest.fn().mockResolvedValue({ status: 'LOCKED', roles: [], cooperative: null, farmerProfile: null }) } } as never,
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
+    );
+
+    await expect(service.publicFarmer('inactive-farmer')).rejects.toThrow('Không tìm thấy hồ sơ nông hộ đang hoạt động');
+  });
+
+  it('still gives an active farmer without a profile record a QR without production figures', async () => {
+    const service = new UsersService(
+      {
+        user: {
+          findUnique: jest.fn().mockResolvedValue({
+            id: 'farmer-without-profile',
+            fullName: 'Nông dân mới',
+            status: 'ACTIVE',
+            cooperativeId: 'coop-1',
+            cooperative: { name: 'HTX Công khai', code: 'HTX-1', status: 'ACTIVE' },
+            roles: [{ role: { slug: RoleSlug.FARMER, permissions: [] } }],
+            farmerProfile: null
+          })
+        }
+      } as never,
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
+    );
+
+    const result = await service.publicFarmer('farmer-without-profile');
+
+    expect(result.publicUrl).toContain('/nong-ho/farmer-without-profile');
+    expect(result.farmer.summary).toBeNull();
+    expect(result.qrDataUrl).toMatch(/^data:image\/png;base64,/);
+  });
+
   it('revokes a farmer zone scope when the farmer role is removed', async () => {
     const existing = {
       id: 'farmer-1',

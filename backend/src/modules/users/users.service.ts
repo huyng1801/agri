@@ -1,6 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, RoleSlug, ZoneStatus } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
+import QRCode from 'qrcode';
 import { CreateUserDto, UpdateUserDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
 import { paginated, parsePagination } from '../../common/utils/pagination';
@@ -81,6 +82,39 @@ export class UsersService {
     }
     const summaries = await this.buildFarmerSummaries([found]);
     return this.serialize(found, summaries.get(found.id));
+  }
+
+  async publicFarmer(id: string) {
+    const farmer = await this.prisma.user.findUnique({ where: { id }, include: this.includeRoles() });
+    const hasFarmerRole = farmer?.roles.some((item) => item.role.slug === RoleSlug.FARMER) ?? false;
+    if (
+      !farmer ||
+      farmer.status !== 'ACTIVE' ||
+      !hasFarmerRole ||
+      !farmer.cooperative ||
+      farmer.cooperative.status !== 'ACTIVE' ||
+      (farmer.farmerProfile && (
+        farmer.farmerProfile.status !== 'ACTIVE' ||
+        farmer.farmerProfile.cooperativeId !== farmer.cooperativeId
+      ))
+    ) {
+      throw new NotFoundException('Không tìm thấy hồ sơ nông hộ đang hoạt động');
+    }
+
+    const summaries = await this.buildFarmerSummaries([farmer], true);
+    const baseUrl = (process.env.PASSPORT_PUBLIC_URL || process.env.FRONTEND_URL || 'https://hochieunongnghiep.com').replace(/\/+$/, '');
+    const publicUrl = `${baseUrl}/nong-ho/${encodeURIComponent(farmer.id)}`;
+    const qrDataUrl = await QRCode.toDataURL(publicUrl, { errorCorrectionLevel: 'M', margin: 1, width: 512 });
+
+    return {
+      publicUrl,
+      qrDataUrl,
+      farmer: {
+        fullName: farmer.fullName,
+        cooperative: { name: farmer.cooperative.name, code: farmer.cooperative.code },
+        summary: summaries.get(farmer.id) ?? null
+      }
+    };
   }
 
   async create(actor: AuthUser, dto: CreateUserDto) {
@@ -279,7 +313,7 @@ export class UsersService {
     return {
       roles: { include: { role: true } },
       cooperative: true,
-      farmerProfile: { select: { id: true, cooperativeId: true, zoneAssignments: { select: { zoneId: true } } } }
+      farmerProfile: { select: { id: true, cooperativeId: true, status: true, zoneAssignments: { select: { zoneId: true } } } }
     } as const;
   }
 
@@ -309,7 +343,10 @@ export class UsersService {
     }
   }
 
-  private async buildFarmerSummaries(users: Prisma.UserGetPayload<{ include: ReturnType<UsersService['includeRoles']> }>[]) {
+  private async buildFarmerSummaries(
+    users: Prisma.UserGetPayload<{ include: ReturnType<UsersService['includeRoles']> }>[],
+    publicOnly = false
+  ) {
     const farmers = users.filter((user) => user.roles.some((item) => item.role.slug === RoleSlug.FARMER) && user.farmerProfile);
     if (!farmers.length) return new Map<string, FarmerSummary>();
 
@@ -323,16 +360,28 @@ export class UsersService {
     const cooperativeIds = [...new Set(farmers.map((user) => user.cooperativeId).filter((id): id is string => Boolean(id)))];
     if (!zoneIds.length || !cooperativeIds.length) return summarizeFarmers(assignments, [], [], []);
 
-    const [zones, treeGroups, harvestGroups] = await Promise.all([
-      this.prisma.zone.findMany({
-        where: { id: { in: zoneIds }, cooperativeId: { in: cooperativeIds } },
-        select: { id: true, areaM2: true }
-      }),
+    const zones = await this.prisma.zone.findMany({
+      where: {
+        id: { in: zoneIds },
+        cooperativeId: { in: cooperativeIds },
+        ...(publicOnly ? { status: ZoneStatus.ACTIVE, isPublic: true } : {})
+      },
+      select: { id: true, areaM2: true }
+    });
+    const visibleZoneIds = publicOnly ? zones.map((zone) => zone.id) : zoneIds;
+    const visibleAssignments = publicOnly
+      ? assignments.map((assignment) => ({ ...assignment, zoneIds: assignment.zoneIds.filter((zoneId) => visibleZoneIds.includes(zoneId)) }))
+      : assignments;
+    if (!visibleZoneIds.length) return summarizeFarmers(visibleAssignments, zones, [], []);
+
+    const [treeGroups, harvestGroups] = await Promise.all([
       this.prisma.tree.groupBy({
         by: ['zoneId', 'cropTypeId', 'variety', 'status'],
         where: {
-          zoneId: { in: zoneIds },
-          cooperativeId: { in: cooperativeIds }
+          zoneId: { in: visibleZoneIds },
+          cooperativeId: { in: cooperativeIds },
+          status: { not: 'INACTIVE' },
+          ...(publicOnly ? { publicVerified: true } : {})
         },
         _count: { _all: true }
       }),
@@ -354,7 +403,8 @@ export class UsersService {
           AND harvest."quantity" > 0
           AND harvest."cooperativeId" IN (${Prisma.join(cooperativeIds)})
           AND tree."cooperativeId" IN (${Prisma.join(cooperativeIds)})
-          AND tree."zoneId" IN (${Prisma.join(zoneIds)})
+          AND tree."zoneId" IN (${Prisma.join(visibleZoneIds)})
+          ${publicOnly ? Prisma.sql`AND tree."publicVerified" = TRUE` : Prisma.empty}
         GROUP BY tree."zoneId", harvest."seasonId", season."name", season."startDate", harvest."unit"
       `)
     ]);
@@ -373,7 +423,7 @@ export class UsersService {
       treeCount: item._count._all
     }));
 
-    return summarizeFarmers(assignments, zones, treeAggregates, harvestGroups);
+    return summarizeFarmers(visibleAssignments, zones, treeAggregates, harvestGroups);
   }
 
   private serialize(

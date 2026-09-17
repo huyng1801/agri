@@ -43,6 +43,15 @@ describe('public host proxy rules', () => {
     expect(checkoutResponse.headers.get('x-middleware-next')).toBe('1');
   });
 
+  it('keeps personal farmer QR profiles on the passport host', () => {
+    const htxResponse = proxy(makeRequest('https://htx.htxonline.vn/nong-ho/farmer-id', 'htx.htxonline.vn'));
+    const passportResponse = proxy(makeRequest('https://hochieunongnghiep.com/nong-ho/farmer-id', 'hochieunongnghiep.com'));
+
+    expect(htxResponse.headers.get('location')).toBe('https://hochieunongnghiep.com/nong-ho/farmer-id');
+    expect(passportResponse.headers.get('location')).toBeNull();
+    expect(passportResponse.headers.get('x-middleware-next')).toBe('1');
+  });
+
   it('keeps the Agripassport public flow informational instead of exposing commerce pages', () => {
     const cartResponse = proxy(makeRequest('https://agripassport.com/gio-hang', 'agripassport.com'));
     const guideResponse = proxy(makeRequest('https://agripassport.com/huong-dan-mua-hang', 'agripassport.com'));

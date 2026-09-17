@@ -30,6 +30,14 @@ test.describe('htx farmers dashboard', () => {
       await route.fulfill(jsonEnvelope([{ id: 'zone-1', code: 'V01', name: 'Vườn mẫu', areaM2: 12500, status: 'ACTIVE' }]));
     });
 
+    await page.route('**/api/v1/public/farmers/farmer-seed', async (route) => {
+      await route.fulfill(jsonEnvelope({
+        publicUrl: 'https://hochieunongnghiep.com/nong-ho/farmer-seed',
+        qrDataUrl: 'data:image/png;base64,cXItZGF0YQ==',
+        farmer: { fullName: 'Nông dân mẫu', cooperative: { name: 'HTX mẫu', code: 'HTX-MAU' }, summary: farmer.farmerSummary }
+      }));
+    });
+
     await page.route('**/api/v1/users**', async (route) => {
       const request = route.request();
       const method = request.method();
@@ -56,6 +64,11 @@ test.describe('htx farmers dashboard', () => {
     await expect(page.getByTestId('farmer-production-summary')).toContainText('1,25 ha');
     await expect(page.getByTestId('farmer-production-summary')).toContainText('Xoài · Cát Chu');
     await expect(page.getByTestId('farmer-production-summary')).toContainText('2,5 t');
+    await page.getByTestId('farmer-qr-button-farmer-seed').click();
+    await expect(page.getByRole('dialog')).toContainText('Nông dân mẫu');
+    await expect(page.getByRole('img', { name: 'QR hồ sơ nông hộ Nông dân mẫu' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Mở hồ sơ' })).toHaveAttribute('href', 'https://hochieunongnghiep.com/nong-ho/farmer-seed');
+    await page.getByRole('button', { name: 'Đóng mã QR cá nhân' }).click();
     await page.getByTestId('farmer-create-button').click();
     await page.getByTestId('farmer-name-input').fill('Nông dân E2E');
     await page.getByTestId('farmer-email-input').fill('farmer-e2e@example.com');

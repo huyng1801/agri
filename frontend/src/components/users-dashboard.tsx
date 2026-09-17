@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Lock, Pencil, Plus, RefreshCcw, Search, Shield, Trash2, Unlock, UserRound, Users } from 'lucide-react';
+import { Download, ExternalLink, Lock, Pencil, Plus, QrCode, RefreshCcw, Search, Shield, Trash2, Unlock, UserRound, Users, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatDate, statusTone } from '@/lib/format';
@@ -49,6 +49,16 @@ type FarmerSummary = {
     recordedMassKg: number | null;
     otherUnits: Array<{ unit: string; quantity: number }>;
   }>;
+};
+
+type FarmerPublicQr = {
+  publicUrl: string;
+  qrDataUrl: string;
+  farmer: {
+    fullName: string;
+    cooperative: { name: string; code: string };
+    summary: FarmerSummary | null;
+  };
 };
 
 type DashboardUser = {
@@ -100,6 +110,7 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<UserForm>(emptyForm(isFarmersMode));
   const [formError, setFormError] = useState('');
+  const [qrFarmerId, setQrFarmerId] = useState<string | null>(null);
 
   const users = useQuery({
     queryKey: ['users-dashboard', mode, search, roleFilter, statusFilter],
@@ -122,6 +133,11 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
       return apiFetch<ListResponse<FarmerZone>>(`/zones?${params.toString()}`);
     },
     enabled: isFarmersMode && formOpen && (!isSuperAdmin || Boolean(form.cooperativeId))
+  });
+  const farmerQr = useQuery({
+    queryKey: ['farmer-personal-qr', qrFarmerId],
+    queryFn: () => apiFetch<FarmerPublicQr>(`/public/farmers/${encodeURIComponent(qrFarmerId!)}`),
+    enabled: Boolean(qrFarmerId)
   });
 
   const userItems = listItems(users.data?.data);
@@ -342,6 +358,12 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
               </div>
               {isFarmersMode && <FarmerProductionSummary summary={item.farmerSummary} />}
               <div className="mt-4 flex flex-wrap gap-2">
+                {isFarmersMode && item.status === 'ACTIVE' && (
+                  <Button data-testid={`farmer-qr-button-${item.id}`} type="button" variant="ghost" onClick={() => setQrFarmerId(item.id)}>
+                    <QrCode size={16} aria-hidden="true" />
+                    QR cá nhân
+                  </Button>
+                )}
                 <Button type="button" variant="ghost" onClick={() => edit(item)}>
                   <Pencil size={16} aria-hidden="true" />
                   Sửa
@@ -369,6 +391,48 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
           );
         })}
       </div>
+
+      {qrFarmerId ? (
+        <div
+          className="fixed inset-0 z-50 grid place-items-center bg-slate-950/60 p-4"
+          role="presentation"
+          onMouseDown={(event) => { if (event.target === event.currentTarget) setQrFarmerId(null); }}
+        >
+          <section role="dialog" aria-modal="true" aria-labelledby="farmer-qr-title" className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl sm:p-6">
+            <Button type="button" variant="ghost" aria-label="Đóng mã QR cá nhân" className="absolute right-3 top-3" onClick={() => setQrFarmerId(null)}>
+              <X size={18} aria-hidden="true" />
+            </Button>
+            <div className="pr-10">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-leaf">Hồ sơ nông hộ</p>
+              <h2 id="farmer-qr-title" className="mt-1 text-xl font-bold text-ink">QR cá nhân</h2>
+            </div>
+            {farmerQr.isLoading ? <p role="status" className="py-10 text-center text-sm text-slate-600">Đang tạo mã QR…</p> : null}
+            {farmerQr.isError ? (
+              <div role="alert" className="mt-5 rounded-xl bg-rose-50 p-4 text-sm text-rose-800">
+                {errorMessage(farmerQr.error)}
+                <Button type="button" variant="ghost" className="mt-2" onClick={() => farmerQr.refetch()}>Thử lại</Button>
+              </div>
+            ) : null}
+            {farmerQr.data?.data ? (
+              <div className="mt-5 text-center">
+                <p className="font-semibold text-ink">{farmerQr.data.data.farmer.fullName}</p>
+                <p className="mt-1 text-sm text-slate-600">{farmerQr.data.data.farmer.cooperative.name}</p>
+                <img src={farmerQr.data.data.qrDataUrl} alt={`QR hồ sơ nông hộ ${farmerQr.data.data.farmer.fullName}`} width={240} height={240} className="mx-auto mt-4 h-60 w-60 rounded-xl border border-slate-200 bg-white p-2" />
+                <p className="mt-3 break-all text-xs text-slate-500">{farmerQr.data.data.publicUrl}</p>
+                <div className="mt-4 flex flex-wrap justify-center gap-2">
+                  <a href={farmerQr.data.data.qrDataUrl} download={`QR-nong-ho-${qrFarmerId}.png`} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-leaf px-4 py-2 text-sm font-semibold text-white hover:bg-leaf/90">
+                    <Download size={16} aria-hidden="true" />Tải ảnh QR
+                  </a>
+                  <a href={farmerQr.data.data.publicUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-ink hover:bg-slate-50">
+                    <ExternalLink size={16} aria-hidden="true" />Mở hồ sơ
+                  </a>
+                </div>
+                <p className="mt-4 rounded-lg bg-amber-50 p-3 text-left text-xs leading-5 text-amber-900">QR chỉ hiển thị dữ liệu công khai trên vùng được HTX phân công. Vùng dùng chung có thể làm số liệu xuất hiện ở nhiều hồ sơ; không xem đây là sản lượng sở hữu riêng.</p>
+              </div>
+            ) : null}
+          </section>
+        </div>
+      ) : null}
     </div>
   );
 }
