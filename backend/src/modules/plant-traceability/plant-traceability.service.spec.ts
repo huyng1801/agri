@@ -52,7 +52,7 @@ describe('PlantTraceabilityService', () => {
 
   it('returns no tree rows for a farmer with no assigned zones', async () => {
     const prisma = {
-      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ assignedZones: [] }) },
+      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ cooperativeId: 'coop-1', zoneAssignments: [] }) },
       tree: { findMany: jest.fn().mockResolvedValue([]), count: jest.fn().mockResolvedValue(0) }
     };
     const service = new PlantTraceabilityService(prisma as never, { record: jest.fn() } as never);
@@ -65,7 +65,7 @@ describe('PlantTraceabilityService', () => {
 
   it('blocks a farmer from a tree outside assigned zones', async () => {
     const prisma = {
-      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ assignedZones: ['zone-1'] }) },
+      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ cooperativeId: 'coop-1', zoneAssignments: [{ zoneId: 'zone-1' }] }) },
       tree: { findUnique: jest.fn().mockResolvedValue({ id: 'tree-2', cooperativeId: 'coop-1', zoneId: 'zone-2', zone: {}, cropType: {} }) }
     };
     const service = new PlantTraceabilityService(prisma as never, { record: jest.fn() } as never);
@@ -73,9 +73,19 @@ describe('PlantTraceabilityService', () => {
     await expect(service.getTree(farmer, 'tree-2')).rejects.toBeInstanceOf(ForbiddenException);
   });
 
+  it('does not honor stale zone assignments from another cooperative', async () => {
+    const prisma = {
+      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ cooperativeId: 'coop-2', zoneAssignments: [{ zoneId: 'zone-1' }] }) },
+      tree: { findUnique: jest.fn().mockResolvedValue({ id: 'tree-1', cooperativeId: 'coop-1', zoneId: 'zone-1', zone: {}, cropType: {} }) }
+    };
+    const service = new PlantTraceabilityService(prisma as never, { record: jest.fn() } as never);
+
+    await expect(service.getTree(farmer, 'tree-1')).rejects.toBeInstanceOf(ForbiddenException);
+  });
+
   it('blocks a farmer from updating an event outside assigned zones', async () => {
     const prisma = {
-      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ assignedZones: ['zone-1'] }) },
+      farmerProfile: { findUnique: jest.fn().mockResolvedValue({ cooperativeId: 'coop-1', zoneAssignments: [{ zoneId: 'zone-1' }] }) },
       treeEvent: { findUnique: jest.fn().mockResolvedValue({ id: 'event-2', cooperativeId: 'coop-1', tree: { zoneId: 'zone-2' } }) }
     };
     const service = new PlantTraceabilityService(prisma as never, { record: jest.fn() } as never);

@@ -33,6 +33,174 @@ describe('UsersService', () => {
     ).rejects.toBeInstanceOf(BadRequestException);
   });
 
+  it('rejects assigning zones that are not active in the farmer cooperative before creating the account', async () => {
+    const tx = {
+      zone: { findMany: jest.fn().mockResolvedValue([]) },
+      user: { create: jest.fn() }
+    };
+    const service = new UsersService(
+      {
+        user: { findUnique: jest.fn().mockResolvedValue(null) },
+        role: { findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'farmer-role' }) },
+        $transaction: jest.fn((callback: (client: typeof tx) => unknown) => callback(tx))
+      } as never,
+      { record: jest.fn() } as never,
+      { assertCanCreate: jest.fn() } as never
+    );
+
+    await expect(service.create({
+      id: 'admin-1',
+      email: 'admin@coop.test',
+      fullName: 'Admin HTX',
+      cooperativeId: 'coop-1',
+      roles: [RoleSlug.ADMIN_HTX],
+      permissions: []
+    }, {
+      email: 'farmer@coop.test',
+      password: 'StrongPass123!',
+      fullName: 'Nông dân',
+      role: RoleSlug.FARMER,
+      assignedZoneIds: ['zone-1']
+    })).rejects.toBeInstanceOf(BadRequestException);
+
+    expect(tx.zone.findMany).toHaveBeenCalledWith(expect.objectContaining({
+      where: expect.objectContaining({ id: { in: ['zone-1'] }, cooperativeId: 'coop-1', status: 'ACTIVE' })
+    }));
+    expect(tx.user.create).not.toHaveBeenCalled();
+  });
+
+  it('saves a farmer zone assignment in the same transaction and returns its aggregate', async () => {
+    const now = new Date('2026-09-01T00:00:00.000Z');
+    const createdFarmer = {
+      id: 'farmer-1',
+      email: 'farmer@coop.test',
+      fullName: 'Nông dân',
+      phone: null,
+      avatarUrl: null,
+      status: 'ACTIVE',
+      cooperativeId: 'coop-1',
+      cooperative: { id: 'coop-1', name: 'HTX Demo', code: 'HTX-DEMO' },
+      roles: [{ role: { slug: RoleSlug.FARMER, permissions: [] } }],
+      farmerProfile: { cooperativeId: 'coop-1', zoneAssignments: [{ zoneId: 'zone-1' }] },
+      lastLoginAt: null,
+      createdAt: now,
+      updatedAt: now
+    };
+    const tx = {
+      zone: { findMany: jest.fn().mockResolvedValue([{ id: 'zone-1' }]) },
+      user: {
+        create: jest.fn().mockResolvedValue({ id: 'farmer-1', cooperativeId: 'coop-1' }),
+        findUniqueOrThrow: jest.fn().mockResolvedValue(createdFarmer)
+      },
+      cooperativeMember: { upsert: jest.fn() },
+      farmerProfile: { upsert: jest.fn().mockResolvedValue({ id: 'profile-1' }) },
+      farmerZoneAssignment: { createMany: jest.fn() }
+    };
+    const prisma = {
+      user: { findUnique: jest.fn().mockResolvedValue(null) },
+      role: { findUniqueOrThrow: jest.fn().mockResolvedValue({ id: 'farmer-role' }) },
+      zone: { findMany: jest.fn().mockResolvedValue([{ id: 'zone-1', areaM2: '10000' }]) },
+      tree: {
+        groupBy: jest.fn().mockResolvedValue([{
+          zoneId: 'zone-1',
+          cropTypeId: 'crop-1',
+          variety: 'Cát Chu',
+          status: 'ACTIVE',
+          _count: { _all: 2 }
+        }])
+      },
+      cropType: { findMany: jest.fn().mockResolvedValue([{ id: 'crop-1', name: 'Xoài' }]) },
+      $queryRaw: jest.fn().mockResolvedValue([{
+        zoneId: 'zone-1',
+        seasonId: 'season-1',
+        seasonName: 'Vụ 2026',
+        seasonStartDate: new Date('2026-01-01T00:00:00.000Z'),
+        unit: 'tấn',
+        quantity: 1.25,
+        harvestCount: 2
+      }]),
+      $transaction: jest.fn((callback: (client: typeof tx) => unknown) => callback(tx))
+    };
+    const service = new UsersService(prisma as never, { record: jest.fn() } as never, { assertCanCreate: jest.fn() } as never);
+
+    const result = await service.create({
+      id: 'admin-1',
+      email: 'admin@coop.test',
+      fullName: 'Admin HTX',
+      cooperativeId: 'coop-1',
+      roles: [RoleSlug.ADMIN_HTX],
+      permissions: []
+    }, {
+      email: 'farmer@coop.test',
+      password: 'StrongPass123!',
+      fullName: 'Nông dân',
+      role: RoleSlug.FARMER,
+      assignedZoneIds: ['zone-1']
+    });
+
+    expect(tx.farmerZoneAssignment.createMany).toHaveBeenCalledWith({
+      data: [{ farmerProfileId: 'profile-1', zoneId: 'zone-1' }]
+    });
+    expect(result.farmerProfile?.assignedZoneIds).toEqual(['zone-1']);
+    expect(result.farmerSummary).toMatchObject({
+      assignedZoneCount: 1,
+      areaM2: 10000,
+      treeCount: 2,
+      varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 2 }],
+      seasonalProduction: [{ seasonId: 'season-1', recordedMassKg: 1250, harvestCount: 2 }]
+    });
+  });
+
+  it('revokes a farmer zone scope when the farmer role is removed', async () => {
+    const existing = {
+      id: 'farmer-1',
+      email: 'farmer@coop.test',
+      fullName: 'Nông dân',
+      phone: null,
+      avatarUrl: null,
+      status: 'ACTIVE',
+      cooperativeId: 'coop-1',
+      cooperative: { id: 'coop-1', name: 'HTX Demo', code: 'HTX-DEMO' },
+      roles: [{ role: { slug: RoleSlug.FARMER, permissions: [] } }],
+      farmerProfile: { id: 'profile-1', cooperativeId: 'coop-1', zoneAssignments: [{ zoneId: 'zone-1' }] },
+      lastLoginAt: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    const updated = {
+      ...existing,
+      roles: [{ role: { slug: RoleSlug.MEMBER_HTX, permissions: [] } }],
+      farmerProfile: { id: 'profile-1', cooperativeId: 'coop-1', zoneAssignments: [] }
+    };
+    const tx = {
+      user: {
+        update: jest.fn().mockResolvedValue({ id: 'farmer-1', cooperativeId: 'coop-1' }),
+        findUniqueOrThrow: jest.fn().mockResolvedValue(updated)
+      },
+      role: { findMany: jest.fn().mockResolvedValue([{ id: 'member-role' }]) },
+      userRole: { deleteMany: jest.fn(), createMany: jest.fn() },
+      farmerZoneAssignment: { deleteMany: jest.fn() }
+    };
+    const prisma = {
+      user: { findUnique: jest.fn().mockResolvedValue(existing) },
+      $transaction: jest.fn((callback: (client: typeof tx) => unknown) => callback(tx))
+    };
+    const service = new UsersService(prisma as never, { record: jest.fn() } as never, { assertCanCreate: jest.fn() } as never);
+
+    const result = await service.update({
+      id: 'admin-1',
+      email: 'admin@coop.test',
+      fullName: 'Admin HTX',
+      cooperativeId: 'coop-1',
+      roles: [RoleSlug.ADMIN_HTX],
+      permissions: []
+    }, 'farmer-1', { roles: [RoleSlug.MEMBER_HTX] });
+
+    expect(tx.farmerZoneAssignment.deleteMany).toHaveBeenCalledWith({ where: { farmerProfileId: 'profile-1' } });
+    expect(result.roles).toEqual([RoleSlug.MEMBER_HTX]);
+    expect(result.farmerProfile?.assignedZoneIds).toEqual([]);
+  });
+
   it('does not allow a user to disable their own active account', async () => {
     const service = new UsersService(
       {

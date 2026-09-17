@@ -1379,6 +1379,14 @@ button {
   color: var(--text-secondary);
   font-size: 1.08rem;
   line-height: 1.9;
+  font-weight: 400;
+}
+
+/* Article copy stays regular even when pasted HTML contains <strong>, inline
+   font-weight styles, or legacy emphasis from Word/Google Docs. */
+.news-body :where(*),
+.news-editor-content :where(*) {
+  font-weight: 400 !important;
 }
 
 .news-body > * + * {
@@ -1388,25 +1396,8 @@ button {
 .news-body h2,
 .news-body h3 {
   color: var(--text-primary);
-  font-weight: 400;
   line-height: 1.25;
   letter-spacing: -0.015em;
-}
-
-.news-editor-content h2,
-.news-editor-content h3 {
-  font-weight: 400;
-}
-
-.news-body h2 b,
-.news-body h2 strong,
-.news-body h3 b,
-.news-body h3 strong,
-.news-editor-content h2 b,
-.news-editor-content h2 strong,
-.news-editor-content h3 b,
-.news-editor-content h3 strong {
-  font-weight: 400;
 }
 
 .news-body h2 {
@@ -1430,7 +1421,6 @@ button {
 
 .news-body a {
   color: var(--brand-primary);
-  font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1455,7 +1445,6 @@ button {
   padding: 1rem 1.15rem;
   color: var(--text-primary);
   font-size: 1.12em;
-  font-weight: 600;
 }
 
 .news-body figure {
@@ -1503,7 +1492,6 @@ button {
 .news-body th {
   background: #f1f8ef;
   color: #173327;
-  font-weight: 800;
 }
 
 .news-body tr:last-child td {

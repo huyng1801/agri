@@ -12,6 +12,7 @@ import { GisMap } from '@/components/gis-map';
 type ListResponse<T> = { data: T[]; meta?: { total?: number; totalPages?: number } };
 type ApiItem<T> = { data: T };
 type CropType = { id: string; code: string; name: string; isActive: boolean };
+type ProductionSeason = { id: string; code: string; name: string; status: string };
 type TreeImage = { url: string; caption?: string; name?: string };
 type Zone = { id: string; code: string; name: string; address?: string | null; latitude?: string | number | null; longitude?: string | number | null };
 type Tree = {
@@ -37,7 +38,7 @@ type Tree = {
   _count?: { events?: number; harvests?: number; lotTrees?: number };
 };
 type TreeEvent = { id: string; treeId: string; eventDate: string; eventType: string; description: string; status: string; inputs?: Array<{ materialName: string; quantity?: string | number | null; unit?: string | null }> };
-type Harvest = { id: string; treeId: string; harvestDate: string; quantity: string | number; unit: string; status: string; tree?: Tree; lotTrees?: Array<{ lot?: { lotCode: string } }> };
+type Harvest = { id: string; treeId: string; harvestDate: string; quantity: string | number; unit: string; status: string; season?: ProductionSeason | null; tree?: Tree; lotTrees?: Array<{ lot?: { lotCode: string } }> };
 type Lot = { id: string; lotCode: string; unit: string; totalQuantity: string | number; status: string; harvestDate?: string | null; packagingDate?: string | null; zone?: Zone | null; cropType?: CropType | null; lotTrees?: Array<{ tree?: { treeCode: string }; harvest?: Harvest }>; productBatches?: ProductBatch[] };
 type Product = { id: string; code: string; name: string; unit: string; status: string; publicVerified?: boolean };
 type ProductBatch = { id: string; productCode: string; quantity: string | number; unit: string; harvestDate?: string | null; packagingDate?: string | null; status: string; publicVerified: boolean; product?: Product; lot?: Lot; traceabilityCode?: TraceabilityCode | null };
@@ -292,11 +293,108 @@ export function TreeEventsDashboard() {
 export function HarvestsDashboard() {
   const queryClient = useQueryClient();
   const [selectedTree, setSelectedTree] = useState('');
-  const [form, setForm] = useState({ harvestDate: new Date().toISOString().slice(0, 10), quantity: '', unit: 'kg', note: '' });
+  const [form, setForm] = useState({ harvestDate: new Date().toISOString().slice(0, 10), seasonId: '', quantity: '', unit: 'kg', customUnit: '', note: '' });
   const trees = useQuery({ queryKey: ['harvest-trees'], queryFn: () => apiFetch<ListResponse<Tree>>('/trees?limit=100') });
+  const seasons = useQuery({ queryKey: ['harvest-seasons'], queryFn: () => apiFetch<ListResponse<ProductionSeason>>('/seasons?limit=100') });
   const harvests = useQuery({ queryKey: ['harvests'], queryFn: () => apiFetch<ListResponse<Harvest>>('/harvests?limit=100') });
-  const create = useMutation({ mutationFn: () => apiFetch<Harvest>(`/trees/${selectedTree}/harvests`, { method: 'POST', body: JSON.stringify({ harvestDate: new Date(form.harvestDate).toISOString(), quantity: Number(form.quantity), unit: form.unit, note: form.note }) }), onSuccess: () => { setForm({ ...form, quantity: '', note: '' }); queryClient.invalidateQueries({ queryKey: ['harvests'] }); queryClient.invalidateQueries({ queryKey: ['harvest-trees'] }); } });
-  return <div className="space-y-5" data-testid="harvests-screen"><PageHeader icon={Sprout} eyebrow="Thu hoạch" title="Nối sản lượng về đúng cây" description="Ghi nhận từng lần thu hoạch trước khi phân bổ vào lô sản phẩm." /><div className="grid gap-4 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]"><Panel><form className="space-y-4" onSubmit={(event) => { event.preventDefault(); create.mutate(); }}><Field label="Cây thu hoạch"><Select required value={selectedTree} onChange={(event) => setSelectedTree(event.target.value)}><option value="">Chọn cây</option>{(trees.data?.data ?? []).map((tree) => <option key={tree.id} value={tree.id}>{tree.treeCode} · {tree.cropType?.name}</option>)}</Select></Field><div className="grid gap-3 sm:grid-cols-2"><Field label="Ngày thu hoạch"><Input type="date" max={new Date().toISOString().slice(0, 10)} value={form.harvestDate} onChange={(event) => setForm({ ...form, harvestDate: event.target.value })} /></Field><Field label="Sản lượng"><Input required type="number" min="0.01" step="0.01" value={form.quantity} onChange={(event) => setForm({ ...form, quantity: event.target.value })} /></Field></div><Field label="Đơn vị"><Input value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })} /></Field><Field label="Ghi chú"><Textarea value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} /></Field>{create.isError && <ErrorMessage error={create.error} />}<Button type="submit" disabled={!selectedTree || !form.quantity || create.isPending}><Plus size={18} />{create.isPending ? 'Đang lưu...' : 'Ghi nhận thu hoạch'}</Button></form></Panel><Panel><h2 className="text-lg font-bold">Lịch sử thu hoạch</h2><div className="mt-4 space-y-3">{(harvests.data?.data ?? []).map((harvest) => <div key={harvest.id} className="flex flex-col gap-2 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between"><div><p className="font-bold text-ink">{harvest.tree?.treeCode ?? harvest.treeId}</p><p className="text-sm text-slate-500">{formatDate(harvest.harvestDate)} · {statusLabels[harvest.status] ?? harvest.status}</p></div><p className="text-lg font-extrabold text-emerald-700">{harvest.quantity} {harvest.unit}</p></div>)}{!harvests.isLoading && !(harvests.data?.data ?? []).length && <EmptyState label="Chưa có lần thu hoạch nào" />}</div></Panel></div></div>;
+  const create = useMutation({
+    mutationFn: () => apiFetch<Harvest>(`/trees/${selectedTree}/harvests`, {
+      method: 'POST',
+      body: JSON.stringify({
+        harvestDate: new Date(form.harvestDate).toISOString(),
+        seasonId: form.seasonId || undefined,
+        quantity: Number(form.quantity),
+        unit: form.unit === 'OTHER' ? form.customUnit.trim() : form.unit,
+        note: form.note.trim() || undefined
+      })
+    }),
+    onSuccess: () => {
+      setForm((current) => ({ ...current, quantity: '', note: '' }));
+      queryClient.invalidateQueries({ queryKey: ['harvests'] });
+      queryClient.invalidateQueries({ queryKey: ['harvest-trees'] });
+      queryClient.invalidateQueries({ queryKey: ['users-dashboard'] });
+    }
+  });
+  const seasonItems = seasons.data?.data ?? [];
+
+  return (
+    <div className="space-y-5" data-testid="harvests-screen">
+      <PageHeader icon={Sprout} eyebrow="Thu hoạch" title="Nối sản lượng về đúng cây" description="Ghi nhận sản lượng, gắn đúng mùa vụ và liên kết về cá thể cây." />
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
+        <Panel>
+          <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); create.mutate(); }}>
+            <Field label="Cây thu hoạch">
+              <Select required value={selectedTree} onChange={(event) => setSelectedTree(event.target.value)}>
+                <option value="">Chọn cây</option>
+                {(trees.data?.data ?? []).map((tree) => <option key={tree.id} value={tree.id}>{tree.treeCode} · {tree.cropType?.name}</option>)}
+              </Select>
+            </Field>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Ngày thu hoạch">
+                <Input required type="date" max={new Date().toISOString().slice(0, 10)} value={form.harvestDate} onChange={(event) => setForm({ ...form, harvestDate: event.target.value })} />
+              </Field>
+              <Field label="Sản lượng">
+                <Input required type="number" min="0.01" step="0.01" value={form.quantity} onChange={(event) => setForm({ ...form, quantity: event.target.value })} />
+              </Field>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Field label="Đơn vị">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Select value={form.unit} onChange={(event) => setForm({ ...form, unit: event.target.value })}>
+                    <option value="kg">Kilôgam (kg)</option>
+                    <option value="tấn">Tấn</option>
+                    <option value="tạ">Tạ</option>
+                    <option value="g">Gam (g)</option>
+                    <option value="OTHER">Đơn vị khác</option>
+                  </Select>
+                  {form.unit === 'OTHER' ? (
+                    <Input required aria-label="Tên đơn vị khác" value={form.customUnit} onChange={(event) => setForm({ ...form, customUnit: event.target.value })} placeholder="Ví dụ: bao, thùng" />
+                  ) : null}
+                </div>
+              </Field>
+              <Field label="Mùa vụ">
+                <Select
+                  data-testid="harvest-season-select"
+                  required={seasonItems.length > 0}
+                  disabled={seasons.isLoading || seasons.isError}
+                  value={form.seasonId}
+                  onChange={(event) => setForm({ ...form, seasonId: event.target.value })}
+                >
+                  <option value="">{seasonItems.length ? 'Chọn mùa vụ' : 'Không gắn mùa vụ'}</option>
+                  {seasonItems.map((season) => <option key={season.id} value={season.id}>{season.name} · {season.code}</option>)}
+                </Select>
+              </Field>
+            </div>
+            {seasons.isError ? <ErrorMessage error={seasons.error} /> : null}
+            {!seasons.isLoading && !seasons.isError && seasonItems.length === 0 ? (
+              <p className="rounded-md bg-amber-50 p-3 text-sm text-amber-800">HTX chưa tạo mùa vụ. Thu hoạch vẫn lưu được nhưng sẽ nằm ở nhóm “Chưa gắn mùa vụ”.</p>
+            ) : null}
+            {seasons.isError ? <Button type="button" variant="ghost" onClick={() => seasons.refetch()}>Tải lại mùa vụ</Button> : null}
+            <Field label="Ghi chú"><Textarea value={form.note} onChange={(event) => setForm({ ...form, note: event.target.value })} /></Field>
+            {create.isError && <ErrorMessage error={create.error} />}
+            <Button type="submit" disabled={!selectedTree || !form.quantity || (form.unit === 'OTHER' && !form.customUnit.trim()) || create.isPending || seasons.isLoading || seasons.isError || (seasonItems.length > 0 && !form.seasonId)}>
+              <Plus size={18} />{create.isPending ? 'Đang lưu...' : 'Ghi nhận thu hoạch'}
+            </Button>
+          </form>
+        </Panel>
+        <Panel>
+          <h2 className="text-lg font-bold">Lịch sử thu hoạch</h2>
+          <div className="mt-4 space-y-3">
+            {(harvests.data?.data ?? []).map((harvest) => (
+              <div key={harvest.id} className="flex flex-col gap-2 rounded-xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-bold text-ink">{harvest.tree?.treeCode ?? harvest.treeId}</p>
+                  <p className="text-sm text-slate-500">{formatDate(harvest.harvestDate)} · {harvest.season?.name ?? 'Chưa gắn mùa vụ'} · {statusLabels[harvest.status] ?? harvest.status}</p>
+                </div>
+                <p className="text-lg font-extrabold text-emerald-700">{harvest.quantity} {harvest.unit}</p>
+              </div>
+            ))}
+            {!harvests.isLoading && !(harvests.data?.data ?? []).length && <EmptyState label="Chưa có lần thu hoạch nào" />}
+          </div>
+        </Panel>
+      </div>
+    </div>
+  );
 }
 
 export function LotsDashboard() {

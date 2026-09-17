@@ -13,9 +13,22 @@ test.describe('htx farmers dashboard', () => {
       status: 'ACTIVE',
       roles: ['FARMER'],
       cooperativeId: 'e2e-cooperative-id',
+      farmerProfile: { assignedZoneIds: ['zone-1'] },
+      farmerSummary: {
+        assignedZoneCount: 1,
+        areaM2: 12500,
+        zonesWithArea: 1,
+        treeCount: 7,
+        varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 7 }],
+        seasonalProduction: [{ seasonId: 'season-1', seasonName: 'Vụ 2026', harvestCount: 3, recordedMassKg: 2500, otherUnits: [] }]
+      },
       createdAt: '2026-09-01T00:00:00.000Z',
       updatedAt: '2026-09-01T00:00:00.000Z'
     };
+
+    await page.route('**/api/v1/zones**', async (route) => {
+      await route.fulfill(jsonEnvelope([{ id: 'zone-1', code: 'V01', name: 'Vườn mẫu', areaM2: 12500, status: 'ACTIVE' }]));
+    });
 
     await page.route('**/api/v1/users**', async (route) => {
       const request = route.request();
@@ -31,8 +44,8 @@ test.describe('htx farmers dashboard', () => {
       }
       const body = method === 'DELETE' ? undefined : request.postDataJSON() as Record<string, unknown>;
       mutations.push({ method, body });
-      if (method === 'POST') farmer = { ...farmer, id: 'farmer-e2e', ...body, roles: ['FARMER'] } as typeof farmer;
-      if (method === 'PATCH') farmer = { ...farmer, ...body } as typeof farmer;
+      if (method === 'POST') farmer = { ...farmer, id: 'farmer-e2e', ...body, roles: ['FARMER'], farmerProfile: { assignedZoneIds: (body?.assignedZoneIds as string[]) ?? [] } } as typeof farmer;
+      if (method === 'PATCH') farmer = { ...farmer, ...body, farmerProfile: { assignedZoneIds: (body?.assignedZoneIds as string[]) ?? farmer.farmerProfile.assignedZoneIds } } as typeof farmer;
       if (method === 'DELETE') farmer = { ...farmer, status: 'INACTIVE' };
       await route.fulfill(jsonEnvelope(farmer));
     });
@@ -40,11 +53,15 @@ test.describe('htx farmers dashboard', () => {
     await seedAuthenticatedSession(page, htxAdminUser);
     await page.goto(`${htxUrl}/dashboard/farmers`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Nông dân', { timeout: 45_000 });
+    await expect(page.getByTestId('farmer-production-summary')).toContainText('1,25 ha');
+    await expect(page.getByTestId('farmer-production-summary')).toContainText('Xoài · Cát Chu');
+    await expect(page.getByTestId('farmer-production-summary')).toContainText('2,5 t');
     await page.getByTestId('farmer-create-button').click();
     await page.getByTestId('farmer-name-input').fill('Nông dân E2E');
     await page.getByTestId('farmer-email-input').fill('farmer-e2e@example.com');
     await page.getByTestId('farmer-password-input').fill('StrongPass123!');
     await page.getByTestId('farmer-phone-input').fill('0912345678');
+    await page.getByTestId('farmer-zone-checkbox-zone-1').check();
     await page.getByRole('button', { name: 'Lưu tài khoản' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'POST').length).toBe(1);
     await page.getByRole('button', { name: 'Sửa', exact: true }).click();
@@ -56,8 +73,8 @@ test.describe('htx farmers dashboard', () => {
     await page.getByRole('button', { name: 'Ngừng' }).click();
     await expect.poll(() => mutations.filter((item) => item.method === 'DELETE').length).toBe(1);
     expect(mutations.map((item) => item.method)).toEqual(['POST', 'PATCH', 'PATCH', 'DELETE']);
-    expect(mutations[0].body).toMatchObject({ fullName: 'Nông dân E2E', email: 'farmer-e2e@example.com', role: 'FARMER' });
-    expect(mutations[1].body).toMatchObject({ fullName: 'Nông dân E2E đã sửa' });
+    expect(mutations[0].body).toMatchObject({ fullName: 'Nông dân E2E', email: 'farmer-e2e@example.com', role: 'FARMER', assignedZoneIds: ['zone-1'] });
+    expect(mutations[1].body).toMatchObject({ fullName: 'Nông dân E2E đã sửa', assignedZoneIds: ['zone-1'] });
     expect(mutations[2].body).toMatchObject({ status: 'LOCKED' });
   });
 });

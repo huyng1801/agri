@@ -330,10 +330,10 @@ model FarmerProfile {
   identityNo    String?
   address       String?
   householdJson Json         @default("{}")
-  assignedZones Json         @default("[]")
   status        MemberStatus @default(ACTIVE)
   user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
+  zoneAssignments FarmerZoneAssignment[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -536,6 +536,7 @@ model Zone {
   lots          Lot[]
   farmingLogs   FarmingLog[]
   certifications Certification[]
+  farmerAssignments FarmerZoneAssignment[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -543,6 +544,18 @@ model Zone {
   @@index([cooperativeId])
   @@index([cooperativeId, isPublic])
   @@map("zones")
+}
+
+model FarmerZoneAssignment {
+  farmerProfileId  String
+  zoneId           String
+  createdAt        DateTime      @default(now())
+  farmerProfile    FarmerProfile @relation(fields: [farmerProfileId], references: [id], onDelete: Cascade)
+  zone             Zone          @relation(fields: [zoneId], references: [id], onDelete: Cascade)
+
+  @@id([farmerProfileId, zoneId])
+  @@index([zoneId])
+  @@map("farmer_zone_assignments")
 }
 
 model CropType {

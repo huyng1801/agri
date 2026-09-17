@@ -1,5 +1,7 @@
 import { Type } from 'class-transformer';
 import {
+  ArrayMaxSize,
+  ArrayUnique,
   IsArray,
   IsBoolean,
   IsDate,
@@ -15,6 +17,7 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  Matches,
   Min,
   MinLength,
   ValidateIf,
@@ -141,6 +144,13 @@ export class CreateUserDto {
   @IsOptional()
   @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(100)
+  @ArrayUnique()
+  @IsUUID('all', { each: true })
+  assignedZoneIds?: string[];
 }
 
 export class UpdateUserDto {
@@ -173,6 +183,13 @@ export class UpdateUserDto {
   @IsOptional()
   @IsArray()
   roles?: RoleSlug[];
+
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(100)
+  @ArrayUnique()
+  @IsUUID('all', { each: true })
+  assignedZoneIds?: string[];
 }
 
 export class UpdateRoleDto {
@@ -1167,6 +1184,7 @@ export class CreateHarvestDto {
 
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, { message: 'Đơn vị không được để trống' })
   unit!: string;
 
   @IsOptional()

@@ -28,6 +28,29 @@ type Cooperative = {
   status: string;
 };
 
+type FarmerZone = {
+  id: string;
+  code: string;
+  name: string;
+  areaM2?: string | number | null;
+  status: string;
+};
+
+type FarmerSummary = {
+  assignedZoneCount: number;
+  areaM2: number | null;
+  zonesWithArea: number;
+  treeCount: number;
+  varieties: Array<{ cropTypeName: string; variety: string | null; treeCount: number }>;
+  seasonalProduction: Array<{
+    seasonId: string | null;
+    seasonName: string;
+    harvestCount: number;
+    recordedMassKg: number | null;
+    otherUnits: Array<{ unit: string; quantity: number }>;
+  }>;
+};
+
 type DashboardUser = {
   id: string;
   email: string;
@@ -37,6 +60,8 @@ type DashboardUser = {
   cooperativeId?: string | null;
   cooperative?: { id: string; name: string; code: string } | null;
   roles: RoleSlug[];
+  farmerProfile?: { assignedZoneIds: string[] } | null;
+  farmerSummary?: FarmerSummary | null;
   lastLoginAt?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -50,6 +75,7 @@ type UserForm = {
   role: RoleSlug;
   cooperativeId: string;
   status: UserStatus;
+  assignedZoneIds: string[];
 };
 
 type UsersDashboardMode = 'users' | 'farmers';
@@ -88,6 +114,15 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
     queryFn: () => apiFetch<ListResponse<Cooperative>>('/cooperatives?limit=200&status=ACTIVE'),
     enabled: isSuperAdmin
   });
+  const farmerZones = useQuery({
+    queryKey: ['farmer-zone-options', user?.cooperativeId, form.cooperativeId],
+    queryFn: () => {
+      const params = new URLSearchParams({ limit: '100' });
+      if (isSuperAdmin && form.cooperativeId) params.set('cooperativeId', form.cooperativeId);
+      return apiFetch<ListResponse<FarmerZone>>(`/zones?${params.toString()}`);
+    },
+    enabled: isFarmersMode && formOpen && (!isSuperAdmin || Boolean(form.cooperativeId))
+  });
 
   const userItems = listItems(users.data?.data);
   const roleItems = roleOptions(roles.data?.data, isSuperAdmin, isFarmersMode);
@@ -99,7 +134,7 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
     mutationFn: () => {
       const error = validateForm(form, Boolean(editingId), isSuperAdmin, isFarmersMode);
       if (error) throw new Error(error);
-      const payload = editingId ? updatePayload(form, isSuperAdmin) : createPayload(form, isSuperAdmin);
+      const payload = editingId ? updatePayload(form, isSuperAdmin, isFarmersMode) : createPayload(form, isSuperAdmin, isFarmersMode);
       return editingId
         ? apiFetch<DashboardUser>(`/users/${editingId}`, { method: 'PATCH', body: JSON.stringify(payload) })
         : apiFetch<DashboardUser>('/users', { method: 'POST', body: JSON.stringify(payload) });
@@ -229,11 +264,21 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
                   </Select>
                 </Field>
               )}
+              {isFarmersMode && (
+                <FarmerZoneAssignmentField
+                  zones={listItems(farmerZones.data?.data)}
+                  zoneIds={form.assignedZoneIds}
+                  isLoading={farmerZones.isLoading}
+                  error={farmerZones.isError ? errorMessage(farmerZones.error) : ''}
+                  onRetry={() => farmerZones.refetch()}
+                  onChange={(zoneIds) => update('assignedZoneIds', zoneIds)}
+                />
+              )}
             </div>
 
             {(formError || saveUser.isError) && <div data-testid="toast-error" className="rounded-md bg-rose-50 p-3 text-sm font-semibold text-rose-700">{formError || errorMessage(saveUser.error)}</div>}
             <div className="flex flex-wrap gap-2">
-              <Button type="submit" disabled={saveUser.isPending}>{saveUser.isPending ? 'Đang lưu' : 'Lưu tài khoản'}</Button>
+              <Button type="submit" disabled={saveUser.isPending || (isFarmersMode && (farmerZones.isLoading || farmerZones.isError || (isSuperAdmin && !form.cooperativeId)))}>{saveUser.isPending ? 'Đang lưu' : 'Lưu tài khoản'}</Button>
               <Button type="button" variant="ghost" onClick={() => setForm(emptyForm(isFarmersMode))}>Xóa form</Button>
             </div>
           </form>
@@ -295,6 +340,7 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
                 <Info label="Đăng nhập cuối" value={formatDate(item.lastLoginAt)} />
                 <Info label="Ngày tạo" value={formatDate(item.createdAt)} />
               </div>
+              {isFarmersMode && <FarmerProductionSummary summary={item.farmerSummary} />}
               <div className="mt-4 flex flex-wrap gap-2">
                 <Button type="button" variant="ghost" onClick={() => edit(item)}>
                   <Pencil size={16} aria-hidden="true" />
@@ -334,6 +380,151 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       {children}
     </label>
   );
+}
+
+function FarmerZoneAssignmentField({
+  zones,
+  zoneIds,
+  isLoading,
+  error,
+  onRetry,
+  onChange
+}: {
+  zones: FarmerZone[];
+  zoneIds: string[];
+  isLoading: boolean;
+  error: string;
+  onRetry: () => void;
+  onChange: (zoneIds: string[]) => void;
+}) {
+  return (
+    <fieldset data-testid="farmer-zone-assignment-field" className="rounded-md border border-slate-200 bg-slate-50 p-3 md:col-span-2">
+      <legend className="px-1 text-sm font-semibold text-slate-700">Vùng trồng được phân công</legend>
+      <p className="text-xs leading-5 text-slate-500">
+        Diện tích lấy từ vùng trồng; cây/giống từ hồ sơ cây; sản lượng lấy từ thu hoạch đã gắn mùa vụ. Vùng dùng chung có thể xuất hiện ở nhiều tài khoản.
+      </p>
+      {error ? <div role="alert" className="mt-3 rounded-md bg-rose-50 p-2 text-sm text-rose-700">Không tải được danh sách vùng trồng: {error} <button type="button" className="ml-2 underline" onClick={onRetry}>Thử tải lại</button></div> : null}
+      {isLoading ? <p className="mt-3 text-sm text-slate-500">Đang tải vùng trồng…</p> : null}
+      {!isLoading && !error && zones.length === 0 ? <p className="mt-3 text-sm text-slate-500">HTX chưa có vùng trồng. Tạo vùng trồng trước khi phân công.</p> : null}
+      {!isLoading && !error && zones.length > 0 ? (
+        <div className="mt-3 grid max-h-56 gap-2 overflow-y-auto sm:grid-cols-2">
+          {zones.map((zone) => {
+            const checked = zoneIds.includes(zone.id);
+            const inactive = zone.status !== 'ACTIVE';
+            return (
+              <label key={zone.id} className={cn('flex min-h-12 items-start gap-2 rounded-md border bg-white p-2.5 text-sm', checked ? 'border-leaf/40' : 'border-slate-200')}>
+                <input
+                  data-testid={`farmer-zone-checkbox-${zone.id}`}
+                  type="checkbox"
+                  checked={checked}
+                  disabled={inactive && !checked}
+                  onChange={(event) => onChange(event.target.checked ? [...new Set([...zoneIds, zone.id])] : zoneIds.filter((id) => id !== zone.id))}
+                  className="mt-0.5 h-4 w-4 accent-emerald-700"
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block break-words font-medium text-ink">{zone.name} <span className="text-xs text-slate-500">· {zone.code}</span></span>
+                  <span className="mt-0.5 block text-xs text-slate-500">
+                    {zone.areaM2 === null || zone.areaM2 === undefined ? 'Chưa nhập diện tích' : `${formatHectares(zone.areaM2)} ha`}
+                    {inactive ? ' · Ngừng hoạt động' : ''}
+                  </span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      ) : null}
+    </fieldset>
+  );
+}
+
+function FarmerProductionSummary({ summary }: { summary?: FarmerSummary | null }) {
+  if (!summary) {
+    return <p className="mt-4 rounded-md bg-slate-50 p-3 text-sm text-slate-500">Chưa có hồ sơ sản xuất để tổng hợp.</p>;
+  }
+
+  const area = summary.assignedZoneCount === 0
+    ? 'Chưa gán vùng'
+    : summary.areaM2 === null
+      ? 'Chưa nhập diện tích'
+      : `${formatHectares(summary.areaM2)} ha`;
+
+  return (
+    <section data-testid="farmer-production-summary" className="mt-4 space-y-3 border-t border-slate-200 pt-3">
+      <div>
+        <h3 className="text-sm font-semibold text-ink">Quy mô sản xuất đã ghi nhận</h3>
+        <p className="text-xs text-slate-500">Tổng hợp từ {summary.assignedZoneCount} vùng được phân công; không phải dự báo sản lượng.</p>
+      </div>
+      <div className="grid grid-cols-2 gap-3 text-sm">
+        <Info label="Diện tích vùng" value={area} />
+        <Info label="Cây đã lập hồ sơ" value={`${formatCount(summary.treeCount)} cây`} />
+      </div>
+      {summary.assignedZoneCount > summary.zonesWithArea && summary.assignedZoneCount > 0 ? (
+        <p className="text-xs text-amber-700">Diện tích mới có ở {summary.zonesWithArea}/{summary.assignedZoneCount} vùng được phân công.</p>
+      ) : null}
+      <div>
+        <p className="text-xs font-semibold text-slate-600">Loại cây và giống</p>
+        {summary.varieties.length ? (
+          <>
+            <ul className="mt-1 space-y-1 text-xs text-slate-700">
+              {summary.varieties.slice(0, 3).map((item) => <FarmerVarietyRow key={`${item.cropTypeName}-${item.variety ?? ''}`} item={item} />)}
+            </ul>
+            {summary.varieties.length > 3 ? (
+              <details className="mt-1 text-xs text-slate-600">
+                <summary className="cursor-pointer">Xem thêm {summary.varieties.length - 3} loại cây/giống</summary>
+                <ul className="mt-1 space-y-1">
+                  {summary.varieties.slice(3).map((item) => <FarmerVarietyRow key={`${item.cropTypeName}-${item.variety ?? ''}`} item={item} />)}
+                </ul>
+              </details>
+            ) : null}
+          </>
+        ) : <p className="mt-1 text-xs text-slate-500">Chưa có hồ sơ cây trong các vùng được phân công.</p>}
+      </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-600">Sản lượng thu hoạch theo vụ</p>
+        {summary.seasonalProduction.length ? (
+          <>
+            <ul className="mt-1 space-y-1 text-xs text-slate-700">
+              {summary.seasonalProduction.slice(0, 2).map((season) => <FarmerSeasonRow key={season.seasonId ?? 'no-season'} season={season} />)}
+            </ul>
+            {summary.seasonalProduction.length > 2 ? (
+              <details className="mt-1 text-xs text-slate-600">
+                <summary className="cursor-pointer">Xem thêm {summary.seasonalProduction.length - 2} vụ</summary>
+                <ul className="mt-1 space-y-1">
+                  {summary.seasonalProduction.slice(2).map((season, index) => <FarmerSeasonRow key={`${season.seasonId ?? 'no-season'}-${index}`} season={season} />)}
+                </ul>
+              </details>
+            ) : null}
+          </>
+        ) : <p className="mt-1 text-xs text-slate-500">Chưa ghi nhận thu hoạch.</p>}
+      </div>
+    </section>
+  );
+}
+
+function FarmerVarietyRow({ item }: { item: FarmerSummary['varieties'][number] }) {
+  return <li>{item.cropTypeName}{item.variety ? ` · ${item.variety}` : ' · Chưa rõ giống'}: <span className="font-medium">{formatCount(item.treeCount)} cây</span></li>;
+}
+
+function FarmerSeasonRow({ season }: { season: FarmerSummary['seasonalProduction'][number] }) {
+  const yieldParts = [
+    season.recordedMassKg === null ? null : `${formatNumber(season.recordedMassKg / 1000)} t`,
+    ...season.otherUnits.map((item) => `${formatNumber(item.quantity)} ${item.unit}`),
+    `${formatCount(season.harvestCount)} lần`
+  ].filter((value): value is string => Boolean(value));
+  return <li className="flex flex-wrap justify-between gap-x-2 gap-y-0.5"><span>{season.seasonName}</span><span className="font-medium">{yieldParts.join(' · ')}</span></li>;
+}
+
+function formatHectares(areaM2: number | string) {
+  const area = Number(areaM2);
+  return Number.isFinite(area) ? new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(area / 10_000) : '—';
+}
+
+function formatNumber(value: number) {
+  return new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 2 }).format(value);
+}
+
+function formatCount(value: number) {
+  return new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 }).format(value);
 }
 
 function Metric({ label, value, tone = 'ink' }: { label: string; value: number; tone?: 'ink' | 'leaf' }) {
@@ -379,7 +570,8 @@ function emptyForm(isFarmersMode: boolean): UserForm {
     phone: '',
     role: isFarmersMode ? 'FARMER' : 'MEMBER_HTX',
     cooperativeId: '',
-    status: 'ACTIVE'
+    status: 'ACTIVE',
+    assignedZoneIds: []
   };
 }
 
@@ -391,11 +583,12 @@ function fromUser(item: DashboardUser, isFarmersMode: boolean): UserForm {
     phone: item.phone ?? '',
     role: isFarmersMode ? 'FARMER' : item.roles[0] ?? 'MEMBER_HTX',
     cooperativeId: item.cooperativeId ?? '',
-    status: item.status
+    status: item.status,
+    assignedZoneIds: item.farmerProfile?.assignedZoneIds ?? []
   };
 }
 
-function createPayload(form: UserForm, isSuperAdmin: boolean) {
+function createPayload(form: UserForm, isSuperAdmin: boolean, isFarmersMode: boolean) {
   return {
     fullName: form.fullName.trim(),
     email: form.email.trim().toLowerCase(),
@@ -403,11 +596,12 @@ function createPayload(form: UserForm, isSuperAdmin: boolean) {
     phone: form.phone || undefined,
     role: form.role,
     cooperativeId: isSuperAdmin ? form.cooperativeId || undefined : undefined,
-    status: form.status
+    status: form.status,
+    assignedZoneIds: isFarmersMode ? form.assignedZoneIds : undefined
   };
 }
 
-function updatePayload(form: UserForm, isSuperAdmin: boolean) {
+function updatePayload(form: UserForm, isSuperAdmin: boolean, isFarmersMode: boolean) {
   return {
     fullName: form.fullName.trim(),
     email: form.email.trim().toLowerCase(),
@@ -415,7 +609,8 @@ function updatePayload(form: UserForm, isSuperAdmin: boolean) {
     password: form.password || undefined,
     roles: [form.role],
     cooperativeId: isSuperAdmin && form.cooperativeId ? form.cooperativeId : undefined,
-    status: form.status
+    status: form.status,
+    assignedZoneIds: isFarmersMode ? form.assignedZoneIds : undefined
   };
 }
 

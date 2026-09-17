@@ -25,6 +25,7 @@ test.describe('plant-level traceability screens', () => {
       const path = url.pathname;
       if (path.endsWith('/reports/overview')) return route.fulfill({ json: item({ metrics: [] }) });
       if (path.endsWith('/crop-types')) return route.fulfill({ json: list([{ id: 'crop-1', code: 'XOI', name: 'Xoài', isActive: true }]) });
+      if (path.endsWith('/seasons')) return route.fulfill({ json: list([{ id: 'season-1', code: 'THU-2026', name: 'Vụ Thu 2026', status: 'ACTIVE' }]) });
       if (path.endsWith('/zones')) return route.fulfill({ json: list([{ id: 'zone-1', code: 'VLM-01', name: 'Vườn demo' }]) });
       if (path.endsWith('/files/presign-upload')) return route.fulfill({ json: item({ objectKey: 'trees/tree.jpg', uploadUrl: `${url.origin}/upload/tree.jpg`, method: 'PUT', headers: {}, publicUrl: 'https://cdn.example.test/tree.jpg' }) });
       if (path.endsWith('/files/confirm-upload')) return route.fulfill({ json: item({ id: 'file-1', publicUrl: 'https://cdn.example.test/tree.jpg' }) });
@@ -95,6 +96,23 @@ test.describe('plant-level traceability screens', () => {
     await expect(page.getByRole('status')).toContainText('10.445800, 105.718000');
     await expect(page.getByLabel('Vĩ độ (nội bộ)')).toHaveValue('10.445800');
     await expect(page.getByLabel('Kinh độ (nội bộ)')).toHaveValue('105.718000');
+  });
+
+  test('requires a season and saves harvest with its season id', async ({ page }) => {
+    let sentPayload: Record<string, unknown> | null = null;
+    await page.route('**/api/v1/trees/tree-1/harvests', async (route) => {
+      sentPayload = route.request().postDataJSON() as Record<string, unknown>;
+      await route.fulfill({ json: item({ id: 'harvest-new', treeId: 'tree-1', seasonId: 'season-1', quantity: 1250, unit: 'kg', status: 'RECORDED' }) });
+    });
+
+    await page.goto('/dashboard/harvests');
+    await page.getByLabel('Cây thu hoạch').selectOption('tree-1');
+    await page.getByLabel('Sản lượng').fill('1250');
+    await expect(page.getByRole('button', { name: 'Ghi nhận thu hoạch' })).toBeDisabled();
+    await page.getByTestId('harvest-season-select').selectOption('season-1');
+    await page.getByRole('button', { name: 'Ghi nhận thu hoạch' }).click();
+
+    await expect.poll(() => sentPayload).toMatchObject({ seasonId: 'season-1', quantity: 1250, unit: 'kg' });
   });
 
   test('uploads a tree image before creating the passport', async ({ page }) => {

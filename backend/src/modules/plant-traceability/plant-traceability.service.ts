@@ -667,14 +667,24 @@ export class PlantTraceabilityService {
 
   private async assertFarmerZone(user: AuthUser, zoneId: string | null) {
     if (!user.roles.includes('FARMER')) return;
-    const profile = await this.prisma.farmerProfile.findUnique({ where: { userId: user.id } });
-    const assigned = Array.isArray(profile?.assignedZones) ? profile?.assignedZones.filter((item): item is string => typeof item === 'string') : [];
+    const profile = await this.prisma.farmerProfile.findUnique({
+      where: { userId: user.id },
+      select: { cooperativeId: true, zoneAssignments: { select: { zoneId: true } } }
+    });
+    const assigned = profile?.cooperativeId === user.cooperativeId
+      ? profile.zoneAssignments.map((item) => item.zoneId)
+      : [];
     if (!zoneId || !assigned.includes(zoneId)) throw new ForbiddenException('Dữ liệu nằm ngoài vùng được phân quyền của nông hộ');
   }
 
   private async assignedZoneIds(user: AuthUser) {
-    const profile = await this.prisma.farmerProfile.findUnique({ where: { userId: user.id } });
-    return Array.isArray(profile?.assignedZones) ? profile.assignedZones.filter((item): item is string => typeof item === 'string') : [];
+    const profile = await this.prisma.farmerProfile.findUnique({
+      where: { userId: user.id },
+      select: { cooperativeId: true, zoneAssignments: { select: { zoneId: true } } }
+    });
+    return profile?.cooperativeId === user.cooperativeId
+      ? profile.zoneAssignments.map((item) => item.zoneId)
+      : [];
   }
 
   private async assertPublicReady(type: TraceabilityCodeType, target: CodeTarget) {
