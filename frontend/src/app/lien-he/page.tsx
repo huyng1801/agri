@@ -3,7 +3,7 @@ import { Clock3, Mail, MapPinned, PhoneCall } from 'lucide-react';
 import { PublicContactForm } from '@/components/public-contact-form';
 import { PublicMapPreview } from '@/components/public-map-preview';
 import { PublicImage } from '@/components/public-image';
-import { PublicBreadcrumbTrail, PublicFaqItem, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
+import { PublicBreadcrumbTrail, PublicInfoTile, PublicPageMain, publicContainerClass } from '@/components/public-layout';
 import { PublicShell } from '@/components/public-shell';
 import { cn } from '@/components/ui';
 import { legalEntityProfile } from '@/lib/legal-entity';
@@ -43,10 +43,6 @@ export default async function ContactPage() {
     : isPassport
     ? 'Tìm hiểu định danh nông sản, cấp mã QR truy xuất nguồn gốc hoặc hợp tác triển khai giải pháp Hộ chiếu nông nghiệp.'
     : 'Tìm hiểu sản phẩm, QR truy xuất nguồn gốc hoặc kết nối với hợp tác xã phù hợp với nhu cầu của bạn.';
-  const faqs = !isHtxonline
-    ? siteProfile.faqs.filter((faq) => !/COD|đơn hàng/i.test(`${faq.question} ${faq.answer}`))
-    : siteProfile.faqs;
-
   if (isPassport) {
     return (
       <PublicShell>
@@ -156,14 +152,6 @@ export default async function ContactPage() {
             </div>
           </details>
 
-          {faqs.length > 0 && (
-            <section className="pt-6">
-              <h2 className="text-2xl font-extrabold tracking-tight text-[var(--text-primary)] sm:text-3xl">Câu hỏi thường gặp</h2>
-              <div className="mt-4 grid gap-3 md:grid-cols-2">
-                {faqs.map((faq) => <PublicFaqItem key={faq.question} question={faq.question} answer={faq.answer} />)}
-              </div>
-            </section>
-          )}
         </PublicPageMain>
       </PublicShell>
     );
@@ -342,16 +330,6 @@ export default async function ContactPage() {
           </div>
         </section>
 
-        {faqs.length > 0 && (
-          <section className="pb-[calc(10.5rem+var(--safe-bottom))] pt-6 sm:pb-12">
-            <h2 className="type-h2 text-[1.9rem] sm:text-[2.3rem]">Câu hỏi thường gặp</h2>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
-              {faqs.map((faq) => (
-                <PublicFaqItem key={faq.question} question={faq.question} answer={faq.answer} />
-              ))}
-            </div>
-          </section>
-        )}
       </PublicPageMain>
     </PublicShell>
   );

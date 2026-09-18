@@ -65,14 +65,6 @@ type ListResponse<T> = {
   meta?: Record<string, unknown>;
 };
 
-type UploadPlan = {
-  objectKey: string;
-  uploadUrl: string;
-  method: string;
-  headers: Record<string, string>;
-  publicUrl?: string;
-};
-
 type ProductForm = {
   code: string;
   name: string;
@@ -119,6 +111,7 @@ export default function ProductsPage() {
   const [form, setForm] = useState<ProductForm>(emptyForm);
   const [categoryDraft, setCategoryDraft] = useState({ name: '', slug: '' });
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const products = useQuery({
     queryKey: ['products-dashboard', search],
@@ -190,53 +183,48 @@ export default function ProductsPage() {
   function newProduct() {
     setEditingId(null);
     setForm({ ...emptyForm, code: nextProductCode() });
+    setUploadError('');
     setFormOpen(true);
   }
 
   function edit(product: DashboardProduct) {
     setEditingId(product.id);
     setForm(fromProduct(product));
+    setUploadError('');
     setFormOpen(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   async function uploadImage(file: File) {
+    if (file.size === 0) {
+      setUploadError('Tệp ảnh đang trống. Hãy chọn một ảnh khác.');
+      return;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setUploadError('Chọn ảnh JPG, PNG hoặc WebP.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError('Ảnh vượt quá 10 MB. Hãy chọn ảnh nhẹ hơn rồi thử lại.');
+      return;
+    }
+
     setUploading(true);
+    setUploadError('');
     try {
-      const plan = await apiFetch<UploadPlan>('/files/presign-upload', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName: file.name,
-          mimeType: file.type,
-          sizeBytes: file.size,
-          visibility: 'PUBLIC'
-        })
-      });
-      if (!plan.data.publicUrl) throw new Error('Thiếu R2_PUBLIC_BASE_URL cho ảnh public');
-      const response = await fetch(plan.data.uploadUrl, {
-        method: plan.data.method || 'PUT',
-        headers: plan.data.headers,
-        body: file
-      });
-      if (!response.ok) throw new Error('Không upload được ảnh sản phẩm lên R2');
-      const confirmed = await apiFetch<FileAsset>('/files/confirm-upload', {
-        method: 'POST',
-        body: JSON.stringify({
-          fileName: file.name,
-          mimeType: file.type,
-          sizeBytes: file.size,
-          objectKey: plan.data.objectKey,
-          publicUrl: plan.data.publicUrl,
-          visibility: 'PUBLIC'
-        })
-      });
+      const body = new FormData();
+      body.append('file', file, file.name);
+      const uploaded = await apiFetch<FileAsset>('/files/upload', { method: 'POST', body });
+      const publicUrl = uploaded.data.publicUrl;
+      if (!publicUrl) throw new Error('Ảnh đã tải lên nhưng chưa có đường dẫn công khai.');
       setForm((current) => ({
         ...current,
-        thumbnailFileId: confirmed.data.id,
-        imageUrl: confirmed.data.publicUrl || plan.data.publicUrl || ''
+        thumbnailFileId: uploaded.data.id,
+        imageUrl: publicUrl
       }));
+      setUploadError('');
     } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'Upload thất bại');
+      setUploadError(error instanceof Error ? error.message : 'Không tải được ảnh. Hãy kiểm tra kết nối rồi thử lại.');
     } finally {
       setUploading(false);
     }
@@ -361,19 +349,27 @@ export default function ProductsPage() {
                   <h3 className="font-bold">Ảnh sản phẩm</h3>
                   <div className="aspect-[4/3] overflow-hidden rounded-md bg-white">
                     {form.imageUrl ? (
-                      <img data-testid="product-image-preview" src={form.imageUrl} alt="" className="h-full w-full object-cover" />
+                      <img data-testid="product-image-preview" src={form.imageUrl} alt={form.name ? 'Ảnh sản phẩm: ' + form.name : 'Ảnh xem trước sản phẩm'} className="h-full w-full object-cover" />
                     ) : (
-                      <div className="grid h-full place-items-center text-slate-400">
-                        <ImagePlus size={36} aria-hidden="true" />
+                      <div className="grid h-full content-center justify-items-center gap-2 px-4 text-center text-slate-500">
+                        <ImagePlus size={34} aria-hidden="true" className="text-slate-400" />
+                        <p className="text-sm font-semibold">Chưa có ảnh sản phẩm</p>
+                        <p className="text-xs leading-5">JPG, PNG hoặc WebP · tối đa 10 MB</p>
                       </div>
                     )}
                   </div>
-                  <Input data-testid="product-image-input" value={form.imageUrl} readOnly placeholder="Tải ảnh lên R2 để tạo URL ảnh công khai" className="bg-slate-100 text-slate-600" />
-                  <label className="inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint">
+                  {form.imageUrl ? (
+                    <details className="rounded-md border border-slate-200 bg-white px-3 py-2">
+                      <summary className="cursor-pointer text-xs font-semibold text-slate-600">Thông tin URL ảnh</summary>
+                      <Input data-testid="product-image-input" value={form.imageUrl} readOnly className="mt-2 bg-slate-50 text-xs text-slate-600" aria-label="URL ảnh sản phẩm" />
+                    </details>
+                  ) : null}
+                  <label data-testid="product-image-upload-button" className={cn('inline-flex min-h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-ink hover:bg-mint', uploading && 'cursor-wait opacity-60')}>
                     <ImagePlus size={18} aria-hidden="true" />
-                    {uploading ? 'Đang tải ảnh lên' : 'Tải ảnh lên R2'}
-                    <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" onChange={(event) => event.target.files?.[0] && uploadImage(event.target.files[0])} />
+                    {uploading ? 'Đang tải ảnh lên...' : form.imageUrl ? 'Thay ảnh sản phẩm' : 'Tải ảnh lên R2'}
+                    <input className="sr-only" type="file" accept="image/jpeg,image/png,image/webp" disabled={uploading} onChange={(event) => { const file = event.target.files?.[0]; event.currentTarget.value = ''; if (file) void uploadImage(file); }} />
                   </label>
+                  {uploadError ? <p data-testid="product-image-upload-error" role="alert" className="rounded-md bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{uploadError}</p> : null}
                 </Panel>
 
                 <Panel className="space-y-3 bg-slate-50 shadow-none">
@@ -395,15 +391,15 @@ export default function ProductsPage() {
             )}
 
             <div className="sticky bottom-20 z-20 flex flex-wrap gap-2 rounded-md border border-slate-200 bg-white p-2 shadow-soft lg:bottom-4">
-              <Button data-testid="product-save-draft-button" type="button" variant="ghost" onClick={() => saveProduct.mutate('DRAFT')} disabled={saveProduct.isPending}>
+              <Button data-testid="product-save-draft-button" type="button" variant="ghost" onClick={() => saveProduct.mutate('DRAFT')} disabled={saveProduct.isPending || uploading}>
                 <Save size={18} aria-hidden="true" />
                 Lưu nháp
               </Button>
-              <Button data-testid="product-publish-button" type="button" onClick={() => saveProduct.mutate('PUBLISHED')} disabled={saveProduct.isPending}>
+              <Button data-testid="product-publish-button" type="button" onClick={() => saveProduct.mutate('PUBLISHED')} disabled={saveProduct.isPending || uploading}>
                 <Save size={18} aria-hidden="true" />
                 Đăng công khai
               </Button>
-              <Button type="submit" disabled={saveProduct.isPending}>
+              <Button type="submit" disabled={saveProduct.isPending || uploading}>
                 {saveProduct.isPending ? 'Đang lưu' : 'Lưu'}
               </Button>
             </div>

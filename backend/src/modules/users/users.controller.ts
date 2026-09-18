@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { RoleSlug } from '@prisma/client';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { Roles } from '../../common/decorators/roles.decorator';
-import { CreateUserDto, UpdateUserDto } from '../../common/dto';
+import { CreateFarmerVoiceRecordingDto, CreateUserDto, UpdateUserDto } from '../../common/dto';
 import { AuthUser } from '../../common/types';
+import { FilesService } from '../files/files.service';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -13,7 +15,10 @@ import { UsersService } from './users.service';
 @Roles(RoleSlug.SUPER_ADMIN, RoleSlug.ADMIN_HTX)
 @Controller('users')
 export class UsersController {
-  constructor(private readonly users: UsersService) {}
+  constructor(
+    private readonly users: UsersService,
+    private readonly files: FilesService
+  ) {}
 
   @Get()
   @Permissions('users.read')
@@ -31,6 +36,34 @@ export class UsersController {
   @Permissions('users.read')
   get(@CurrentUser() user: AuthUser, @Param('id') id: string) {
     return this.users.get(user, id);
+  }
+
+  @Get(':id/voice-recordings')
+  @Permissions('users.read')
+  listVoiceRecordings(@CurrentUser() user: AuthUser, @Param('id') id: string) {
+    return this.files.listFarmerVoiceRecordings(user, id);
+  }
+
+  @Post(':id/voice-recordings')
+  @Permissions('users.update')
+  @UseInterceptors(FileInterceptor('audio', { limits: { fileSize: 20 * 1024 * 1024 } }))
+  createVoiceRecording(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Body() dto: CreateFarmerVoiceRecordingDto,
+    @UploadedFile() file?: UploadedVoiceRecording
+  ) {
+    return this.files.createFarmerVoiceRecording(user, id, dto, file);
+  }
+
+  @Delete(':id/voice-recordings/:recordingId')
+  @Permissions('users.update')
+  deleteVoiceRecording(
+    @CurrentUser() user: AuthUser,
+    @Param('id') id: string,
+    @Param('recordingId') recordingId: string
+  ) {
+    return this.files.deleteFarmerVoiceRecording(user, id, recordingId);
   }
 
   @Post()
@@ -51,3 +84,10 @@ export class UsersController {
     return this.users.remove(user, id);
   }
 }
+
+type UploadedVoiceRecording = {
+  originalname: string;
+  mimetype: string;
+  size: number;
+  buffer: Buffer;
+};

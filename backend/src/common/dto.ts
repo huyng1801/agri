@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayUnique,
@@ -17,6 +17,8 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  Max,
+  MaxLength,
   Matches,
   Min,
   MinLength,
@@ -1393,6 +1395,23 @@ export class ConfirmUploadDto extends PresignUploadDto {
   @IsOptional()
   @IsString()
   publicUrl?: string;
+}
+
+export class CreateFarmerVoiceRecordingDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(120)
+  title?: string;
+
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(600)
+  durationSeconds!: number;
+
+  @Transform(({ value }) => value === true || value === 'true')
+  @IsBoolean()
+  consentConfirmed!: boolean;
 }
 
 export class CreateNotificationDto {

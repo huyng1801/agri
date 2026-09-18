@@ -222,6 +222,7 @@ model User {
   roles               UserRole[]
   memberships         CooperativeMember[]
   farmerProfile       FarmerProfile?
+  recordedFarmerVoices FarmerVoiceRecording[] @relation("FarmerVoiceRecorder")
   createdProducts     Product[]           @relation("ProductCreator")
   assignedProducts    Product[]           @relation("ProductFarmer")
   createdTrees        Tree[]              @relation("TreeCreator")
@@ -334,6 +335,7 @@ model FarmerProfile {
   user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   cooperative   Cooperative  @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   zoneAssignments FarmerZoneAssignment[]
+  voiceRecordings FarmerVoiceRecording[]
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
@@ -876,11 +878,30 @@ model FileAsset {
   cooperative   Cooperative?   @relation(fields: [cooperativeId], references: [id], onDelete: Cascade)
   productThumbnails Product[]  @relation("ProductThumbnail")
   certifications  Certification[] @relation("CertificationFile")
+  farmerVoiceRecording FarmerVoiceRecording?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
   @@index([cooperativeId])
   @@map("files")
+}
+
+model FarmerVoiceRecording {
+  id                String        @id @default(uuid())
+  farmerProfileId   String
+  fileAssetId       String        @unique
+  recordedById      String?
+  title             String?       @db.VarChar(120)
+  durationSeconds   Int
+  consentedAt       DateTime      @default(now())
+  farmerProfile     FarmerProfile @relation(fields: [farmerProfileId], references: [id], onDelete: Cascade)
+  fileAsset         FileAsset     @relation(fields: [fileAssetId], references: [id], onDelete: Cascade)
+  recordedBy        User?         @relation("FarmerVoiceRecorder", fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt         DateTime      @default(now())
+
+  @@index([farmerProfileId, createdAt])
+  @@index([recordedById])
+  @@map("farmer_voice_recordings")
 }
 
 model Order {

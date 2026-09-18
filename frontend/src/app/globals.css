@@ -1375,6 +1375,10 @@ button {
   }
 }
 
+html[data-public-mobile-menu-open="true"] nav[data-testid="public-bottom-nav"] {
+  display: none !important;
+}
+
 .news-body {
   color: var(--text-secondary);
   font-size: 1.08rem;
@@ -1382,11 +1386,22 @@ button {
   font-weight: 400;
 }
 
-/* Article copy stays regular even when pasted HTML contains <strong>, inline
-   font-weight styles, or legacy emphasis from Word/Google Docs. */
+/* Article copy defaults to regular. Only formatting applied deliberately in
+   the editor is allowed to create bold text. */
 .news-body :where(*),
 .news-editor-content :where(*) {
   font-weight: 400 !important;
+}
+
+.news-body :where(strong[data-news-user-bold="true"], b[data-news-user-bold="true"]),
+.news-editor-content :where(strong[data-news-user-bold="true"], b[data-news-user-bold="true"]) {
+  font-weight: 700 !important;
+}
+
+.public-news-detail h1,
+.news-body h2,
+.news-body h3 {
+  text-wrap: balance;
 }
 
 .news-body > * + * {

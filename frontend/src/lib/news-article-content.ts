@@ -48,6 +48,26 @@ export function withoutGeneratedPrimaryLink(html: string) {
   });
 }
 
+export function withoutDuplicateCoverImage(html: string, coverImageUrl: string) {
+  const coverUrl = normalizeImageUrl(coverImageUrl);
+  if (!coverUrl) return html;
+
+  const isCoverImage = (imageTag: string) => {
+    const source = imageTag.match(/\bsrc\s*=\s*(["'])(.*?)\1/i)?.[2] ?? '';
+    return normalizeImageUrl(source) === coverUrl;
+  };
+
+  const withoutCoverFigures = html.replace(/<figure\b([^>]*)>([\s\S]*?)<\/figure>/gi, (figure, attributes: string, content: string) => {
+    const remainingContent = content.replace(/<img\b[^>]*>/gi, (imageTag) => isCoverImage(imageTag) ? '' : imageTag);
+    if (remainingContent === content) return figure;
+    return /<img\b/i.test(remainingContent) ? `<figure${attributes}>${remainingContent}</figure>` : '';
+  });
+
+  return withoutCoverFigures
+    .replace(/<img\b[^>]*>/gi, (imageTag) => isCoverImage(imageTag) ? '' : imageTag)
+    .replace(/<(p|figure)\b[^>]*>(?:\s|&nbsp;|&#160;|<br\s*\/?>)*<\/\1>/gi, '');
+}
+
 export function visibleArticleAuthor(author: string | null | undefined, siteName: string) {
   const name = author?.trim();
   if (!name || /^super\s*admin$/i.test(name)) return null;
@@ -87,4 +107,16 @@ function normalizeBrandName(value: string) {
 
 function slugify(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 72);
+}
+
+function normalizeImageUrl(value: string) {
+  const cleaned = value.trim().replace(/&amp;/gi, '&');
+  if (!cleaned) return '';
+  try {
+    const url = new URL(cleaned, 'https://news-image.local');
+    url.hash = '';
+    return url.href;
+  } catch {
+    return cleaned;
+  }
 }

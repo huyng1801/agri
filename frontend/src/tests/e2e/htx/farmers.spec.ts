@@ -90,6 +90,103 @@ test.describe('htx farmers dashboard', () => {
     expect(mutations[1].body).toMatchObject({ fullName: 'Nông dân E2E đã sửa', assignedZoneIds: ['zone-1'] });
     expect(mutations[2].body).toMatchObject({ status: 'LOCKED' });
   });
+
+  test('@htx farmer voice recording requires consent, can preview, upload, and playback saved notes', async ({ page }) => {
+    const { htxUrl } = baseUrls();
+    let savedRecordings: Array<Record<string, unknown>> = [];
+    let uploadCount = 0;
+
+    await page.addInitScript(() => {
+      class FakeMediaRecorder {
+        static isTypeSupported() { return true; }
+        state: 'inactive' | 'recording' = 'inactive';
+        mimeType = 'audio/webm';
+        ondataavailable: ((event: { data: Blob }) => void) | null = null;
+        onstop: (() => void) | null = null;
+        onerror: (() => void) | null = null;
+        start() { this.state = 'recording'; }
+        stop() {
+          this.state = 'inactive';
+          this.ondataavailable?.({ data: new Blob(['test voice recording'], { type: this.mimeType }) });
+          this.onstop?.();
+        }
+      }
+      Object.defineProperty(window, 'MediaRecorder', { configurable: true, value: FakeMediaRecorder });
+      Object.defineProperty(navigator, 'mediaDevices', {
+        configurable: true,
+        value: { getUserMedia: async () => ({ getTracks: () => [{ stop() {} }] }) }
+      });
+    });
+
+    await page.route('**/api/v1/users/farmer-voice/voice-recordings**', async (route) => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill(jsonEnvelope(savedRecordings));
+        return;
+      }
+      if (route.request().method() === 'POST') {
+        const contentType = route.request().headers()['content-type'] || '';
+        const multipart = route.request().postDataBuffer()?.toString() || '';
+        expect(contentType).toContain('multipart/form-data');
+        expect(multipart).toContain('consentConfirmed');
+        expect(multipart).toContain('true');
+        expect(multipart).toContain('Trao đổi kế hoạch vụ xoài');
+        uploadCount += 1;
+        savedRecordings = [{
+          id: 'voice-note-1',
+          title: 'Trao đổi kế hoạch vụ xoài',
+          durationSeconds: 1,
+          consentedAt: '2026-09-18T05:00:00.000Z',
+          createdAt: '2026-09-18T05:00:00.000Z',
+          downloadUrl: 'https://storage.example.test/private-voice.webm?signature=test',
+          recordedBy: { id: 'e2e-htx-admin', fullName: 'Admin HTX E2E' }
+        }];
+        await route.fulfill(jsonEnvelope(savedRecordings[0]));
+        return;
+      }
+      await route.fulfill(jsonEnvelope({ deleted: true }));
+    });
+
+    await page.route('**/api/v1/users/roles', async (route) => {
+      await route.fulfill(jsonEnvelope([{ id: 'role-farmer', slug: 'FARMER', name: 'Nông dân' }]));
+    });
+    await page.route('**/api/v1/users?**', async (route) => {
+      await route.fulfill(jsonEnvelope({
+        data: [{
+          id: 'farmer-voice',
+          email: 'farmer-voice@example.com',
+          fullName: 'Nông dân ghi âm',
+          phone: null,
+          status: 'ACTIVE',
+          roles: ['FARMER'],
+          cooperativeId: 'e2e-cooperative-id',
+          cooperative: { id: 'e2e-cooperative-id', name: 'HTX mẫu', code: 'HTX-MAU' },
+          farmerProfile: { assignedZoneIds: [] },
+          farmerSummary: null,
+          createdAt: '2026-09-01T00:00:00.000Z',
+          updatedAt: '2026-09-01T00:00:00.000Z'
+        }],
+        meta: { page: 1, limit: 100, total: 1 }
+      }));
+    });
+
+    await seedAuthenticatedSession(page, htxAdminUser);
+    await page.goto(`${htxUrl}/dashboard/farmers`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByTestId('farmer-record-button-farmer-voice')).toBeVisible({ timeout: 45_000 });
+    await page.getByTestId('farmer-record-button-farmer-voice').click();
+    await expect(page.getByRole('dialog')).toContainText('không xuất hiện trên QR cá nhân');
+    await expect(page.getByTestId('farmer-recording-start')).toBeDisabled();
+    await page.getByTestId('farmer-recording-consent').check();
+    await expect(page.getByTestId('farmer-recording-start')).toBeEnabled();
+    await page.getByTestId('farmer-recording-start').click();
+    await expect(page.getByTestId('farmer-recording-stop')).toBeVisible();
+    await page.getByTestId('farmer-recording-stop').click();
+    await expect(page.getByLabel('Nghe thử bản ghi âm')).toBeVisible();
+    await page.getByPlaceholder('Ví dụ: Trao đổi kế hoạch vụ xoài').fill('Trao đổi kế hoạch vụ xoài');
+    await page.getByTestId('farmer-recording-save').click();
+    await expect(page.getByText('Trao đổi kế hoạch vụ xoài')).toBeVisible();
+    await expect.poll(() => uploadCount).toBe(1);
+    await expect(page.getByLabel('Nghe Trao đổi kế hoạch vụ xoài')).toBeVisible();
+  });
 });
 
 function jsonEnvelope(data: unknown) {

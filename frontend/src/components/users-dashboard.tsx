@@ -1,10 +1,11 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Download, ExternalLink, Lock, Pencil, Plus, QrCode, RefreshCcw, Search, Shield, Trash2, Unlock, UserRound, Users, X } from 'lucide-react';
+import { Download, ExternalLink, Lock, Mic, Pencil, Plus, QrCode, RefreshCcw, Search, Shield, Trash2, Unlock, UserRound, Users, X } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { apiFetch, currentUser } from '@/lib/api';
 import { formatDate, statusTone } from '@/lib/format';
+import { FarmerVoiceRecordings } from './farmer-voice-recordings';
 import { Badge, Button, Input, Panel, Select, cn } from './ui';
 
 type RoleSlug = 'SUPER_ADMIN' | 'ADMIN_HTX' | 'MEMBER_HTX' | 'FARMER' | 'BUYER';
@@ -111,6 +112,7 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
   const [form, setForm] = useState<UserForm>(emptyForm(isFarmersMode));
   const [formError, setFormError] = useState('');
   const [qrFarmerId, setQrFarmerId] = useState<string | null>(null);
+  const [voiceFarmerId, setVoiceFarmerId] = useState<string | null>(null);
 
   const users = useQuery({
     queryKey: ['users-dashboard', mode, search, roleFilter, statusFilter],
@@ -364,6 +366,12 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
                     QR cá nhân
                   </Button>
                 )}
+                {isFarmersMode && (
+                  <Button data-testid={`farmer-record-button-${item.id}`} type="button" variant="ghost" onClick={() => setVoiceFarmerId(item.id)}>
+                    <Mic size={16} aria-hidden="true" />
+                    Ghi âm
+                  </Button>
+                )}
                 <Button type="button" variant="ghost" onClick={() => edit(item)}>
                   <Pencil size={16} aria-hidden="true" />
                   Sửa
@@ -433,6 +441,18 @@ export function UsersDashboard({ mode = 'users' }: { mode?: UsersDashboardMode }
           </section>
         </div>
       ) : null}
+
+      {voiceFarmerId ? (() => {
+        const voiceFarmer = userItems.find((item) => item.id === voiceFarmerId);
+        return voiceFarmer ? (
+          <FarmerVoiceRecordings
+            farmerId={voiceFarmer.id}
+            farmerName={voiceFarmer.fullName}
+            canRecord={voiceFarmer.status === 'ACTIVE'}
+            onClose={() => setVoiceFarmerId(null)}
+          />
+        ) : null;
+      })() : null}
     </div>
   );
 }

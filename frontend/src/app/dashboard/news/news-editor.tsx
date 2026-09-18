@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   ArrowLeft,
+  Bold,
   Code2,
   ChevronUp,
   ChevronDown,
@@ -237,6 +238,7 @@ const emptyForm: NewsForm = {
 const editorSnippets: Array<[LucideIcon, string, string]> = [
   [Heading2, '<h2>Tiêu đề H2</h2>', 'Chèn tiêu đề H2'],
   [Heading3, '<h3>Tiêu đề H3</h3>', 'Chèn tiêu đề H3'],
+  [Bold, '<strong data-news-user-bold="true">chữ đậm</strong>', 'Bôi đậm phần đã chọn'],
   [Italic, '<em>chữ nghiêng</em>', 'Chữ nghiêng'],
   [LinkIcon, '<a href="https://agripassport.com">liên kết</a>', 'Chèn liên kết'],
   [List, '<ul><li>Mục</li></ul>', 'Danh sách không thứ tự'],
@@ -639,6 +641,16 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   function syncVisualEditor() {
     const editor = visualEditorRef.current;
     if (!editor) return;
+    editor.querySelectorAll<HTMLElement>('b, strong').forEach((element) => {
+      if (element.tagName.toLowerCase() === 'b') {
+        const strong = document.createElement('strong');
+        while (element.firstChild) strong.append(element.firstChild);
+        element.replaceWith(strong);
+        strong.setAttribute('data-news-user-bold', 'true');
+        return;
+      }
+      element.setAttribute('data-news-user-bold', 'true');
+    });
     updateVisualEditorHtml(editor.innerHTML);
   }
 
@@ -733,6 +745,21 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
   }
 
   function insertHtml(snippet: string) {
+    if (snippet.startsWith('<strong')) {
+      if (editorMode === 'visual') {
+        insertVisualBold();
+      } else {
+        const field = bodyRef.current;
+        const selectedText = field && field.selectionEnd > field.selectionStart
+          ? field.value.slice(field.selectionStart, field.selectionEnd)
+          : '';
+        insertHtmlAtSelection(selectedText
+          ? `<strong data-news-user-bold="true">${selectedText}</strong>`
+          : snippet);
+      }
+      return;
+    }
+
     if (editorMode === 'visual') {
       insertVisualSnippet(snippet);
       return;
@@ -841,6 +868,14 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     syncVisualEditor();
   }
 
+  function insertVisualBold() {
+    focusVisualEditor();
+    const prepared = prepareVisualSelection();
+    if (!prepared) return;
+    document.execCommand('bold');
+    syncVisualEditor();
+  }
+
   function insertVisualList(command: 'insertUnorderedList' | 'insertOrderedList', text: string) {
     focusVisualEditor();
     const prepared = prepareVisualSelection();
@@ -866,6 +901,10 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
     }
     if (snippet.startsWith('<em')) {
       insertVisualInline('chữ nghiêng');
+      return;
+    }
+    if (snippet.startsWith('<strong')) {
+      insertVisualBold();
       return;
     }
     if (snippet.startsWith('<a ')) {
@@ -2036,9 +2075,11 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                       key={`simple-${snippet}`}
                       type="button"
                       className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
+                      onMouseDown={(event) => event.preventDefault()}
                       onClick={() => insertHtml(snippet)}
                       aria-label={label}
                       title={label}
+                      data-testid={snippet.startsWith('<strong') ? 'news-bold-button' : undefined}
                     >
                       <Icon size={18} aria-hidden="true" />
                     </button>
@@ -2062,9 +2103,11 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                       key={snippet}
                       type="button"
                       className="grid h-11 w-11 place-items-center rounded-md border border-slate-200 bg-white text-slate-700 hover:bg-mint"
+                      onMouseDown={(event) => event.preventDefault()}
                       onClick={() => insertHtml(snippet)}
                       aria-label={label}
                       title={label}
+                      data-testid={snippet.startsWith('<strong') ? 'news-bold-button' : undefined}
                     >
                       <Icon size={18} aria-hidden="true" />
                     </button>
@@ -2227,6 +2270,7 @@ export default function NewsEditorPage({ routeArticleId = null, routeSiteKey = '
                     onKeyDown={(event) => {
                       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'b') {
                         event.preventDefault();
+                        insertVisualBold();
                       }
                     }}
                     onPaste={(event) => void handleVisualPaste(event)}
@@ -4172,7 +4216,16 @@ function detectImportedFormatting(value: string) {
 function sanitizeImportedHtml(input: string, options: { stripImportedBold?: boolean } = {}) {
   if (!input.trim()) return '';
 
-  let html = input
+  const preservedBold: string[] = [];
+  let html = options.stripImportedBold
+    ? input.replace(/<strong\b(?=[^>]*\bdata-news-user-bold=(?:"true"|'true'))[^>]*>([\s\S]*?)<\/strong>/gi, (_match, content: string) => {
+      const token = '\uE000news-user-bold-' + preservedBold.length + '\uE001';
+      preservedBold.push('<strong data-news-user-bold="true">' + content + '</strong>');
+      return token;
+    })
+    : input;
+
+  html = html
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<style[\s\S]*?<\/style>/gi, '')
     .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -4217,6 +4270,8 @@ function sanitizeImportedHtml(input: string, options: { stripImportedBold?: bool
   if (options.stripImportedBold) {
     html = html.replace(/<\/?(?:b|strong)\b[^>]*>/gi, '');
   }
+
+  html = html.replace(/\uE000news-user-bold-(\d+)\uE001/g, (_match, index: string) => preservedBold[Number(index)] ?? '');
 
   if (!/<[a-z][\s\S]*>/i.test(html)) {
     return plainTextToEditorHtml(stripHtml(html));

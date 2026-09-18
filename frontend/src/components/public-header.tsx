@@ -57,6 +57,14 @@ export function PublicHeader({
   const navigation = getPublicNavigation(siteKey);
   const logoVariant = isInternal ? 'htx-wordmark' : isPassport ? 'passport-wordmark' : 'agri-wordmark';
 
+  function setMobileNavigationOpen(open: boolean) {
+    setMobileMenuOpen(open);
+    if (typeof document !== 'undefined') {
+      if (open) document.documentElement.dataset.publicMobileMenuOpen = 'true';
+      else delete document.documentElement.dataset.publicMobileMenuOpen;
+    }
+  }
+
   const navCta =
     isInternal
       ? { href: '/login', label: 'Quản trị HTX' }
@@ -70,18 +78,22 @@ export function PublicHeader({
     setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
     if (previousPathnameRef.current !== pathname) {
       previousPathnameRef.current = pathname;
-      setMobileMenuOpen(false);
+      setMobileNavigationOpen(false);
       setPassportMenuOpen(false);
       setMobilePassportMenuOpen(false);
     }
   }, [pathname]);
+
+  useEffect(() => () => {
+    delete document.documentElement.dataset.publicMobileMenuOpen;
+  }, []);
 
   // Dismiss open navigation layers with Escape.
   useEffect(() => {
     if (!mobileMenuOpen && !passportMenuOpen) return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        setMobileMenuOpen(false);
+        setMobileNavigationOpen(false);
         setPassportMenuOpen(false);
         setMobilePassportMenuOpen(false);
       }
@@ -292,7 +304,7 @@ export function PublicHeader({
 
             <button
               type="button"
-              onClick={() => setMobileMenuOpen((open) => !open)}
+              onClick={() => setMobileNavigationOpen(!mobileMenuOpen)}
               aria-expanded={mobileMenuOpen}
               aria-label={mobileMenuOpen ? 'Đóng menu' : 'Mở menu điều hướng'}
               className="inline-flex h-11 w-11 min-h-11 min-w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-xs transition hover:bg-slate-50 active:scale-95 touch-action-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
@@ -315,7 +327,7 @@ export function PublicHeader({
               {/* Dimmed Backdrop */}
               <div
                 className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity duration-200"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => setMobileNavigationOpen(false)}
                 aria-hidden="true"
               />
 
@@ -330,12 +342,12 @@ export function PublicHeader({
               >
                 {/* Top Bar inside Menu */}
                 <div className="flex h-14 items-center justify-between border-b border-slate-100 px-4 shrink-0">
-                  <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center">
+                  <Link href="/" onClick={() => setMobileNavigationOpen(false)} className="flex items-center">
                     <PublicLogo size={56} variant={logoVariant} className="h-14 w-auto max-w-[10rem]" />
                   </Link>
                   <button
                     type="button"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => setMobileNavigationOpen(false)}
                     aria-label="Đóng menu"
                     className="grid h-11 w-11 min-h-11 min-w-11 place-items-center rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition active:scale-95 touch-action-manipulation"
                   >
@@ -356,7 +368,7 @@ export function PublicHeader({
                           <Link
                             key={entry.href}
                             href={entry.href}
-                            onClick={() => setMobileMenuOpen(false)}
+                            onClick={() => setMobileNavigationOpen(false)}
                             className={cn(
                               'flex min-h-[48px] items-center justify-between rounded-xl px-3 text-sm font-semibold transition active:scale-[0.99] touch-action-manipulation',
                               active
@@ -381,7 +393,7 @@ export function PublicHeader({
                           >
                             <Link
                               href={entry.href}
-                              onClick={() => setMobileMenuOpen(false)}
+                              onClick={() => setMobileNavigationOpen(false)}
                               className="flex min-h-[48px] flex-1 items-center font-semibold"
                               aria-current={active ? 'page' : undefined}
                             >
@@ -407,7 +419,7 @@ export function PublicHeader({
                                   <Link
                                     key={item.href}
                                     href={item.href}
-                                    onClick={() => setMobileMenuOpen(false)}
+                                    onClick={() => setMobileNavigationOpen(false)}
                                     className={cn(
                                       'flex min-h-[48px] items-center gap-3 rounded-xl px-3 text-sm transition active:scale-[0.99] touch-action-manipulation',
                                       itemActive
@@ -433,7 +445,7 @@ export function PublicHeader({
                 <div className="border-t border-slate-100 p-4 space-y-2.5 bg-slate-50/70 shrink-0">
                   <Link
                     href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={() => setMobileNavigationOpen(false)}
                    className="flex h-11 min-h-[44px] w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-xs font-bold text-slate-800 shadow-xs transition hover:border-[var(--brand-primary)] active:scale-95 touch-action-manipulation"
                   >
                     <LogIn size={15} className="text-[var(--brand-primary)]" aria-hidden="true" />

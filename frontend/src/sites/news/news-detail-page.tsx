@@ -10,7 +10,7 @@ import { formatDate } from '@/lib/format';
 import { getPublicSiteProfile } from '@/lib/public-site';
 import { brandizeSiteText } from '@/lib/page-metadata';
 import { getRequestAbsoluteUrl } from '@/lib/request-site';
-import { groupNewsHeadings, newsHeadingLabel, prepareNewsBody, visibleArticleAuthor, withoutContactBlock, withoutGeneratedPrimaryLink } from '@/lib/news-article-content';
+import { groupNewsHeadings, newsHeadingLabel, prepareNewsBody, visibleArticleAuthor, withoutContactBlock, withoutDuplicateCoverImage, withoutGeneratedPrimaryLink } from '@/lib/news-article-content';
 import { Badge, Panel } from '@/components/ui';
 import type { SiteNewsConfig } from './news-page';
 
@@ -89,7 +89,8 @@ export async function SiteNewsDetailPage({ params, config }: SiteNewsDetailPageP
   const canonical = article.canonicalUrl || (await getRequestAbsoluteUrl(`/tin-tuc/${article.slug}`));
   const logoUrl = await getRequestAbsoluteUrl('/logo.png');
   const image = articleImage(article);
-  const preparedBody = prepareNewsBody(withoutGeneratedPrimaryLink(withoutContactBlock(article.bodyHtml)));
+  const articleCoverUrl = article.coverImageUrl || image;
+  const preparedBody = prepareNewsBody(withoutDuplicateCoverImage(withoutGeneratedPrimaryLink(withoutContactBlock(article.bodyHtml)), articleCoverUrl));
   const tocSections = groupNewsHeadings(preparedBody.headings);
   const authorName = visibleArticleAuthor(article.author?.fullName, siteProfile.appName);
   const jsonLd = {
@@ -122,7 +123,7 @@ export async function SiteNewsDetailPage({ params, config }: SiteNewsDetailPageP
               <span className="inline-flex items-center gap-1 tracking-normal"><Clock3 size={14} />{readingTime(article.bodyHtml)} phút đọc</span>
               <span className="inline-flex items-center gap-1 tracking-normal"><Eye size={14} />{article.viewCount} lượt xem</span>
             </div>
-            <h1 className="mt-4 text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
+            <h1 className="mt-4 text-balance text-[1.9rem] font-extrabold leading-[1.04] tracking-[-0.04em] text-ink sm:text-[3.25rem]">{article.title}</h1>
             <p className="mx-auto mt-4 max-w-3xl text-[1rem] leading-7 text-slate-600 sm:text-[1.12rem] sm:leading-8">{article.excerpt || article.seoDescription || brandizeSiteText(config.cardDescription, config.siteKey)}</p>
             {authorName && <p className="mt-3 text-sm font-medium text-slate-500">{authorName}</p>}
           </header>

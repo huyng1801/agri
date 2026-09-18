@@ -208,7 +208,7 @@ export function PublicContactForm({ sourcePath = '/lien-he', variant = 'default'
 
         <div className="grid gap-2.5">
           <p className="text-sm font-semibold text-ink">Nhu cầu hỗ trợ</p>
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="grid items-start gap-2 sm:grid-cols-2">
             {visibleHelpTopics.map((item) => {
               const selected = topic === item.id;
               return (

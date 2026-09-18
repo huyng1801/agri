@@ -23,9 +23,9 @@ test.describe('Passport public navigation and copy', () => {
     const menu = header.getByRole('menu', { name: 'Các trang trong Tra cứu' });
     await expect(menu).toBeVisible();
     await expect(menu.getByRole('menuitem')).toHaveCount(3);
-    await expect(menu.getByRole('menuitem', { name: /Tra cứu sản phẩm/ })).toBeVisible();
-    await expect(menu.getByRole('menuitem', { name: /Hộ chiếu cây/ })).toBeVisible();
-    await expect(menu.getByRole('menuitem', { name: /Sản phẩm có QR/ })).toBeVisible();
+    await expect(menu.getByRole('menuitem', { name: /Tra cứu sản phẩm/ })).toHaveAttribute('href', '/truy-xuat');
+    await expect(menu.getByRole('menuitem', { name: /Hộ chiếu cây/ })).toHaveAttribute('href', '/cay');
+    await expect(menu.getByRole('menuitem', { name: /Sản phẩm có QR/ })).toHaveAttribute('href', '/san-pham?hasQr=true');
   });
 
   test('uses the same ordered destinations in the mobile drawer', async ({ page }) => {
@@ -33,8 +33,11 @@ test.describe('Passport public navigation and copy', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const header = page.locator('header');
+    const bottomNav = page.getByTestId('public-bottom-nav');
+    await expect(bottomNav).toBeVisible();
     await header.getByRole('button', { name: 'Mở menu điều hướng' }).click();
     const drawer = page.getByRole('dialog', { name: 'Menu điều hướng' });
+    await expect(bottomNav).toBeHidden();
     const nav = drawer.getByTestId('passport-mobile-nav');
 
     await expect(nav).toBeVisible();
@@ -53,6 +56,11 @@ test.describe('Passport public navigation and copy', () => {
     await expect(nav.getByRole('link', { name: 'Tra cứu sản phẩm', exact: true })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Hộ chiếu cây', exact: true })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Sản phẩm có QR', exact: true })).toBeVisible();
+    await expect(nav.getByRole('link', { name: 'Tra cứu sản phẩm', exact: true })).toHaveAttribute('href', '/truy-xuat');
+    await expect(nav.getByRole('link', { name: 'Hộ chiếu cây', exact: true })).toHaveAttribute('href', '/cay');
+    await expect(nav.getByRole('link', { name: 'Sản phẩm có QR', exact: true })).toHaveAttribute('href', '/san-pham?hasQr=true');
+    await header.getByRole('button', { name: 'Đóng menu' }).click();
+    await expect(bottomNav).toBeVisible();
   });
 
   test('keeps the mobile bottom bar focused on buyer and lookup tasks', async ({ page }) => {
@@ -108,7 +116,23 @@ test.describe('Passport public navigation and copy', () => {
       expect(bodyText).not.toContain('Cách Agripassport hoạt động');
       expect(bodyText).not.toContain('HỘ CHIẾU NÔNG NGHIỆP');
       expect(bodyText).toContain(path === '/gioi-thieu' ? 'Từ dữ liệu sản xuất đến hồ sơ nông sản minh bạch' : 'Mỗi cây, mỗi lô hàng, một hồ sơ rõ ràng');
+      if (path === '/gioi-thieu') {
+        await expect(page.getByTestId('passport-data-readiness')).toBeVisible();
+        expect(bodyText).not.toContain('Từ vùng trồng đến hồ sơ QR');
+      }
     }
+  });
+
+  test('keeps contact focused on the support form and FAQs on their own page', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/lien-he', { waitUntil: 'domcontentloaded' });
+
+    await expect(page.locator('main').getByRole('heading', { name: 'Câu hỏi thường gặp' })).toHaveCount(0);
+    await expect(page.getByText('Nhu cầu hỗ trợ', { exact: true })).toBeVisible();
+    await expect(page.getByRole('radio')).toHaveCount(4);
+
+    await page.goto('/cau-hoi-thuong-gap', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('main').getByRole('heading', { name: 'Câu hỏi thường gặp' })).toBeVisible();
   });
 
   test('keeps the cooperative directory on the Passport brand surface', async ({ page }) => {

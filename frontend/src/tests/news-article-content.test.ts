@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groupNewsHeadings, newsHeadingLabel, prepareNewsBody, visibleArticleAuthor, withoutGeneratedPrimaryLink } from '@/lib/news-article-content';
+import { groupNewsHeadings, newsHeadingLabel, prepareNewsBody, visibleArticleAuthor, withoutDuplicateCoverImage, withoutGeneratedPrimaryLink } from '@/lib/news-article-content';
 
 describe('public news article content', () => {
   it('removes the generated product CTA while preserving reader-authored links', () => {
@@ -19,6 +19,23 @@ describe('public news article content', () => {
     const html = '<p><a href="/san-pham?search=xoai&amp;loai=my">Xem thêm sản phẩm liên quan &quot;xoài Mỹ&quot;</a></p>';
 
     expect(withoutGeneratedPrimaryLink(html)).toBe('');
+  });
+
+  it('keeps the cover image outside the article body and preserves other images', () => {
+    const html = [
+      '<p>Mở đầu bài viết.</p>',
+      '<figure><img src="https://cdn.example.com/cover.jpg" alt="Ảnh bìa"><figcaption>Ảnh bìa</figcaption></figure>',
+      '<p><img src="https://cdn.example.com/body.jpg" alt="Ảnh trong bài"></p>',
+      '<img src="https://cdn.example.com/cover.jpg#preview" alt="Ảnh bìa lặp lại">'
+    ].join('');
+
+    expect(withoutDuplicateCoverImage(html, 'https://cdn.example.com/cover.jpg'))
+      .toBe('<p>Mở đầu bài viết.</p><p><img src="https://cdn.example.com/body.jpg" alt="Ảnh trong bài"></p>');
+  });
+
+  it('does not remove article images when there is no matching cover', () => {
+    const html = '<figure><img src="/media/body.jpg" alt="Ảnh nội dung"></figure>';
+    expect(withoutDuplicateCoverImage(html, '/media/cover.jpg')).toBe(html);
   });
 
   it('does not show an admin or site brand as a person author', () => {

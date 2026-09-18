@@ -907,6 +907,7 @@ test.describe('admin CRUD forms', () => {
   test('@htx @form product image upload flow completes before cleanup', async ({ page }) => {
     const { htxUrl } = baseUrls();
     const actions: string[] = [];
+    let uploadContentType = '';
     let product = productFixture('product-seed', 'Sản phẩm seed');
     await page.route('**/api/v1/products**', async (route) => {
       const request = route.request();
@@ -922,25 +923,23 @@ test.describe('admin CRUD forms', () => {
     });
     await page.route('**/api/v1/zones?*', async (route) => await route.fulfill(jsonEnvelope({ data: [], meta: { total: 0 } })));
     await page.route('**/api/v1/users?*', async (route) => await route.fulfill(jsonEnvelope({ data: [], meta: { total: 0 } })));
-    await page.route('**/api/v1/files/presign-upload', async (route) => {
-      actions.push('PRESIGN');
-      await route.fulfill(jsonEnvelope({ bucket: 'e2e', objectKey: 'e2e/product.png', uploadUrl: 'http://127.0.0.1:3000/e2e-upload', method: 'PUT', headers: {}, publicUrl: 'https://cdn.example.com/e2e/product.png' }));
-    });
-    await page.route('http://127.0.0.1:3000/e2e-upload', async (route) => {
-      actions.push('PUT');
-      await route.fulfill({ status: 200, body: '' });
-    });
-    await page.route('**/api/v1/files/confirm-upload', async (route) => {
-      actions.push('CONFIRM');
+    await page.route('**/api/v1/files/upload', async (route) => {
+      actions.push('UPLOAD');
+      uploadContentType = route.request().headers()['content-type'] || '';
       await route.fulfill(jsonEnvelope({ id: 'file-e2e', objectKey: 'e2e/product.png', publicUrl: 'https://cdn.example.com/e2e/product.png' }));
     });
     await seedAuthenticatedSession(page, htxAdminUser);
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(`${htxUrl}/dashboard/products`, { waitUntil: 'domcontentloaded' });
     await expect(page.getByTestId('page-title')).toContainText('Sản phẩm', { timeout: 45_000 });
     await page.getByTestId('product-create-button').click();
-    await page.locator('input[type="file"]').setInputFiles({ name: 'e2e-product.png', mimeType: 'image/png', buffer: Buffer.from('fake-png') });
-    await expect.poll(() => actions.includes('CONFIRM')).toBe(true);
+    await expect(page.getByText('Chưa có ảnh sản phẩm')).toBeVisible();
+    await page.getByTestId('product-image-upload-button').locator('input[type="file"]').setInputFiles({ name: 'e2e-product.png', mimeType: 'image/png', buffer: Buffer.from('fake-png') });
+    await expect.poll(() => actions.includes('UPLOAD')).toBe(true);
+    expect(uploadContentType).toMatch(/^multipart\/form-data; boundary=/);
     await expect(page.getByTestId('product-image-input')).toHaveValue('https://cdn.example.com/e2e/product.png');
+    await expect(page.getByTestId('product-image-preview')).toHaveAttribute('src', 'https://cdn.example.com/e2e/product.png');
+    await expect(page.getByTestId('product-image-upload-error')).toHaveCount(0);
     await page.getByTestId('product-code-input').fill('E2E-UPLOAD');
     await page.getByTestId('product-name-input').fill('E2E Product Upload');
     await page.getByTestId('product-price-input').fill('99000');
@@ -948,7 +947,7 @@ test.describe('admin CRUD forms', () => {
     await expect.poll(() => actions.includes('POST')).toBe(true);
     await page.getByRole('button', { name: 'Ẩn', exact: true }).click();
     await expect.poll(() => actions.includes('DELETE')).toBe(true);
-    expect(actions.slice(0, 3)).toEqual(['PRESIGN', 'PUT', 'CONFIRM']);
+    expect(actions).toEqual(['UPLOAD', 'POST', 'DELETE']);
   });
 
   test('@htx @form @crud certification create edit and cleanup', async ({ page }) => {
