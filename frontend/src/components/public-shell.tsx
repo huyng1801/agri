@@ -5,7 +5,7 @@ import { FloatingContactClient } from './public-site-support';
 import { getRequestPublicSiteKey } from '@/lib/request-site';
 import { getPublicSiteProfile } from '@/lib/public-site';
 
-export async function PublicShell({ children }: { children: React.ReactNode }) {
+export async function PublicShell({ children, hasQrQuery = false }: { children: React.ReactNode; hasQrQuery?: boolean }) {
   const siteKey = await getRequestPublicSiteKey();
   const profile = await getPublicSiteProfile(siteKey);
 
@@ -17,10 +17,10 @@ export async function PublicShell({ children }: { children: React.ReactNode }) {
       >
         Bỏ qua đến nội dung chính
       </a>
-      <PublicHeader appName={profile.appName} siteKey={siteKey} />
+      <PublicHeader appName={profile.appName} siteKey={siteKey} hasQrQuery={hasQrQuery} />
       {children}
       <FloatingContactClient siteKey={siteKey} profile={profile} />
-      <PublicBottomNav siteKey={siteKey} />
+      <PublicBottomNav siteKey={siteKey} hasQrQuery={hasQrQuery} />
       <PublicFooter siteKey={siteKey} profile={profile} />
     </div>
   );

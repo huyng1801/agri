@@ -32,13 +32,14 @@ function isNavigationEntryActive(pathname: string, hasQrQuery: boolean, entry: P
 
 export function PublicHeader({
   appName = 'Hộ chiếu nông nghiệp',
-  siteKey = 'passport'
+  siteKey = 'passport',
+  hasQrQuery = false
 }: {
   appName?: string;
   siteKey?: PublicSiteKey;
+  hasQrQuery?: boolean;
 }) {
   const pathname = usePathname();
-  const [hasQrQuery, setHasQrQuery] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [passportMenuOpen, setPassportMenuOpen] = useState(false);
   const [mobilePassportMenuOpen, setMobilePassportMenuOpen] = useState(false);
@@ -75,7 +76,6 @@ export function PublicHeader({
   const CtaIcon = isInternal ? Briefcase : isPassport ? QrCode : LogIn;
 
   useEffect(() => {
-    setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
     if (previousPathnameRef.current !== pathname) {
       previousPathnameRef.current = pathname;
       setMobileNavigationOpen(false);

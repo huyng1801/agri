@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
 import { BriefcaseBusiness, Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingBag, Store } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
 import { getPublicMobileNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
@@ -64,15 +63,10 @@ function shouldHideBottomNav(pathname: string): boolean {
   return false;
 }
 
-export function PublicBottomNav({ siteKey = 'agripassport' }: { siteKey?: PublicSiteKey }) {
+export function PublicBottomNav({ siteKey = 'agripassport', hasQrQuery = false }: { siteKey?: PublicSiteKey; hasQrQuery?: boolean }) {
   const pathname = usePathname();
-  const [hasQrQuery, setHasQrQuery] = useState(false);
   const isHiddenContextually = shouldHideBottomNav(pathname);
   const navigation = getPublicMobileNavigation(siteKey);
-
-  useEffect(() => {
-    setHasQrQuery(new URLSearchParams(window.location.search).get('hasQr') === 'true');
-  }, [pathname]);
 
   if (isHiddenContextually) return null;
 

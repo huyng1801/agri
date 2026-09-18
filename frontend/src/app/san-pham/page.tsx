@@ -144,7 +144,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       ).slice(0, 10);
 
   return (
-    <PublicShell>
+    <PublicShell hasQrQuery={filters.hasQr === 'true'}>
       <PublicPageMain className="public-product-directory py-8 sm:py-12">
         {/* Page Header */}
         <div className="public-directory-heading border-b border-[var(--border)] pb-6 mb-8">

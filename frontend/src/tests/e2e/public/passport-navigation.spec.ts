@@ -28,6 +28,33 @@ test.describe('Passport public navigation and copy', () => {
     await expect(menu.getByRole('menuitem', { name: /Sản phẩm có QR/ })).toHaveAttribute('href', '/san-pham?hasQr=true');
   });
 
+  test('keeps the active lookup menu in sync when only the QR query changes', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto('/san-pham?hasQr=true', { waitUntil: 'domcontentloaded' });
+
+    const header = page.locator('header');
+    const lookupLink = header.getByRole('link', { name: 'Tra cứu', exact: true });
+    await expect(lookupLink).toHaveAttribute('aria-current', 'page');
+
+    await page.getByRole('link', { name: 'Xóa lọc' }).click();
+    await expect(page).toHaveURL(/\/san-pham$/);
+    await expect(lookupLink).not.toHaveAttribute('aria-current', 'page');
+
+    await header.getByRole('button', { name: 'Mở menu Tra cứu' }).click();
+    const menu = header.getByRole('menu', { name: 'Các trang trong Tra cứu' });
+    const qrProductsLink = menu.getByRole('menuitem', { name: /Sản phẩm có QR/ });
+    await expect(qrProductsLink).not.toHaveAttribute('aria-current', 'page');
+    await qrProductsLink.click();
+
+    await expect(page).toHaveURL(/\/san-pham\?hasQr=true$/);
+    await expect(lookupLink).toHaveAttribute('aria-current', 'page');
+
+    await header.getByRole('button', { name: 'Mở menu Tra cứu' }).click();
+    await expect(
+      header.getByRole('menu', { name: 'Các trang trong Tra cứu' }).getByRole('menuitem', { name: /Sản phẩm có QR/ })
+    ).toHaveAttribute('aria-current', 'page');
+  });
+
   test('uses the same ordered destinations in the mobile drawer', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
