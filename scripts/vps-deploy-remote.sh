@@ -25,8 +25,9 @@ echo "=== Rebuild and start containers cleanly ==="
 docker compose -f docker-compose.prod.yml --env-file .env.production build backend frontend
 docker compose -f docker-compose.prod.yml --env-file .env.production up -d --force-recreate frontend backend
 
-echo "=== Reload Nginx ==="
-docker exec agri_nginx nginx -s reload
+echo "=== Recreate and validate Nginx ==="
+docker compose -f docker-compose.prod.yml --env-file .env.production up -d --force-recreate nginx
+docker exec agri_nginx nginx -t
 
 echo "=== Run migrations & seed ==="
 docker exec agri_backend npx prisma migrate deploy
