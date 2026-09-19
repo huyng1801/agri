@@ -13,6 +13,15 @@ type FarmerSummary = {
   zonesWithArea: number;
   treeCount: number;
   varieties: Array<{ cropTypeName: string; variety: string | null; treeCount: number }>;
+  certifications: Array<{
+    id: string;
+    name: string;
+    issuer: string | null;
+    issuedAt: string | null;
+    expiresAt: string | null;
+    isPublic: boolean;
+    zoneName: string | null;
+  }>;
   seasonalProduction: Array<{
     seasonId: string | null;
     seasonName: string;
@@ -117,6 +126,30 @@ export default async function PublicFarmerPage({ params }: PageProps) {
         </section>
 
         <section className={cn(publicCardClass, 'mt-5 p-5 sm:p-7')}>
+          <div className="flex items-end justify-between gap-3 border-b border-[var(--border)] pb-4">
+            <div><p className="text-xs font-semibold uppercase tracking-[.12em] text-[var(--brand-primary)]">Minh bạch vùng trồng</p><h2 className="mt-1 text-xl font-bold text-[var(--text-primary)]">Chứng nhận công khai</h2></div>
+            <span className="rounded-full bg-[var(--brand-primary-subtle)] px-3 py-1.5 text-xs font-semibold text-[var(--brand-primary)]">{summary?.certifications.length ?? 0} chứng nhận</span>
+          </div>
+          {summary?.certifications.length ? (
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {summary.certifications.map((certification) => (
+                <li key={certification.id} className="rounded-xl border border-[var(--border)] bg-[var(--surface-muted)] p-4">
+                  <div className="flex items-start gap-3">
+                    <BadgeCheck size={20} className="mt-0.5 shrink-0 text-[var(--brand-primary)]" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-[var(--text-primary)]">{certification.name}</h3>
+                      <p className="mt-1 text-sm leading-6 text-[var(--text-secondary)]">
+                        {[certification.issuer ? `Cấp bởi ${certification.issuer}` : null, certification.issuedAt ? `Ngày cấp ${formatPublicDate(certification.issuedAt)}` : null, certification.expiresAt ? `Hạn ${formatPublicDate(certification.expiresAt)}` : 'Không thời hạn', certification.zoneName ? `Vùng ${certification.zoneName}` : null].filter(Boolean).join(' · ')}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : <p className="mt-4 rounded-xl bg-[var(--surface-muted)] p-4 text-sm text-[var(--text-secondary)]">Chưa có chứng nhận vùng trồng được HTX cho phép công khai.</p>}
+        </section>
+
+        <section className={cn(publicCardClass, 'mt-5 p-5 sm:p-7')}>
           <div className="border-b border-[var(--border)] pb-4"><p className="text-xs font-semibold uppercase tracking-[.12em] text-[var(--brand-primary)]">Theo mùa vụ</p><h2 className="mt-1 text-xl font-bold text-[var(--text-primary)]">Sản lượng đã ghi nhận</h2></div>
           {summary?.seasonalProduction.length ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -155,4 +188,9 @@ function formatArea(areaM2: number | null) {
 
 function formatNumber(value: number, maximumFractionDigits = 0) {
   return new Intl.NumberFormat('vi-VN', { maximumFractionDigits }).format(value);
+}
+
+function formatPublicDate(value: string) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '—' : new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium' }).format(date);
 }

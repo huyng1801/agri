@@ -9,7 +9,7 @@ import { isSuperAdmin, requireTenant } from '../../common/utils/tenant';
 import { AuditLogsService } from '../audit-logs/audit-logs.service';
 import { PlanLimitsService } from '../../common/services/plan-limits.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { FarmerSummary, summarizeFarmers } from './farmer-summary';
+import { FarmerCertificationInput, FarmerSummary, summarizeFarmers } from './farmer-summary';
 
 const HTX_ASSIGNABLE_ROLES: RoleSlug[] = [RoleSlug.MEMBER_HTX, RoleSlug.FARMER, RoleSlug.BUYER];
 const ROLES_REQUIRING_COOPERATIVE: RoleSlug[] = [RoleSlug.ADMIN_HTX, RoleSlug.MEMBER_HTX, RoleSlug.FARMER];
@@ -374,7 +374,7 @@ export class UsersService {
       : assignments;
     if (!visibleZoneIds.length) return summarizeFarmers(visibleAssignments, zones, [], []);
 
-    const [treeGroups, harvestGroups] = await Promise.all([
+    const [treeGroups, harvestGroups, certificationRows] = await Promise.all([
       this.prisma.tree.groupBy({
         by: ['zoneId', 'cropTypeId', 'variety', 'status'],
         where: {
@@ -406,7 +406,25 @@ export class UsersService {
           AND tree."zoneId" IN (${Prisma.join(visibleZoneIds)})
           ${publicOnly ? Prisma.sql`AND tree."publicVerified" = TRUE` : Prisma.empty}
         GROUP BY tree."zoneId", harvest."seasonId", season."name", season."startDate", harvest."unit"
-      `)
+      `),
+      this.prisma.certification.findMany({
+        where: {
+          cooperativeId: { in: cooperativeIds },
+          zoneId: { in: visibleZoneIds },
+          ...(publicOnly ? { isPublic: true } : {})
+        },
+        select: {
+          id: true,
+          zoneId: true,
+          name: true,
+          issuer: true,
+          issuedAt: true,
+          expiresAt: true,
+          isPublic: true,
+          zone: { select: { name: true } }
+        },
+        orderBy: [{ name: 'asc' }, { createdAt: 'desc' }]
+      })
     ]);
 
     const cropTypeIds = [...new Set(treeGroups.map((item) => item.cropTypeId))];
@@ -423,7 +441,18 @@ export class UsersService {
       treeCount: item._count._all
     }));
 
-    return summarizeFarmers(visibleAssignments, zones, treeAggregates, harvestGroups);
+    const certifications: FarmerCertificationInput[] = certificationRows.map((item) => ({
+      id: item.id,
+      zoneId: item.zoneId,
+      name: item.name,
+      issuer: item.issuer,
+      issuedAt: item.issuedAt,
+      expiresAt: item.expiresAt,
+      isPublic: item.isPublic,
+      zoneName: item.zone?.name ?? null
+    }));
+
+    return summarizeFarmers(visibleAssignments, zones, treeAggregates, harvestGroups, certifications);
   }
 
   private serialize(

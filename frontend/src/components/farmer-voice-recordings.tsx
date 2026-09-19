@@ -5,11 +5,12 @@ import { Mic, Square, Trash2, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { apiFetch } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { Button, Input } from './ui';
+import { Button, Input, Textarea } from './ui';
 
 type FarmerVoiceRecording = {
   id: string;
   title: string | null;
+  transcript: string | null;
   durationSeconds: number;
   consentedAt: string;
   createdAt: string;
@@ -20,6 +21,34 @@ type FarmerVoiceRecording = {
 const RECORDING_LIMIT_SECONDS = 600;
 const MAX_RECORDING_BYTES = 18 * 1024 * 1024;
 const MIME_PREFERENCES = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/ogg'];
+
+type SpeechRecognitionResultLike = {
+  isFinal: boolean;
+  [index: number]: { transcript: string };
+};
+
+type SpeechRecognitionEventLike = {
+  resultIndex?: number;
+  results: ArrayLike<SpeechRecognitionResultLike>;
+};
+
+type SpeechRecognitionLike = {
+  lang: string;
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: { error?: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+type SpeechRecognitionWindow = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
 
 export function FarmerVoiceRecordings({
   farmerId,
@@ -40,8 +69,14 @@ export function FarmerVoiceRecordings({
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const [recordError, setRecordError] = useState('');
+  const [transcript, setTranscript] = useState('');
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [speechError, setSpeechError] = useState('');
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
+  const speechRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const recordingRef = useRef(false);
+  const finalTranscriptRef = useRef('');
   const chunksRef = useRef<Blob[]>([]);
   const startedAtRef = useRef(0);
   const timerRef = useRef<number | null>(null);
@@ -57,6 +92,7 @@ export function FarmerVoiceRecordings({
       const payload = new FormData();
       payload.append('audio', audioFile, audioFile.name);
       payload.append('title', title.trim());
+      payload.append('transcript', transcript.trim());
       payload.append('durationSeconds', String(Math.max(1, elapsedSeconds)));
       payload.append('consentConfirmed', 'true');
       return apiFetch<FarmerVoiceRecording>(`/users/${encodeURIComponent(farmerId)}/voice-recordings`, {
@@ -67,6 +103,8 @@ export function FarmerVoiceRecordings({
     onSuccess: async () => {
       setAudioFile(null);
       setTitle('');
+      setTranscript('');
+      finalTranscriptRef.current = '';
       setElapsedSeconds(0);
       setConsentConfirmed(false);
       await queryClient.invalidateQueries({ queryKey: ['farmer-voice-recordings', farmerId] });
@@ -82,6 +120,11 @@ export function FarmerVoiceRecordings({
   });
 
   useEffect(() => {
+    const speechWindow = window as SpeechRecognitionWindow;
+    setSpeechSupported(Boolean(speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition));
+  }, []);
+
+  useEffect(() => {
     if (!audioFile) {
       setPreviewUrl('');
       return;
@@ -93,13 +136,74 @@ export function FarmerVoiceRecordings({
 
   useEffect(() => () => {
     if (timerRef.current !== null) window.clearInterval(timerRef.current);
+    recordingRef.current = false;
+    speechRecognitionRef.current?.stop();
+    speechRecognitionRef.current = null;
     if (mediaRecorderRef.current?.state === 'recording') mediaRecorderRef.current.stop();
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
   }, []);
 
+  function startSpeechRecognition() {
+    const speechWindow = window as SpeechRecognitionWindow;
+    const Recognition = speechWindow.SpeechRecognition || speechWindow.webkitSpeechRecognition;
+    if (!Recognition) return;
+
+    const recognition = new Recognition();
+    recognition.lang = 'vi-VN';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = (event) => {
+      let interim = '';
+      const startIndex = event.resultIndex ?? 0;
+      for (let index = startIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        const text = result?.[0]?.transcript?.trim();
+        if (!text) continue;
+        if (result.isFinal) {
+          finalTranscriptRef.current = [finalTranscriptRef.current, text].filter(Boolean).join(' ');
+        } else {
+          interim = [interim, text].filter(Boolean).join(' ');
+        }
+      }
+      setTranscript([finalTranscriptRef.current, interim].filter(Boolean).join(' '));
+    };
+    recognition.onerror = (event) => {
+      setSpeechError(event.error === 'not-allowed'
+        ? 'Trình duyệt chưa cho phép nhận dạng giọng nói; bạn vẫn có thể nhập nội dung bên dưới.'
+        : 'Không nhận dạng được giọng nói; bạn vẫn có thể nhập hoặc sửa nội dung bên dưới.');
+    };
+    recognition.onend = () => {
+      if (!recordingRef.current) return;
+      try {
+        recognition.start();
+      } catch {
+        // Một số trình duyệt báo đang khởi động khi tự nối lại; không làm gián đoạn file âm thanh.
+      }
+    };
+    speechRecognitionRef.current = recognition;
+    try {
+      recognition.start();
+    } catch {
+      speechRecognitionRef.current = null;
+      setSpeechError('Không bật được nhận dạng giọng nói; bạn vẫn có thể nhập hoặc sửa nội dung bên dưới.');
+    }
+  }
+
+  function stopSpeechRecognition() {
+    const recognition = speechRecognitionRef.current;
+    speechRecognitionRef.current = null;
+    try {
+      recognition?.stop();
+    } catch {
+      // Recognition may already have stopped after a browser permission change.
+    }
+  }
+
   function stopRecording() {
     if (timerRef.current !== null) window.clearInterval(timerRef.current);
     timerRef.current = null;
+    recordingRef.current = false;
+    stopSpeechRecognition();
     const recorder = mediaRecorderRef.current;
     if (recorder?.state === 'recording') recorder.stop();
     mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
@@ -110,6 +214,9 @@ export function FarmerVoiceRecordings({
   async function startRecording() {
     setRecordError('');
     setAudioFile(null);
+    setTranscript('');
+    finalTranscriptRef.current = '';
+    setSpeechError('');
     setElapsedSeconds(0);
     if (!consentConfirmed) {
       setRecordError('Vui lòng xác nhận đã thông báo và được nông dân đồng ý ghi âm.');
@@ -147,13 +254,17 @@ export function FarmerVoiceRecordings({
       };
       startedAtRef.current = Date.now();
       recorder.start(1000);
+      recordingRef.current = true;
       setRecording(true);
+      startSpeechRecognition();
       timerRef.current = window.setInterval(() => {
         const seconds = Math.min(RECORDING_LIMIT_SECONDS, Math.floor((Date.now() - startedAtRef.current) / 1000));
         setElapsedSeconds(seconds);
         if (seconds >= RECORDING_LIMIT_SECONDS) stopRecording();
       }, 500);
     } catch (error) {
+      recordingRef.current = false;
+      stopSpeechRecognition();
       mediaStreamRef.current?.getTracks().forEach((track) => track.stop());
       mediaStreamRef.current = null;
       setRecordError(error instanceof Error && error.name === 'NotAllowedError'
@@ -194,6 +305,7 @@ export function FarmerVoiceRecordings({
               />
               <span>Tôi đã thông báo cho nông dân và được họ đồng ý ghi âm cuộc trao đổi này.</span>
             </label>
+            {speechSupported ? <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">Nhận dạng tiếng Việt do trình duyệt cung cấp và có thể dùng dịch vụ xử lý của trình duyệt. Chỉ bật khi nông dân đã đồng ý; bạn có thể xóa transcript trước khi lưu.</p> : null}
             <div className="flex flex-wrap items-center gap-2">
               {!recording ? (
                 <Button data-testid="farmer-recording-start" type="button" onClick={() => void startRecording()} disabled={!consentConfirmed || saveRecording.isPending}>
@@ -212,12 +324,25 @@ export function FarmerVoiceRecordings({
                   Tên bản ghi <span className="font-normal text-slate-500">(không bắt buộc)</span>
                   <Input value={title} maxLength={120} onChange={(event) => setTitle(event.target.value)} placeholder="Ví dụ: Trao đổi kế hoạch vụ xoài" />
                 </label>
+                <label className="block space-y-1 text-sm font-medium text-slate-700">
+                  Nội dung chuyển thành văn bản <span className="font-normal text-slate-500">(có thể sửa)</span>
+                  <Textarea
+                    data-testid="farmer-recording-transcript"
+                    rows={4}
+                    maxLength={20000}
+                    value={transcript}
+                    onChange={(event) => setTranscript(event.target.value)}
+                    placeholder={speechSupported ? 'Hệ thống sẽ nhận dạng tiếng Việt khi đang ghi…' : 'Trình duyệt chưa hỗ trợ tự nhận dạng; nhập nội dung tại đây nếu cần.'}
+                  />
+                  <span className="block text-xs font-normal leading-5 text-slate-500">{speechSupported ? 'Nhận dạng tiếng Việt chạy song song với file âm thanh; hãy rà lại trước khi lưu.' : 'File âm thanh vẫn được lưu bình thường, kể cả khi không có nhận dạng tự động.'}</span>
+                </label>
+                {speechError ? <p role="status" className="text-xs leading-5 text-amber-700">{speechError}</p> : null}
                 {previewUrl ? <audio controls preload="metadata" src={previewUrl} className="w-full" aria-label="Nghe thử bản ghi âm" /> : null}
                 <div className="flex flex-wrap gap-2">
                   <Button data-testid="farmer-recording-save" type="button" onClick={() => saveRecording.mutate()} disabled={saveRecording.isPending}>
                     {saveRecording.isPending ? 'Đang lưu bản ghi…' : 'Lưu vào hồ sơ'}
                   </Button>
-                  <Button type="button" variant="ghost" onClick={() => { setAudioFile(null); setElapsedSeconds(0); saveRecording.reset(); }} disabled={saveRecording.isPending}>Ghi lại</Button>
+                  <Button type="button" variant="ghost" onClick={() => { setAudioFile(null); setTranscript(''); finalTranscriptRef.current = ''; setElapsedSeconds(0); setSpeechError(''); saveRecording.reset(); }} disabled={saveRecording.isPending}>Ghi lại</Button>
                 </div>
               </div>
             ) : null}
@@ -256,6 +381,7 @@ export function FarmerVoiceRecordings({
                     </Button>
                   </div>
                   <audio controls preload="none" src={item.downloadUrl} className="mt-3 w-full" aria-label={`Nghe ${item.title || 'bản ghi âm'}`} />
+                  {item.transcript ? <p data-testid={`farmer-recording-transcript-${item.id}`} className="mt-3 whitespace-pre-wrap rounded-md bg-slate-50 p-2.5 text-sm leading-6 text-slate-700"><span className="font-medium text-ink">Nội dung:</span> {item.transcript}</p> : null}
                 </li>
               ))}
             </ul>

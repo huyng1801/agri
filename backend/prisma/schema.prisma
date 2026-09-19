@@ -892,6 +892,7 @@ model FarmerVoiceRecording {
   fileAssetId       String        @unique
   recordedById      String?
   title             String?       @db.VarChar(120)
+  transcript        String?       @db.Text
   durationSeconds   Int
   consentedAt       DateTime      @default(now())
   farmerProfile     FarmerProfile @relation(fields: [farmerProfileId], references: [id], onDelete: Cascade)

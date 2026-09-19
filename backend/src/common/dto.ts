@@ -1403,6 +1403,11 @@ export class CreateFarmerVoiceRecordingDto {
   @MaxLength(120)
   title?: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(20000)
+  transcript?: string;
+
   @Type(() => Number)
   @IsInt()
   @Min(1)

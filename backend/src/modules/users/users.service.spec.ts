@@ -110,6 +110,7 @@ describe('UsersService', () => {
         }])
       },
       cropType: { findMany: jest.fn().mockResolvedValue([{ id: 'crop-1', name: 'Xoài' }]) },
+      certification: { findMany: jest.fn().mockResolvedValue([]) },
       $queryRaw: jest.fn().mockResolvedValue([{
         zoneId: 'zone-1',
         seasonId: 'season-1',
@@ -185,6 +186,18 @@ describe('UsersService', () => {
         }])
       },
       cropType: { findMany: jest.fn().mockResolvedValue([{ id: 'crop-1', name: 'Xoài' }]) },
+      certification: {
+        findMany: jest.fn().mockResolvedValue([{
+          id: 'cert-public-1',
+          zoneId: 'public-zone',
+          name: 'VietGAP',
+          issuer: 'Tổ chức chứng nhận',
+          issuedAt: new Date('2026-02-01T00:00:00.000Z'),
+          expiresAt: new Date('2027-02-01T00:00:00.000Z'),
+          isPublic: true,
+          zone: { name: 'Vườn công khai' }
+        }])
+      },
       $queryRaw: jest.fn().mockResolvedValue([{
         zoneId: 'public-zone',
         seasonId: 'season-1',
@@ -209,6 +222,7 @@ describe('UsersService', () => {
         areaM2: 12500,
         treeCount: 7,
         varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 7 }],
+        certifications: [expect.objectContaining({ id: 'cert-public-1', name: 'VietGAP', zoneName: 'Vườn công khai', isPublic: true })],
         seasonalProduction: [expect.objectContaining({ recordedMassKg: 2000, harvestCount: 2 })]
       })
     });

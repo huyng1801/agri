@@ -59,7 +59,7 @@ test.describe('Mobile-First UX Hardening Test Matrix', () => {
     await expect(navItems).toHaveCount(5);
 
     // 1. Verify the mobile priority subset remains stable and discoverable.
-    const expectedLabels = ['Trang chủ', 'Sản phẩm', 'Truy xuất QR', 'Tin tức', 'Liên hệ'];
+    const expectedLabels = ['Trang chủ', 'Sản phẩm', 'Tra cứu', 'Tin tức', 'Liên hệ'];
     const expectedHrefs = ['/', '/san-pham', '/truy-xuat', '/tin-tuc', '/lien-he'];
     for (let i = 0; i < expectedLabels.length; i++) {
       await expect(navItems.nth(i)).toContainText(expectedLabels[i]);

@@ -219,6 +219,7 @@ export class FilesService {
             fileAssetId: fileAsset.id,
             recordedById: user.id,
             title: dto.title?.trim() || null,
+            transcript: dto.transcript?.trim() || null,
             durationSeconds: dto.durationSeconds,
             consentedAt: new Date()
           },
@@ -345,6 +346,7 @@ export class FilesService {
   private async serializeVoiceRecording(record: {
     id: string;
     title: string | null;
+    transcript: string | null;
     durationSeconds: number;
     consentedAt: Date;
     createdAt: Date;
@@ -359,6 +361,7 @@ export class FilesService {
     return {
       id: record.id,
       title: record.title,
+      transcript: record.transcript,
       durationSeconds: record.durationSeconds,
       consentedAt: record.consentedAt,
       createdAt: record.createdAt,

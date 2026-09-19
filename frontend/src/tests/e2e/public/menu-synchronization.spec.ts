@@ -5,7 +5,7 @@ const publicSites = [
     host: 'hochieunongnghiep.com',
     siteKey: 'passport',
     labels: ['Trang chủ', 'Giới thiệu', 'Tra cứu', 'Đối tác', 'Tin tức', 'Liên hệ'],
-    mobileLabels: ['Trang chủ', 'Sản phẩm', 'Truy xuất QR', 'Tin tức', 'Liên hệ'],
+    mobileLabels: ['Trang chủ', 'Sản phẩm', 'Tra cứu', 'Tin tức', 'Liên hệ'],
     mobileHrefs: ['/', '/san-pham', '/truy-xuat', '/tin-tuc', '/lien-he']
   },
   {
@@ -58,7 +58,7 @@ test.describe('Desktop and mobile menu synchronization', () => {
       await expect(drawer).toBeVisible();
       const mobileNav = drawer.getByTestId(site.siteKey === 'passport' ? 'passport-mobile-nav' : 'public-mobile-nav');
       await expect(mobileNav).toBeVisible();
-      // The dropdown is closed here, so all links are the shared top-level entries.
+      // Every destination is a direct link in the shared navigation model.
       const mobileLinks = await navigationLinks(mobileNav.locator('a'));
 
       expect(desktopLinks.map((link) => link.label)).toEqual(site.labels);

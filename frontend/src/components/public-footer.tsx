@@ -48,9 +48,9 @@ const passportFooterSections: FooterSection[] = [
     ]
   },
   {
-    title: 'Truy xuất',
+    title: 'Tra cứu',
     links: [
-      { href: '/truy-xuat', label: 'Truy xuất sản phẩm' },
+      { href: '/truy-xuat', label: 'Tra cứu sản phẩm' },
       { href: '/san-pham?hasQr=true', label: 'Sản phẩm có QR' },
       { href: '/htx', label: 'Vùng trồng và đối tác' }
     ]

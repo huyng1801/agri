@@ -6,7 +6,7 @@ import type { LucideIcon } from 'lucide-react';
 import { BriefcaseBusiness, Home, Info, Leaf, Mail, Newspaper, QrCode, ShoppingBag, Store } from 'lucide-react';
 import { cn } from './ui';
 import type { PublicSiteKey } from '@/lib/domain';
-import { getPublicMobileNavigation, type PublicNavigationEntry } from '@/lib/public-navigation';
+import { getPublicMobileNavigation } from '@/lib/public-navigation';
 
 const iconByHref: Record<string, LucideIcon> = {
   '/': Home,
@@ -28,13 +28,8 @@ function isHrefActive(pathname: string, hasQrQuery: boolean, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function isNavigationEntryActive(pathname: string, hasQrQuery: boolean, entry: PublicNavigationEntry) {
-  return isHrefActive(pathname, hasQrQuery, entry.href) ||
-    (entry.kind === 'dropdown' && entry.items.some((item) => isHrefActive(pathname, hasQrQuery, item.href)));
-}
-
-function getNavigationIcon(entry: PublicNavigationEntry): LucideIcon {
-  return iconByHref[entry.href] ?? (entry.kind === 'dropdown' ? Leaf : Info);
+function getNavigationIcon(href: string): LucideIcon {
+  return iconByHref[href] ?? Info;
 }
 
 // Pages that must hide the global bottom nav to avoid collision with keyboard,
@@ -82,8 +77,8 @@ export function PublicBottomNav({ siteKey = 'agripassport', hasQrQuery = false }
     >
       <div className="mx-auto flex h-[60px] w-max min-w-full max-w-md items-center justify-center px-2">
         {navigation.map((entry) => {
-          const active = isNavigationEntryActive(pathname, hasQrQuery, entry);
-          const Icon = getNavigationIcon(entry);
+          const active = isHrefActive(pathname, hasQrQuery, entry.href);
+          const Icon = getNavigationIcon(entry.href);
 
           return (
             <Link

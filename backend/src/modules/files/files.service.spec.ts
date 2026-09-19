@@ -69,6 +69,7 @@ describe('FilesService farmer voice recordings', () => {
     const recording = {
       id: 'voice-1',
       title: 'Trao đổi vụ mùa',
+      transcript: 'Nông dân muốn ghi nhật ký sản xuất.',
       durationSeconds: 42,
       consentedAt: createdAt,
       createdAt,
@@ -90,6 +91,7 @@ describe('FilesService farmer voice recordings', () => {
 
     const result = await service.createFarmerVoiceRecording(admin, 'farmer-1', {
       title: 'Trao đổi vụ mùa',
+      transcript: 'Nông dân muốn ghi nhật ký sản xuất.',
       durationSeconds: 42,
       consentConfirmed: true
     }, {
@@ -115,9 +117,9 @@ describe('FilesService farmer voice recordings', () => {
       })
     });
     expect(tx.farmerVoiceRecording.create).toHaveBeenCalledWith(expect.objectContaining({
-      data: expect.objectContaining({ farmerProfileId: 'profile-1', fileAssetId: 'file-1', recordedById: admin.id, durationSeconds: 42 })
+      data: expect.objectContaining({ farmerProfileId: 'profile-1', fileAssetId: 'file-1', recordedById: admin.id, transcript: 'Nông dân muốn ghi nhật ký sản xuất.', durationSeconds: 42 })
     }));
-    expect(result).toMatchObject({ id: 'voice-1', downloadUrl: 'https://r2.example.test/private-audio?signature=short-lived' });
+    expect(result).toMatchObject({ id: 'voice-1', transcript: 'Nông dân muốn ghi nhật ký sản xuất.', downloadUrl: 'https://r2.example.test/private-audio?signature=short-lived' });
     expect(getSignedUrl).toHaveBeenCalled();
     expect(audit.record).toHaveBeenCalledWith(expect.objectContaining({ action: 'farmers.voice_recording.create', entityId: 'voice-1' }));
   });

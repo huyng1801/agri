@@ -1,9 +1,20 @@
+export type FarmerCertificationSummary = {
+  id: string;
+  name: string;
+  issuer: string | null;
+  issuedAt: Date | string | null;
+  expiresAt: Date | string | null;
+  isPublic: boolean;
+  zoneName: string | null;
+};
+
 export type FarmerSummary = {
   assignedZoneCount: number;
   areaM2: number | null;
   zonesWithArea: number;
   treeCount: number;
   varieties: Array<{ cropTypeName: string; variety: string | null; treeCount: number }>;
+  certifications: FarmerCertificationSummary[];
   seasonalProduction: Array<{
     seasonId: string | null;
     seasonName: string;
@@ -33,12 +44,15 @@ type HarvestAggregateInput = {
   harvestCount: number;
 };
 
+export type FarmerCertificationInput = FarmerCertificationSummary & { zoneId: string | null };
+
 type MutableSummary = {
   assignedZoneCount: number;
   areaM2: number;
   zonesWithArea: number;
   treeCount: number;
   varieties: Map<string, { cropTypeName: string; variety: string | null; treeCount: number }>;
+  certifications: FarmerCertificationSummary[];
   seasons: Map<string, {
     seasonId: string | null;
     seasonName: string;
@@ -72,7 +86,8 @@ export function summarizeFarmers(
   assignments: FarmerAssignmentInput[],
   zones: ZoneInput[],
   treeAggregates: TreeAggregateInput[],
-  harvestAggregates: HarvestAggregateInput[]
+  harvestAggregates: HarvestAggregateInput[],
+  certifications: FarmerCertificationInput[] = []
 ): Map<string, FarmerSummary> {
   const summaries = new Map<string, MutableSummary>();
   const usersByZone = new Map<string, Set<string>>();
@@ -94,6 +109,26 @@ export function summarizeFarmers(
         summary.areaM2 += areaM2;
         summary.zonesWithArea += 1;
       }
+    }
+  }
+
+  for (const certification of certifications) {
+    if (!certification.zoneId) continue;
+    const userIds = usersByZone.get(certification.zoneId);
+    if (!userIds?.size) continue;
+
+    for (const userId of userIds) {
+      const summary = summaries.get(userId);
+      if (!summary || summary.certifications.some((item) => item.id === certification.id)) continue;
+      summary.certifications.push({
+        id: certification.id,
+        name: certification.name,
+        issuer: certification.issuer,
+        issuedAt: certification.issuedAt,
+        expiresAt: certification.expiresAt,
+        isPublic: certification.isPublic,
+        zoneName: certification.zoneName
+      });
     }
   }
 
@@ -163,6 +198,9 @@ export function summarizeFarmers(
       varieties: [...summary.varieties.values()].sort((left, right) =>
         right.treeCount - left.treeCount || left.cropTypeName.localeCompare(right.cropTypeName, 'vi') || (left.variety ?? '').localeCompare(right.variety ?? '', 'vi')
       ),
+      certifications: [...summary.certifications].sort((left, right) =>
+        left.name.localeCompare(right.name, 'vi') || left.id.localeCompare(right.id)
+      ),
       seasonalProduction: [...summary.seasons.values()]
         .sort((left, right) => right.startDate - left.startDate || left.seasonName.localeCompare(right.seasonName, 'vi'))
         .map(({ startDate: _startDate, otherUnits, ...season }) => ({
@@ -181,6 +219,7 @@ function createMutableSummary(): MutableSummary {
     zonesWithArea: 0,
     treeCount: 0,
     varieties: new Map(),
+    certifications: [],
     seasons: new Map()
   };
 }

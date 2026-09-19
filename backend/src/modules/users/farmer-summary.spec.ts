@@ -38,6 +38,18 @@ describe('summarizeFarmers', () => {
         // Historical harvests remain part of production totals even when a tree is now inactive.
         { zoneId: 'zone-1', seasonId: 'season-1', seasonName: 'Vụ 2026', seasonStartDate: '2026-01-01', unit: 'kg', quantity: 10, harvestCount: 1 },
         { zoneId: 'zone-1', seasonId: null, seasonName: null, seasonStartDate: null, unit: 'kg', quantity: 2, harvestCount: 1 }
+      ],
+      [
+        {
+          id: 'cert-1',
+          zoneId: 'zone-1',
+          name: 'VietGAP',
+          issuer: 'Tổ chức chứng nhận',
+          issuedAt: '2026-02-01T00:00:00.000Z',
+          expiresAt: '2027-02-01T00:00:00.000Z',
+          isPublic: true,
+          zoneName: 'Vườn xoài 01'
+        }
       ]
     );
 
@@ -47,6 +59,15 @@ describe('summarizeFarmers', () => {
       zonesWithArea: 1,
       treeCount: 2,
       varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 2 }],
+      certifications: [{
+        id: 'cert-1',
+        name: 'VietGAP',
+        issuer: 'Tổ chức chứng nhận',
+        issuedAt: '2026-02-01T00:00:00.000Z',
+        expiresAt: '2027-02-01T00:00:00.000Z',
+        isPublic: true,
+        zoneName: 'Vườn xoài 01'
+      }],
       seasonalProduction: [
         {
           seasonId: 'season-1',
@@ -88,6 +109,7 @@ describe('summarizeFarmers', () => {
       zonesWithArea: 0,
       treeCount: 0,
       varieties: [],
+      certifications: [],
       seasonalProduction: []
     });
   });

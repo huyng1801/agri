@@ -43,6 +43,15 @@ type FarmerSummary = {
   zonesWithArea: number;
   treeCount: number;
   varieties: Array<{ cropTypeName: string; variety: string | null; treeCount: number }>;
+  certifications: Array<{
+    id: string;
+    name: string;
+    issuer: string | null;
+    issuedAt: string | null;
+    expiresAt: string | null;
+    isPublic: boolean;
+    zoneName: string | null;
+  }>;
   seasonalProduction: Array<{
     seasonId: string | null;
     seasonName: string;
@@ -581,6 +590,14 @@ function FarmerProductionSummary({ summary }: { summary?: FarmerSummary | null }
           </>
         ) : <p className="mt-1 text-xs text-slate-500">Chưa ghi nhận thu hoạch.</p>}
       </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-600">Chứng nhận gắn với vùng</p>
+        {summary.certifications.length ? (
+          <ul className="mt-1 space-y-2 text-xs text-slate-700">
+            {summary.certifications.map((certification) => <FarmerCertificationRow key={certification.id} certification={certification} />)}
+          </ul>
+        ) : <p className="mt-1 text-xs text-slate-500">Chưa có chứng nhận nào gắn với vùng được phân công.</p>}
+      </div>
     </section>
   );
 }
@@ -596,6 +613,27 @@ function FarmerSeasonRow({ season }: { season: FarmerSummary['seasonalProduction
     `${formatCount(season.harvestCount)} lần`
   ].filter((value): value is string => Boolean(value));
   return <li className="flex flex-wrap justify-between gap-x-2 gap-y-0.5"><span>{season.seasonName}</span><span className="font-medium">{yieldParts.join(' · ')}</span></li>;
+}
+
+function FarmerCertificationRow({ certification }: { certification: FarmerSummary['certifications'][number] }) {
+  const details = [
+    certification.issuer ? `Cấp bởi ${certification.issuer}` : null,
+    certification.issuedAt ? `Ngày cấp ${formatDate(certification.issuedAt)}` : null,
+    certification.expiresAt ? `Hạn ${formatDate(certification.expiresAt)}` : 'Không thời hạn',
+    certification.zoneName ? `Vùng ${certification.zoneName}` : null
+  ].filter((value): value is string => Boolean(value));
+
+  return (
+    <li className="rounded-md border border-slate-200 bg-slate-50 px-2.5 py-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="font-medium text-ink">{certification.name}</span>
+        <span className={cn('rounded-full px-2 py-0.5 text-[10px] font-medium', certification.isPublic ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-200 text-slate-600')}>
+          {certification.isPublic ? 'Công khai' : 'Nội bộ'}
+        </span>
+      </div>
+      <p className="mt-1 text-slate-500">{details.join(' · ')}</p>
+    </li>
+  );
 }
 
 function formatHectares(areaM2: number | string) {

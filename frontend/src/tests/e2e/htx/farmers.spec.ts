@@ -20,6 +20,7 @@ test.describe('htx farmers dashboard', () => {
         zonesWithArea: 1,
         treeCount: 7,
         varieties: [{ cropTypeName: 'Xoài', variety: 'Cát Chu', treeCount: 7 }],
+        certifications: [{ id: 'cert-1', name: 'VietGAP', issuer: 'Tổ chức chứng nhận', issuedAt: '2026-02-01T00:00:00.000Z', expiresAt: '2027-02-01T00:00:00.000Z', isPublic: true, zoneName: 'Vườn mẫu' }],
         seasonalProduction: [{ seasonId: 'season-1', seasonName: 'Vụ 2026', harvestCount: 3, recordedMassKg: 2500, otherUnits: [] }]
       },
       createdAt: '2026-09-01T00:00:00.000Z',
@@ -64,6 +65,7 @@ test.describe('htx farmers dashboard', () => {
     await expect(page.getByTestId('farmer-production-summary')).toContainText('1,25 ha');
     await expect(page.getByTestId('farmer-production-summary')).toContainText('Xoài · Cát Chu');
     await expect(page.getByTestId('farmer-production-summary')).toContainText('2,5 t');
+    await expect(page.getByTestId('farmer-production-summary')).toContainText('VietGAP');
     await page.getByTestId('farmer-qr-button-farmer-seed').click();
     await expect(page.getByRole('dialog')).toContainText('Nông dân mẫu');
     await expect(page.getByRole('img', { name: 'QR hồ sơ nông hộ Nông dân mẫu' })).toBeVisible();
@@ -112,6 +114,19 @@ test.describe('htx farmers dashboard', () => {
         }
       }
       Object.defineProperty(window, 'MediaRecorder', { configurable: true, value: FakeMediaRecorder });
+      class FakeSpeechRecognition {
+        lang = '';
+        continuous = false;
+        interimResults = false;
+        onresult: ((event: unknown) => void) | null = null;
+        onerror: ((event: unknown) => void) | null = null;
+        onend: (() => void) | null = null;
+        start() {
+          this.onresult?.({ resultIndex: 0, results: [{ isFinal: true, 0: { transcript: 'Nông dân muốn ghi nhật ký' } }] });
+        }
+        stop() {}
+      }
+      Object.defineProperty(window, 'SpeechRecognition', { configurable: true, value: FakeSpeechRecognition });
       Object.defineProperty(navigator, 'mediaDevices', {
         configurable: true,
         value: { getUserMedia: async () => ({ getTracks: () => [{ stop() {} }] }) }
@@ -130,6 +145,7 @@ test.describe('htx farmers dashboard', () => {
         expect(multipart).toContain('consentConfirmed');
         expect(multipart).toContain('true');
         expect(multipart).toContain('Trao đổi kế hoạch vụ xoài');
+        expect(multipart).toContain('Nông dân muốn ghi nhật ký');
         uploadCount += 1;
         savedRecordings = [{
           id: 'voice-note-1',
@@ -137,6 +153,7 @@ test.describe('htx farmers dashboard', () => {
           durationSeconds: 1,
           consentedAt: '2026-09-18T05:00:00.000Z',
           createdAt: '2026-09-18T05:00:00.000Z',
+          transcript: 'Nông dân muốn ghi nhật ký',
           downloadUrl: 'https://storage.example.test/private-voice.webm?signature=test',
           recordedBy: { id: 'e2e-htx-admin', fullName: 'Admin HTX E2E' }
         }];
@@ -182,10 +199,12 @@ test.describe('htx farmers dashboard', () => {
     await page.getByTestId('farmer-recording-stop').click();
     await expect(page.getByLabel('Nghe thử bản ghi âm')).toBeVisible();
     await page.getByPlaceholder('Ví dụ: Trao đổi kế hoạch vụ xoài').fill('Trao đổi kế hoạch vụ xoài');
+    await page.getByTestId('farmer-recording-transcript').fill('Nông dân muốn ghi nhật ký');
     await page.getByTestId('farmer-recording-save').click();
     await expect(page.getByText('Trao đổi kế hoạch vụ xoài')).toBeVisible();
     await expect.poll(() => uploadCount).toBe(1);
     await expect(page.getByLabel('Nghe Trao đổi kế hoạch vụ xoài')).toBeVisible();
+    await expect(page.getByTestId('farmer-recording-transcript-voice-note-1')).toContainText('Nông dân muốn ghi nhật ký');
   });
 });
 

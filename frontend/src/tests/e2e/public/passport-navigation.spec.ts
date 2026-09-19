@@ -7,52 +7,30 @@ test.describe('Passport public navigation and copy', () => {
     await page.setExtraHTTPHeaders({ 'x-forwarded-host': 'hochieunongnghiep.com' });
   });
 
-  test('keeps the desktop menu concise and groups all lookup destinations', async ({ page }) => {
+  test('opens the lookup page directly from the desktop menu', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const header = page.locator('header');
-    await expect(header.getByRole('link', { name: 'Tra cứu', exact: true })).toBeVisible();
+    const desktopNav = header.getByRole('navigation', { name: 'Menu chính' });
+    const lookupLink = desktopNav.getByRole('link', { name: 'Tra cứu', exact: true });
+    await expect(lookupLink).toBeVisible();
+    await expect(lookupLink).toHaveAttribute('href', '/truy-xuat');
     await expect(header.getByRole('link', { name: 'Trang chủ', exact: true })).toHaveAttribute('href', '/');
     await expect(header.getByRole('link', { name: 'Cộng tác viên', exact: true })).toHaveCount(0);
-
-    const menuToggle = header.getByRole('button', { name: 'Mở menu Tra cứu' });
-    await expect(menuToggle).toHaveAttribute('aria-expanded', 'false');
-    await menuToggle.click();
-
-    const menu = header.getByRole('menu', { name: 'Các trang trong Tra cứu' });
-    await expect(menu).toBeVisible();
-    await expect(menu.getByRole('menuitem')).toHaveCount(3);
-    await expect(menu.getByRole('menuitem', { name: /Tra cứu sản phẩm/ })).toHaveAttribute('href', '/truy-xuat');
-    await expect(menu.getByRole('menuitem', { name: /Hộ chiếu cây/ })).toHaveAttribute('href', '/cay');
-    await expect(menu.getByRole('menuitem', { name: /Sản phẩm có QR/ })).toHaveAttribute('href', '/san-pham?hasQr=true');
+    await lookupLink.click();
+    await expect(page).toHaveURL(/\/truy-xuat$/);
+    await expect(page.locator('main h1')).toHaveText('Xem hành trình nông sản bằng mã QR');
   });
 
-  test('keeps the active lookup menu in sync when only the QR query changes', async ({ page }) => {
+  test('keeps the QR catalog separate from the lookup menu destination', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/san-pham?hasQr=true', { waitUntil: 'domcontentloaded' });
 
     const header = page.locator('header');
-    const lookupLink = header.getByRole('link', { name: 'Tra cứu', exact: true });
-    await expect(lookupLink).toHaveAttribute('aria-current', 'page');
-
-    await page.getByRole('link', { name: 'Xóa lọc' }).click();
-    await expect(page).toHaveURL(/\/san-pham$/);
+    const lookupLink = header.getByRole('navigation', { name: 'Menu chính' }).getByRole('link', { name: 'Tra cứu', exact: true });
     await expect(lookupLink).not.toHaveAttribute('aria-current', 'page');
-
-    await header.getByRole('button', { name: 'Mở menu Tra cứu' }).click();
-    const menu = header.getByRole('menu', { name: 'Các trang trong Tra cứu' });
-    const qrProductsLink = menu.getByRole('menuitem', { name: /Sản phẩm có QR/ });
-    await expect(qrProductsLink).not.toHaveAttribute('aria-current', 'page');
-    await qrProductsLink.click();
-
-    await expect(page).toHaveURL(/\/san-pham\?hasQr=true$/);
-    await expect(lookupLink).toHaveAttribute('aria-current', 'page');
-
-    await header.getByRole('button', { name: 'Mở menu Tra cứu' }).click();
-    await expect(
-      header.getByRole('menu', { name: 'Các trang trong Tra cứu' }).getByRole('menuitem', { name: /Sản phẩm có QR/ })
-    ).toHaveAttribute('aria-current', 'page');
+    await expect(lookupLink).toHaveAttribute('href', '/truy-xuat');
   });
 
   test('uses the same ordered destinations in the mobile drawer', async ({ page }) => {
@@ -78,15 +56,11 @@ test.describe('Passport public navigation and copy', () => {
     await expect(nav.getByRole('link', { name: 'Tin tức', exact: true })).toBeVisible();
     await expect(nav.getByRole('link', { name: 'Liên hệ', exact: true })).toBeVisible();
 
-    await nav.getByRole('button', { name: 'Mở menu Tra cứu' }).click();
-    await expect(nav.locator('#passport-mobile-submenu').getByRole('link')).toHaveCount(3);
-    await expect(nav.getByRole('link', { name: 'Tra cứu sản phẩm', exact: true })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Hộ chiếu cây', exact: true })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Sản phẩm có QR', exact: true })).toBeVisible();
-    await expect(nav.getByRole('link', { name: 'Tra cứu sản phẩm', exact: true })).toHaveAttribute('href', '/truy-xuat');
-    await expect(nav.getByRole('link', { name: 'Hộ chiếu cây', exact: true })).toHaveAttribute('href', '/cay');
-    await expect(nav.getByRole('link', { name: 'Sản phẩm có QR', exact: true })).toHaveAttribute('href', '/san-pham?hasQr=true');
-    await header.getByRole('button', { name: 'Đóng menu' }).click();
+    const lookupLink = nav.getByRole('link', { name: 'Tra cứu', exact: true });
+    await expect(lookupLink).toHaveAttribute('href', '/truy-xuat');
+    await lookupLink.click();
+    await expect(page).toHaveURL(/\/truy-xuat$/);
+    await expect(page.getByRole('heading', { name: 'Xem hành trình nông sản bằng mã QR' })).toBeVisible();
     await expect(bottomNav).toBeVisible();
   });
 
@@ -100,14 +74,14 @@ test.describe('Passport public navigation and copy', () => {
     await expect(links.evaluateAll((items) => items.map((item) => ({ label: item.textContent?.trim(), href: item.getAttribute('href') })))).resolves.toEqual([
       { label: 'Trang chủ', href: '/' },
       { label: 'Sản phẩm', href: '/san-pham' },
-      { label: 'Truy xuất QR', href: '/truy-xuat' },
+      { label: 'Tra cứu', href: '/truy-xuat' },
       { label: 'Tin tức', href: '/tin-tuc' },
       { label: 'Liên hệ', href: '/lien-he' }
     ]);
     await expect(links.nth(0)).toHaveAttribute('aria-current', 'page');
 
     await page.goto('/truy-xuat', { waitUntil: 'domcontentloaded' });
-    await expect(bottomNav.getByRole('link', { name: 'Truy xuất QR', exact: true })).toHaveAttribute('aria-current', 'page');
+    await expect(bottomNav.getByRole('link', { name: 'Tra cứu', exact: true })).toHaveAttribute('aria-current', 'page');
   });
 
   test('keeps Passport footer content site-specific and free of login copy', async ({ page }) => {
@@ -119,7 +93,7 @@ test.describe('Passport public navigation and copy', () => {
     await expect(footer.getByRole('link', { name: /đăng nhập/i })).toHaveCount(0);
     await expect(footer).not.toContainText('HỘ CHIẾU NÔNG NGHIỆP');
     await expect(footer).toContainText('Hộ chiếu cây');
-    await expect(footer).toContainText('Truy xuất');
+    await expect(footer).toContainText('Tra cứu sản phẩm');
   });
 
   test('renders the balanced Passport logo without cover distortion', async ({ page }) => {
